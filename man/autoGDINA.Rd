@@ -143,6 +143,10 @@ summary(out3)
 \author{
 {Wenchao Ma, Rutgers University, \email{wenchao.ma@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 }
+\references{
+Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification.
+\emph{Applied Psychological Measurement, 40}, 200-217.
+}
 \seealso{
 \code{\link{GDINA}}, \code{\link{modelcomp}}, \code{\link{Qval}}
 }
