@@ -16,6 +16,7 @@
 #' @seealso \code{\link{GDINA}}
 #' @export
 #' @examples
+#' \dontrun{
 #' set.seed(123456)
 #' N <- 1000
 #' Q <- sim10GDINA$simQ
@@ -38,7 +39,7 @@
 #' dif.out <- dif(dat,Q,group=gr)
 #' plotIRF(dif.out,4)
 #' dif.out2 <- dif(dat,Q,group=gr,method="LR")
-#'
+#'}
 #' @references
 #' Hou, L., de la Torre, J., & Nandakumar, R. (2014). Differential item functioning assessment in cognitive diagnostic modeling: Application of the Wald test to
 #' investigate DIF in the DINA model. \emph{Journal of Educational Measurement, 51}, 98-125.

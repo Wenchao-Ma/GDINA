@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @examples
-#'
+#'\dontrun{
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #'
@@ -23,7 +23,7 @@
 #' mod2 <- GDINA(dat = dat, Q = Q, model = "GDINA",mono.constraint = check)
 #' check2 <- monocheck(mod2)
 #' check2
-#'
+#'}
 
 
 monocheck <- function(object,strict = FALSE){

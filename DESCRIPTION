@@ -4,10 +4,7 @@ Title: The Generalized DINA Model Framework
 Version: 1.0.0
 Date: 2016-12-11
 Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre"),email = "wenchao.ma@rutgers.edu"),person(given = "Jimmy", family = "de la Torre", role = "aut"))
-Description: A set of tools for cognitive diagnostic analyses have been provided for both dichotomous and polytomous responses within the generalized DINA model framework and its extensions. Various cognitive diagnosis models (CDMs) can
-    be estimated, include the (sequential) G-DINA model, the DINA model, the DINO model, additive CDM, reduced reparameterized unified model (RRUM), and linear
-    logistic model (LLM). Higher-order attribute structure and polytomous attributes can be specified. Q-matrix validation, item and model fit statistics, model
-    comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided.
+Description: A set of psychometric tools for cognitive diagnostic analyses for both dichotomous and polytomous responses. Various cognitive diagnosis models (CDMs) can be estimated, include the generalized deterministic inputs, noisy and gate (G-DINA) model by de la Torre (2011) <DOI: 10.1007/s11336-011-9207-7>, the sequential G-DINA model by Ma and de la Torre (2016)<DOI: 10.1111/bmsp.12070>, and many other models they subsume. Joint attribute distribution can be saturated, higher-order or structured. Q-matrix validation, item and model fit statistics, model comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided.
 License: GPL-3
 LazyData: TRUE
 Depends:

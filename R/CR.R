@@ -16,7 +16,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' N <- 2000
 #' # ---- Simulated G-DINA model ----- #
 #'
@@ -32,6 +32,7 @@
 #'
 #' CR <- ClassRate(sim$attribute,personparm(GDINA.est))
 #' CR
+#' }
 ClassRate <- function(att1,att2){
   if (is.null(att1)|is.null(att2)) stop("att1 and att2 must be matrices or data frame.",call. = FALSE)
   if(is.list(att1)|is.list(att2)) stop("att1 and att2 must be matrices or data frame.",call. = FALSE)

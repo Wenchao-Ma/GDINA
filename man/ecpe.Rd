@@ -28,6 +28,7 @@ A1 -> A2 -> A3.
 The data set is obtained from \url{http://jonathantemplin.com/dcm-workshop-spring-2012-ncme/}.
 }
 \examples{
+\dontrun{
 mod1 <- GDINA(ecpe$dat,ecpe$Q)
 mod1
 summary(mod1)
@@ -37,7 +38,7 @@ mod2
 anova(mod1,mod2)
 # You may compare the following results with Feng, Habing, and Huebner (2013)
 itemparm(mod2,"rrum")
-
+}
 
 }
 \references{

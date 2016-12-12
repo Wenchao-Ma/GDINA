@@ -20,7 +20,7 @@ If mastering an additional attribute lead to a lower probabilities of success,
 the monotonicity is violated.
 }
 \examples{
-
+\dontrun{
 dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
 
@@ -31,6 +31,6 @@ check
 mod2 <- GDINA(dat = dat, Q = Q, model = "GDINA",mono.constraint = check)
 check2 <- monocheck(mod2)
 check2
-
+}
 }
 

@@ -25,7 +25,7 @@ a list with the following components:
 This function evaluates the classification rates for two sets of attribute profiles
 }
 \examples{
-
+\dontrun{
 N <- 2000
 # ---- Simulated G-DINA model ----- #
 
@@ -41,5 +41,6 @@ GDINA.est <- GDINA(sim$dat,Q)
 
 CR <- ClassRate(sim$attribute,personparm(GDINA.est))
 CR
+}
 }
 

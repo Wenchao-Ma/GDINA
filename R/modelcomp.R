@@ -34,6 +34,7 @@
 #' \emph{Applied Psychological Measurement, 40}, 200-217.
 #'
 #'@examples
+#'\dontrun{
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' # --- GDINA model ---#
@@ -52,6 +53,7 @@
 #' wmod2
 #' wmod3 <- modelcomp(mod1,item=c(8,9,10),DS=FALSE)
 #' wmod3
+#' }
 #' @import MASS
 #' @export
 modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,

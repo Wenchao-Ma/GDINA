@@ -14,7 +14,7 @@
 #' @param ... additional arguments
 #' @seealso \code{\link{Qval}}, \code{\link{autoGDINA}}
 #' @examples
-#'
+#'\dontrun{
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' Q[1,] <- c(0,1,0)
@@ -24,7 +24,7 @@
 #' mesaplot(out,item=item,data.label=TRUE,type="all")
 #' mesaplot(out,item=10,type="best")
 #' mesaplot(out,item=10,type="all",no.qvector=5)
-#'
+#'}
 #'
 #'
 #' @export

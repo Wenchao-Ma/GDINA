@@ -64,6 +64,7 @@ between the reduced models and the G-DINA model, which can be viewed as a measur
 \item \code{summary}: print summary information
 }}
 \examples{
+\dontrun{
 dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
 # --- GDINA model ---#
@@ -82,6 +83,7 @@ wmod2 <- modelcomp(mod1,models = c("DINA","DINO"))
 wmod2
 wmod3 <- modelcomp(mod1,item=c(8,9,10),DS=FALSE)
 wmod3
+}
 }
 \author{
 {Wenchao Ma, Rutgers University, \email{wenchao.ma@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}

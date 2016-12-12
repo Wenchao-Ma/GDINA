@@ -20,6 +20,7 @@
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' mod1 <- GDINA(ecpe$dat,ecpe$Q)
 #' mod1
 #' summary(mod1)
@@ -29,7 +30,7 @@
 #' anova(mod1,mod2)
 #' # You may compare the following results with Feng, Habing, and Huebner (2013)
 #' itemparm(mod2,"rrum")
-#'
+#'}
 #'
 #' @references
 #'

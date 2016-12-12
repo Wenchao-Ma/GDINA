@@ -139,7 +139,7 @@ if \code{delta.parm} is specified; if yes, it will be used for data generation. 
 \code{catprob.parm} is used for data generation.
 }
 \examples{
-
+\dontrun{
 ####################################################
 #                     Example 1                    #
 #             Data simulation (DINA)               #
@@ -425,6 +425,7 @@ extract(simseq,what = "dat")
 
 # simulated attributes
 extract(simseq,what = "attribute")
+}
 
 }
 \author{
@@ -445,6 +446,8 @@ Blending theory with practicality (Unpublished doctoral dissertation). Universit
 
 Junker, B. W., & Sijtsma, K. (2001). Cognitive assessment models with few assumptions, and connections with nonparametric
 item response theory. \emph{Applied Psychological Measurement, 25}, 258-272.
+
+Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
 
 Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. \emph{Applied Psychological Measurement, 40}, 200-217.
 

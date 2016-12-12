@@ -32,7 +32,7 @@ which means the 10 q vectors with the largest PVAFs are plotted.}
 Mesa plot for Q-matrix validation
 }
 \examples{
-
+\dontrun{
 dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
 Q[1,] <- c(0,1,0)
@@ -42,7 +42,7 @@ item <- c(1,2,10)
 mesaplot(out,item=item,data.label=TRUE,type="all")
 mesaplot(out,item=10,type="best")
 mesaplot(out,item=10,type="all",no.qvector=5)
-
+}
 
 
 }

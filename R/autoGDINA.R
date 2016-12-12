@@ -73,6 +73,7 @@
 #' \emph{Applied Psychological Measurement, 40}, 200-217.
 #'
 #'@examples
+#'\dontrun{
 #' # simulated responses
 #' Q <- sim10GDINA$simQ
 #' dat <- sim10GDINA$simdat
@@ -104,7 +105,7 @@
 #' out3 <- autoGDINA(dat = dat, Q = misQ, Qvalid = FALSE,alpha.level=0.01)
 #' out3
 #' summary(out3)
-#'
+#'}
 #' @export
 
 autoGDINA <-

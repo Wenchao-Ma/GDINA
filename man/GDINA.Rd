@@ -15,7 +15,7 @@
 \alias{npar.GDINA}
 \alias{personparm.GDINA}
 \alias{summary.GDINA}
-\title{Calibrate dichotomous and polytomous responses within the G-DINA model framework}
+\title{Calibrate dichotomous and polytomous response data}
 \usage{
 GDINA(dat, Q, model = "GDINA", sequential = FALSE, item.names = NULL,
   higher.order = FALSE, higher.order.model = "Rasch",
@@ -386,6 +386,7 @@ For polytomous response data using the sequential G-DINA model, the number of it
 are counted at category level.
 }
 \examples{
+\dontrun{
 ####################################
 #        Example 1.                #
 #     GDINA, DINA, DINO            #
@@ -409,6 +410,7 @@ BIC(mod1) #BIC
 logLik(mod1) #log-likelihood value
 deviance(mod1) # deviance: -2 log-likelihood
 npar(mod1) # number of parameters
+
 
 head(indlogLik(mod1)) # individual log-likelihood
 head(indlogPost(mod1)) # individual log-posterior
@@ -642,7 +644,7 @@ extract(modp2,what = "posterior.prob")
 #    see Chen, de la Torre 2013    #
 ####################################
 
-\dontrun{
+
 # --- polytomous attribute G-DINA model --- #
 dat <- sim30pGDINA$simdat
 Q <- sim30pGDINA$simQ
@@ -652,7 +654,7 @@ pout <- GDINA(dat,Q)
 # ----- polymous DINA model --------#
 pout2 <- GDINA(dat,Q,model="DINA")
 anova(pout,pout2)
-}
+
 ####################################
 #           Example 9.             #
 #        Sequential G-DINA model   #
@@ -707,6 +709,7 @@ Q <- rbind(Q,Q)
 # Fit G-DINA model
 mg.est <- GDINA(dat = dat,Q = Q,group = rep(c("female","male"),each=2000))
 extract(mg.est,"posterior.prob")
+}
 
 }
 \author{

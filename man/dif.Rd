@@ -55,6 +55,7 @@ in the \code{\link{GDINA}} function using the Wald test (Hou, de la Torre, & Nan
 \item \code{summary}: print summary information
 }}
 \examples{
+\dontrun{
 set.seed(123456)
 N <- 1000
 Q <- sim10GDINA$simQ
@@ -77,7 +78,7 @@ gr <- c(rep("male",N),rep("female",N))
 dif.out <- dif(dat,Q,group=gr)
 plotIRF(dif.out,4)
 dif.out2 <- dif(dat,Q,group=gr,method="LR")
-
+}
 }
 \author{
 {Wenchao Ma, Rutgers University, \email{wenchao.ma@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}

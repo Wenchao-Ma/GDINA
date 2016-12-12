@@ -123,6 +123,8 @@
 #' Junker, B. W., & Sijtsma, K. (2001). Cognitive assessment models with few assumptions, and connections with nonparametric
 #' item response theory. \emph{Applied Psychological Measurement, 25}, 258-272.
 #'
+#' Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
+#'
 #' Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. \emph{Applied Psychological Measurement, 40}, 200-217.
 #'
 #' Maris, E. (1999). Estimating multiple classification latent class models. \emph{Psychometrika, 64}, 187-212.
@@ -131,7 +133,7 @@
 #' \emph{Psychological Methods, 11}, 287-305.
 #'
 #' @examples
-#'
+#'\dontrun{
 #'####################################################
 #'#                     Example 1                    #
 #'#             Data simulation (DINA)               #
@@ -417,6 +419,7 @@
 #'
 #'# simulated attributes
 #'extract(simseq,what = "attribute")
+#'}
 #'
 simGDINA <- function(N, Q, gs.parm=NULL, model = "GDINA", sequential = FALSE, type = "random",
                       catprob.parm = NULL, delta.parm = NULL,mono.constraint = TRUE,

@@ -18,6 +18,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' #################
 #' #
 #' # Leighton et al. (2004, p.210)
@@ -57,7 +58,7 @@
 #' att.structure(unstru,K)
 #'
 #' ## See Example 4 and 5 in GDINA function
-#'
+#'}
 att.structure <- function(hierarchy.list=NULL,K,att.prob="uniform"){
   patt <- alpha(K)
   if (!is.null(hierarchy.list)){

@@ -64,6 +64,7 @@ Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013)
 \item \code{summary}: print summary information
 }}
 \examples{
+\dontrun{
 dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
 # --- GDINA model ---#
@@ -93,7 +94,7 @@ itmfit2 <- itemfit(mod2)
 #misfit heatmap
 heatplot(itmfit2)
 itmfit2
-
+}
 }
 \author{
 {Wenchao Ma, Rutgers University, \email{wenchao.ma@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}

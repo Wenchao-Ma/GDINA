@@ -27,6 +27,7 @@ This function can be used to generate hierarchical attributes structures, and
 to provide prior joint attribute distribution with hierarchical structures.
 }
 \examples{
+\dontrun{
 #################
 #
 # Leighton et al. (2004, p.210)
@@ -66,7 +67,7 @@ unstru <- list(c(1,2),c(1,3),c(1,4),c(1,5),c(1,6))
 att.structure(unstru,K)
 
 ## See Example 4 and 5 in GDINA function
-
+}
 }
 \author{
 {Wenchao Ma, Rutgers University, \email{wenchao.ma@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}

@@ -1,4 +1,4 @@
-#' Calibrate dichotomous and polytomous responses within the G-DINA model framework
+#' Calibrate dichotomous and polytomous response data
 #'
 #' \code{GDINA} calibrates the generalized deterministic inputs, noisy and
 #' gate (G-DINA; de la Torre, 2011) model for dichotomous responses, and its extension, the sequential
@@ -302,6 +302,7 @@
 #' @importFrom utils combn
 #'
 #' @examples
+#' \dontrun{
 #'####################################
 #'#        Example 1.                #
 #'#     GDINA, DINA, DINO            #
@@ -325,6 +326,7 @@
 #' logLik(mod1) #log-likelihood value
 #' deviance(mod1) # deviance: -2 log-likelihood
 #' npar(mod1) # number of parameters
+#'
 #'
 #' head(indlogLik(mod1)) # individual log-likelihood
 #' head(indlogPost(mod1)) # individual log-posterior
@@ -558,7 +560,7 @@
 #'#    see Chen, de la Torre 2013    #
 #'####################################
 #'
-#' \dontrun{
+#'
 #' # --- polytomous attribute G-DINA model --- #
 #' dat <- sim30pGDINA$simdat
 #' Q <- sim30pGDINA$simQ
@@ -568,7 +570,7 @@
 #' # ----- polymous DINA model --------#
 #' pout2 <- GDINA(dat,Q,model="DINA")
 #' anova(pout,pout2)
-#' }
+#'
 #'####################################
 #'#           Example 9.             #
 #'#        Sequential G-DINA model   #
@@ -623,6 +625,7 @@
 #' # Fit G-DINA model
 #' mg.est <- GDINA(dat = dat,Q = Q,group = rep(c("female","male"),each=2000))
 #' extract(mg.est,"posterior.prob")
+#' }
 #'
 GDINA <-
   function(dat, Q, model = "GDINA", sequential = FALSE, item.names = NULL,

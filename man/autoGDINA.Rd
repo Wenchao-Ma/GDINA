@@ -107,6 +107,7 @@ Returned \code{GDINA1.obj}, \code{GDINA2.obj} and \code{CDM.obj} are objects of 
  Similarly, returned \code{Qval.obj} and \code{Wald.obj} are objects of class \code{\link{Qval}} and \code{\link{modelcomp}}.
 }
 \examples{
+\dontrun{
 # simulated responses
 Q <- sim10GDINA$simQ
 dat <- sim10GDINA$simdat
@@ -138,7 +139,7 @@ out2 <- autoGDINA(dat,misQ,reducedCDM = c("RRUM","LLM"))
 out3 <- autoGDINA(dat = dat, Q = misQ, Qvalid = FALSE,alpha.level=0.01)
 out3
 summary(out3)
-
+}
 }
 \author{
 {Wenchao Ma, Rutgers University, \email{wenchao.ma@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}

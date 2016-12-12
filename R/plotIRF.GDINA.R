@@ -9,13 +9,14 @@
 #' @seealso \code{\link{GDINA}}, \code{\link{autoGDINA}}, \code{\link{dif}}
 #' @export
 #' @examples
+#' \dontrun{
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #' #plot item response functions for item 10
 #' plotIRF(mod1,10)
 #' plotIRF(mod1,9, errorbar = TRUE)
-#'
+#'}
 plotIRF <- function(object, item, errorbar = FALSE, ...){
   UseMethod("plotIRF")
 }

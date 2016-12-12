@@ -19,13 +19,14 @@ plotIRF(object, item, errorbar = FALSE, ...)
 Create plots of item/category success probability for each latent group
 }
 \examples{
+\dontrun{
 dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
 mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #plot item response functions for item 10
 plotIRF(mod1,10)
 plotIRF(mod1,9, errorbar = TRUE)
-
+}
 }
 \seealso{
 \code{\link{GDINA}}, \code{\link{autoGDINA}}, \code{\link{dif}}

@@ -30,6 +30,7 @@
 #' \emph{Journal of Educational Measurement, 50}, 123-140.
 #'
 #' @examples
+#' \dontrun{
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' # --- GDINA model ---#
@@ -59,7 +60,7 @@
 #' #misfit heatmap
 #' heatplot(itmfit2)
 #' itmfit2
-#'
+#'}
 
 
 itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni",
