@@ -5,7 +5,7 @@ print.GDINA <-
   {
     cat("\nThe Generalized DINA Model Framework  \n")
     packageinfo <- utils::packageDescription("GDINA")
-    cat( paste( "   Beta Version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
+    cat( paste( "   Version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
     cat("\nCall:\n", paste(deparse(extract.GDINA(x,"call")), sep = "\n", collapse = "\n"),
         "\n", sep = "")
     cat("\nNumber of items       =", extract.GDINA(x,"nitem"), "\n")

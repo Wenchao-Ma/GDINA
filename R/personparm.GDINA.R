@@ -64,12 +64,12 @@ personparm.GDINA <- function(object,
         }
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
       }else if(what=="MLE"){
-        if(max(Q) > 1) stop("Please use EAP.att for polytomous attributes.", call. = FALSE)
-        out <- data.frame(MLE=pattern[max.col(extract.GDINA(object,what = "logposterior.i")),],
-                          multimodes=as.logical(rowSums(extract.GDINA(object,what = "logposterior.i")==apply(extract.GDINA(object,what = "logposterior.i"),1,max))-1))
+        if(max(Q) > 1) stop("Please use EAP for polytomous attributes.", call. = FALSE)
+        out <- data.frame(MLE=pattern[max.col(extract.GDINA(object,what = "loglikelihood.i")),],
+                          multimodes=as.logical(rowSums(extract.GDINA(object,what = "loglikelihood.i")==apply(extract.GDINA(object,what = "loglikelihood.i"),1,max))-1))
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
       }else if(what=="MAP"){
-        if(max(Q) > 1) stop("Please use EAP.att for polytomous attributes.", call. = FALSE)
+        if(max(Q) > 1) stop("Please use EAP for polytomous attributes.", call. = FALSE)
         out <- data.frame(MAP=pattern[max.col(extract.GDINA(object,what = "logposterior.i")),],
                           multimodes=as.logical(rowSums(extract.GDINA(object,what = "logposterior.i")==apply(extract.GDINA(object,what = "logposterior.i"),1,max))-1))
         colnames(out)[1:K] <- paste("A",1:K,sep = "")

@@ -495,24 +495,6 @@ seq_coding <- function(dat,Q){
   return(out)
 }
 
-Rmatrix.att <- function(K){
-  R <- vector("list",K)
-  Lk <- 2^K
-  if (K<=1) return(warning("K must be 2 or more!"))
-  # gives which groups should be set to equal
-  pattK <- alpha(K)
-  pattK_1 <- alpha(K-1)
-  for(a in 1:K){
-    Rk <- matrix(0,Lk/2,Lk)
-    for (l in 1:nrow(pattK_1)){
-      loc <- which(apply(pattK[,-a,drop=FALSE],1,function(x){all(x==pattK_1[l,])}))
-      Rk[l,loc[1]] <- 1
-      Rk[l,loc[2]] <- -1
-    }
-    R[[a]] <- Rk
-  }
-  return(R)
-}
 
 
 bdiag <- function(mlist,fill=0){
@@ -634,3 +616,56 @@ scorefunc <- function(object,...){
   list(score = scof$score, index = index)
 }
 
+Rmatrix.vec <- function(K){
+  patt <- alpha(K)
+  eta <- eta.loc(patt[-c(1,nrow(patt)),])
+  Rv <- vector("list",nrow(eta))
+  for (r in 1:nrow(eta)){
+    for(lc in seq_len(max(eta[r,]))){
+      loc <- which(eta[r,]==lc)
+      tmp <- matrix(0,length(loc)-1,2^K)
+      tmp[,loc[1]] <- 1
+      tmp[cbind(seq_len(length(loc)-1),loc[-1])] <- -1
+      Rv[[r]] <- rbind(Rv[[r]],tmp)
+    }
+  }
+  return(Rv)
+}
+
+
+Rmatrix.att <- function(K){
+  R <- vector("list",K)
+  Lk <- 2^K
+  if (K<=1) return(warning("K must be 2 or more!"))
+  # gives which groups should be set to equal
+  pattK <- alpha(K)
+  pattK_1 <- alpha(K-1)
+  for(a in 1:K){
+    Rk <- matrix(0,Lk/2,Lk)
+    for (l in 1:nrow(pattK_1)){
+      loc <- which(apply(pattK[,-a,drop=FALSE],1,function(x){all(x==pattK_1[l,])}))
+      Rk[l,loc[1]] <- 1
+      Rk[l,loc[2]] <- -1
+    }
+    R[[a]] <- Rk
+  }
+  return(R)
+
+
+}
+
+
+valQrate <- function(trueQ,misQ,valQ){
+  Qs <- data.frame(trueQ=c(as.matrix(trueQ)),misQ=c(as.matrix(misQ)),valQ=c(as.matrix(valQ)))
+  CR <- data.frame(true2mis=
+                     apply(matrix(c(0,0,
+                                    1,1,
+                                    0,1,
+                                    1,0),ncol = 2,byrow = TRUE),1,function(x)rowMatch(Qs[,-3],x)$count),
+                   mis2val=apply(matrix(c(0,0,0,
+                                          1,1,1,
+                                          0,1,0,
+                                          1,0,1),ncol = 3,byrow = TRUE),1,function(x)rowMatch(Qs,x)$count),
+                   row.names = c("000/00","111/11","010/01","101/10"))
+  return(CR)
+}
