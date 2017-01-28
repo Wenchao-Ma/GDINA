@@ -24,7 +24,7 @@ rowCount <- function(df){
 #' Count the frequency of a row vector in a data frame
 #'
 #' @param df a data frame or matrix
-#'
+#' @param vec the vector for matching
 #' @return count the number of vector vec in the data frame
 #' @return row.no row numbers of the vector vec in the data frame
 #' @export
@@ -39,4 +39,29 @@ rowCount <- function(df){
 rowMatch <- function(df,vec=NULL){
   logicalvec <- apply(df,1,paste0,collapse="")==paste0(vec,collapse = "")
   return(list(count=sum(logicalvec),row.no=which(logicalvec)))
+}
+
+#' Unique values in a vector
+#'
+#' @param vec a vector
+#' @return sorted unique values
+#' @export
+#'
+#' @examples
+#'
+#' vec <- c(4,2,3,5,4,4,4)
+#' unique_only(vec)
+#' # see the difference from unique
+#' unique(vec)
+#'
+#' vec <- letters[1:5]
+#' unique_only(vec)
+#'
+#'
+#'
+#' @seealso \link[base]{unique}
+#'
+unique_only <- function(vec){
+  vec <- sort(vec)
+  unique(vec)[which(table(vec)==1)]
 }

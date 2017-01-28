@@ -72,22 +72,30 @@ print.itemfit <-
     p <- extract.itemfit(x,"p")
     r <- extract.itemfit(x,"r")
     logOR <- extract.itemfit(x,"logOR")
-    testlevel.itemfit <- data.frame(p=c(mean(p$pstat),max(p$pstat),
-                                        max(p$zstat),p$unadj.pvalue[which.max(p$zstat)],
-                                        p$test.adj.pvalue[which.max(p$zstat)]),
-                                    r=c(mean(r$rstat),max(r$rstat),
-                                        max(r$zstat),r$unadj.pvalue[which.max(r$zstat)],
-                                        r$test.adj.pvalue[which.max(r$zstat)]),
-                                    l=c(mean(logOR$lstat),max(logOR$lstat),
-                                        max(logOR$zstat),logOR$unadj.pvalue[which.max(logOR$zstat)],
-                                        logOR$test.adj.pvalue[which.max(logOR$zstat)]))
+    testlevel.itemfit <- data.frame(p=c(mean(p$pstat[is.finite(p$pstat)],na.rm = TRUE),
+                                        max(p$pstat[is.finite(p$pstat)],na.rm = TRUE),
+                                        max(p$zstat[is.finite(p$zstat)],na.rm = TRUE),
+                                        p$unadj.pvalue[which(p$zstat==max(p$zstat[is.finite(p$zstat)],na.rm = TRUE))],
+                                        p$test.adj.pvalue[which(p$zstat==max(p$zstat[is.finite(p$zstat)],na.rm = TRUE))]),
+                                    r=c(mean(r$rstat[is.finite(r$rstat)],na.rm = TRUE),
+                                        max(r$rstat[is.finite(r$rstat)],na.rm = TRUE),
+                                        max(r$zstat[is.finite(r$zstat)],na.rm = TRUE),
+                                        r$unadj.pvalue[which(r$zstat==max(r$zstat[is.finite(r$zstat)],na.rm = TRUE))],
+                                        r$test.adj.pvalue[which(r$zstat==max(r$zstat[is.finite(r$zstat)],na.rm = TRUE))]),
+                                    l=c(mean(logOR$lstat[is.finite(logOR$lstat)],na.rm = TRUE),
+                                        max(logOR$lstat[is.finite(logOR$lstat)],na.rm = TRUE),
+                                        max(logOR$zstat[is.finite(logOR$zstat)],na.rm = TRUE),
+                                        logOR$unadj.pvalue[which(logOR$zstat==max(logOR$zstat[is.finite(logOR$zstat)],na.rm = TRUE))],
+                                        logOR$test.adj.pvalue[which(logOR$zstat==max(logOR$zstat[is.finite(logOR$zstat)],na.rm = TRUE))]))
     colnames(testlevel.itemfit) <- c("Proportion correct","Transformed correlation","Log odds ratio")
     rownames(testlevel.itemfit) <- c("mean[stats]","max[stats]",
                                      "max[z.stats]","p-value","adj.p-value")
     print(t(round(testlevel.itemfit,extract.itemfit(x,"digits"))))
     cat("Note: p-value and adj.p-value are associated with max[z.stats].")
     cat("\n      adj.p-values are based on the", extract.itemfit(x,"p.adjust.method"),"method.")
-
+    if(any(is.na(p))|any(is.infinite(unlist(p)))) warning("Proportions have NA or Inf - check results!",call. = FALSE)
+    if(any(is.na(r))|any(is.infinite(unlist(r)))) warning("Transformed correlations have NA or Inf - check results!",call. = FALSE)
+    if(any(is.na(logOR))|any(is.infinite(unlist(logOR)))) warning("Log odds ratios have NA or Inf - check results!",call. = FALSE)
   }
 
 #' @export

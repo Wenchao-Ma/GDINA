@@ -59,7 +59,7 @@
 modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,
                            models=c("DINA","DINO","ACDM","LLM","RRUM"),
                            varcov = NULL){
-if(internalextract(GDINA.obj,"sequential")) stop("Model selection is not available for sequential models.",call. = FALSE)
+# if(internalextract(GDINA.obj,"sequential")) stop("Model selection is not available for sequential models.",call. = FALSE)
   if (any(internalextract(GDINA.obj,"models")!="GDINA")) stop ("Implementing the Wald test for model comparison requires all items are fitted by the G-DINA model.",call. = FALSE)
   models <- match.arg(models, several.ok = TRUE)
   Q <- internalextract(GDINA.obj,"Q")

@@ -66,17 +66,17 @@
 itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni",
                     digits = 4,N.resampling = NULL,randomseed=123456){
   itemfitcall <- match.call()
-  if(internalextract(GDINA.obj,"sequential")) stop("Item fit calculation is not available for sequential models.",call. = FALSE)
-set.seed(randomseed)
-  dat <- extract.GDINA(GDINA.obj,"dat")
-  Q <- extract.GDINA(GDINA.obj,"Q")
-  K <- extract.GDINA(GDINA.obj,"natt")
-  N <- extract.GDINA(GDINA.obj,"nobs")
-  J <- extract.GDINA(GDINA.obj,"nitem")
-  Pr <- t(extract.GDINA(GDINA.obj,"LCprob.parm"))  #L x J
-
-
-
+  if (internalextract(GDINA.obj, "sequential"))
+    stop("Item fit calculation is not available for sequential models.",
+         call. = FALSE)
+  set.seed(randomseed)
+  dat <- as.matrix(extract.GDINA(GDINA.obj, "dat"))
+  Q <- extract.GDINA(GDINA.obj, "Q")
+  Qc <- extract.GDINA(GDINA.obj, "Qc")
+  K <- extract.GDINA(GDINA.obj, "natt")
+  N <- extract.GDINA(GDINA.obj, "nobs")
+  J <- extract.GDINA(GDINA.obj, "nitem")
+  Pr <- t(extract.GDINA(GDINA.obj, "LCprob.parm"))  #L x J
 
 
 # -------------Item Fit----------------------#
@@ -84,80 +84,156 @@ set.seed(randomseed)
   # Generating model-based responses
   if (is.null(N.resampling)) {
     Nfit <- max(1e+05, 10 * N)
-  }else{
-      Nfit <- N.resampling
+  } else{
+    Nfit <- N.resampling
   }
-  Rep <- ceiling(Nfit/N)
+  Rep <- ceiling(Nfit / N)
   pattern <- t(alpha(K, T, Q))
 
-  if (person.sim=="post"){
-    post <- extract.GDINA(GDINA.obj,"posterior.prob")
-    att_group <- sample(1:length(post),Rep*N,replace = TRUE,prob = post)
-  }else{
-    if (max(Q)>1) person.sim <- "EAP"
+  if (person.sim == "post") {
+    post <- extract.GDINA(GDINA.obj, "posterior.prob")
+    att_group <-
+      sample(1:length(post), Rep * N, replace = TRUE, prob = post)
+  } else{
+    if (max(Q) > 1)
+      person.sim <- "EAP"
 
-    att <- switch(tolower(person.sim),
-                  eap = personparm.GDINA(GDINA.obj,what = "EAP"),
-                  mle = personparm.GDINA(GDINA.obj,what = "MLE")[,1:K],
-                  map = personparm.GDINA(GDINA.obj,what = "MAP")[,1:K])
-    att_group <- apply(att, 1, function(x) which.max(colSums(x==pattern)))[rep(1:N, Rep)]
+    att <- switch(
+      tolower(person.sim),
+      eap = personparm.GDINA(GDINA.obj, what = "EAP"),
+      mle = personparm.GDINA(GDINA.obj, what = "MLE")[, 1:K],
+      map = personparm.GDINA(GDINA.obj, what = "MAP")[, 1:K]
+    )
+    att_group <-
+      apply(att, 1, function(x)
+        which.max(colSums(x == pattern)))[rep(1:N, Rep)]
   }
 
 
 
-  fitstat <- fitstats(as.matrix(dat),as.matrix(Pr),att_group)
+
+
+    if(any(is.na(dat))){
+
+     fitstat <- list()
+
+    # if(!extract.GDINA(GDINA.obj, "sequential")) {
+      Yfit <- Pr[att_group, ] > matrix(runif(length(att_group) * J), ncol = J)
+    # } else{
+    #   Yfit <- matrix(0,length(att_group),J)
+    #   dichitems <- unique_only(Qc$Item)
+    #   if(length(dichitems)>0){
+    #     Yfit[,dichitems] <- Pr[att_group, dichitems]> matrix(runif(length(att_group) * length(dichitems)), ncol = length(dichitems))
+    #   }
+    #   polyitems <- setdiff(unique(Qc$Item),dichitems)
+    #   for(j in polyitems){
+    #     Yfit[,j] <- apply(cbind(1-rowSums(Pr[att_group, which(Qc$Item==j)]),Pr[att_group, which(Qc$Item==j)]),
+    #                       1,function(x){sample(c(0:length(x)),1,prob=x)})
+    #   }
+    # }
+     fitstat$r <- cor(dat, use = "pairwise.complete.obs")
+     fitstat$rfit <- cor(Yfit)
+    fitstat$l <- crossprod.na(dat,dat)*crossprod.na(1-dat,1-dat)/(crossprod.na(1-dat,dat)*crossprod.na(dat,1-dat))
+    fitstat$lfit <- crossprod.na(Yfit,Yfit)*crossprod.na(1-Yfit,1-Yfit)/(crossprod.na(1-Yfit,Yfit)*crossprod.na(Yfit,1-Yfit))
+    fitstat$sefit <- Rep*(1/crossprod.na(Yfit,Yfit) + 1/crossprod.na(1-Yfit,1-Yfit) +
+                    1/crossprod.na(1-Yfit,Yfit)+1/crossprod.na(Yfit,1-Yfit))
+    fitstat$pfit <- colMeans(Yfit)
+   }else{
+     fitstat <- fitstats(dat,as.matrix(Pr),att_group)
+   }
 
   itempair <- NULL
-  for (i in 1:(J-1)){
-    itempair <- rbind(itempair,cbind(i,seq(i+1,J)))
+  for (i in 1:(J - 1)) {
+    itempair <- rbind(itempair, cbind(i, seq(i + 1, J)))
   }
-  r.pairs <- data.frame(expected.r=fitstat$rfit[lower.tri(fitstat$rfit,diag = FALSE)],
-   observed.r=fitstat$r[lower.tri(fitstat$r,diag = FALSE)])
-  r.pairs$expected.fisherZ <- 0.5 * log((1 + r.pairs$expected.r)/(1 - r.pairs$expected.r))
-  r.pairs$observed.fisherZ <- 0.5 * log((1 + r.pairs$observed.r)/(1 - r.pairs$observed.r))
-  r.pairs$rstat <- abs(r.pairs$observed.fisherZ-r.pairs$expected.fisherZ)
-  r.pairs$rstat.SE <- sqrt(1/(N - 3))
-  r.pairs$zstat <- r.pairs$rstat/r.pairs$rstat.SE
-  r.pairs$unadj.pvalue <- pnorm(r.pairs$zstat,lower.tail = FALSE)*2
-  r.pairs$test.adj.pvalue <- stats::p.adjust(r.pairs$unadj.pvalue,method = p.adjust.methods)
+  r.pairs <-
+    data.frame(expected.r = fitstat$rfit[lower.tri(fitstat$rfit, diag = FALSE)],
+               observed.r = fitstat$r[lower.tri(fitstat$r, diag = FALSE)])
+  r.pairs$expected.fisherZ <-
+    0.5 * log((1 + r.pairs$expected.r) / (1 - r.pairs$expected.r))
+  r.pairs$observed.fisherZ <-
+    0.5 * log((1 + r.pairs$observed.r) / (1 - r.pairs$observed.r))
+  r.pairs$rstat <-
+    abs(r.pairs$observed.fisherZ - r.pairs$expected.fisherZ)
+  r.pairs$rstat.SE <- sqrt(1 / (N - 3))
+  r.pairs$zstat <- r.pairs$rstat / r.pairs$rstat.SE
+  r.pairs$unadj.pvalue <- pnorm(r.pairs$zstat, lower.tail = FALSE) * 2
+  r.pairs$test.adj.pvalue <-
+    stats::p.adjust(r.pairs$unadj.pvalue, method = p.adjust.methods)
   # r.pairs$item.adj.pvalue <- stats::p.adjust(r.pairs$unadj.pvalue,method = p.adjust.methods)
- l.pairs <- data.frame(expected.logOR=log(fitstat$lfit[lower.tri(fitstat$lfit,diag = FALSE)]),
-  observed.logOR=log(fitstat$l[lower.tri(fitstat$l,diag = FALSE)]))
-  l.pairs$lstat <- abs(l.pairs$observed.logOR-l.pairs$expected.logOR)
-  l.pairs$lstat.SE <- sqrt(fitstat$sefit[lower.tri(fitstat$sefit,diag = FALSE)])
-  l.pairs$zstat <- l.pairs$lstat/l.pairs$lstat.SE
+  l.pairs <-
+    data.frame(expected.logOR = log(fitstat$lfit[lower.tri(fitstat$lfit, diag = FALSE)]),
+               observed.logOR = log(fitstat$l[lower.tri(fitstat$l, diag = FALSE)]))
+  l.pairs$lstat <-
+    abs(l.pairs$observed.logOR - l.pairs$expected.logOR)
+  l.pairs$lstat.SE <-
+    sqrt(fitstat$sefit[lower.tri(fitstat$sefit, diag = FALSE)])
+  l.pairs$zstat <- l.pairs$lstat / l.pairs$lstat.SE
 
-  l.pairs$unadj.pvalue <- pnorm(l.pairs$zstat,lower.tail = FALSE)*2
-  l.pairs$test.adj.pvalue <- stats::p.adjust(l.pairs$unadj.pvalue,method = p.adjust.methods)
+  l.pairs$unadj.pvalue <- pnorm(l.pairs$zstat, lower.tail = FALSE) * 2
+  l.pairs$test.adj.pvalue <-
+    stats::p.adjust(l.pairs$unadj.pvalue, method = p.adjust.methods)
   p <- data.frame(expected.p=c(fitstat$pfit),
-                observed.p=colMeans(dat))
-p$pstat <- abs(p$expected.p-p$observed.p)
-p$pstat.SE <- sqrt(c(fitstat$pfit) * (1 - c(fitstat$pfit))/N)
-p$zstat <- p$pstat/p$pstat.SE
-p$unadj.pvalue <- pnorm(p$zstat,lower.tail = FALSE)*2
-p$test.adj.pvalue <- stats::p.adjust(p$unadj.pvalue,method = p.adjust.methods)
+                observed.p=colMeans(dat,na.rm = TRUE))
+  p$pstat <- abs(p$expected.p - p$observed.p)
+  p$pstat.SE <- sqrt(c(fitstat$pfit) * (1 - c(fitstat$pfit)) / N)
+  p$zstat <- p$pstat / p$pstat.SE
+  p$unadj.pvalue <- pnorm(p$zstat, lower.tail = FALSE) * 2
+  p$test.adj.pvalue <-
+    stats::p.adjust(p$unadj.pvalue, method = p.adjust.methods)
 
-max.itemlevel.fit <- matrix(NA,J,6)
-for (j in 1:J){
-  loc <- which(apply(itempair==j,1,any))
-  max.itemlevel.fit[j,] <- c(max(r.pairs$zstat[loc]),r.pairs$unadj.pvalue[loc][which.max(r.pairs$zstat[loc])],
-  stats::p.adjust(r.pairs$unadj.pvalue[loc],method = p.adjust.methods)[which.max(r.pairs$zstat[loc])],
-  max(l.pairs$zstat[loc]),l.pairs$unadj.pvalue[loc][which.max(l.pairs$zstat[loc])],
-  stats::p.adjust(l.pairs$unadj.pvalue[loc],method = p.adjust.methods)[which.max(l.pairs$zstat[loc])])
-}
-max.itemlevel.fit <- round(cbind(p$zstat,p$unadj.pvalue,max.itemlevel.fit),digits)
-colnames(max.itemlevel.fit) <- c("z.prop","pvalue[z.prop]","max[z.r]","pvalue.max[z.r]","adj.pvalue.max[z.r]",
-                                 "max[z.logOR]","pvalue.max[z.logOR]","adj.pvalue.max[z.logOR]")
-rownames(max.itemlevel.fit) <- paste("Item",1:J)
-r.pairs <- data.frame(item.pair.1=itempair[,1],item.pair.2=itempair[,2],
-                      round(r.pairs,digits))
-l.pairs <- data.frame(item.pair.1=itempair[,1],item.pair.2=itempair[,2],round(l.pairs,digits))
-p <- data.frame(item=c(1:J),round(p,digits))
+  max.itemlevel.fit <- matrix(NA, J, 6)
+  for (j in 1:J) {
+    loc <- which(apply(itempair == j, 1, any))
+    max.itemlevel.fit[j, ] <-
+      c(
+        max(r.pairs$zstat[loc]),
+        r.pairs$unadj.pvalue[loc][which.max(r.pairs$zstat[loc])],
+        stats::p.adjust(r.pairs$unadj.pvalue[loc], method = p.adjust.methods)[which.max(r.pairs$zstat[loc])],
+        max(l.pairs$zstat[loc]),
+        l.pairs$unadj.pvalue[loc][which.max(l.pairs$zstat[loc])],
+        stats::p.adjust(l.pairs$unadj.pvalue[loc], method = p.adjust.methods)[which.max(l.pairs$zstat[loc])]
+      )
+  }
+  max.itemlevel.fit <-
+    round(cbind(p$zstat, p$unadj.pvalue, max.itemlevel.fit), digits)
+  colnames(max.itemlevel.fit) <-
+    c(
+      "z.prop",
+      "pvalue[z.prop]",
+      "max[z.r]",
+      "pvalue.max[z.r]",
+      "adj.pvalue.max[z.r]",
+      "max[z.logOR]",
+      "pvalue.max[z.logOR]",
+      "adj.pvalue.max[z.logOR]"
+    )
+  rownames(max.itemlevel.fit) <- paste("Item", 1:J)
+  r.pairs <-
+    data.frame(item.pair.1 = itempair[, 1],
+               item.pair.2 = itempair[, 2],
+               round(r.pairs, digits))
+  l.pairs <-
+    data.frame(item.pair.1 = itempair[, 1],
+               item.pair.2 = itempair[, 2],
+               round(l.pairs, digits))
+  p <- data.frame(item = c(1:J), round(p, digits))
 
-  output <- list(r=r.pairs,p=p,logOR=l.pairs,max.itemlevel.fit=max.itemlevel.fit,
-                 options=list(person.sim = person.sim,p.adjust.methods = p.adjust.methods,
-                              digits = digits,N.resampling = N.resampling,
-                              randomseed=randomseed,call=itemfitcall))
+  output <-
+    list(
+      r = r.pairs,
+      p = p,
+      logOR = l.pairs,
+      max.itemlevel.fit = max.itemlevel.fit,
+      options = list(
+        person.sim = person.sim,
+        p.adjust.methods = p.adjust.methods,
+        digits = digits,
+        N.resampling = N.resampling,
+        randomseed = randomseed,
+        call = itemfitcall
+      )
+    )
   class(output) <- "itemfit"
 
   return(output)

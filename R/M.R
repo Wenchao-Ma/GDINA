@@ -43,7 +43,7 @@ Mstep_optim <- function(ini,Mj,upper.pj,lower.pj,Kjj,
              llm=rep(c(qlogis(lower.pj),-1*qlogis(upper.pj)),each=2^Kjj),
              rrum=rep(c(log(lower.pj),-1*log(upper.pj)),each=2^Kjj))
 # print(model)
-  if(optimizer %in% c("Nelder-Mead","BFGS","CG","SANN","Brent")){
+  if(optimizer %in% c("Nelder-Mead","BFGS","CG")){
     ini <- initials_optim(ini=ini,Mj=Mj,upper.pj=upper.pj,
                           lower.pj=lower.pj,Kjj=Kjj,model=model)
   optims <- stats::constrOptim(ini,obj_fn,grad=gr_fn,method=optimizer,
@@ -94,7 +94,7 @@ Mstep_optim <- function(ini,Mj,upper.pj,lower.pj,Kjj,
               call. = FALSE,immediate. = warning.immediate)
     }
   }else{
-    stop(paste("Optimizer specification for item",j,"is not correct."),call. = FALSE)
+    stop(paste("Optimization method",optimizer,"is not available. Try BFGS, slsqp, solnp, auglag, Nelder-Mead, or CG."),call. = FALSE)
   }
 
     # print(optims)

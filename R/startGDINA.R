@@ -8,10 +8,13 @@
 #' library(shinydashboard)
 #' startGDINA()
 #' }
-#' @import shinydashboard
-#' @import shiny
+#'
 #' @export
 startGDINA <- function() {
+  if (!requireNamespace(c("shiny","shinydashboard"), quietly = TRUE)) {
+    stop("shiny and shinydashboard needed for startGDINA. Please install them.",
+         call. = FALSE)
+  }
   shiny::runApp(appDir = system.file("shiny", package="GDINA"))
 
 }

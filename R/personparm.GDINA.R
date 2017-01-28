@@ -17,6 +17,11 @@
 #' attribute patterns, and \code{"mp"} for marginal mastery probabilities.
 #' @param digits number of decimal places.
 #' @param ... additional arguments
+#'
+#' @references
+#' Huebner, A., \& Wang, C. (2011). A note on comparing examinee classification methods for cognitive diagnosis models. \emph{Educational and Psychological Measurement, 71}, 407-419.
+#'
+#'
 #'@export
 personparm <- function (object, what=c("EAP","MAP","MLE", "mp"),digits = 4,...) {
   UseMethod("personparm")
@@ -34,18 +39,21 @@ personparm <- function (object, what=c("EAP","MAP","MLE", "mp"),digits = 4,...) 
 personparm.GDINA <- function(object,
                              what=c("EAP","MAP","MLE", "mp"),digits = 4,...){
   what <- match.arg(what)
-  K <- extract.GDINA(object,what = "natt")
-  Q <- extract.GDINA(object,what = "Q")
+  # The number of attributes
+  K <- internalextract(object,what = "natt")
+  # Q-matrix
+  Q <- internalextract(object,what = "Q")
   pattern <- alpha(K,T,Q)
   out <- NULL
       # dichotomous attributes
-      if (what=="EAP"){
+      switch(what,
+             EAP={
         if (max(Q) == 1)
         {
+          # dichotomous attributes
           out <- 1*((exp(internalextract(object,what = "logposterior.i")) %*% pattern) > 0.5000)
         }else{
           # polytomous attributes
-          out <- NULL
           attnum <- list()
           for (k in 1:K)
           {
@@ -63,22 +71,25 @@ personparm.GDINA <- function(object,
 
         }
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
-      }else if(what=="MLE"){
+      },
+      MLE={
         if(max(Q) > 1) stop("Please use EAP for polytomous attributes.", call. = FALSE)
-        out <- data.frame(MLE=pattern[max.col(extract.GDINA(object,what = "loglikelihood.i")),],
-                          multimodes=as.logical(rowSums(extract.GDINA(object,what = "loglikelihood.i")==apply(extract.GDINA(object,what = "loglikelihood.i"),1,max))-1))
+        out <- data.frame(MLE=pattern[max.col(internalextract(object,what = "loglikelihood.i")),],
+                          multimodes=as.logical(rowSums(internalextract(object,what = "loglikelihood.i")==apply(internalextract(object,what = "loglikelihood.i"),1,max))-1))
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
-      }else if(what=="MAP"){
+      },
+MAP={
         if(max(Q) > 1) stop("Please use EAP for polytomous attributes.", call. = FALSE)
-        out <- data.frame(MAP=pattern[max.col(extract.GDINA(object,what = "logposterior.i")),],
-                          multimodes=as.logical(rowSums(extract.GDINA(object,what = "logposterior.i")==apply(extract.GDINA(object,what = "logposterior.i"),1,max))-1))
+        out <- data.frame(MAP=pattern[max.col(internalextract(object,what = "logposterior.i")),],
+                          multimodes=as.logical(rowSums(internalextract(object,what = "logposterior.i")==apply(internalextract(object,what = "logposterior.i"),1,max))-1))
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
-      }else if(what=="mp"){
+      },
+mp={
         if(max(Q) > 1) stop("Not available for polytomous attributes.", call. = FALSE)
-          out <- round(exp(extract.GDINA(object,what = "logposterior.i")) %*% pattern,
+          out <- round(exp(internalextract(object,what = "logposterior.i")) %*% pattern,
                        digits)
           colnames(out)[1:K] <- paste("A",1:K,sep = "")
-        }
+        })
 
 return(out)
 

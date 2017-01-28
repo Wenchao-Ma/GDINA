@@ -53,6 +53,9 @@ obj_fn <- function(vdelta,Nj,Rj,Mj,upper.pj,lower.pj,Kjj,model){ #objective func
     Pj <- Mj%*%vdelta
     Pj <- exp(Pj)
   }
+  Pj[Pj < .Machine$double.eps] <- .Machine$double.eps
+  Pj[Pj > (1 - .Machine$double.eps)] <- 1 - .Machine$double.eps
+
   -1*sum(log(Pj)*Rj+log(1-Pj)*(Nj-Rj))
 }
 

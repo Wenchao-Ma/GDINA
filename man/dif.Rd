@@ -20,8 +20,8 @@ items/categories and K represents the number of attributes. For binary attribute
 necessary. For polytomous attributes, non-zero elements indicate which level
 of attributes are needed. Note that for polytomous items, the sequential G-DINA
 model is used and either restricted or unrestricted category-level Q-matrix is needed.
-The first column represents the item number and
-the second column indicates the category number. See \code{Examples}.}
+The first column represents the item number, which must be numeric and match the column in the data.
+The second column indicates the category number. See \code{Examples}.}
 
 \item{group}{a scalar indicating which column in \code{dat} is group indicator or
 a numerical vector indicating the group each individual belongs to. If it is a vector,

@@ -23,9 +23,10 @@ GDINA(dat, Q, model = "GDINA", sequential = FALSE, item.names = NULL,
   higher.order.struc.parm = NULL, mono.constraint = FALSE, group = NULL,
   empirical = !higher.order, att.prior = NULL, att.str = FALSE,
   lower.p = 1e-04, upper.p = 0.9999, smallNcorrection = c(5e-04, 0.001),
-  nstarts = 1, conv.crit = 0.001, conv.type = "max.p.change",
-  maxitr = 1000, digits = 4, diagnosis = 0, Mstep.warning = FALSE,
-  optimizer = "all", randomseed = 123456)
+  nstarts = 1, conv.crit = 0.001, lower.prior = -1,
+  conv.type = "max.p.change", maxitr = 1000, digits = 4, diagnosis = 0,
+  Mstep.warning = FALSE, optimizer = "all", randomseed = 123456,
+  optim.control = list())
 
 \method{anova}{GDINA}(object, ...)
 
@@ -66,8 +67,8 @@ items/categories and K represents the number of attributes. For binary attribute
 necessary. For polytomous attributes, non-zero elements indicate which level
 of attributes are needed. Note that for polytomous items, the sequential G-DINA
 model is used and either restricted or unrestricted category-level Q-matrix is needed.
-The first column represents the item number and
-the second column indicates the category number. See \code{Examples}.}
+The first column represents the item number, which must be numeric and match the column in the data.
+The second column indicates the category number. See \code{Examples}.}
 
 \item{model}{A vector for each item/category or a scalar which will be used for all
 items/categories to specify which model is fitted to each item/category. The possible options
@@ -150,6 +151,8 @@ probabilities of success.}
 
 \item{conv.crit}{The convergence criterion for max absolute change in item parameters.}
 
+\item{lower.prior}{the lower bound for posteriori weights. The default value is -1, which means the lower bound is \eqn{1/2^K/100}.}
+
 \item{conv.type}{How is the convergence criterion evaluated? It can be \code{"max.p.change"}, indicating
 the maximum absolute change in success probabilities is examined. It can also be \code{"dev.change"}, representing
 the absolute change in deviance is evaluated.}
@@ -158,13 +161,17 @@ the absolute change in deviance is evaluated.}
 
 \item{digits}{How many decimal places in each number? The default is 4.}
 
-\item{diagnosis}{Run in advanced mode? If it is 1 or 2, some intermediate results obtained in each iteration will be saved in \code{diagnos}.}
+\item{diagnosis}{Run in diagnostic mode? If it is 1 or 2, some intermediate results obtained in each iteration can be extracted.}
 
 \item{Mstep.warning}{Logical; indicating whether the warning message in Mstep, if any, should be output immediately.}
 
-\item{optimizer}{Advanced option: a string indicating which optimizer should be used in M-step.}
+\item{optimizer}{A string indicating which optimizer should be used in M-step.}
 
 \item{randomseed}{random seed for generating initial item parameters. The default random seed is 123456.}
+
+\item{optim.control}{control options for optimizers in the M-step. Only available when \code{optimizer} is one specific optimization
+method, including \code{BFGS} from \link[stats]{optim}, \link[nloptr]{slsqp}, \link[Rsolnp]{solnp} and \link[alabama]{auglag}.
+For the \link[alabama]{auglag} method, \code{optim.control} specifies \code{control.outer}.}
 
 \item{object}{estimated GDINA object for various S3 methods}
 
@@ -418,11 +425,11 @@ head(indlogPost(mod1)) # individual log-posterior
 # item parameters
 # see ?itemparm
 itemparm(mod1) # item probabilities of success for each latent group
-itemparm(mod1, withSE = TRUE) # item probabilities of success + standard errors
+itemparm(mod1, withSE = TRUE) # item probabilities of success & standard errors
 itemparm(mod1, what = "delta") # delta parameters
 itemparm(mod1, what = "delta",withSE=TRUE) # delta parameters
-itemparm(mod1, what = "gs") # guess and slip parameters
-itemparm(mod1, what = "gs",withSE = TRUE) # guess and slip parameters + standard errors
+itemparm(mod1, what = "gs") # guessing and slip parameters
+itemparm(mod1, what = "gs",withSE = TRUE) # guessing and slip parameters & standard errors
 
 # person parameters
 # see ?personparm
@@ -760,6 +767,7 @@ Tutz, G. (1997). Sequential models for ordered responses. In W.J. van der Linden
 \seealso{
 See \code{\link{autoGDINA}} for Q-matrix validation, item level model comparison and model calibration
 in one run; See \code{\link{itemfit}} for item fit analysis, \code{\link{Qval}} for Q-matrix validation,
-\code{\link{modelcomp}} for item level model comparison and \code{\link{simGDINA}} for data simulation
+\code{\link{modelcomp}} for item level model comparison and \code{\link{simGDINA}} for data simulation.
+Also see \code{gdina} in \pkg{CDM} package for the G-DINA model estimation.
 }
 

@@ -1,7 +1,7 @@
 
 Mstep <- function(Kj,RN,model,itmpar,delta,constr,
                   correction,lower.p,optimizer,
-                  upper.p,itr,warning.immediate,designmatrices){
+                  upper.p,itr,warning.immediate,designmatrices,optim.control=list()){
 
   J <- length(Kj)
 
@@ -89,7 +89,7 @@ Mstep <- function(Kj,RN,model,itmpar,delta,constr,
                                              Kjj=Kj[j],model=model[j],Nj=Nj,Rj=Rj,
                                              optimizer=optimizer,
                                              warning.immediate = warning.immediate,
-                                             warning.print=TRUE)
+                                             warning.print=TRUE,optim.control=optim.control)
           }
         }
       delta[[j]] <- optims$par

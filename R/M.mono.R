@@ -38,7 +38,7 @@ Mstep_optim_mono_gdina <- function(ini,Mj,upper.pj,lower.pj,Kjj,
                                    model,Nj,Rj,optimizer,j,itr,
                                    warning.immediate,warning.print){
 
-  # ini <- initials_optim_mono(ini=ini,Mj=Mj,bound.eps=bound.eps,Kjj=Kjj,model=model)
+   # ini <- initials_optim_mono(ini=ini,Mj=Mj,bound.eps=bound.eps,Kjj=Kjj,model=model)
 
   ineq_const_gdina_mono <- function(vdelta){
     partialorder <- partial_order2(Kjj)
@@ -53,6 +53,7 @@ Mstep_optim_mono_gdina <- function(ini,Mj,upper.pj,lower.pj,Kjj,
       warning(paste("Unsuccessful M-step optimization for item",j,"at iteration",itr,"\n optimizer [slsqp from nloptr] message:",optims$message),
               call. = FALSE,immediate. = warning.immediate)
     }
+    # cat("\n Item",j,"-slsqp\n")
   }else if(tolower(optimizer)=="solnp"){
     optims <- Rsolnp::solnp(pars=ini,fun = obj_fn,ineqfun = ineq_const_gdina_mono2,
                             ineqLB = rep(0,length(ineq_const_gdina_mono(ini))),
@@ -64,6 +65,8 @@ Mstep_optim_mono_gdina <- function(ini,Mj,upper.pj,lower.pj,Kjj,
       warning(paste("Unsuccessful M-step optimization for item",j,"at iteration",itr,"\n optimizer [solnp from Rsolnp] message: error code -",optims$convergence),
               call. = FALSE,immediate. = warning.immediate)
     }
+
+    # cat("\n Item",j,"-solnp\n")
   }else if(tolower(optimizer)=="auglag"){
 
     optims <- alabama::auglag(ini,obj_fn,gr=gr_fn,hin = ineq_const_gdina_mono2,
@@ -74,6 +77,10 @@ Mstep_optim_mono_gdina <- function(ini,Mj,upper.pj,lower.pj,Kjj,
       warning(paste("Unsuccessful M-step optimization for item",j,"at iteration",itr,"\n optimizer [auglag from alabama] message: error code -",optims$convergence),
               call. = FALSE,immediate. = warning.immediate)
     }
+    # cat("\n Item",j,"-auglag\n")
+  }else{
+    stop(paste("Optimization method",optimizer,"is not available. Try slsqp, solnp, or auglag."),call. = FALSE)
+
   }
 
   return(optims)
@@ -86,7 +93,7 @@ Mstep_optim_mono <- function(ini,Mj,upper.pj,
                              lower.pj,Kjj,model,
                              Nj,Rj,optimizer,j,itr,
                              warning.immediate,
-                             warning.print){
+                             warning.print,optim.control=list()){
 
   ini <- initials_optim_mono(ini=ini,Mj=Mj,upper.pj=upper.pj,
                              lower.pj=lower.pj,Kjj=Kjj,model=model)
@@ -113,12 +120,13 @@ Mstep_optim_mono <- function(ini,Mj,upper.pj,
                         c(qlogis(lower.pj),rep(0,length(ini)-1))),
                   rrum=c(rep(c(log(lower.pj),-1*log(upper.pj)),each=2^Kjj),
                          c(log(lower.pj),rep(0,length(ini)-1))))
-  if (optimizer %in% c("Nelder-Mead","BFGS","CG","SANN","Brent")){
+  if (optimizer %in% c("Nelder-Mead","BFGS","CG")){
 
     optims <- stats::constrOptim(ini,obj_fn,grad=gr_fn,method=optimizer,
                                  ui=ui.bfgs,ci=ci.bfgs[[model]],
                                  Nj=Nj,Rj=Rj,Mj=Mj,upper.pj=upper.pj,
-                                 lower.pj=lower.pj,Kjj=Kjj,model=model)
+                                 lower.pj=lower.pj,Kjj=Kjj,model=model,
+                                 control = optim.control)
     if (warning.print&&optims$convergence>0)  {
       warning(paste("Unsuccessful M-step optimization for item",j,"at iteration",itr,"\n optimizer [constrOptim using",optimizer,"] message:",optims$message),
               call. = FALSE,immediate. = warning.immediate)
@@ -130,7 +138,8 @@ Mstep_optim_mono <- function(ini,Mj,upper.pj,
 
     optims <- nloptr::slsqp(x0=ini,fn=obj_fn,gr=gr_fn,hin = ineq_fn_mono_1,lower=c(LB[,model]),
                             Nj=Nj,Rj=Rj,Mj=Mj,upper.pj=upper.pj,
-                            lower.pj=lower.pj,Kjj=Kjj,model=model)
+                            lower.pj=lower.pj,Kjj=Kjj,model=model,
+                            control = optim.control)
     if (warning.print&&optims$convergence<0)  {
       warning(paste("Unsuccessful M-step optimization for item",j,"at iteration",itr,"\n optimizer [slsqp from nloptr] message:",optims$message),
               call. = FALSE,immediate. = warning.immediate)
@@ -140,23 +149,24 @@ Mstep_optim_mono <- function(ini,Mj,upper.pj,
                             ineqLB = 0,LB=c(LB[,model]),ineqUB = +Inf,
                             control = list(trace=0,tol=1e-6),
                             Nj=Nj,Rj=Rj,Mj=Mj,upper.pj=upper.pj,
-                            lower.pj=lower.pj,Kjj=Kjj,model=model)
+                            lower.pj=lower.pj,Kjj=Kjj,model=model,
+                            control = optim.control)
     if (warning.print&&optims$convergence>0)  {
       warning(paste("Unsuccessful M-step optimization for item",j,"at iteration",itr,"\n optimizer [solnp from Rsolnp] message: error code -",optims$convergence),
               call. = FALSE,immediate. = warning.immediate)
     }
   }else if(tolower(optimizer)=="auglag"){
-
+    if(is.null(optim.control$trace)) optim.control$trace <- FALSE
     optims <- alabama::auglag(ini,obj_fn,gr=gr_fn,hin = ineq_fn_mono,
                               Nj=Nj,Rj=Rj,Mj=Mj,upper.pj=upper.pj,
                               lower.pj=lower.pj,Kjj=Kjj,model=model,
-                              control.outer = list(trace=FALSE))
+                              control.outer = optim.control)
     if (warning.print&&optims$convergence>0)  {
       warning(paste("Unsuccessful M-step optimization for item",j,"at iteration",itr,"\n optimizer [auglag from alabama] message: error code -",optims$convergence),
               call. = FALSE,immediate. = warning.immediate)
     }
   }else{
-    stop("Optimizer specification is not correct.",call. = FALSE)
+    stop(paste("Optimization method",optimizer,"is not available. Try BFGS, slsqp, solnp, auglag, Nelder-Mead, or CG."),call. = FALSE)
   }
   #if (tolower(optimizer)!="bfgs") print(optimizer)
   return(optims)
@@ -174,13 +184,13 @@ Moptim_set_mono <- function(ini,Mj,upper.pj,
       tryCatch({
         tryCatch({Mstep_optim_mono_gdina(ini=c(ini),Mj=Mj,upper.pj=upper.pj,
                                          lower.pj=lower.pj,Kjj=Kjj,model=model,
-                                         Nj=Nj,Rj=Rj,optimizer="solnp",
+                                         Nj=Nj,Rj=Rj,optimizer="slsqp",
                                          warning.immediate=warning.immediate,
                                          warning.print=warning.print)
         },error=function(e){
           Mstep_optim_mono_gdina(ini=c(ini),Mj=Mj,upper.pj=upper.pj,
                                  lower.pj=lower.pj,Kjj=Kjj,model=model,
-                                 Nj=Nj,Rj=Rj,optimizer="slsqp",
+                                 Nj=Nj,Rj=Rj,optimizer="solnp",
                                  warning.immediate=warning.immediate,
                                  warning.print=warning.print)
         })

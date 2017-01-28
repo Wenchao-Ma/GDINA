@@ -67,3 +67,31 @@ test_that("checking GDI calculation", {
   expect_equivalent(calc,as.matrix(z$varsigma))
 
 })
+
+
+test_that("checking person parameter estimation - MLE", {
+
+  Q <- matrix(c(1,0,
+                0,1,
+                1,1),ncol = 2,byrow = TRUE)
+  dat <- matrix(c(1,0,1,
+                  0,1,1,
+                  0,0,1,
+                  1,1,0,
+                  1,0,0),ncol = 3,byrow = TRUE)
+  itempar <- list(c(0.3,0.9),
+                  c(0.1,0.8),
+                  c(0.1,0.2,0.3,0.8))
+  lc <- matrix(c(0.3,0.9,0.3,0.9,
+                 0.1,0.1,0.8,0.8,
+                 0.1,0.2,0.3,0.8),ncol = 4,byrow = TRUE)
+
+  loglik_i <- dat%*%log(lc)+(1-dat)%*%log(1-lc)
+
+  est <- GDINA(dat,Q,catprob.parm = itempar,maxitr = 0)
+
+  expect_equivalent(alpha(2)[apply(loglik_i,1,which.max),], as.matrix(personparm(est,"MLE")[,-3]))
+
+})
+
+

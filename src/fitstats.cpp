@@ -10,10 +10,10 @@ Rcpp::List fitstats(arma::mat mX,
                   arma::mat LCprob,
                   arma::uvec attgroup) {
   attgroup--;
-  arma::mat fullLC = LCprob.rows(attgroup);
-  int nr = fullLC.n_rows;
-  int nc = fullLC.n_cols;
-  int NE = mX.n_rows;
+  arma::mat fullLC = LCprob.rows(attgroup);//N* x J
+  int nr = fullLC.n_rows;//N*
+  int nc = fullLC.n_cols;//J
+  int NE = mX.n_rows;//N
   int rep = attgroup.n_elem/NE;
 
   arma::mat Xfit(nr,nc, arma::fill::zeros);

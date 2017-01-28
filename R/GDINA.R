@@ -160,8 +160,8 @@
 #'    necessary. For polytomous attributes, non-zero elements indicate which level
 #'    of attributes are needed. Note that for polytomous items, the sequential G-DINA
 #'    model is used and either restricted or unrestricted category-level Q-matrix is needed.
-#'    The first column represents the item number and
-#'    the second column indicates the category number. See \code{Examples}.
+#'    The first column represents the item number, which must be numeric and match the column in the data.
+#'    The second column indicates the category number. See \code{Examples}.
 #' @param model A vector for each item/category or a scalar which will be used for all
 #'    items/categories to specify which model is fitted to each item/category. The possible options
 #'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, and \code{"RRUM"}.
@@ -220,23 +220,28 @@
 #' @param maxitr The maximum iterations of EM cycles allowed.
 #' @param higher.order.struc.parm A matrix or data frame providing higher order structural parameters. If supplied, it must be of dimension \eqn{K\times 2}.
 #'    The first column is the slope parameters and the second column is the intercept.
-#' @param diagnosis Run in advanced mode? If it is 1 or 2, some intermediate results obtained in each iteration will be saved in \code{diagnos}.
-#' @param Mstep.warning Logical; indicating whether the warning message in Mstep, if any, should be output immediately.
-#' @param optimizer Advanced option: a string indicating which optimizer should be used in M-step.
 #' @param lower.p fixed lower bound for success probabilities. If supplied as a single value, it will be assigned to all items;
 #'   It can also be specified as a numeric vector corresponding to each item. The default is 1e-4 for all items.
 #' @param upper.p fixed upper bound for success probabilities. If supplied as a single value, it will be assigned to all items;
 #'   It can also be specified as a numeric vector corresponding to each item. The default is 0.9999 for all items.
+#' @param lower.prior the lower bound for posteriori weights. The default value is -1, which means the lower bound is \eqn{1/2^K/100}.
+#' @param randomseed random seed for generating initial item parameters. The default random seed is 123456.
 #' @param smallNcorrection a numeric vector with two elements specifying the corrections applied when the expected number of
 #' examinees in some latent groups are too small. Particularly, if the expected no. of examinees is less than the second element,
 #' the first element and two times the first element will be added to the numerator and denominator of the closed-form solution of
 #' probabilities of success.
-#' @param randomseed random seed for generating initial item parameters. The default random seed is 123456.
+#' @param Mstep.warning Logical; indicating whether the warning message in Mstep, if any, should be output immediately.
+#' @param diagnosis Run in diagnostic mode? If it is 1 or 2, some intermediate results obtained in each iteration can be extracted.
+#' @param optimizer A string indicating which optimizer should be used in M-step.
+#' @param optim.control control options for optimizers in the M-step. Only available when \code{optimizer} is one specific optimization
+#' method, including \code{BFGS} from \link[stats]{optim}, \link[nloptr]{slsqp}, \link[Rsolnp]{solnp} and \link[alabama]{auglag}.
+#' For the \link[alabama]{auglag} method, \code{optim.control} specifies \code{control.outer}.
 #'
 #' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @seealso See \code{\link{autoGDINA}} for Q-matrix validation, item level model comparison and model calibration
 #' in one run; See \code{\link{itemfit}} for item fit analysis, \code{\link{Qval}} for Q-matrix validation,
-#' \code{\link{modelcomp}} for item level model comparison and \code{\link{simGDINA}} for data simulation
+#' \code{\link{modelcomp}} for item level model comparison and \code{\link{simGDINA}} for data simulation.
+#' Also see \code{gdina} in \pkg{CDM} package for the G-DINA model estimation.
 #'
 #' @return \code{GDINA} returns an object of class \code{GDINA}. S3 methods for \code{GDINA} objects
 #'  include \code{\link{extract}} for extracting various components, \code{\link{itemparm}}
@@ -334,11 +339,11 @@
 #' # item parameters
 #' # see ?itemparm
 #' itemparm(mod1) # item probabilities of success for each latent group
-#' itemparm(mod1, withSE = TRUE) # item probabilities of success + standard errors
+#' itemparm(mod1, withSE = TRUE) # item probabilities of success & standard errors
 #' itemparm(mod1, what = "delta") # delta parameters
 #' itemparm(mod1, what = "delta",withSE=TRUE) # delta parameters
-#' itemparm(mod1, what = "gs") # guess and slip parameters
-#' itemparm(mod1, what = "gs",withSE = TRUE) # guess and slip parameters + standard errors
+#' itemparm(mod1, what = "gs") # guessing and slip parameters
+#' itemparm(mod1, what = "gs",withSE = TRUE) # guessing and slip parameters & standard errors
 #'
 #' # person parameters
 #' # see ?personparm
@@ -635,9 +640,10 @@ GDINA <-
            mono.constraint = FALSE, group = NULL,
            empirical = !higher.order, att.prior = NULL, att.str = FALSE,
            lower.p = 0.0001,upper.p = 0.9999, smallNcorrection = c(0.0005,0.001),
-           nstarts = 1, conv.crit = 0.001, conv.type = "max.p.change",maxitr = 1000,
+           nstarts = 1, conv.crit = 0.001, lower.prior=-1,
+           conv.type = "max.p.change",maxitr = 1000,
            digits = 4,diagnosis = 0,Mstep.warning = FALSE,optimizer = "all",
-           randomseed = 123456)
+           randomseed = 123456,optim.control=list())
   {
     s1 <- Sys.time()
     GDINAcall <- match.call()
@@ -689,7 +695,7 @@ GDINA <-
     }
 
     # missing value indicator 1 - nonmissing; 0 - missing
-    missInd <- 1 - is.na(dat)
+    missInd <- 1L - is.na(dat)
     # print(dim(missInd))
     if (any(missInd == 0)) {
       # some missings individuals with one or fewer valid response are
@@ -786,6 +792,7 @@ GDINA <-
     for(j in 1:J){ #for each item
       designMlist[[j]] <- designmatrix(Kj[j],model[j])
     }
+
     while (dif > conv.crit && itr < maxitr)
     {
       item.parm_copy <- item.parm
@@ -832,7 +839,7 @@ GDINA <-
       optims <- Mstep(Kj=Kj, RN=RN, model=model, itmpar=item.parm, delta=deltas,
                       constr=mono.constraint,correction = smallNcorrection, lower.p = lower.p,
                       upper.p = upper.p, itr=itr+1,warning.immediate=Mstep.warning,
-                      optimizer = optimizer, designmatrices = designMlist)
+                      optimizer = optimizer, designmatrices = designMlist,optim.control = optim.control)
       item.parm <- optims$item.parm
       deltas <- optims$delta
 
@@ -860,9 +867,15 @@ GDINA <-
 
       if (higher.order == FALSE & empirical == TRUE)
       {
-        logprior <- likepost$logprior
+        lower.prior <- ifelse(lower.prior==-1,1/L/100,lower.prior)
+        priori <- exp(likepost$logprior)
+        priori[which(priori<lower.prior)] <- lower.prior
+        priori <- priori/sum(priori)
+        # cat("\nMin weight=",min(priori),"\n")
+        logprior <- log(priori)
       }else if (higher.order == FALSE & empirical == FALSE)
       {
+
         logprior <- log(att.prior)
       }else if(higher.order==TRUE){
         logprior <- HOlogprior
