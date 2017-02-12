@@ -7,10 +7,10 @@
 #' @param parm The type of parameters associated with the Wald test for the DIF detection. It can be either \code{"itemprob"}
 #'  or \code{"delta"} for item probabilities and delta parameters, respectively.
 #' @param difitem Items for the DIF detection. By default, all items will be examined.
-#' @param SE.type Type of standard error estimation methods for Wald test.
+#' @param SE.type Type of standard error estimation methods for the Wald test.
 #' @inheritParams GDINA
-#' @param ... arguments passed to GDINA function for model calibration
-#' @return a data frame giving the Wald statistics and associated p-values.
+#' @param ... Other arguments passed to GDINA function for model calibration
+#' @return A data frame giving the Wald statistics and associated p-values.
 #'
 #' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @seealso \code{\link{GDINA}}
@@ -58,10 +58,7 @@ dif <- function(dat, Q, group, method = "wald", difitem = "all", parm = "delta",
   gr.label <- unique(gr)
   J <- nrow(Q)
   if(difitem == "all") difitem <- 1:J
-gr1dat <- gr2dat <- dat
-gr1dat[gr==gr.label[2],] <- NA
-gr2dat[gr==gr.label[1],] <- NA
-est <- GDINA::GDINA(cbind(gr1dat,gr2dat), rbind(Q,Q), group = gr,...)
+est <- GDINA::GDINA(bdiag(list(dat[gr==gr.label[1],],dat[gr==gr.label[2],]),NA), rbind(Q,Q), group = gr,...)
 
   if(method=="wald"){
 

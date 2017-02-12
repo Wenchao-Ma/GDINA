@@ -70,9 +70,11 @@ mesaplot.Qval <-
 
       }
     }else if(tolower(type)=="best"){
-      Kj <- rowSums(alpha(K)[-1,])
+      fullPVAF <- rbind(0,fullPVAF)
+      Kj <- rowSums(alpha(K))
       bestPVAF <- aggregate(fullPVAF,by=list(Kj),max)[,-1]
-      label.bestPVAF <- rownames(fullPVAF)
+      # bestPVAF <- rbind(0,bestPVAF) # add 0s
+      label.bestPVAF <- apply(alpha(K),1,paste0,collapse = "")
       for(j in item){
         bestloc <- match(bestPVAF[,j],fullPVAF[,j])
         if (auto.ylim) ylim = c(max(0,round(min(bestPVAF[,j])-0.1,1)),1) else ylim=c(0,1)
@@ -82,7 +84,7 @@ mesaplot.Qval <-
         yloc <- bestPVAF[,j]-diff(ylim)/15
         yloc[yloc<=ylim[1]] <- yloc[yloc<=ylim[1]] + 2 * diff(ylim)/15
         if (data.label) text(c(1:nrow(bestPVAF)),yloc,bestPVAF[,j])
-        locy0 <- which(apply(alpha(K)[-1,],1,function(x){
+        locy0 <- which(apply(alpha(K),1,function(x){
           all(x==Q[j,])}))
         if(locy0%in%bestloc) points(which(bestloc==locy0),fullPVAF[locy0,j],col="red",pch=19)
         if (original.q.label) text(K-1,ylim[1]+diff(ylim)/6,paste("original q-vector:\n",names(fullPVAF[,j])[locy0]))

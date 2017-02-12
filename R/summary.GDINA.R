@@ -15,8 +15,11 @@ summary.GDINA <-
     cat("BIC penalty   =",format(round(log(extract.GDINA(object,"nobs"))*extract.GDINA(object,"npar"),2), nsmall = 2),"\n")
     cat("  BIC penalty due to item parameters        =", format(round(log(extract.GDINA(object,"nobs"))*extract.GDINA(object,"npar.item"),2), nsmall = 2), "\n")
     cat("  BIC penalty due to population parameters  =", format(round(log(extract.GDINA(object,"nobs"))*extract.GDINA(object,"npar.att"),2), nsmall = 2), "\n")
-    cat("\nAttribute Prevalence\n\n")
-    print(round(extract.GDINA(object,"prevalence"),extract.GDINA(object,"digits")))
+    if(extract.GDINA(object,"ngroup")==1){
+      cat("\nAttribute Prevalence\n\n")
+      print(round(extract.GDINA(object,"prevalence"),extract.GDINA(object,"digits")))
+    }
+
     if( extract.GDINA(object,"natt")<4){
     cat("\nPosterior Weights\n\n")
     print(extract.GDINA(object,"posterior.prob"))

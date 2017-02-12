@@ -36,7 +36,7 @@ internalextract <- function(object, what, ...) {
         names(p) <- paste("Item",1:internalextract(object,"nitem"))
         p
       }else{
-        object$itemprob.parm
+        object$catprob.parm
       }
 
     },

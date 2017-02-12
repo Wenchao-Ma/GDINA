@@ -11,6 +11,7 @@ print.GDINA <-
     cat("\nNumber of items       =", extract.GDINA(x,"nitem"), "\n")
     cat("Number of individuals =", extract.GDINA(x,"nobs"), "\n")
     cat("Number of attributes  =", extract.GDINA(x,"natt"), "\n")
+    cat("Number of groups      =", extract.GDINA(x,"ngroup"), "\n")
     M <- c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM")
     cat("Number of iterations  =", extract.GDINA(x,"nitr"), "\n")
     cat("Fitted model(s)       =", unique(extract.GDINA(x,"models")), "\n")

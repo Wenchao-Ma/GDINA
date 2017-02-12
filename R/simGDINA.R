@@ -1,22 +1,23 @@
-#' @title Simulate responses based on the (sequential) G-DINA model, DINA, DINO, ACDM, LLM or RRUM
+#' @title Simulate responses based on the (sequential) G-DINA models
 #'
 #' @description
 #'    Simulate responses based on the G-DINA model (de la Torre, 2011) and sequential G-DINA model
-#'    (Ma & de la Torre, 2016), or CDMs subsumed by them, including DINA, DINO, ACDM,
-#'    LLM and R-RUM. Attributes can be simulated from uniform, higher order or multivariate normal
-#'    distributions or supplied by users. See \code{Examples} and \code{Details} for
-#'    how item parameters should be specified. See the help page of \code{\link{GDINA}}
-#'    function to understand the model parameterizations.
+#'    (Ma & de la Torre, 2016), or CDMs subsumed by them, including the DINA model, DINO model, ACDM,
+#'    LLM and R-RUM. Attributes can be simulated from uniform, higher-order or multivariate normal
+#'    distributions, or be supplied by users. See \code{Examples} and \code{Details} for
+#'    how item parameter specifications. See the help page of \code{\link{GDINA}}
+#'    for model parameterizations.
 #'
 #' @details
 #' Item parameter specifications in \code{simGDINA}:
 #'
-#' Item parameters can be specified in one of three different ways. The easiest way is to specify the
-#' \code{gs.param}, which gives \eqn{P(\bm{\alpha}_{lj}^*=0)} and \eqn{1-P(\bm{\alpha}_{lj}^*=1)}
-#' for all items for dichotomous items and \eqn{S(\bm{\alpha}_{lj}^*=0)} and \eqn{1-S(\bm{\alpha}_{lj}^*=1)}
-#' for all items for polytomous items. Note that \eqn{1-P(\bm{\alpha}_{lj}^*=0)-P(\bm{\alpha}_{lj}^*=1)} or
+#' Item parameters can be specified in one of three different ways.
+#'
+#' The first and probably the easiest way is to specify the guessing and slip parameters for each item or nonzero category using
+#' \code{gs.parm}, which is a matrix or data frame for \eqn{P(\bm{\alpha}_{lj}^*=0)} and \eqn{1-P(\bm{\alpha}_{lj}^*=1)}
+#' for all items for dichotomous items and \eqn{S(\bm{\alpha}_{ljh}^*=0)} and \eqn{1-S(\bm{\alpha}_{ljh}^*=1)}
+#' for all nonzero categories for polytomous items. Note that \eqn{1-P(\bm{\alpha}_{lj}^*=0)-P(\bm{\alpha}_{lj}^*=1)} or
 #' \eqn{1-S(\bm{\alpha}_{lj}^*=0)-S(\bm{\alpha}_{lj}^*=1)} must be greater than 0.
-#' This does not need to be satisfied if item parameters are specified using \code{catprob.parm}.
 #' For generating ACDM, LLM, and RRUM, delta parameters are generated randomly if \code{type="random"},
 #' or in a way that each required attribute contributes equally, as in
 #'  Ma, Iaconangelo, & de la Torre (2016) if \code{type="equal"}. For ACDM, LLM and RRUM, generated
@@ -24,19 +25,19 @@
 #'  If the generating model is the G-DINA model, \code{mono.constraint} can be used to specify whether monotonicity
 #'  constraints should be satisfied.
 #'
-#' The second way to simulate responses is to specify item or category success probabilities (i.e., \eqn{P(\bm{\alpha}_{lj}^*)}
-#' and \eqn{S(\bm{\alpha}_{lj}^*)}) for all latent groups for each item/category directly
+#' The second way of simulating responses is to specify success probabilities (i.e., \eqn{P(\bm{\alpha}_{lj}^*)}
+#' or \eqn{S(\bm{\alpha}_{ljh}^*)}) for each nonzero category of each item directly
 #' using the argument \code{catprob.parm}. If an item or category requires \eqn{K_j^*} attributes, \eqn{2^{K_j^*}} success probabilities
-#' need to be provided. \code{catprob.parm} must be a list, where each element gives the success probabilities of each item or category.
+#' need to be provided. \code{catprob.parm} must be a list, where each element gives the success probabilities for nonzero category of each item.
 #' Note that success probabilities cannot be negative or greater than one.
 #'
-#' The third way is to specify delta parameters for data simulation. For DINA and DINO model, each item/category requires two
-#' delta parameters. For ACDM, LLM and RRUM, if an item/category requires \eqn{K_j^*} attributes, \eqn{K_j^*+1} delta parameters
-#' need to be specified. For the G-DINA model, an item/category requires \eqn{K_j^*} attributes has \eqn{2^{K_j^*}} delta parameters.
-#' It should be noted that specifying delta parameters needs to make sure that the calculated success probabilities are within the \eqn{[0,1]} interval.
+#' The third way is to specify delta parameters for data simulation. For DINA and DINO model, each nonzero category requires two
+#' delta parameters. For ACDM, LLM and RRUM, if a nonzero category requires \eqn{K_j^*} attributes, \eqn{K_j^*+1} delta parameters
+#' need to be specified. For the G-DINA model, a nonzero category requiring \eqn{K_j^*} attributes has \eqn{2^{K_j^*}} delta parameters.
+#' It should be noted that specifying delta parameters needs to ascertain the derived success probabilities are within the \eqn{[0,1]} interval.
 #'
-#' Please note that you need to specify item parameters in ONLY one of these three ways. If \code{gs.parm} is specified, it will be used no matter
-#' whether \code{catprob.parm} and \code{delta.parm} are specified or not. If \code{gs.parm} is not specified, \code{GDINA.sim} will check
+#' Please note that you need to specify item parameters in ONLY one of these three ways. If \code{gs.parm} is specified, it will be used regardless of
+#' the inputs in \code{catprob.parm} and \code{delta.parm}. If \code{gs.parm} is not specified, \code{simGDINA} will check
 #' if \code{delta.parm} is specified; if yes, it will be used for data generation. if both \code{gs.parm} and \code{delta.parm} are not specified,
 #' \code{catprob.parm} is used for data generation.
 #'
@@ -63,7 +64,8 @@
 #'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, and \code{"RRUM"}.
 #'    If \code{model} is a scalar, the specified model is fitted to all items. Different
 #'    models can be assigned to different items or categories.
-#' @param sequential logical; whether a sequential model is fitted for polytomous responses?
+#' @param sequential logical; \code{TRUE} if the sequential model is used for polytomous responses simulation, and \code{FALSE}
+#'    if there is no polytomously scored items.
 #' @param mono.constraint A vector for each item/category or a scalar which will be used for all
 #'    items/categories to specify whether monotonicity constraints should be satisfied if the generating model is the G-DINA model. Note that
 #'    this is applicable only for the G-DINA model when \code{gs.parm} is used. For ACDM, LLM and RRUM, monotonicity constraints
@@ -71,16 +73,17 @@
 #' @param catprob.parm A list of success probabilities for each latent group for each non-zero category of each item. See \code{Examples} and
 #'    \code{Details} for more information.
 #' @param delta.parm A list of delta parameters for each latent group for each item or category.
-#' @param item.names A vector giving the name of items. If NULL (default), items are named as "Item 1", "Item 2", etc.
-#' @param attribute person attributes. If this is not supplied, it is simulated
+#' @param item.names A vector giving the name of items or categories. If it is \code{NULL} (default), items are named as "Item 1", "Item 2", etc.
+#' @param attribute optional user-specified person attributes. It is a \eqn{N\times K} matrix or data frame. If this is not supplied, attributes are simulated
 #'    from a distribution specified in \code{att.dist}.
-#' @param att.dist the attribute distribution. It can be \code{"uniform"}, \code{"higher.order"} or
-#'    \code{"mvnorm"} for uniform, higher order and multivariate normal distribution, respectively.
-#'    The default is the uniform distribution.
-#' @param higher.order.parm A list specifying parameters for higher order distribution for attributes
-#'    if in \code{att.dist=higher.order}. Particularly, \code{theta} is a
-#'    vector of length \eqn{N} representing the higher order ability
-#'    for each examinee. and \code{lambda} is a \eqn{K \times 2} matrix. Column 1 gives slopes of higher-order
+#' @param att.dist A string indicating the distribution for attribute simulation. It can be \code{"uniform"}, \code{"higher.order"} or
+#'    \code{"mvnorm"} for uniform, higher-order and multivariate normal distribution, respectively.
+#'    The default is the uniform distribution. To specify structural parameters for the higher-order
+#'    and multivariate normal distributions, see \code{higher.order.parm} and \code{mvnorm.parm}, respectively.
+#' @param higher.order.parm A list specifying parameters for higher-order distribution for attributes
+#'    if \code{att.dist=higher.order}. Particularly, \code{theta} is a
+#'    vector of length \eqn{N} representing the higher-order ability
+#'    for each examinee. and \code{lambda} is a \eqn{K \times 2} matrix. Column 1 gives the slopes for the higher-order
 #'    model and column 2 gives the intercepts. See \code{\link{GDINA}} for the formulations of the higher-order
 #'    models.
 #' @param mvnorm.parm a list of parameters for multivariate normal attribute distribution. \code{mean} is a vector of length \eqn{K}
@@ -406,7 +409,7 @@
 #'J <- nrow(Qc)
 #'gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
 #'# simulate sequential DINA model
-#'simseq <- simGDINA(N,Qc,sequential = TRUE,gs.parm = gs,model = "DINA")
+#'simseq <- simGDINA(N, Qc, sequential = TRUE, gs.parm = gs, model = "DINA")
 #'
 #'# True item success probabilities
 #'extract(simseq,what = "catprob.parm")
@@ -511,10 +514,8 @@ if (!is.null(gs.parm)) {
       att.group <- sample(1:L, N, replace = T)  #uniform distribution
     } else if (tolower(att.dist) == "higher.order")
     {
-      if (max(Q) > 1)
-      {
-        return(warning("Higher order structure is not allowed currently when attributes are polytomous."))
-      }
+      if (max(Q) > 1) stop("Higher order structure is not allowed currently when attributes are polytomous.",call. = FALSE)
+
       if (is.null(higher.order.parm$theta)||is.null(higher.order.parm$lambda))
       {
         stop("Higher-order parameters must be provided.",call. = FALSE)

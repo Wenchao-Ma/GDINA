@@ -1,21 +1,22 @@
-#' Calibrate dichotomous and polytomous response data
+#' Calibrate dichotomous and polytomous responses
 #'
 #' \code{GDINA} calibrates the generalized deterministic inputs, noisy and
-#' gate (G-DINA; de la Torre, 2011) model for dichotomous responses, and its extension, the sequential
-#' G-DINA model (Ma, & de la Torre, 2016a), for ordinal and nominal responses.
+#' gate (G-DINA; de la Torre, 2011) model for dichotomous responses, and the sequential
+#' G-DINA model (Ma, & de la Torre, 2016a) for ordinal and nominal responses.
 #' By setting appropriate constraints, the deterministic inputs,
 #' noisy and gate (DINA; de la Torre, 2009; Junker & Sijtsma, 2001) model,
 #' the deterministic inputs, noisy or gate (DINO; Templin & Henson, 2006)
 #' model, the reduced reparametrized unified model (R-RUM; Hartz, 2002),
 #' the additive CDM (A-CDM; de la Torre, 2011), and the linear logistic
-#' model (LLM; Maris, 1999) can also be calibrated. Different models can be fitted to different
-#' items/categories in a single test. The attributes can be dichotomous or polytomous
-#' (Chen & de la Torre, 2013). A higher-order structure
-#' (de la Torre & Douglas, 2004) can be
-#' assumed for all aforementioned models when attributes are binary.
+#' model (LLM; Maris, 1999) can also be calibrated. Note that the LLM is equivalent to
+#' the C-RUM (Hartz, 2002), a special case of the GDM (von Davier, 2008), and that the R-RUM
+#' is also known as a special case of the generalized NIDA model (de la Torre, 2011).
+#' Different models can be fitted to different
+#' items in a single test. The attributes can be either dichotomous or polytomous
+#' (Chen & de la Torre, 2013). Joint attribute distribution can be saturated, structured or higher-order,
+#' (de la Torre & Douglas, 2004) when attributes are binary.
 #' Marginal maximum likelihood method with Expectation-Maximization (MMLE/EM) alogrithm
-#' is used for item parameter estimation. Examinees' attributes are
-#' estimated via the \code{MLE}, \code{EAP} and \code{MAP} methods.
+#' is used for item parameter estimation.
 #'
 #' @section The G-DINA model:
 #'
@@ -153,87 +154,85 @@
 #' are counted at category level.
 #'
 #' @param dat A required \eqn{N \times J} \code{matrix} or \code{data.frame} consisting of the
-#' responses of \eqn{N} examinees to \eqn{J} items. Missing values need to be coded as \code{NA}.
-#' @param Q A required \eqn{J \times K} item/category and attribute association matrix, wher J represents the number of
-#'    items/categories and K represents the number of attributes. For binary attributes,
-#'    1 denotes attributes are measured by items and 0 means attributes are not
-#'    necessary. For polytomous attributes, non-zero elements indicate which level
-#'    of attributes are needed. Note that for polytomous items, the sequential G-DINA
+#' responses of \eqn{N} individuals to \eqn{J} items. Missing values need to be coded as \code{NA}.
+#' @param Q A required \eqn{J \times K} item or category and attribute association matrix, wher \eqn{J} represents the number of
+#'    items or nonzero categories and \eqn{K} represents the number of attributes. For binary attributes,
+#'    entry 1 indicates that the attribute is measured by the item, and 0 otherwise.
+#'    For polytomous attributes, non-zero elements indicate the level
+#'    of attributes that are needed for an individual to answer the item correctly (see Chen, \& de la Torre, 2013).
+#'    Note that for polytomous items, the sequential G-DINA
 #'    model is used and either restricted or unrestricted category-level Q-matrix is needed.
-#'    The first column represents the item number, which must be numeric and match the column in the data.
+#'    In the category-level Q-matrix, the first column gives the item number, which must be numeric and match the number of column in the data.
 #'    The second column indicates the category number. See \code{Examples}.
-#' @param model A vector for each item/category or a scalar which will be used for all
-#'    items/categories to specify which model is fitted to each item/category. The possible options
+#' @param model A vector for each item or nonzero category, or a scalar which will be used for all
+#'    items or nonzero categories to specify the CDMs fitted. The possible options
 #'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, and \code{"RRUM"}.
-#'    If \code{model} is a scalar, the specified model is fitted to all items. Different
-#'    models can be assigned to different items or categories.
-#'    It is also possible to specify models using numbers. Particularly, 0,1,2,3,4 and 5 represents
+#'    It is also possible to specify CDMs using numbers. Particularly, 0,1,2,3,4 and 5 represents
 #'    \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, and \code{"RRUM"}, respectively.
-#' @param sequential logical; whether a sequential model is fitted for polytomous responses?
+#' @param sequential logical; \code{TRUE} if the sequential model is fitted for polytomous responses.
 #' @param group a scalar indicating which column in \code{dat} is group indicator or
 #'    a numerical vector indicating the group each individual belongs to. If it is a vector,
-#'    its length must be equal to the number of individuals. More than two groups cannot be handled.
-#' @param item.names A vector giving the name of items. If NULL (default), items are named as "Item 1", "Item 2", etc.
-#' @param higher.order logical; \code{TRUE} indicates a higher order structure of attributes
-#'    is assumed and higher order parameters will be estimated. Higher order model
-#'    needs to be specified in \code{higher.order.model}. The default is \code{FALSE}.
-#' @param higher.order.model An IRT model for higher order attribute structure; It can be
+#'    its length must be equal to the number of individuals. Only at most two groups can be handled currently.
+#' @param item.names A vector giving the item names. By default, items are named as "Item 1", "Item 2", etc.
+#' @param higher.order logical; \code{TRUE} indicates a higher-order joint attribute distribution
+#'    is assumed. The default is \code{FALSE}, which means that the saturated attribute distribution is estimated.
+#'    The higher-order model needs to be specified in argument \code{higher.order.model}.
+#' @param higher.order.model a character indicating the IRT model for higher-order joint attribute distribution. Can be
 #'    \code{"2PL"}, \code{"1PL"} or \code{"Rasch"}, representing two parameter logistic IRT model,
 #'    one parameter logistic IRT model and Rasch model,
-#'    respectively. Please note that in \code{"1PL"} model, a common slope parameter will be
-#'    estimated (see \code{Details}). \code{"Rasch"} is the default.
-#' @param higher.order.method The algorithm for estimation the higher order parameters; it can be either
-#'    \code{"MMLE"} using marginal maximum likelihood estimation, or \code{"BL"} based on the Bock and
+#'    respectively. For \code{"1PL"} model, a common slope parameter is
+#'    estimated (see \code{Details}). \code{"Rasch"} is the default model when \code{higher.order = TRUE}.
+#' @param higher.order.method a character indicating the algorithm for the higher-order structural parameter estimation;
+#'    Can be either \code{"MMLE"} using marginal maximum likelihood estimation, or \code{"BL"} based on the Bock and
 #'    Lieberman's (1970) approach. \code{"BL"} is suitable when the number of attributes is few. It is not
 #'    sensitive to sample size but can be very slow if the number of attributes is large.
 #'    \code{"MMLE"}, which is the default, is suitable for most conditions but might be slow if
 #'    sample size is extremely large.
 #' @param mono.constraint logical; \code{TRUE} indicates that \eqn{P(\bm{\alpha}_1) <=P(\bm{\alpha}_2)} if
-#'    for all \eqn{k}, \eqn{\alpha_{1k} <= \alpha_{2k}}. It can be a vector for each item or a scalar which will be used for all
-#'    items to specify whether monotonicity constraint should be added for each item.
-#' @param catprob.parm initial category probability parameters; It must be a list giving probability of success
-#'    of each reduced latent classes for each non-zero category of each item.
-#' @param verbose Print the max changes in item parameters and log-likelihood
-#'     after each EM iteration or not? It can be 0, 1 or 2. If \code{verbose=0}, no information will
-#'     be printed; if \code{verbose=1}, only information for current iteration will be shown; if \code{verbose=2},
-#'     information for all iterations will be printed.
+#'    for all \eqn{k}, \eqn{\alpha_{1k} <= \alpha_{2k}}. Can be a vector for each item or nonzero category or a scalar which will be used for all
+#'    items to specify whether monotonicity constraint should be added.
+#' @param catprob.parm A list of initial success probability parameters for each nonzero category.
+#' @param verbose How to print calibration information
+#'     after each EM iteration? Can be 0, 1 or 2, indicating to print no information,
+#'     information for current iteration, or information for all iterations.
 #' @param empirical Logical; whether empirical bayes is adopted or not? \code{TRUE} is
 #'    the default when higher order attribute structure is not assumed. If estimating
 #'    higher order structure, it will be \code{FALSE}.
-#' @param att.prior attribute prior distribution for \eqn{2^K} latent classes. Only available for dichotomous attributes.
-#'    It can be used to specify the hierarchical structure of attributes.
-#'    Its length must be equal to \eqn{2^K}. Element 0 specifies which latent class does not exist.
-#'    The sum of all elements does not have to be equal to 1; however, it will be standardized so that the sum is equal to 1
-#'    before model calibration. When any latent class is given prior 0, standard errors for item parameters are not available.
+#' @param att.prior A vector of length \eqn{2^K} or a matrix of dimension \eqn{2^K\times} no. of groups to specify
+#'    attribute prior distribution for \eqn{2^K} latent classes for all groups. Only applicable for dichotomous attributes.
+#'    The sum of all elements does not have to be equal to 1; however, it will be transformed so that the sum is equal to 1
+#'    before model calibration.
 #'    (1) If \code{empirical=FALSE} and \code{higher.order=FALSE}, the attribute prior distribution is fixed during model
 #'    calibration; (2) if \code{empirical=TRUE} and \code{higher.order=FALSE}, the distribution for all latent classes
 #'    with non-zero priors is updated using the empirical bayes method;
 #'    (3) if \code{empirical=FALSE} and \code{higher.order=TRUE}, the distribution for all latent classes
-#'    with non-zero priors is updated using the higher order model.
+#'    with non-zero priors is updated using the specified higher-order model.
 #'    The label for each latent class can be obtained by calling \code{attributepattern(K)}. See \code{examples} for more info.
 #' @param att.str logical; whether attributes have any structure?
 #' @param nstarts how many sets of starting values? The default is 1.
-#' @param conv.crit The convergence criterion for max absolute change in item parameters.
-#' @param conv.type How is the convergence criterion evaluated? It can be \code{"max.p.change"}, indicating
-#'    the maximum absolute change in success probabilities is examined. It can also be \code{"dev.change"}, representing
-#'    the absolute change in deviance is evaluated.
-#' @param maxitr The maximum iterations of EM cycles allowed.
-#' @param higher.order.struc.parm A matrix or data frame providing higher order structural parameters. If supplied, it must be of dimension \eqn{K\times 2}.
+#' @param conv.crit The convergence criterion for max absolute change in item parameters or deviance.
+#' @param conv.type How is the convergence criterion evaluated? Can be \code{"max.p.change"}, indicating
+#'    the maximum absolute change in success probabilities, or \code{"dev.change"}, representing
+#'    the absolute change in deviance.
+#' @param maxitr The maximum number of EM cycles allowed.
+#' @param higher.order.struc.parm A matrix or data frame providing higher order structural parameters.
+#'    If supplied, it must be of dimension \eqn{K\times 2}.
 #'    The first column is the slope parameters and the second column is the intercept.
-#' @param lower.p fixed lower bound for success probabilities. If supplied as a single value, it will be assigned to all items;
-#'   It can also be specified as a numeric vector corresponding to each item. The default is 1e-4 for all items.
-#' @param upper.p fixed upper bound for success probabilities. If supplied as a single value, it will be assigned to all items;
-#'   It can also be specified as a numeric vector corresponding to each item. The default is 0.9999 for all items.
-#' @param lower.prior the lower bound for posteriori weights. The default value is -1, which means the lower bound is \eqn{1/2^K/100}.
-#' @param randomseed random seed for generating initial item parameters. The default random seed is 123456.
-#' @param smallNcorrection a numeric vector with two elements specifying the corrections applied when the expected number of
-#' examinees in some latent groups are too small. Particularly, if the expected no. of examinees is less than the second element,
+#' @param lower.p A vector for each item or nonzero category, or a scalar which will be used for all
+#'    items or nonzero categories to specify the lower bound for success probabilities. The default is \code{1e-4} for all items.
+#' @param upper.p A vector for each item or nonzero category, or a scalar which will be used for all
+#'    items or nonzero categories to specify the upper bound for success probabilities. The default is 0.9999 for all items.
+#' @param lower.prior The lower bound for prior weights. Only applicable for nonstructured attributes.
+#'    The default value is -1, which means the lower bound is \eqn{1/2^K/100}.
+#' @param randomseed Random seed for generating initial item parameters. The default random seed is 123456.
+#' @param smallNcorrection A numeric vector with two elements specifying the corrections applied when the expected number of
+#' individuals in some latent groups are too small. If the expected no. of examinees is less than the second element,
 #' the first element and two times the first element will be added to the numerator and denominator of the closed-form solution of
-#' probabilities of success.
-#' @param Mstep.warning Logical; indicating whether the warning message in Mstep, if any, should be output immediately.
+#' probabilities of success. Only applicable for the G-DINA, DINA and DINO model estimation without monotonic constraints.
+#' @param Mstep.warning Logical; Whether the warning message in Mstep, if any, should be output immediately.
 #' @param diagnosis Run in diagnostic mode? If it is 1 or 2, some intermediate results obtained in each iteration can be extracted.
 #' @param optimizer A string indicating which optimizer should be used in M-step.
-#' @param optim.control control options for optimizers in the M-step. Only available when \code{optimizer} is one specific optimization
+#' @param optim.control Control options for optimizers in the M-step. Only available when \code{optimizer} is one specific optimization
 #' method, including \code{BFGS} from \link[stats]{optim}, \link[nloptr]{slsqp}, \link[Rsolnp]{solnp} and \link[alabama]{auglag}.
 #' For the \link[alabama]{auglag} method, \code{optim.control} specifies \code{control.outer}.
 #'
@@ -371,6 +370,8 @@
 #' anova(mod1,mod2)
 #'
 #' # -------- DINO model -------#
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
 #' mod3 <- GDINA(dat = dat, Q = Q, model = "DINO")
 #' #slip and guessing
 #' itemparm(mod3, what = "gs") # guess and slip parameters
@@ -380,17 +381,25 @@
 #' anova(mod1,mod3)
 #'
 #' # --------- ACDM model -------#
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
 #' mod4 <- GDINA(dat = dat, Q = Q, model = "ACDM")
 #' mod4
 #' # --------- LLM model -------#
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
 #' mod4b <- GDINA(dat = dat, Q = Q, model = "LLM")
 #' mod4b
 #' # --------- RRUM model -------#
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
 #' mod4c <- GDINA(dat = dat, Q = Q, model = "RRUM")
 #' mod4c
 #'
 #' # --- Different CDMs for different items --- #
 #'
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
 #' models <- c(rep("GDINA",3),"LLM","DINA","DINO","ACDM","RRUM","LLM","RRUM")
 #' mod5 <- GDINA(dat = dat, Q = Q, model = models)
 #' anova(mod1,mod5)
@@ -401,6 +410,8 @@
 #'#        Model estimations         #
 #'# With monotonocity constraints    #
 #'####################################
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
 #' # for item 10 only
 #' mod11 <- GDINA(dat = dat, Q = Q, model = "GDINA",mono.constraint = c(rep(FALSE,9),TRUE))
 #' mod11
@@ -421,6 +432,8 @@
 #'# With Higher order att structure  #
 #'####################################
 #'
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
 #' # --- Higher order G-DINA model ---#
 #' mod12 <- GDINA(dat = dat, Q = Q, model = "GDINA",
 #'                higher.order = TRUE,higher.order.method="BL")
@@ -454,10 +467,12 @@
 #' #
 #' prior <- c(0.1,0.1,0.1,0.1,0.15,0.15,0.15,0.15)
 #' # fit GDINA model  - empirical must be FALSE
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
 #' modp1 <- GDINA(dat = dat, Q = Q, att.prior = prior, att.str = TRUE, empirical = FALSE)
 #' # See the posterior weights
 #' extract(modp1,what = "posterior.prob")
-#'
+#' extract(modp1,what = "att.prior")
 #' # ----Linear structure of attributes -----#
 #' # Assuming A1 -> A2 -> A3
 #'   Q <- matrix(c(1,0,0,
@@ -485,8 +500,7 @@
 #'                    model = "DINA",attribute = att)
 #'  dat <- simD$dat
 #'  # setting structure: A1 -> A2 -> A3
-#'  # note: groups with prior 0 are assumed impossible;
-#'  # and therefore their posteriors are not updated
+#'  # note: latent classes with prior 0 are assumed impossible
 #'  prior <- c(0.1,0.2,0,0,0.2,0,0,0.5)
 #'  out <- GDINA(dat,Q,att.prior=prior,att.str = TRUE, model="DINA")
 #'  # check posterior dist.
@@ -522,12 +536,13 @@
 #'
 #' modp1 <- GDINA(dat = dat, Q = Q, att.prior = struc$att.prob, att.str = TRUE, empirical = FALSE)
 #' modp1
-#' # Note that calculated posterior below is fixed to the prior
+#' # Note that fixed priors were used for all iterations
+#' extract(modp1,what = "att.prior")
+#' # Posterior weights were slightly different
 #' extract(modp1,what = "posterior.prob")
-#'
 #' modp2 <- GDINA(dat = dat, Q = Q, att.prior = struc$att.prob, att.str = TRUE, empirical = TRUE)
 #' modp2
-#' # Note that calculated posterior below is similar but not fixed to the prior
+#' extract(modp2,what = "att.prior")
 #' extract(modp2,what = "posterior.prob")
 #'
 #'
@@ -552,11 +567,20 @@
 #'  # -----------Fix User specified item parameters
 #'  # Item parameters are not estimated
 #'  # Only person attributes are estimated
-#'  initials <- sim10GDINA$simItempar
-#'  dat <- sim10GDINA$simdat
-#'  Q <- sim10GDINA$simQ
-#'  mod.fix <- GDINA(dat,Q,catprob.parm = initials,maxit = 0)
-#'  itemparm(mod.fix)
+#'  # attribute prior distribution matters if interested in the marginalized likelihood
+#'  dat <- frac20$dat
+#'  Q <- frac20$Q
+#'  mod.initial <- GDINA(dat,Q,maxit=20) # estimation- only 10 iterations for illustration purposes
+#'  par <- itemparm(mod.initial,digits=8)
+#'  weights <- extract(mod.initial,"posterior.prob",digits=8) #posterior weights
+#'  # use the weights as the priors
+#'  mod.fix <- GDINA(dat,Q,catprob.parm = par,att.prior=weights,maxitr=0) # re-estimation
+#'  anova(mod.initial,mod.fix) # very similar - good approximation most of time
+#'  # prior used for the likelihood calculation for the last step
+#'  priors <- extract(mod.initial,"att.prior")
+#'  # use the priors as the priors
+#'  mod.fix2 <- GDINA(dat,Q,catprob.parm = par,att.prior=priors,maxitr=0) # re-estimation
+#'  anova(mod.initial,mod.fix2) # identical results
 #'
 #'####################################
 #'#           Example 8.             #
@@ -647,20 +671,24 @@ GDINA <-
   {
     s1 <- Sys.time()
     GDINAcall <- match.call()
-    if(!is.null(group)){ # multiple groups
+    if (!is.null(group)) {
+      # multiple groups
       # scalar -> group variable column
-      if (length(group)==1){
-        gr <- dat[,group] # group indicator variable - numeric
-        dat <- dat[,-group] # responses
-      }else{
-        if (nrow(dat)!=length(group))stop("The length of group variable must be equal to the number of individuals.",call. = FALSE)
+      if (is.atomic(group) && length(group) == 1L) {
+        gr <- dat[, group] # group indicator variable - numeric
+        dat <- dat[, -group] # responses
+      } else{
+        if (nrow(dat) != length(group))
+          stop("The length of group variable must be equal to the number of individuals.",
+               call. = FALSE)
         gr <- group # group indicator variable
       }
 
       gr.label <- unique(gr) # group labels
       no.mg <- length(gr.label) # the number of groups
-      if(!is.numeric(gr)||max(gr)>no.mg){
-        for(g in 1:no.mg) gr[gr==gr.label[g]] <- g
+      if (!is.numeric(gr) || max(gr) > no.mg) {
+        for (g in 1L:no.mg)
+          gr[gr == gr.label[g]] <- g
         gr <- as.numeric(gr) # numeric variable
       }
 
@@ -697,11 +725,11 @@ GDINA <-
     # missing value indicator 1 - nonmissing; 0 - missing
     missInd <- 1L - is.na(dat)
     # print(dim(missInd))
-    if (any(missInd == 0)) {
+    if (any(missInd == 0L)) {
       # some missings individuals with one or fewer valid response are
       # removed
-      del.ind <- which(rowSums(missInd) < 2, arr.ind = TRUE)
-      if (length(del.ind) > 0) {
+      del.ind <- which(rowSums(missInd) < 2L, arr.ind = TRUE)
+      if (length(del.ind) > 0L) {
         warning(length(del.ind), " individuals with one or fewer valid responses are removed.")
         dat <- dat[-del.ind, ]
         missInd <- missInd[-del.ind, ]
@@ -762,13 +790,14 @@ GDINA <-
     if (is.null(catprob.parm)) {
       item.parm <- initials(Q, nstarts, randomseed = randomseed)  #a list with nstarts matrices of size J x 2^Kjmax
       ###### Multiple starting values
-      if (nstarts > 1) {
+      if (nstarts > 1L) {
         neg2LL <- NULL
-        for (i in 1:nstarts) {
+        for (i in 1L:nstarts) {
           LC.Prob <- uP(as.matrix(parloc), as.matrix(item.parm[[i]]))
           # calculate likelihood and posterior
           neg2LL <- c(neg2LL, -2 * Lik(mP = LC.Prob, mX = as.matrix(dat),
-                                       vlogPrior = as.matrix(logprior), mIndmiss = as.matrix(missInd),vgroup = gr)$LL)
+                                       vlogPrior = as.matrix(logprior),
+                                       mIndmiss = as.matrix(missInd),vgroup = gr)$LL)
         }
         item.parm <- item.parm[[which.min(neg2LL)]]
 
@@ -778,7 +807,7 @@ GDINA <-
     }
 
     dif <- 10
-    itr <- 0
+    itr <- 0L
     diag.itemprob <- diag.RN <- diag.likepost <- diag.lambda <- diag.opts <- vector("list", maxitr)
     diag.itrmaxchange <- NULL
     deltas <- calc_delta(item.parm, model, Kj)
@@ -860,19 +889,24 @@ GDINA <-
 
       itr <- itr + 1
       if(verbose==1) {
-        cat('\rIteration =',itr,' Max change =',format(round(dif,4),nsmall=4),' Deviance =',format(round(-2*likepost$LL,2),nsmall=2))
+        cat('\rIteration =',itr,' Max change =',format(round(dif,4),nsmall=4),' Deviance =',format(round(-2*likepost$LL,2),nsmall=2),'               ')
       }else if (verbose==2) {
-        cat('Iteration =',itr,' Max change =',format(round(dif,4),nsmall=4),' Deviance =',format(round(-2*likepost$LL,2),nsmall=2),"\n")
+        cat('Iteration =',itr,' Max change =',format(round(dif,4),nsmall=4),' Deviance =',format(round(-2*likepost$LL,2),nsmall=2),"               \n")
       }
 
-      if (higher.order == FALSE & empirical == TRUE)
+      if (higher.order == FALSE && empirical == TRUE)
       {
-        lower.prior <- ifelse(lower.prior==-1,1/L/100,lower.prior)
-        priori <- exp(likepost$logprior)
-        priori[which(priori<lower.prior)] <- lower.prior
-        priori <- priori/sum(priori)
-        # cat("\nMin weight=",min(priori),"\n")
-        logprior <- log(priori)
+        if(att.str) {
+          logprior <- likepost$logprior
+        }else{
+          lower.prior <- ifelse(lower.prior==-1,1/L/100,lower.prior)
+          priori <- exp(likepost$logprior)
+          priori[which(priori<lower.prior)] <- lower.prior
+          priori <- priori/sum(priori)
+          # cat("\nMin weight=",min(priori),"\n")
+          logprior <- log(priori)
+          }
+
       }else if (higher.order == FALSE & empirical == FALSE)
       {
 
@@ -898,21 +932,14 @@ GDINA <-
     # latent class
     LC.Prob <- uP(as.matrix(parloc), as.matrix(item.parm))
     LC.Prob[is.nan(LC.Prob)] <- 0
-    # calculate likelihood and posterior
 
-    if (higher.order == FALSE & empirical == TRUE) {
-      likepost <- Lik(mP = LC.Prob, mX = as.matrix(dat),
-                      vlogPrior = as.matrix(logprior), mIndmiss = as.matrix(missInd),vgroup = gr)
-      logprior <- likepost$logprior
-    } else if (higher.order == FALSE & empirical == FALSE) {
-      logprior <- log(att.prior)
-    } else if (higher.order == TRUE) {
-      # logprior <- HOlogprior
-      # if (att.str) stop("Joint attribute distribution cannot be structured higher-order.",call. = FALSE)
-    }
     likepost <- Lik(mP = LC.Prob, mX = as.matrix(dat),
-                    vlogPrior = as.matrix(logprior), mIndmiss = as.matrix(missInd),vgroup = gr)
-    RN <- NgRg(mlogPost = likepost$logpost, mX = as.matrix(dat), mloc = as.matrix(parloc), mIndmiss = as.matrix(missInd))
+                    vlogPrior = as.matrix(logprior),
+                    mIndmiss = as.matrix(missInd),vgroup = gr)
+    logprior0 <- logprior # old log priors
+    logprior <- likepost$logprior # marginal weights
+    RN <- NgRg(mlogPost = likepost$logpost, mX = as.matrix(dat),
+               mloc = as.matrix(parloc), mIndmiss = as.matrix(missInd))
     # -----------------Test Fit information----------------#
 
     neg2LL <- -2 * likepost$LL
@@ -986,6 +1013,12 @@ GDINA <-
 
     if(!is.null(group)) rownames(postP) <- paste("Group",gr.label)
 
+    if(no.mg==1) {
+      att.prior = c(exp(logprior0))
+    }else{
+      att.prior = exp(logprior0)
+    }
+
     s2 <- Sys.time()
 
     output <-
@@ -1003,7 +1036,7 @@ GDINA <-
                        mono.constraint = mono.constraint, item.names = item.names,
                        empirical = empirical, att.prior = att.prior, att.str=att.str,
                        nstarts = nstarts, conv.crit = conv.crit, maxitr = maxitr,
-                       higher.order.method = higher.order.method, seq.dat = dat,
+                       higher.order.method = higher.order.method, seq.dat = dat, no.group = no.mg,
                        verbose = verbose, catprob.parm = catprob.parm,sequential = sequential,
                        higher.order.struc.parm = higher.order.struc.parm, digits = digits,
                        diagnosis = diagnosis,call=GDINAcall),
