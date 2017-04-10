@@ -8,14 +8,13 @@ is.nonNegativeInteger <-
 is.positiveInteger <-
   function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol & x > 0
 
+getnames <- function(x){deparse(substitute(x))}
 
-inputcheck <- function(dat, Q, model, sequential,higher.order,
-                       higher.order.model, higher.order.method,
+inputcheck <- function(dat, Q, model, sequential,att.dist,
                        verbose, catprob.parm,mono.constraint,
-                       empirical, att.prior, lower.p, upper.p,att.str,
-                       nstarts, conv.crit, maxitr, higher.order.parm,
+                       att.prior, lower.p, upper.p,att.str,
+                       nstarts, conv.crit, maxitr,
                        digits,diagnosis){
-  # if (!max(dat,na.rm = TRUE)==1 | !min(dat,na.rm = TRUE)==0 ) stop("Data matrix can only contain 0, 1 or NA.",call. = FALSE)
   if(!is.logical(sequential)) stop("sequential must be logical.",call. = FALSE)
   if (!all(is.nonNegativeInteger(Q))) stop("Q matrix can only contain 0 and positive integers.",call. = FALSE)
   if (!is.matrix(dat) & !is.data.frame(dat)) stop("Data must be a matrix or data frame.",call. = FALSE)
@@ -23,18 +22,10 @@ inputcheck <- function(dat, Q, model, sequential,higher.order,
   if (any(rowSums(Q)<1)) stop("Some items do not require any attributes.",call. = FALSE)
   if (any(colSums(Q)<1)) stop("Some attributes are not required by any items.",call. = FALSE)
   if (!sequential&&ncol(dat)!=nrow(Q))stop("The number of columns in data must be equal to the number of rows in Q-matrix.",call. = FALSE)
-  if (!is.logical(higher.order)) stop("higher.order must be TRUE or FALSE.",call. = FALSE)
-  if (higher.order){
-    if (!higher.order.model %in% c("Rasch","2PL","1PL")) stop("higher.order.model must be Rasch, 1PL or 2PL.",call. = FALSE)
-    if (!higher.order.method %in%c("BL","MMLE")) stop("higher.order.method must be BL or MMLE.",call. = FALSE)
-
-  }
   if (!verbose%in%c(0,1,2)) stop("verbose must be 0, 1, or 2.",call. = FALSE)
   if (!is.logical(att.str)) stop("att.str must be TRUE or FALSE.",call. = FALSE)
   if (!all(sapply(mono.constraint,is.logical))) stop("mono.constraint must be TRUE or FALSE.",call. = FALSE)
-  if (!length(mono.constraint)%in%c(1,nrow(Q))) stop("length of mono.constraint must be equal to 1 or the number of categories.",call. = FALSE)
-  if (!is.logical(empirical)) stop("empirical must be TRUE or FALSE.",call. = FALSE)
-
+  if (!length(mono.constraint)%in%c(1,nrow(Q))) stop("Length of mono.constraint must be equal to 1 or the number of categories.",call. = FALSE)
   if (!is.positiveInteger(nstarts)) {nstarts <- 1; warning("nstarts must be a positive integer.")}
 if (!is.null(catprob.parm)){
   if (!is.list(catprob.parm)) stop("catprob.parm must be a list.",call. = FALSE)
@@ -43,7 +34,7 @@ if (!is.null(catprob.parm)){
 }
   if (att.str) {
     if (max(Q)>1) stop("Attribute structure cannot be specified if attributes are polytomous.",call. = FALSE)
-    if(higher.order) stop("Higher-order structure is not allowed if att.str = TRUE.",call.=FALSE)
+    if(any(att.dist=="higher.order")) stop("Higher-order structure is not allowed if att.str = TRUE.",call.=FALSE)
   }
 
 
@@ -155,6 +146,41 @@ logit <- function(p){
 inv.logit <- function(x){
   return(exp(x)/(1+exp(x)))
 }
+
+
+eta.loc <- function(Q) {
+  K <- ncol(Q)
+  J <- nrow(Q) #
+
+  pattern <- alpha(K, T, Q)
+
+  L <- no_LC(Q)  # The number of latent groups
+
+
+  par.loc <- matrix(0, J, L)
+
+  for (j in 1:J) {
+    # for each item
+    loc <- which(Q[j, ] >= 1) #which attributes are required
+    if (length(loc) == 1) {
+      # if one attribute is required only
+      reduced_pattern <-
+        (pattern[, loc] >= Q[j, loc]) * 1 #reduced attributes
+      par.loc[j, ] <- reduced_pattern + 1
+    } else{
+      #2 or more attribute
+      reduced_pattern <- (t(pattern[, loc]) >= c(Q[j, loc])) * 1
+      patternj <- t(alpha(length(loc)))
+      par.loc[j, ] <-
+        apply(reduced_pattern, 2, function(x)
+          which.max(colSums(x == patternj)))
+    }
+
+  }
+  ##it is a J x L matrix
+  return (par.loc)
+}
+
 
 # generating design matrix for GDINA model - used in M-step
 designM_GDINA <- function(Kjj){
@@ -498,6 +524,8 @@ seq_coding <- function(dat,Q){
 
 
 bdiag <- function(mlist,fill=0){
+  len <- length(mlist)
+  for(r in len:1) if(is.null(mlist[[r]])) mlist[r] <- NULL
   loc <- sapply(mlist,dim)
   out <- matrix(fill,rowSums(loc)[1],rowSums(loc)[2])
   cr <- cc <- 1
@@ -510,110 +538,96 @@ bdiag <- function(mlist,fill=0){
 }
 
 
-delta_se <- function(object,type){
-  Q <- internalextract(object,"Q")
-  Kj <- rowSums(Q>0)
-  pj <- itemparm(object)
-  if(internalextract(object,"sequential")){
-    Qc <- internalextract(object,"Qc")
-    dat <- seq_coding(internalextract(object,"dat"),Qc)
-  }else{
-    dat <- internalextract(object,"dat")
-  }
-m <- internalextract(object,"models_numeric")
-  scof <- scorefun(mX=as.matrix(dat),
-                   mlogPost=as.matrix(internalextract(object,"logposterior.i")),
-                   itmpar=as.matrix(internalextract(object,"catprob.matrix")),
-                   parloc=eta.loc(internalextract(object,"Q")),
-                   model=m)
-
-  scorep <- scof$score
-  ind <- scof$index + 1
-  score <- se <- vector("list",internalextract(object,"ncat"))
-  c2 <- NULL
-  N <- extract(object,"nobs")
-  for (j in 1:internalextract(object,"ncat")){
-    scorepj <- as.matrix(scorep[,ind[which(ind[,2]==j),1]])
-    if (m[j]<4){
-      if(m[j]==1||m[j]==2) {
-        score[[j]] <- scorepj%*%designmatrix(1,m[j])
-      }else{
-        score[[j]] <- scorepj%*%designmatrix(Kj[j],m[j])
-      }
-
-    }else if (m[j]==4){
-      pw <- scorepj*outer(rep(1,N),pj[[j]]*(1-pj[[j]]))
-      score[[j]] <- pw%*%designmatrix(Kj[j],3)
-    }else if(m[j]==5){
-      pw <- scorepj*outer(rep(1,N),pj[[j]])
-      score[[j]] <- pw%*%designmatrix(Kj[j],3)
-    }
-c2 <- c(c2,rep(j,ncol(score[[j]])))
-score[[j]][is.na(score[[j]])] <- 0
-score[[j]] <- score[[j]] * as.numeric(!is.na(dat[,j]))
-  }
-
-  if(type == 1){
-    vars <- bdiag(lapply(score,function(x) solve(crossprod(x))))
-  }else if(type == 2){
-    vars <- solve(crossprod(do.call(cbind,score)))
-  }
-  c1 <- 1:nrow(vars)
-  se.c <- sqrt(diag(vars))
-  for(j in 1:length(se)){
-    se[[j]] <- se.c[c1[which(c2==j)]]
-  }
-  return(list(cov=vars,se=se,ind=data.frame(item=c2,loc=c1)))
-}
+# delta_se <- function(object,type){
+#   Q <- extract(object,"Q")
+#   Kj <- rowSums(Q>0)
+#   pj <- itemparm(object)
+#   if(extract(object,"sequential")){
+#     Qc <- extract(object,"Qc")
+#     dat <- seq_coding(extract(object,"dat"),Qc)
+#   }else{
+#     dat <- extract(object,"dat")
+#   }
+# m <- extract(object,"models_numeric")
+#   scof <- scorefun(mX=as.matrix(dat),
+#                    mlogPost=as.matrix(extract(object,"logposterior.i")),
+#                    itmpar=as.matrix(extract(object,"catprob.matrix")),
+#                    parloc=eta.loc(extract(object,"Q")),
+#                    model=m)
+#
+#   scorep <- scof$score
+#   ind <- scof$index + 1
+#   score <- se <- vector("list",extract(object,"ncat"))
+#   c2 <- NULL
+#   N <- extract(object,"nobs")
+#   for (j in 1:extract(object,"ncat")){
+#     scorepj <- as.matrix(scorep[,ind[which(ind[,2]==j),1]])
+#     if (m[j]<4){
+#       if(m[j]==1||m[j]==2) {
+#         score[[j]] <- scorepj%*%designmatrix(1,m[j])
+#       }else{
+#         score[[j]] <- scorepj%*%designmatrix(Kj[j],m[j])
+#       }
+#
+#     }else if (m[j]==4){
+#       pw <- scorepj*outer(rep(1,N),pj[[j]]*(1-pj[[j]]))
+#       score[[j]] <- pw%*%designmatrix(Kj[j],3)
+#     }else if(m[j]==5){
+#       pw <- scorepj*outer(rep(1,N),pj[[j]])
+#       score[[j]] <- pw%*%designmatrix(Kj[j],3)
+#     }
+# c2 <- c(c2,rep(j,ncol(score[[j]])))
+# score[[j]][is.na(score[[j]])] <- 0
+# score[[j]] <- score[[j]] * as.numeric(!is.na(dat[,j]))
+#   }
+#
+#   if(type == 1){
+#     vars <- bdiag(lapply(score,function(x) solve(crossprod(x))))
+#   }else if(type == 2){
+#     vars <- solve(crossprod(do.call(cbind,score)))
+#   }
+#   c1 <- 1:nrow(vars)
+#   se.c <- sqrt(diag(vars))
+#   for(j in 1:length(se)){
+#     se[[j]] <- se.c[c1[which(c2==j)]]
+#   }
+#   return(list(cov=vars,se=se,ind=data.frame(item=c2,loc=c1)))
+# }
 
 # Only correct when model GDINA DINA or DINO
 # For ACDM, LLM and RRUM, delta method needs to be used to calculate
 # variance of item probabilities from delta parameters
-itemprob_se <- function(object,type){
-  Q <- internalextract(object,"Q")
-  m <- model.transform(extract(object,"models"),nrow(Q))
-  pj <- l2m(internalextract(object,what = "catprob.parm"))
-  Lj <- 2^rowSums(Q>0)
-  for(j in which(m %in% c(1,2))){#DINA or DINO
-    pj[j,2] <- pj[j,Lj[j]]
-      if (Lj[j]>2) pj[j,3:ncol(pj)] <- -1
-  }
-  if(internalextract(object,"sequential")){
-    Qc <- internalextract(object,"Qc")
-    dat <- seq_coding(internalextract(object,"dat"),Qc)
-  }else{
-    dat <- internalextract(object,"dat")
-  }
-vars <-SE(as.matrix(dat), as.matrix(internalextract(object,"logposterior.i")),
-              as.matrix(pj), eta.loc(Q), m, as.matrix(1 - is.na(dat)), type)
-    std.err <- vars$se
-    for (j in which((m) %in% c(1, 2))) {
-      std.err[j, Lj[j]] <- std.err[j, 2]
-      std.err[j, 1:(Lj[j] - 1)] <- std.err[j, 1]
-    }
-  # std.err[std.err<0] <- NA
-  se <- m2l(std.err,remove = -1)
+# itemprob_se <- function(object,type){
+#   Q <- extract(object,"Q")
+#   m <- model.transform(extract(object,"models"),nrow(Q))
+#   pj <- l2m(extract(object,what = "catprob.parm"))
+#   Lj <- 2^rowSums(Q>0)
+#   for(j in which(m %in% c(1,2))){#DINA or DINO
+#     pj[j,2] <- pj[j,Lj[j]]
+#       if (Lj[j]>2) pj[j,3:ncol(pj)] <- -1
+#   }
+#   if(extract(object,"sequential")){
+#     Qc <- extract(object,"Qc")
+#     dat <- seq_coding(extract(object,"dat"),Qc)
+#   }else{
+#     dat <- extract(object,"dat")
+#   }
+# vars <-SE(as.matrix(dat), as.matrix(extract(object,"logposterior.i")),
+#               as.matrix(pj), eta.loc(Q), m, as.matrix(1 - is.na(dat)), type)
+#     std.err <- vars$se
+#     for (j in which((m) %in% c(1, 2))) {
+#       std.err[j, Lj[j]] <- std.err[j, 2]
+#       std.err[j, 1:(Lj[j] - 1)] <- std.err[j, 1]
+#     }
+#   # std.err[std.err<0] <- NA
+#   se <- m2l(std.err,remove = -1)
+#
+#   covIndex <- vars$index+1
+#   covs <- vars$Var
+#   return(list(cov=covs,se=se,ind=data.frame(item=covIndex[,2],loc=covIndex[,1])))
+# }
 
-  covIndex <- vars$index+1
-  covs <- vars$Var
-  return(list(cov=covs,se=se,ind=data.frame(item=covIndex[,2],loc=covIndex[,1])))
-}
 
-scorefunc <- function(object,...){
-  if(internalextract(object,"sequential")){
-    dat <- seq_coding(internalextract(object,"dat"),internalextract(object,"Qc"))
-  }else{
-    dat <- internalextract(object,"dat")
-  }
-  scof <- scorefun(mX=dat,
-                   mlogPost=internalextract(object,"logposterior.i"),
-                   itmpar=internalextract(object,"catprob.matrix"),
-                   parloc=eta.loc(internalextract(object,"Q")),
-                   model=internalextract(object,"models_numeric"))
-  index = data.frame(scof$index + 1)
-  colnames(index) <- c("Column","Cat","Parm")
-  list(score = scof$score, index = index)
-}
 
 Rmatrix.vec <- function(K){
   patt <- alpha(K)
@@ -698,31 +712,36 @@ crossprod.na <- function(x, y, val=0) {
   )
 }
 
-SE3 <- function(object,SE.type = 3,...){
+# SE3 <- function(object,SE.type = 3,...){
+#
+#   if(extract(object,"sequential")){
+#     Qc <- extract(object,"Qc")
+#     dat <- seq_coding(extract(object,"dat"),Qc)
+#   }else{
+#     dat <- extract(object,"dat")
+#   }
+#
+#   scof <- scorefun(mX=dat,
+#                    mlogPost=extract(object,"logposterior.i"),
+#                    itmpar=extract(object,"catprob.matrix"),
+#                    parloc=eta.loc(extract(object,"Q")),
+#                    model=extract(object,"models_numeric"))
+#   index = data.frame(scof$index + 1)
+#   colnames(index) <- c("Column","Cat","Parm")
+#
+#   sco <- scof$score*(1-is.na(dat[,index$Cat]))
+#   if(SE.type==3){
+#     lik <- exp(indlogLik(object))
+#     scopp <- (lik-lik[,1])/colSums(c(extract(object,"posterior.prob",digits = 10))*t(lik))
+#     sco <- cbind(sco,scopp[,-1])
+#   }
+#   sco[is.na(sco)] <- 0
+#   Info <- crossprod(sco)
+#   V <- MASS::ginv(Info)
+#   return(list(var=V,index=index))
+# }
 
-  if(internalextract(object,"sequential")){
-    Qc <- internalextract(object,"Qc")
-    dat <- seq_coding(internalextract(object,"dat"),Qc)
-  }else{
-    dat <- internalextract(object,"dat")
-  }
-
-  scof <- scorefun(mX=dat,
-                   mlogPost=internalextract(object,"logposterior.i"),
-                   itmpar=internalextract(object,"catprob.matrix"),
-                   parloc=eta.loc(internalextract(object,"Q")),
-                   model=internalextract(object,"models_numeric"))
-  index = data.frame(scof$index + 1)
-  colnames(index) <- c("Column","Cat","Parm")
-
-  sco <- scof$score*(1-is.na(dat[,index$Cat]))
-  if(SE.type==3){
-    lik <- exp(indlogLik(object))
-    scopp <- (lik-lik[,1])/colSums(c(extract(object,"posterior.prob",digits = 10))*t(lik))
-    sco <- cbind(sco,scopp[,-1])
-  }
-  sco[is.na(sco)] <- 0
-  Info <- crossprod(sco)
-  V <- solve(Info)
-  return(list(var=V,index=index))
+inverse_crossprod <- function(x) {
+  if(!is.null(x))  MASS::ginv(crossprod(x))
 }
+

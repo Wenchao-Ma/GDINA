@@ -9,7 +9,6 @@
 Rcpp::List Lik(arma::mat mP,
           arma::mat mX,
           arma::mat vlogPrior, //a vector of log prior or a matrix of log prior: col 1 for group 1; col 2 for group 2
-          arma::mat mIndmiss,
           arma::vec vgroup){ //vgroup vector: 1 for group1; 2 for group2,...
 
   int N = mX.n_rows;
@@ -18,6 +17,9 @@ Rcpp::List Lik(arma::mat mP,
   int L = mP.n_rows;
   int no_mg = vgroup.max();
   vgroup--;
+  arma::mat mIndmiss = arma::zeros<arma::mat>(arma::size(mX));
+  mIndmiss.elem( arma::find_finite(mX) ).ones(); //missing - 0;nonmissing - 1
+
   //std::cout << "vlogPrior: " << vlogPrior << std::endl;
   //for each examinee, the likelihood L(Xi) is calculated
   //Xi contain responses for examinee i

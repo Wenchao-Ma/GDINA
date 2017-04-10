@@ -12,12 +12,13 @@ Rcpp::List scorefun(arma::mat mX,
               arma::mat parloc,
               arma::vec model){
   // model must be a vector; its elements must be 0, 1 or 2
-  // SE for A-CDM cannot be caclulated now
   int N = mX.n_rows;
   int J = mX.n_cols;
   int Lj; //the number of latent classes for item j
   --parloc; //latent groups # starting from 0
-
+arma::mat missInd = arma::zeros<arma::mat>(arma::size(mX));
+missInd.elem( arma::find_finite(mX) ).ones(); //missing - 0;
+mX.elem( arma::find_nonfinite(mX) ).zeros(); //missing - 0;
   //-----Prepare index
 
   arma::vec c2;
@@ -76,7 +77,7 @@ Rcpp::List scorefun(arma::mat mX,
 
     arma::uvec loc1 = find(parlocj==c3(m));
     arma::vec P1 = itmpar(j,c3(m))*arma::ones<arma::colvec>(N); //N x 1
-    score.col(m) = sum(mstdPost.cols(loc1),1) % (mX.col(j)-P1)/(P1%(1-P1)); //N x 1
+    score.col(m) = sum(mstdPost.cols(loc1),1) % missInd.col(j) % (mX.col(j)-P1)/(P1%(1-P1)); //N x 1
   }
   arma::mat c = arma::join_horiz(c1,arma::join_horiz(c2,c3));
 

@@ -1,6 +1,7 @@
-#' Q-matrix validation, model selection and calibration in one run
+#' @include GDINA.R
+#' @title Q-matrix validation, model selection and calibration in one run
 #'
-#' \code{autoGDINA} conducts a series of CDM analyses within the G-DINA framework. Particularly,
+#' @description \code{autoGDINA} conducts a series of CDM analyses within the G-DINA framework. Particularly,
 #' the GDINA model is fitted to the data first using the \code{\link{GDINA}} function;
 #' then, the Q-matrix is validated using the function \code{\link{Qval}}.
 #' Based on the suggested Q-matrix, the data is fitted by the G-DINA model again, followed
@@ -118,11 +119,12 @@ autoGDINA <-
     # options(warn = -1)
     CDM.opt <- GDINA2.opt <- GDINA1.opt <-
       list(model = "GDINA", sequential = FALSE, item.names = NULL,
-           higher.order = FALSE, higher.order.model ="Rasch",
-           higher.order.method = "MMLE",
-           verbose = 0, catprob.parm = NULL, higher.order.struc.parm = NULL,
+           att.dist = "saturated", verbose = 0, catprob.parm = NULL,
            mono.constraint = FALSE,
-           empirical = TRUE, att.prior = NULL, att.str = FALSE,
+           higher.order = list(model="Rasch",method="MMLE",nquad=19,type = "testwise",
+                               slope.range=c(0.1,5),intercept.range=c(-3,3),
+                               slope.prior=c(0,0.25),intercept.prior=c(0,1)),
+           att.prior = NULL, att.str = FALSE,
            lower.p = 0.0001,upper.p = 0.9999, smallNcorrection = c(0.0005,0.001),
            nstarts = 1, conv.crit = 0.001, conv.type = "max.p.change",maxitr = 1000,
            diagnosis = 0,Mstep.warning = FALSE,optimizer = "all",
@@ -132,9 +134,7 @@ autoGDINA <-
     # print(GDINA1.opt)
     GDINA2.opt[names(GDINA2.option)] <- GDINA2.option
     CDM.opt[names(CDM.option)] <- CDM.option
-    if (GDINA1.opt$higher.order == TRUE) GDINA1.opt$empirical <- FALSE
-    if (GDINA2.opt$higher.order == TRUE) GDINA2.opt$empirical <- FALSE
-    if (CDM.opt$higher.order == TRUE) CDM.opt$empirical <- FALSE
+
 
     cat("Initial calibration...")
     if (length(GDINA1.option)>0){

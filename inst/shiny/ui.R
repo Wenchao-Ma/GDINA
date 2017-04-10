@@ -62,7 +62,7 @@ body <- dashboardBody(
               shinydashboard::box(
                 title = "Attribute Distribution", width = 5, collapsible = TRUE, solidHeader = TRUE,status = "primary",
                 selectInput("attdis", label = "Attribute distribution",
-                            choices = list("Empirical" = 0, "Higher-order" = 1,"Uniform"=3), selected = 0),
+                            choices = list("Saturated" = 0, "Higher-order" = 1,"Fixed"=2), selected = 0),
                 selectInput("hom", label = "Applicable only when higher-order model is selected",
                             choices = list("Rasch" = "Rasch", "1PL" = "1PL","2PL" = "2PL"), selected = "1PL")
               ),
@@ -92,8 +92,13 @@ tabItem(tabName = "summary",
           )),
         fluidRow(
           shinydashboard::box(
-            title = "Test fit", width = 12, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+            title = "Relative test fit", width = 12, solidHeader = TRUE, collapsible = TRUE, status = "primary",
             verbatimTextOutput('info')
+          )),
+        fluidRow(
+          shinydashboard::box(
+            title = "Absolute test fit", width = 12, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+            verbatimTextOutput('itfit')
           ))
         ),
 tabItem(tabName = "par",
@@ -171,7 +176,8 @@ tabItem(tabName = "about",
 
           p("This package is developed by Wenchao Ma and Jimmy de la Torre. The development of the GDINA R package aims to help students and researchers conduct CDM analyses as easily as possible."),
           p('This GUI application is developed with',
-            a("Shiny.", href="http://www.rstudio.com/shiny/", target="_blank"),
+            a("Shiny", href="http://www.rstudio.com/shiny/", target="_blank"), 'and',
+            a("shinydashboard.", href="http://rstudio.github.io/shinydashboard/", target="_blank"),
             ''),
 
           p(" This program is free software, so you can redistribute it and or modify
@@ -181,7 +187,9 @@ tabItem(tabName = "about",
           p("This program is distributed in the hope that it will be useful,
            but WITHOUT ANY WARRANTY; without even the implied warranty of
            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-           GNU General Public License for more details.")
+           GNU General Public License for more details."),
+
+          p("This package is still under development. If you find bugs, please email Wenchao Ma.")
         ))
 )
 )

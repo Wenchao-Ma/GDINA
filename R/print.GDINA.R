@@ -1,4 +1,4 @@
-#' @include GDINA.R autoGDINA.R modelcomp.R itemfit.R GDI.R dif.R
+#' @include GDINA.R autoGDINA.R modelcomp.R itemfit.R GDI.R dif.R s3GDINA.R
 #' @export
 print.GDINA <-
   function(x, ...)
@@ -15,18 +15,8 @@ print.GDINA <-
     M <- c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM")
     cat("Number of iterations  =", extract.GDINA(x,"nitr"), "\n")
     cat("Fitted model(s)       =", unique(extract.GDINA(x,"models")), "\n")
-    if(extract.GDINA(x,"att.str")){
-      strc <- "User specified"
-    }else {
-      if(extract.GDINA(x,"higher.order")){
-        strc <- "Higher-order"
-      }else{
-        strc <- "Saturated"
-      }
-    }
-
-    cat("Attribute structure   =",strc,"\n")
-    if (extract.GDINA(x,"higher.order")) cat("Higher-order model    =",extract.GDINA(x,"higher.order.model"),"\n")
+    cat("Attribute structure   =",extract(x,"att.dist"),"\n")
+    if (extract.GDINA(x,"ngroup")==1&&extract.GDINA(x,"att.dist")=="higher.order") cat("Higher-order model    =",extract.GDINA(x,"higher.order.model"),"\n")
     tmp <- ifelse(extract.GDINA(x,"sequential"),max(extract.GDINA(x,"Q")),max(extract.GDINA(x,"Q")[,-c(1:2)]))
     cat("Attribute level       =",ifelse(tmp>1,"Polytomous","Dichotomous"),"\n")
     cat("Response level        =",ifelse(max(extract.GDINA(x,"dat"),na.rm = TRUE)>1,"Polytomous","Dichotomous"),"\n")
@@ -34,9 +24,9 @@ print.GDINA <-
     cat("  No. of item parameters       =",extract.GDINA(x,"npar.item"),"\n")
     cat("  No. of population parameters =",extract.GDINA(x,"npar.att"),"\n")
     cat("\nFor the last iteration:\n")
-    cat("  Max abs change in success prob. =", format(round(extract.GDINA(x,"dif.p"), 5),scientific = FALSE), "\n")
-    cat("  Abs change in deviance          =", format(round(extract.GDINA(x,"dif.LL"), 2),scientific = FALSE), "\n")
-    cat("\nTime used             =", format(round(extract.GDINA(x,"time"), 4),scientific = FALSE), "\n")
+    cat("  Max abs change in success prob. =", formatC(extract(x,"dif.p"), digits = 4, format = "f"), "\n")
+    cat("  Abs change in deviance          =", formatC(extract(x,"dif.LL"), digits = 4, format = "f"), "\n")
+    cat("\nTime used             =", format(extract(x,"time"), digits = 4), "\n")
 
   }
 #' @export
@@ -130,7 +120,7 @@ print.autoGDINA <-
   function(x, ...)
   {
     packageinfo <- utils::packageDescription("GDINA")
-    cat( paste( "\nGDINA Beta Version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
+    cat( paste( "\nGDINA Version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
     cat("\nCall:\n", paste(deparse(x$options$ASEcall), sep = "\n", collapse = "\n"),
         "\n", sep = "")
     cat("\nInitial GDINA calibration [GDINA1.obj] -> ")
@@ -163,4 +153,88 @@ print.autoGDINA <-
 
   }
 
+#'@export
+print.summary.GDINA <- function(x,...){
+  cat("\nTest Fit Statistics\n\n")
+  cat("Loglikelihood =", formatC(x$Loglikelihood,digits = 4, format = "f"), "\n")
+  cat("Deviance      =", formatC(x$Deviance,digits = 4, format = "f"), "\n")
+  cat("AIC           =", formatC(x$AIC,digits = 4, format = "f"),"\n")
+  cat("AIC Penalty   =",x$`AIC Penalty`,"\n")
+  cat("  AIC penalty due to item parameters        =", x$`AIC penalty due to item parameters`, "\n")
+  cat("  AIC penalty due to population parameters  =", x$`AIC penalty due to population parameters`, "\n")
+  cat("BIC           =", formatC(x$BIC,digits = 4, format = "f"),"\n")
+  cat("BIC penalty   =",formatC(x$`BIC penalty`,digits = 4, format = "f"),"\n")
+  cat("  BIC penalty due to item parameters        =", formatC(x$`BIC penalty due to item parameters`,digits = 4, format = "f"), "\n")
+  cat("  BIC penalty due to population parameters  =", formatC(x$`BIC penalty due to population parameters`,digits = 4, format = "f"), "\n")
 
+    cat("\nAttribute Prevalence\n\n")
+    ap <- lapply(x$`Attribute Prevalence`,round,digits=4)
+    if(x$ngroup==1) {
+      print(ap[[1]])
+    }else{
+      print(ap)
+    }
+
+
+  cat("\nPosterior Weights\n\n")
+
+      print(round(x$`Posterior Weights`,4))
+
+}
+
+#'@export
+print.anova.GDINA <- function(x,...){
+  cat("\nInformation Criteria and Likelihood Ratio Tests\n\n")
+   LR <- x$LR
+   for(m in 1:nrow(LR)) {
+     if(LR$pvalue[m]<0.001) LR$pvalue[m] <- "<0.001"
+     if(LR$df[m]==0) LR$chisq[m] <- LR$pvalue[m] <- LR$df[m] <- ""
+     if(LR$chisq[m]<0) LR$df[m] <- LR$pvalue[m] <- ""
+   }
+   out <- cbind(x$IC,LR)
+   colnames(out) <- c("#par","logLik","Deviance","AIC","BIC","chisq","df","p-value")
+   print(out)
+  if(nrow(x$IC)>2) cat("\nNotes: In LR tests, models were tested against",rownames(x$IC)[which.max(x$IC$npar)],"\n       LR tests did NOT check whether models are nested or not.")
+}
+
+#'@export
+print.summary.autoGDINA <- function(x,...){
+  cat("\nAutomatic GDINA Analysis\n\n")
+  cat("Model Data fit\n")
+  print(x$fit)
+
+  if(!is.null(x$Qval)){
+    cat("\n")
+    # cat("\nSuggested Q-matrix:\n\n")
+    print(x$Qval)
+  }
+  if(!is.null(x$finalmodel)){
+    cat("\nSelected Models:\n\n")
+    print(extract(x$finalmodel,"models"))
+  }
+
+}
+
+
+#'@export
+print.AIC.GDINA <- function(x,...){
+  cat("AIC =",sprintf("%.4f", x))
+}
+#'@export
+print.BIC.GDINA <- function(x,...){
+  cat("BIC =",sprintf("%.4f", x))
+}
+#'@export
+print.logLik.GDINA <- function(x,...){
+  cat("logLik =",sprintf("%.4f", x))
+}
+#'@export
+print.deviance.GDINA <- function(x,...){
+  cat("deviance =",sprintf("%.4f", x))
+}
+#'@export
+print.npar.GDINA <- function(x,...){
+  cat("No. of total parameters =",x$`No. of parameters`,"\n")
+  cat("No. of item parameters =",x$`No. of item parameters`,"\n")
+  cat("No. of population parameters =",x$`No. of population parameters`,"\n")
+}

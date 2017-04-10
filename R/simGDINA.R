@@ -1,4 +1,4 @@
-#' @title Simulate responses based on the (sequential) G-DINA models
+#' @title Data simulation based on the G-DINA models
 #'
 #' @description
 #'    Simulate responses based on the G-DINA model (de la Torre, 2011) and sequential G-DINA model
@@ -430,7 +430,7 @@ simGDINA <- function(N, Q, gs.parm=NULL, model = "GDINA", sequential = FALSE, ty
                       higher.order.parm=list(theta = NULL, lambda = NULL),
                       mvnorm.parm=list(mean = NULL,sigma = NULL,cutoffs = NULL),
                       digits=4)
-{
+  {
   simGDINAcall <- match.call()
   catprob.parm <- catprob.parm
   inputcheck.sim(N=N, Q=Q, sequential=sequential, gs.parm=gs.parm, model = model, type = type,
@@ -466,7 +466,7 @@ if (length(mono.constraint)==1)  mono.constraint <- rep(mono.constraint,J)
 if (!is.null(gs.parm)) {
   if(nrow(gs.parm)!=nrow(Q)) stop("The number of rows in gs is not equal to the number of non-zero categories.",call. = FALSE)
   if(any(1-rowSums(gs.parm)<0)) stop("Data cannot be simulated because 1-s-g<0 for some items - check your parameters or specify parameters using delta.parm or catprob.parm.",call. = FALSE)
-  pd <- gs2p(Q=Q,gs=gs.parm,model=model,type=type,mono.constraint=mono.constraint,digits=digits)
+  pd <- gs2p(Q=Q,gs=gs.parm,model=model,type=type,mono.constraint=mono.constraint,digits=8)
   delta.parm <- pd$delta.parm
   catprob.parm <- pd$itemprob.parm
   catprob.matrix <- pd$itemprob.matrix
@@ -560,10 +560,10 @@ if(!sequential){
   if(any(LC.Prob>1)||any(LC.Prob<0)) stop("Some success probabilities are greater than 1 or less than 0.",call. = FALSE)
   # Probability for each examinee on each item
   att.Prob <- LC.Prob[att.group, ]  #N x J
-  Y <- 1 * (att.Prob > matrix(runif(N * J), N, J))
+   Y <- 1 * (att.Prob > matrix(runif(N * J), N, J))
 }else{
   LC.Prob <- sequP(as.matrix(par.loc),as.matrix(catprob.matrix),C)
-  c.LC.Prob <- LC.Prob$cPr
+  # c.LC.Prob <- LC.Prob$cPr
   u.LC.Prob <- LC.Prob$uPr
   LC.Prob <- t(u.LC.Prob) #L x S0
   if(any(LC.Prob>1)||any(LC.Prob<0)) stop("Some success probabilities are greater than 1 or less than 0.",call. = FALSE)
@@ -578,6 +578,7 @@ if(!sequential){
     Pj <- att.Prob[,which(C0==j)]
     Y[,j] <- apply(Pj,1,function(x){sample(c(0:C[j]),1,prob=x)})
   }
+  LC.Prob <- LC.Prob[,-which(!duplicated(C0))]
 }
 
   names(delta.parm) <- names(catprob.parm) <- item.names

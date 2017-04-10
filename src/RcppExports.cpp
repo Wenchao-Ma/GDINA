@@ -6,6 +6,18 @@
 
 using namespace Rcpp;
 
+// aggregateCol
+arma::mat aggregateCol(arma::mat mX, arma::vec ind);
+RcppExport SEXP GDINA_aggregateCol(SEXP mXSEXP, SEXP indSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type ind(indSEXP);
+    rcpp_result_gen = Rcpp::wrap(aggregateCol(mX, ind));
+    return rcpp_result_gen;
+END_RCPP
+}
 // designM
 arma::mat designM(arma::mat malpha, int model);
 RcppExport SEXP GDINA_designM(SEXP malphaSEXP, SEXP modelSEXP) {
@@ -32,31 +44,29 @@ BEGIN_RCPP
 END_RCPP
 }
 // Lik
-Rcpp::List Lik(arma::mat mP, arma::mat mX, arma::mat vlogPrior, arma::mat mIndmiss, arma::vec vgroup);
-RcppExport SEXP GDINA_Lik(SEXP mPSEXP, SEXP mXSEXP, SEXP vlogPriorSEXP, SEXP mIndmissSEXP, SEXP vgroupSEXP) {
+Rcpp::List Lik(arma::mat mP, arma::mat mX, arma::mat vlogPrior, arma::vec vgroup);
+RcppExport SEXP GDINA_Lik(SEXP mPSEXP, SEXP mXSEXP, SEXP vlogPriorSEXP, SEXP vgroupSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type mP(mPSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type vlogPrior(vlogPriorSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mIndmiss(mIndmissSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type vgroup(vgroupSEXP);
-    rcpp_result_gen = Rcpp::wrap(Lik(mP, mX, vlogPrior, mIndmiss, vgroup));
+    rcpp_result_gen = Rcpp::wrap(Lik(mP, mX, vlogPrior, vgroup));
     return rcpp_result_gen;
 END_RCPP
 }
 // NgRg
-List NgRg(arma::mat mlogPost, arma::mat mX, arma::mat mloc, arma::mat mIndmiss);
-RcppExport SEXP GDINA_NgRg(SEXP mlogPostSEXP, SEXP mXSEXP, SEXP mlocSEXP, SEXP mIndmissSEXP) {
+List NgRg(arma::mat mlogPost, arma::mat mX, arma::mat mloc);
+RcppExport SEXP GDINA_NgRg(SEXP mlogPostSEXP, SEXP mXSEXP, SEXP mlocSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type mlogPost(mlogPostSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type mloc(mlocSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mIndmiss(mIndmissSEXP);
-    rcpp_result_gen = Rcpp::wrap(NgRg(mlogPost, mX, mloc, mIndmiss));
+    rcpp_result_gen = Rcpp::wrap(NgRg(mlogPost, mX, mloc));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -85,23 +95,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type parloc(parlocSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type model(modelSEXP);
     rcpp_result_gen = Rcpp::wrap(scorefun(mX, mlogPost, itmpar, parloc, model));
-    return rcpp_result_gen;
-END_RCPP
-}
-// SE
-Rcpp::List SE(arma::mat mX, arma::mat mlogPost, arma::mat itmpar, arma::mat parloc, arma::vec model, arma::mat mIndmiss, int SE_type);
-RcppExport SEXP GDINA_SE(SEXP mXSEXP, SEXP mlogPostSEXP, SEXP itmparSEXP, SEXP parlocSEXP, SEXP modelSEXP, SEXP mIndmissSEXP, SEXP SE_typeSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mlogPost(mlogPostSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type itmpar(itmparSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type parloc(parlocSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type model(modelSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mIndmiss(mIndmissSEXP);
-    Rcpp::traits::input_parameter< int >::type SE_type(SE_typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(SE(mX, mlogPost, itmpar, parloc, model, mIndmiss, SE_type));
     return rcpp_result_gen;
 END_RCPP
 }

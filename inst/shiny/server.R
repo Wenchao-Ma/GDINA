@@ -36,28 +36,28 @@ shinyServer(function(input, output) {
     Q <- read.csv(inFile2$datapath, header = input$header,
                     sep = input$sep, quote = input$quote)
     if(input$attdis==0){
-      emp <- TRUE;ho <- FALSE
+      HOdist <- "saturated"
     }else if(input$attdis==1){
-      emp <- FALSE;ho <- TRUE
+      HOdist <- "higher.order"
     }else if(input$attdis==2){
-      emp <- FALSE;ho <- FALSE
+      HOdist <- "fixed"
     }
     if(input$type=="autoSelected"){
       fit <- GDINA::autoGDINA(dat = dat, Q = Q, Qvalid = FALSE,
                               alpha.level = input$alphalevel, modelselectionrule = input$waldmethod,
-                              GDINA1.option = list(verbose = 0,higher.order = ho,
-                          higher.order.model = input$hom,empirical = emp,
+                              GDINA1.option = list(verbose = 0,att.dist = HOdist,
+                          higher.order = list(model = input$hom),
                           sequential = input$seq,
                           mono.constraint = input$mono),
-                          CDM.option = list(verbose = 0,higher.order = ho,
-                                                                             higher.order.model = input$hom,empirical = emp,
+                          CDM.option = list(verbose = 0,att.dist = HOdist,
+                                            higher.order = list(model = input$hom),
                                                                              sequential = input$seq,
                                                                              mono.constraint = input$mono))
       est <- fit$CDM.obj
     }else{
       est <- GDINA::GDINA(dat = dat, Q = Q, model = input$type,
-                          verbose = 0,higher.order = ho,
-                          higher.order.model = input$hom,empirical = emp,
+                          verbose = 0,att.dist = HOdist,
+                          higher.order = list(model = input$hom),
                           sequential = input$seq,
                           mono.constraint = input$mono)
     }
@@ -76,7 +76,7 @@ shinyServer(function(input, output) {
     est.info <- function(x) {
       cat("\nThe Generalized DINA Model Framework  \n")
       packageinfo <- utils::packageDescription("GDINA")
-      cat( paste( "   Beta Version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
+      cat( paste( "   GDINA Version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
       cat(  "   Wenchao Ma & Jimmy de la Torre \n" )
 
       cat("\nNumber of items       =", extract(x,"nitem"), "\n")
@@ -86,18 +86,7 @@ shinyServer(function(input, output) {
       cat("Number of iterations  =", extract(x,"nitr"), "\n")
       cat("Fitted model(s)       =\n")
       print(extract(x,"models"))
-      if(extract(x,"att.str")){
-        strc <- "User specified"
-      }else {
-        if(extract(x,"higher.order")){
-          strc <- "Higher-order"
-        }else{
-          strc <- "Saturated"
-        }
-      }
 
-      cat("\nAttribute structure   =",strc,"\n")
-      if (extract(x,"higher.order")) cat("Higher-order model    =",extract(x,"higher.order.model"),"\n")
       tmp <- ifelse(extract(x,"sequential"),max(extract(x,"Q")),max(extract(x,"Q")[,-c(1:2)]))
       cat("Attribute level       =",ifelse(tmp>1,"Polytomous","Dichotomous"),"\n")
       cat("Response level        =",ifelse(max(extract(x,"dat"),na.rm = TRUE)>1,"Polytomous","Dichotomous"),"\n")
@@ -124,6 +113,14 @@ shinyServer(function(input, output) {
     if (input$goButton == 0)
       return()
     iter.info()
+  })
+
+
+  itf <- reactive({
+    itemfit(est.result())
+  })
+  output$itfit <- renderPrint({
+    print(itf())
   })
 
 

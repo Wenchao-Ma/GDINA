@@ -1,12 +1,15 @@
-#' Differential item functioning for cognitive diagnosis models
+#' @include GDINA.R
+#' @title  Differential item functioning for cognitive diagnosis models
 #'
-#' This function is used to detect differential item functioning based on the models estimated
+#' @description   This function is used to detect differential item functioning based on the models estimated
 #' in the \code{\link{GDINA}} function using the Wald test (Hou, de la Torre, & Nandakumar, 2014)
 #' @param method DIF detection method; It can be \code{"wald"} for Hou, de la Torre, and Nandakumar's (2014)
 #' Wald test method, and \code{"LR"} for likelihood ratio test.
 #' @param parm The type of parameters associated with the Wald test for the DIF detection. It can be either \code{"itemprob"}
 #'  or \code{"delta"} for item probabilities and delta parameters, respectively.
 #' @param difitem Items for the DIF detection. By default, all items will be examined.
+#' @param LR.type Type of likelihood ratio test for DIF detection. It can be \code{'free.all'} or
+#' \code{'free.one'}.
 #' @param SE.type Type of standard error estimation methods for the Wald test.
 #' @inheritParams GDINA
 #' @param ... Other arguments passed to GDINA function for model calibration
@@ -46,7 +49,8 @@
 #'
 
 
-dif <- function(dat, Q, group, method = "wald", difitem = "all", parm = "delta", digits = 4, SE.type = 2,...){
+dif <- function(dat, Q, group, method = "wald", LR.type="free.all",
+                difitem = "all", parm = "delta", digits = 4, SE.type = 2,...){
   if (length(group)==1){
     gr <- dat[,group]
     dat <- dat[,-group]
@@ -57,37 +61,46 @@ dif <- function(dat, Q, group, method = "wald", difitem = "all", parm = "delta",
   }
   gr.label <- unique(gr)
   J <- nrow(Q)
-  if(difitem == "all") difitem <- 1:J
-est <- GDINA::GDINA(bdiag(list(dat[gr==gr.label[1],],dat[gr==gr.label[2],]),NA), rbind(Q,Q), group = gr,...)
+  if(length(difitem)==1&&difitem == "all") difitem <- 1:J
+  est <- GDINA::GDINA(dat = bdiag(list(dat[gr==gr.label[1],],dat[gr==gr.label[2],]),NA),
+                      Q = rbind(Q,Q),
+                      group = gr,...)
 
   if(method=="wald"){
 
     output <- matrix(0,length(difitem),3)
 
     if(parm=="itemprob"){
-      pcov <- internalextract(est,"catprob.cov",type=SE.type)
-      for (j in difitem){
+      pcov <- extract(est,"catprob.cov",SE.type=SE.type)
+      for (j in 1:length(difitem)){
         # category probabilities
-        if(internalextract(est,"models_numeric")[[j]]%in%c(1,2)){
-          x <- c(itemparm(est,"gs",digits = 8)[j,],itemparm(est,"gs",digits = 8)[j+J,])
+        if(extract(est,"models_numeric")[[difitem[j]]]%in%c(1,2)){
+          x <- c(itemparm(est,"gs",digits = 8)[difitem[j],],
+                 itemparm(est,"gs",digits = 8)[difitem[j]+J,])
         }else{
-          x <- c(internalextract(est,"catprob.parm")[[j]],internalextract(est,"catprob.parm")[[j+J]])
+          x <- c(extract(est,"catprob.parm")[[difitem[j]]],
+                 extract(est,"catprob.parm")[[difitem[j]+J]])
         }
 
         R <- cbind(diag(length(x)/2),-1*diag(length(x)/2))
-        vcov <- bdiag(list(pcov$cov[pcov$index$loc[pcov$index$item==j],pcov$index$loc[pcov$index$item==j]],
-                           pcov$cov[pcov$index$loc[pcov$index$item==j+J],pcov$index$loc[pcov$index$item==j+J]]))
+        vcov <- bdiag(list(pcov$cov[pcov$index$loc[pcov$index$item==difitem[j]],
+                                    pcov$index$loc[pcov$index$item==difitem[j]]],
+                           pcov$cov[pcov$index$loc[pcov$index$item==difitem[j]+J],
+                                    pcov$index$loc[pcov$index$item==difitem[j]+J]]))
         output[j,1] <- t(R%*%x)%*%MASS::ginv(R%*%vcov%*%t(R))%*%(R%*%x)
         output[j,2] <- nrow(R)
         output[j,3] <- pchisq(output[j,1],nrow(R),lower.tail = FALSE)
       }
     }else if(parm=="delta"){
-      dcov <- internalextract(est,"delta.cov",type=SE.type)
-      for (j in difitem){
-        x <- c(internalextract(est,"delta.parm")[[j]],internalextract(est,"delta.parm")[[j+J]])
+      dcov <- extract(est,"delta.cov",SE.type=SE.type)
+      for (j in 1:length(difitem)){
+        x <- c(extract(est,"delta.parm")[[difitem[j]]],
+               extract(est,"delta.parm")[[difitem[j]+J]])
         R <- cbind(diag(length(x)/2),-1*diag(length(x)/2))
-        vcov <- bdiag(list(dcov$cov[dcov$index$loc[dcov$index$item==j],dcov$index$loc[dcov$index$item==j]],
-                           dcov$cov[dcov$index$loc[dcov$index$item==j+J],dcov$index$loc[dcov$index$item==j+J]]))
+        vcov <- bdiag(list(dcov$cov[dcov$index$loc[dcov$index$item==difitem[j]],
+                                    dcov$index$loc[dcov$index$item==difitem[j]]],
+                           dcov$cov[dcov$index$loc[dcov$index$item==difitem[j]+J],
+                                    dcov$index$loc[dcov$index$item==difitem[j]+J]]))
         output[j,1] <- t(R%*%x)%*%MASS::ginv(R%*%vcov%*%t(R))%*%(R%*%x)
         output[j,2] <- nrow(R)
         output[j,3] <- pchisq(output[j,1],nrow(R),lower.tail = FALSE)
@@ -96,28 +109,60 @@ est <- GDINA::GDINA(bdiag(list(dat[gr==gr.label[1],],dat[gr==gr.label[2],]),NA),
     }
     output <- round(data.frame(output),digits)
     colnames(output) <- c("Wald stat.","df","p.value")
-    rownames(output) <- internalextract(est,"item.names")[difitem]
+    rownames(output) <- extract(est,"item.names")[difitem]
     # output <- Wp
   }else if(method=="LR"){
-    output <- data.frame(neg2LL=rep(NA,nrow(Q)),
-                         LRstat=rep(NA,nrow(Q)),
-                         df=rep(NA,nrow(Q)),
-                         'p.value'=rep(NA,nrow(Q)))
+    output <- data.frame(neg2LL=rep(NA,length(difitem)),
+                         LRstat=rep(NA,length(difitem)),
+                         df=rep(NA,length(difitem)),
+                         'p.value'=rep(NA,length(difitem)))
 
-    for (j in difitem){
-      gr1dat <- gr2dat <- dat[,-j]
-      gr1dat[gr==gr.label[2],] <- NA
-      gr2dat[gr==gr.label[1],] <- NA
-      newQ <- rbind(Q[j,],Q[-j,],Q[-j,])
-      newdat <- cbind(dat[,j],gr1dat,gr2dat)
-      estj <- GDINA::GDINA(newdat, newQ, group = gr,...)
-      output$neg2LL[j] <- deviance(estj)
-      output$LRstat[j] <- deviance(estj) - deviance(est)
-      output$df[j] <- npar(est)[1] - npar(estj)[1]
-      output$'p.value'[j] <- pchisq(output$LRstat[j],output$df[j],lower.tail = FALSE)
+     if(LR.type=="free.one") {
+       # dif item has dif pars; all other items have same pars for two gr
+       est0 <- GDINA::GDINA(dat, Q, group = gr,...)
+
+        for (j in 1:length(difitem)){
+
+            gr1dat <- gr2dat <- dat[,difitem[j]]
+            gr1dat[gr==gr.label[2]] <- NA
+            gr2dat[gr==gr.label[1]] <- NA
+            estj <- GDINA::GDINA(dat = cbind(gr1dat,gr2dat,dat[,-difitem[j]]),
+                                 Q = rbind(Q[difitem[j],],Q[difitem[j],],Q[-difitem[j],]),
+                                 group = gr,
+                                 catprob.parm = c(list(extract(est0,"catprob.parm")[[difitem[j]]],
+                                                       extract(est0,"catprob.parm")[[difitem[j]]]),
+                                                  extract(est0,"catprob.parm")[-difitem[j]]),
+                                 att.prior = extract(est0,"att.prior"),...)
+            output$LRstat[j] <-  deviance(est0) - deviance(estj)
+            output$df[j] <- npar(estj)$`No. of parameters` - npar(est0)$`No. of parameters`
+            output$neg2LL[j] <- deviance(estj)
+            output$'p.value'[j] <- pchisq(output$LRstat[j],output$df[j],lower.tail = FALSE)
+        }
+      }else if(LR.type=="free.all"){#dif item has the same par; all other items have dif pars
+        # gr1dat <- gr2dat <- dat[,-difitem[j]]
+        # gr1dat[gr==gr.label[2],] <- NA
+        # gr2dat[gr==gr.label[1],] <- NA
+        # newQ <- rbind(Q[difitem[j],],Q[-difitem[j],],Q[-difitem[j],])
+        # newdat <- cbind(dat[,difitem[j]],gr1dat,gr2dat)
+        # tmp.par <- c(list(extract(est,"catprob.parm")[[difitem[j]]]),
+        #              extract(est,"catprob.parm")[-c(difitem[j],difitem[j]+J)])
+        for (j in 1:length(difitem)){
+          estj <- GDINA::GDINA(dat = cbind(dat[,difitem[j]],bdiag(list(dat[gr==gr.label[1],-difitem[j]],dat[gr==gr.label[2],-difitem[j]]),NA)),
+                             Q = rbind(Q[difitem[j],],Q[-difitem[j],],Q[-difitem[j],]),
+                             group = gr,
+                             catprob.parm = c(list(extract(est,"catprob.parm")[[difitem[j]]]),
+                                              extract(est,"catprob.parm")[-c(difitem[j],difitem[j]+J)]),
+                             att.prior = extract(est,"att.prior"),...)
+        output$LRstat[j] <- deviance(estj) - deviance(est)
+        output$df[j] <- npar(est)$`No. of parameters` - npar(estj)$`No. of parameters`
+        output$neg2LL[j] <- deviance(estj)
+        output$'p.value'[j] <- pchisq(output$LRstat[j],output$df[j],lower.tail = FALSE)
+      }
+
+
     }
     output <- round(output,digits)
-    rownames(output) <- internalextract(est,"item.names")[1:nrow(Q)]
+    rownames(output) <- extract(est,"item.names")[difitem]
     # output <- lr.out
   }
 output <- list(test=output,group=gr,mg.est=est)

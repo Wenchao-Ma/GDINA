@@ -6,17 +6,13 @@
 #'
 #' The data consists of responses of 2922 examinees to 28 items involving 3 attributes.
 #' Attribute 1 is morphosyntactic rules, Attribute 2 is cohesive rules and
-#' Attribute 3 is lexical rules. In Templin and Hoffman (2013), three attributes are treated as independent.
+#' Attribute 3 is lexical rules.
 #'
-#' However, Templin and Bradshaw (2014) have shown that a linear structure exists, that is,
-#' A1 -> A2 -> A3.
-#'
-#' The data set is obtained from \url{http://jonathantemplin.com/dcm-workshop-spring-2012-ncme/}.
 #'
 #' @format A list of responses and Q-matrix with components:
 #' \describe{
-#' \item{\code{dat}}{responses of 2922 examinees to 28 items}
-#' \item{\code{Q}}{The \eqn{28 \times 3} Q-matrix}
+#' \item{\code{dat}}{Responses of 2922 examinees to 28 items.}
+#' \item{\code{Q}}{The \eqn{28 \times 3} Q-matrix.}
 #' }
 #'
 #' @examples

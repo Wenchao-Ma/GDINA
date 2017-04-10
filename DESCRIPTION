@@ -1,15 +1,14 @@
 Package: GDINA
 Type: Package
 Title: The Generalized DINA Model Framework
-Version: 1.2.1
-Date: 2017-2-12
+Version: 1.4.1
+Date: 2017-4-10
 Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre"),email = "wenchao.ma@rutgers.edu"),person(given = "Jimmy", family = "de la Torre", role = "aut"))
 Description: A set of psychometric tools for cognitive diagnostic analyses
     for both dichotomous and polytomous responses. Various cognitive diagnosis
     models can be estimated, include the generalized deterministic inputs, noisy
     and gate (G-DINA) model by de la Torre (2011) <DOI:10.1007/s11336-011-9207-7>,
-    the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.
-    12070>, and many other models they subsume. Joint attribute distribution can
+    the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.12070>, and many other models they subsume. Joint attribute distribution can
     be saturated, higher-order or structured. Q-matrix validation, item and model
     fit statistics, model comparison at test and item level and differential item
     functioning can also be conducted. A graphical user interface is also provided.
@@ -40,9 +39,10 @@ BugReports: https://github.com/Wenchao-Ma/GDINA/issues
 RoxygenNote: 6.0.1
 Collate: 
     'CR.R'
+    'ExportedFuncs.R'
+    'GDINA.R'
     'GDI.R'
     'GDINA-package.R'
-    'GDINA.R'
     'HO.R'
     'HOsupplement.R'
     'M.R'
@@ -50,15 +50,12 @@ Collate:
     'Mstep.R'
     'Msupplement.R'
     'RcppExports.R'
-    'alpha.R'
     'anova.GDINA.R'
     'att.struc.R'
     'autoGDINA.R'
     'designmatrix.R'
     'dif.R'
     'ecpe.R'
-    'eta.loc.R'
-    'exportedUtils.R'
     'extract.GDINA.R'
     'extract.Qval.R'
     'itemfit.R'
@@ -71,15 +68,14 @@ Collate:
     'heatplot.itemfit.R'
     'hoparm.R'
     'initials.R'
-    'internalExtract.R'
     'itemparm.GDINA.R'
     'monocheck.R'
     'personparm.GDINA.R'
     'plotIRF.GDINA.R'
     'plotPVAF.Qval.R'
-    'print.GDINA.R'
-    'rowCount.R'
     's3GDINA.R'
+    'print.GDINA.R'
+    'score.R'
     'sim10GDINA.R'
     'sim20seqGDINA.R'
     'sim21seqDINA.R'

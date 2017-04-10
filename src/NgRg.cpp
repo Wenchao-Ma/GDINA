@@ -8,18 +8,20 @@ using namespace Rcpp;
 
 List NgRg(arma::mat mlogPost,
                 arma::mat mX,
-                arma::mat mloc,
-                arma::mat mIndmiss){
-    int J = mX.n_cols; 
+                arma::mat mloc){
+    int J = mX.n_cols;
     //int L = mlogPost.n_cols;
     int Ljmax = mloc.max();
+    arma::mat mIndmiss = arma::zeros<arma::mat>(arma::size(mX));
+    mIndmiss.elem( arma::find_finite(mX) ).ones(); //missing - 0;nonmissing - 1
+
       arma::mat Ng = arma::zeros<arma::mat>(J,Ljmax);
       arma::mat Rg = arma::zeros<arma::mat>(J,Ljmax);
       arma::mat mPost = exp ( mlogPost ); //N x L
       --mloc;
     for (int j=0;j<J;++j){ //for each item
       int Kjmax = mloc.row(j).max()+1;
-      //missing values in item j are removed from posterior and X 
+      //missing values in item j are removed from posterior and X
       arma::mat mPostmiss=mPost.rows(arma::find(mIndmiss.col(j)==1));
       arma::mat mXmiss=mX.rows(arma::find(mIndmiss.col(j)==1));
       for (int k=0;k<Kjmax;++k){
@@ -31,5 +33,5 @@ List NgRg(arma::mat mlogPost,
     }
     return Rcpp::List::create(Rcpp::Named("Ng") = Ng,
     Rcpp::Named("Rg") = Rg);
-    
+
 }

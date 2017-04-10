@@ -59,10 +59,10 @@
 modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,
                            models=c("DINA","DINO","ACDM","LLM","RRUM"),
                            varcov = NULL){
-# if(internalextract(GDINA.obj,"sequential")) stop("Model selection is not available for sequential models.",call. = FALSE)
-  if (any(internalextract(GDINA.obj,"models")!="GDINA")) stop ("Implementing the Wald test for model comparison requires all items are fitted by the G-DINA model.",call. = FALSE)
+  if(!class(GDINA.obj)=="GDINA") stop("GDINA.obj must be a GDINA estimate.",call. = FALSE)
+  if (any(extract(GDINA.obj,"models")!="GDINA")) stop ("Implementing the Wald test for model comparison requires all items are fitted by the G-DINA model.",call. = FALSE)
   models <- match.arg(models, several.ok = TRUE)
-  Q <- internalextract(GDINA.obj,"Q")
+  Q <- extract(GDINA.obj,"Q")
   Kjs <- rowSums(Q)
   Ks <- cumsum(2^Kjs)
   W <- pvalues <- df <- NULL
@@ -92,16 +92,16 @@ modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,
 
       # variance covariance matrix for item j
       if (is.null(varcov)) {
-        cov <- internalextract(GDINA.obj,"catprob.cov",type = SE.type)
+        cov <- extract(GDINA.obj,"catprob.cov",type = SE.type)
         ind <- cov$index
         vcov <- cov$cov[ind[which(ind[,1]==j),2],ind[which(ind[,1]==j),2]]
         }
       else{vcov <- varcov[[j]]}
 
       if ("DINA" %in% models){
-        w <- t(RDA[[Kjs[j]]]%*%internalextract(GDINA.obj,"catprob.parm")[[j]])%*%
+        w <- t(RDA[[Kjs[j]]]%*%extract(GDINA.obj,"catprob.parm")[[j]])%*%
           MASS::ginv(RDA[[Kjs[j]]]%*%vcov%*%t(RDA[[Kjs[j]]]))%*%
-          (RDA[[Kjs[j]]]%*%internalextract(GDINA.obj,"catprob.parm")[[j]])
+          (RDA[[Kjs[j]]]%*%extract(GDINA.obj,"catprob.parm")[[j]])
         wald <- c(wald,w)
         dfj <- c(dfj,2^Kjs[j]-2)
         p <- c(p,1-pchisq(w,2^Kjs[j]-2))
@@ -111,9 +111,9 @@ modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,
         p <- c(p,NA)
       }
       if ("DINO" %in% models){
-        w <- t(RDO[[Kjs[j]]]%*%internalextract(GDINA.obj,"catprob.parm")[[j]])%*%
+        w <- t(RDO[[Kjs[j]]]%*%extract(GDINA.obj,"catprob.parm")[[j]])%*%
           MASS::ginv(RDO[[Kjs[j]]]%*%vcov%*%t(RDO[[Kjs[j]]]))%*%
-          (RDO[[Kjs[j]]]%*%internalextract(GDINA.obj,"catprob.parm")[[j]])
+          (RDO[[Kjs[j]]]%*%extract(GDINA.obj,"catprob.parm")[[j]])
         wald <- c(wald,w)
         dfj <- c(dfj,2^Kjs[j]-2)
         p <- c(p,1-pchisq(w,2^Kjs[j]-2))
@@ -123,9 +123,9 @@ modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,
         p <- c(p,NA)
       }
       if ("ACDM" %in% models){
-        w <- t(RAM[[Kjs[j]]]%*%internalextract(GDINA.obj,"catprob.parm")[[j]])%*%
+        w <- t(RAM[[Kjs[j]]]%*%extract(GDINA.obj,"catprob.parm")[[j]])%*%
           MASS::ginv(RAM[[Kjs[j]]]%*%vcov%*%t(RAM[[Kjs[j]]]))%*%
-          (RAM[[Kjs[j]]]%*%internalextract(GDINA.obj,"catprob.parm")[[j]])
+          (RAM[[Kjs[j]]]%*%extract(GDINA.obj,"catprob.parm")[[j]])
         wald <- c(wald,w)
         dfj <- c(dfj,2^Kjs[j]-Kjs[j]-1)
         p <- c(p,1-pchisq(w,2^Kjs[j]-Kjs[j]-1))
@@ -135,8 +135,8 @@ modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,
         p <- c(p,NA)
       }
       if ("LLM" %in% models){
-        fpj <- logit(internalextract(GDINA.obj,"catprob.parm")[[j]])
-        grad_fpj <- solve(diag(internalextract(GDINA.obj,"catprob.parm")[[j]]*(1-internalextract(GDINA.obj,"catprob.parm")[[j]])))
+        fpj <- logit(extract(GDINA.obj,"catprob.parm")[[j]])
+        grad_fpj <- solve(diag(extract(GDINA.obj,"catprob.parm")[[j]]*(1-extract(GDINA.obj,"catprob.parm")[[j]])))
         var_fpj <- grad_fpj%*%vcov%*%t(grad_fpj)
         w <- t(RAM[[Kjs[j]]]%*%fpj)%*%
           MASS::ginv(RAM[[Kjs[j]]]%*%var_fpj%*%t(RAM[[Kjs[j]]]))%*%
@@ -150,8 +150,8 @@ modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,
         p <- c(p,NA)
       }
       if ("RRUM" %in% models){
-        fpj <- log(internalextract(GDINA.obj,"catprob.parm")[[j]])
-        grad_fpj <- solve(diag(internalextract(GDINA.obj,"catprob.parm")[[j]]))
+        fpj <- log(extract(GDINA.obj,"catprob.parm")[[j]])
+        grad_fpj <- solve(diag(extract(GDINA.obj,"catprob.parm")[[j]]))
         var_fpj <- grad_fpj%*%vcov%*%t(grad_fpj)
         w <- t(RAM[[Kjs[j]]]%*%fpj)%*%
           MASS::ginv(RAM[[Kjs[j]]]%*%var_fpj%*%t(RAM[[Kjs[j]]]))%*%
@@ -179,7 +179,7 @@ df <- df[,-1]
   ##### dissimilarity index
 ds.f <- NULL
 if(DS){
-  ds <- lapply(internalextract(GDINA.obj,"catprob.parm")[item],function(p){
+  ds <- lapply(extract(GDINA.obj,"catprob.parm")[item],function(p){
     unlist(lapply(models,function(m) DS(p,m)$DS))
   })
   ds <- do.call(rbind,ds)

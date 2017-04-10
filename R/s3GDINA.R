@@ -3,24 +3,32 @@
 #'@export
 #'@describeIn GDINA calculate AIC
 AIC.GDINA <- function(object,...){
-  extract.GDINA(object, what = "AIC")
+  aic <- extract(object, what = "AIC")
+  class(aic) <- "AIC.GDINA"
+  aic
 }
 
 #' @export
 #' @describeIn GDINA calculate BIC
 BIC.GDINA <- function(object,...){
-  extract.GDINA(object, what = "BIC")
+  bic <- extract(object, what = "BIC")
+  class(bic) <- "BIC.GDINA"
+  bic
 }
 
 #' @export
 #' @describeIn GDINA calculate log-likelihood
 logLik.GDINA <- function(object,...){
-  extract.GDINA(object, what = "logLik")
+  logL <- extract(object, what = "logLik")
+  class(logL) <- "logLik.GDINA"
+  logL
 }
 #' @export
 #' @describeIn GDINA calculate deviance
 deviance.GDINA <- function(object,...){
-  extract.GDINA(object, what = "deviance")
+  dev <- extract(object, what = "deviance")
+  class(dev) <- "deviance.GDINA"
+  dev
 }
 
 
@@ -40,10 +48,11 @@ npar <- function(object,...){
 #' @export
 #' @describeIn GDINA calculate the number of parameters
 npar.GDINA <- function(object,...){
-  out <- c(extract.GDINA(object, what = "npar"),
-    extract.GDINA(object, what = "npar.item"),
-    extract.GDINA(object, what = "npar.att"))
-  names(out) <- c("# of parameters","# of item parameters","# of population parameters")
+  out <- list(npar=extract(object, what = "npar"),
+    npar.item=extract(object, what = "npar.item"),
+    npar.att=extract(object, what = "npar.att"))
+  names(out) <- c("No. of parameters","No. of item parameters","No. of population parameters")
+  class(out) <- "npar.GDINA"
   return(out)
 }
 

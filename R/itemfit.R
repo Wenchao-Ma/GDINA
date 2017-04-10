@@ -65,18 +65,24 @@
 
 itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni",
                     digits = 4,N.resampling = NULL,randomseed=123456){
+
+
+  if(!class(GDINA.obj)=="GDINA") stop("GDINA.obj must be a GDINA estimate.",call. = FALSE)
+  if(extract(GDINA.obj,"ngroup")>1) stop("Itemfit is not available for multiple group estimation.",call. = FALSE)
+  if (extract(GDINA.obj, "sequential")) stop("Itemfit is not available for sequential models.", call. = FALSE)
   itemfitcall <- match.call()
-  if (internalextract(GDINA.obj, "sequential"))
-    stop("Item fit calculation is not available for sequential models.",
-         call. = FALSE)
+  if (exists(".Random.seed", .GlobalEnv))
+    oldseed <- .GlobalEnv$.Random.seed
+  else
+    oldseed <- NULL
   set.seed(randomseed)
-  dat <- as.matrix(extract.GDINA(GDINA.obj, "dat"))
-  Q <- extract.GDINA(GDINA.obj, "Q")
-  Qc <- extract.GDINA(GDINA.obj, "Qc")
-  K <- extract.GDINA(GDINA.obj, "natt")
-  N <- extract.GDINA(GDINA.obj, "nobs")
-  J <- extract.GDINA(GDINA.obj, "nitem")
-  Pr <- t(extract.GDINA(GDINA.obj, "LCprob.parm"))  #L x J
+  dat <- as.matrix(extract(GDINA.obj, "dat"))
+  Q <- extract(GDINA.obj, "Q")
+  Qc <- extract(GDINA.obj, "Qc")
+  K <- extract(GDINA.obj, "natt")
+  N <- extract(GDINA.obj, "nobs")
+  J <- extract(GDINA.obj, "nitem")
+  Pr <- t(extract(GDINA.obj, "LCprob.parm"))  #L x J
 
 
 # -------------Item Fit----------------------#
@@ -91,7 +97,7 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni
   pattern <- t(alpha(K, T, Q))
 
   if (person.sim == "post") {
-    post <- extract.GDINA(GDINA.obj, "posterior.prob")
+    post <- extract(GDINA.obj, "posterior.prob")
     att_group <-
       sample(1:length(post), Rep * N, replace = TRUE, prob = post)
   } else{
@@ -117,7 +123,7 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni
 
      fitstat <- list()
 
-    # if(!extract.GDINA(GDINA.obj, "sequential")) {
+    # if(!extract(GDINA.obj, "sequential")) {
       Yfit <- Pr[att_group, ] > matrix(runif(length(att_group) * J), ncol = J)
     # } else{
     #   Yfit <- matrix(0,length(att_group),J)
@@ -218,6 +224,11 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni
                item.pair.2 = itempair[, 2],
                round(l.pairs, digits))
   p <- data.frame(item = c(1:J), round(p, digits))
+
+  if (!is.null(oldseed))
+    .GlobalEnv$.Random.seed <- oldseed
+  else
+    rm(".Random.seed", envir = .GlobalEnv)
 
   output <-
     list(

@@ -1,6 +1,7 @@
-#' Plot item success probability
+#' @include GDINA.R
+#' @title  Plot item success probability
 #'
-#' Create plots of item/category success probability for each latent group
+#' @description   Create plots of item/category success probability for each latent group
 #'
 #' @param object model object of class \code{\link{GDINA}} or \code{\link{dif}}
 #' @param item a vector specifying which item(s) the plots are drawn for
@@ -24,12 +25,12 @@ plotIRF <- function(object, item, errorbar = FALSE, ...){
 plotIRF.GDINA <-
   function(object, item, errorbar = FALSE, SE.type = 2,...)
   {
-    if(internalextract(object,"sequential")) stop("IRF plot is not available for sequential models.",call. = FALSE)
+    if(extract(object,"sequential")) stop("IRF plot is not available for sequential models.",call. = FALSE)
     lc <- p <- upper <- lower <- NULL
 if(class(object)!="GDINA") stop("object must be of class GDINA.",call. = FALSE)
-    if (errorbar) se <- internalextract(object,what = "catprob.se",type=SE.type)
+    if (errorbar) se <- extract(object,what = "catprob.se",SE.type=SE.type)
     for (j in item){
-      tmp.obj <- internalextract(object,what = "catprob.parm")[[j]]
+      tmp.obj <- extract(object,what = "catprob.parm")[[j]]
 
       tmp.name <- gsub("P\\(","",names(tmp.obj))
       tmp.name <- gsub("\\)","",tmp.name)
@@ -68,17 +69,17 @@ if(class(object)!="GDINA") stop("object must be of class GDINA.",call. = FALSE)
 plotIRF.dif <-
   function(object, item, errorbar = FALSE, SE.type = 2, ...)
   {
-    if(class(object)!="dif") stop("object must be of class dif",call. = FALSE)
+    # if(class(object)!="dif") stop("object must be of class dif",call. = FALSE)
 lc <- p <- DIFgroups <- NULL
 if (errorbar) {
-  se <- internalextract(object$mg.est,what = "catprob.se",type=SE.type)
+  se <- extract(object$mg.est,what = "catprob.se",SE.type=SE.type)
 }
 J <- 0.5*extract(object$mg.est,"ncat")
 
     for (j in item){
       if (j>J) stop("Item number must not beyond the range.",call. = FALSE)
-      tmp.obj <- c(extract.GDINA(object$mg.est,what = "catprob.parm")[[j]],
-                    extract.GDINA(object$mg.est,what = "catprob.parm")[[j+J]])
+      tmp.obj <- c(extract(object$mg.est,what = "catprob.parm")[[j]],
+                    extract(object$mg.est,what = "catprob.parm")[[j+J]])
       tmp.name <- gsub("P\\(","",names(tmp.obj))
       tmp.name <- gsub("\\)","",tmp.name)
 

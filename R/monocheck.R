@@ -27,11 +27,11 @@
 
 
 monocheck <- function(object,strict = FALSE){
-  if(!class(object)=="GDINA")stop("Input must be an object of class GDINA.",call. = FALSE)
+  if(!class(object)=="GDINA")stop("object must be an object of class GDINA.",call. = FALSE)
   ip <- itemparm(object)
-  Q <- extract.GDINA(object,"Q")
+  Q <- extract(object,"Q")
   Kj <- rowSums(Q>0)
-  item.names <- extract.GDINA(object,"item.names")
+  item.names <- extract(object,"item.names")
   mono <- logical(length(ip))
   for(j in 1:length(ip)){
     po <- partial_order2(Kj[j])

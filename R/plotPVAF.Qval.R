@@ -6,12 +6,13 @@
 #'     for all q-vectors requiring the same number of attributes, only the one with the largest PVAF
 #'     is plotted, which means \eqn{K_j} q-vectors are plotted; If \code{"all"}, all q-vectors
 #'     will be plotted.
+#' @param eps the cutoff for PVAF. If not \code{NULL}, it must be a value between 0 and 1. A horizontal line will be drawn accordingly.
 #' @param no.qvector the number of q vectors that need to be plotted when \code{type="all"}. The default is 10,
 #'        which means the 10 q vectors with the largest PVAFs are plotted.
 #' @param data.label logical; To show data label or not?
 #' @param original.q.label logical; print the label showing the original q-vector or not?
 #' @param auto.ylim logical; create y range automatically or not?
-#' @param ... additional arguments
+#' @param ... additional arguments passed to \code{plot} function
 #' @seealso \code{\link{Qval}}, \code{\link{autoGDINA}}
 #' @examples
 #'\dontrun{
@@ -21,23 +22,23 @@
 #' mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #' out <- Qval(mod1,eps = 0.9)
 #' item <- c(1,2,10)
-#' mesaplot(out,item=item,data.label=TRUE,type="all")
-#' mesaplot(out,item=10,type="best")
+#' mesaplot(out,item=item,data.label=FALSE,type="all")
+#' mesaplot(out,item=10,type="best",eps=0.95)
 #' mesaplot(out,item=10,type="all",no.qvector=5)
 #'}
 #'
 #'
 #' @export
 mesaplot <- function(Qval.obj, item, type = "best", no.qvector = 10,
-                     data.label = FALSE,
-                     original.q.label = TRUE,auto.ylim = TRUE,...){
+                     data.label = TRUE, eps = 0.95,
+                     original.q.label = FALSE,auto.ylim = TRUE,...){
   UseMethod("mesaplot")
 }
 #' @export
 mesaplot.Qval <-
   function(Qval.obj, item, type = "best", no.qvector = 10,
-           data.label = FALSE,
-           original.q.label = TRUE,auto.ylim = TRUE,...)
+           data.label = TRUE,eps = 0.95,
+           original.q.label = FALSE,auto.ylim = TRUE,...)
   {
     Q <- extract.Qval(Qval.obj,"Q")
     # Q <- Qval.obj$sugg.Q[,grep("orig.q",colnames(Qvalidation.obj$sugg.Q))]
@@ -55,11 +56,12 @@ mesaplot.Qval <-
         locy <- no.qvector-(L-which(order(fullPVAF[,y],decreasing = F)==locy0))
         ordered.PVAF.j <- sort(fullPVAF[,y],decreasing = FALSE)
         plot(ordered.PVAF.j[(L-no.qvector+1):L],xaxt="n",type="o",ylab = "PVAF",xlab="q-vectors",
-             main = paste("Mesa Plot for Item",y),ylim = c(0,1))
+             main = paste("Mesa Plot for Item",y),ylim = c(0,1),...)
         axis(1,at=c(1:no.qvector),labels = names(ordered.PVAF.j[(L-no.qvector+1):L]))
         if (locy>0){
           points(locy,fullPVAF[locy0,y],col="red",pch=19)
         }
+        if (!is.null(eps)&&eps>0&&eps<1) abline(h=eps,lty=3);text(2,eps+0.03,paste("eps =",eps))
         if (original.q.label) text(no.qvector-1,0.15,paste("original q-vector:\n",names(fullPVAF[,y])[locy0]))
         if (auto.ylim) ylim = c(max(0,round(min(ordered.PVAF.j)-0.1,1)),1) else ylim=c(0,1)
         yloc <- ordered.PVAF.j[(L-no.qvector+1):L]-diff(ylim)/15
@@ -79,8 +81,9 @@ mesaplot.Qval <-
         bestloc <- match(bestPVAF[,j],fullPVAF[,j])
         if (auto.ylim) ylim = c(max(0,round(min(bestPVAF[,j])-0.1,1)),1) else ylim=c(0,1)
         plot(bestPVAF[,j],xaxt="n",type="o",ylab = "PVAF",xlab="q-vectors",
-             main = paste("Mesa Plot for Item",j),ylim = ylim)
+             main = paste("Mesa Plot for Item",j),ylim = ylim,...)
         axis(1,at=c(1:nrow(bestPVAF)),labels = label.bestPVAF[bestloc])
+        if (!is.null(eps)&&eps>0&&eps<1) abline(h=eps,lty=3);text(2,eps+0.03,paste("eps =",eps))
         yloc <- bestPVAF[,j]-diff(ylim)/15
         yloc[yloc<=ylim[1]] <- yloc[yloc<=ylim[1]] + 2 * diff(ylim)/15
         if (data.label) text(c(1:nrow(bestPVAF)),yloc,bestPVAF[,j])

@@ -19,7 +19,7 @@
 #' @param ... additional arguments
 #'
 #' @references
-#' Huebner, A., \& Wang, C. (2011). A note on comparing examinee classification methods for cognitive diagnosis models. \emph{Educational and Psychological Measurement, 71}, 407-419.
+#' Huebner, A., & Wang, C. (2011). A note on comparing examinee classification methods for cognitive diagnosis models. \emph{Educational and Psychological Measurement, 71}, 407-419.
 #'
 #'
 #'@export
@@ -40,9 +40,9 @@ personparm.GDINA <- function(object,
                              what=c("EAP","MAP","MLE", "mp"),digits = 4,...){
   what <- match.arg(what)
   # The number of attributes
-  K <- internalextract(object,what = "natt")
+  K <- extract(object,what = "natt")
   # Q-matrix
-  Q <- internalextract(object,what = "Q")
+  Q <- extract(object,what = "Q")
   pattern <- alpha(K,T,Q)
   out <- NULL
       # dichotomous attributes
@@ -51,7 +51,7 @@ personparm.GDINA <- function(object,
         if (max(Q) == 1)
         {
           # dichotomous attributes
-          out <- 1*((exp(internalextract(object,what = "logposterior.i")) %*% pattern) > 0.5000)
+          out <- 1*((exp(extract(object,what = "logposterior.i")) %*% pattern) > 0.5000)
         }else{
           # polytomous attributes
           attnum <- list()
@@ -60,7 +60,7 @@ personparm.GDINA <- function(object,
             tmp <- NULL
             for (kj in 0:max(Q[, k]))
             {
-              tmp <- cbind(tmp, apply(exp(internalextract(object,what = "logposterior.i"))[, which(pattern[, k] == kj),drop = FALSE], 1, sum))
+              tmp <- cbind(tmp, apply(exp(extract(object,what = "logposterior.i"))[, which(pattern[, k] == kj),drop = FALSE], 1, sum))
             }
 
             attnum[[k]] <- tmp
@@ -74,19 +74,19 @@ personparm.GDINA <- function(object,
       },
       MLE={
         if(max(Q) > 1) stop("Please use EAP for polytomous attributes.", call. = FALSE)
-        out <- data.frame(MLE=pattern[max.col(internalextract(object,what = "loglikelihood.i")),],
-                          multimodes=as.logical(rowSums(internalextract(object,what = "loglikelihood.i")==apply(internalextract(object,what = "loglikelihood.i"),1,max))-1))
+        out <- data.frame(MLE=pattern[max.col(extract(object,what = "loglikelihood.i")),],
+                          multimodes=as.logical(rowSums(extract(object,what = "loglikelihood.i")==apply(extract(object,what = "loglikelihood.i"),1,max))-1))
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
       },
 MAP={
         if(max(Q) > 1) stop("Please use EAP for polytomous attributes.", call. = FALSE)
-        out <- data.frame(MAP=pattern[max.col(internalextract(object,what = "logposterior.i")),],
-                          multimodes=as.logical(rowSums(internalextract(object,what = "logposterior.i")==apply(internalextract(object,what = "logposterior.i"),1,max))-1))
+        out <- data.frame(MAP=pattern[max.col(extract(object,what = "logposterior.i")),],
+                          multimodes=as.logical(rowSums(extract(object,what = "logposterior.i")==apply(extract(object,what = "logposterior.i"),1,max))-1))
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
       },
 mp={
         if(max(Q) > 1) stop("Not available for polytomous attributes.", call. = FALSE)
-          out <- round(exp(internalextract(object,what = "logposterior.i")) %*% pattern,
+          out <- round(exp(extract(object,what = "logposterior.i")) %*% pattern,
                        digits)
           colnames(out)[1:K] <- paste("A",1:K,sep = "")
         })

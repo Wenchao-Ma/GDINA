@@ -4,27 +4,22 @@
 summary.GDINA <-
   function(object, ...)
   {
-    cat("\nTest Fit Statistics\n\n")
-    cat("Loglikelihood =", format(round(extract.GDINA(object,"logLik"), 2), nsmall = 2), "\n")
-    cat("Deviance      =", format(round(extract.GDINA(object,"deviance"), 2), nsmall = 2), "\n")
-    cat("AIC           =", format(round(extract.GDINA(object,"AIC"), 2), nsmall = 2),"\n")
-    cat("AIC Penalty   =",2*extract.GDINA(object,"npar"),"\n")
-    cat("  AIC penalty due to item parameters        =", 2*extract.GDINA(object,"npar.item"), "\n")
-    cat("  AIC penalty due to population parameters  =", 2*extract.GDINA(object,"npar.att"), "\n")
-    cat("BIC           =", format(round(extract.GDINA(object,"BIC"), 2), nsmall = 2),"\n")
-    cat("BIC penalty   =",format(round(log(extract.GDINA(object,"nobs"))*extract.GDINA(object,"npar"),2), nsmall = 2),"\n")
-    cat("  BIC penalty due to item parameters        =", format(round(log(extract.GDINA(object,"nobs"))*extract.GDINA(object,"npar.item"),2), nsmall = 2), "\n")
-    cat("  BIC penalty due to population parameters  =", format(round(log(extract.GDINA(object,"nobs"))*extract.GDINA(object,"npar.att"),2), nsmall = 2), "\n")
-    if(extract.GDINA(object,"ngroup")==1){
-      cat("\nAttribute Prevalence\n\n")
-      print(round(extract.GDINA(object,"prevalence"),extract.GDINA(object,"digits")))
-    }
+    output <- list("Loglikelihood"=extract(object,"logLik"),
+    "Deviance"=extract(object,"deviance"),
+    "AIC"=extract(object,"AIC"),
+    "AIC Penalty"=2*extract(object,"npar"),
+    "AIC penalty due to item parameters"=2*extract(object,"npar.item"),
+    "AIC penalty due to population parameters"=2*extract(object,"npar.att"),
+    "BIC"=extract(object,"BIC"),
+    "BIC penalty"=log(extract(object,"nobs"))*extract(object,"npar"),
+    "BIC penalty due to item parameters"=log(extract(object,"nobs"))*extract(object,"npar.item"),
+    "BIC penalty due to population parameters"=log(extract(object,"nobs"))*extract(object,"npar.att"),
+    "Attribute Prevalence"=extract(object,"prevalence"),
+    "Posterior Weights"=extract(object,"posterior.prob"),
+    "ngroup"=extract(object,"ngroup"))
 
-    if( extract.GDINA(object,"natt")<4){
-    cat("\nPosterior Weights\n\n")
-    print(extract.GDINA(object,"posterior.prob"))
-    }
-    invisible(NULL)
+    class(output) <- "summary.GDINA"
+    output
   }
 
 
@@ -33,8 +28,8 @@ summary.GDINA <-
 summary.autoGDINA <-
   function(object, ...)
   {
-    cat("\n")
-    out <- data.frame(npar=c(extract(object$GDINA1.obj,"npar"),
+
+    fit <- data.frame(npar=c(extract(object$GDINA1.obj,"npar"),
                              extract(object$GDINA2.obj,"npar"),
                              extract(object$CDM.obj,"npar")),
                       logLik=round(c(logLik(object$GDINA1.obj),
@@ -50,16 +45,9 @@ summary.autoGDINA <-
                             BIC(object$GDINA2.obj),
                             BIC(object$CDM.obj)),
                       row.names = c("Initial GDINA","GDINA using validated Q-matrix","Final CDMs"))
-
-    print(out)
-    cat("\n")
-    if(object$options$Qvalid){
-      print(object$Qval.obj)
-    }
-    if(object$options$modelselection){
-      cat("\nSelected Models:\n\n")
-      print(extract.GDINA(object$CDM.obj,"models"))
-    }
+output <- list(fit=fit,Qval=object$Qval.obj,finalmodel=object$CDM.obj)
+    class(output) <- "summary.autoGDINA"
+    output
   }
 
  #' @export

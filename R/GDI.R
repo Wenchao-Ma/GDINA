@@ -15,6 +15,7 @@
 #' \item{PVAF}{PVAF}
 #' }
 #'
+#' @include GDINA.R
 #' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @references
 #' de la Torre & Chiu. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
@@ -50,30 +51,30 @@
 Qval <- function(GDINA.obj, method = "PVAF", eps=0.95,digits = 4){
   if (class(GDINA.obj)!="GDINA") stop("GDINA.obj must be a GDINA object from GDINA function.",call. = FALSE)
   # if (any(GDINA.obj$options$model!=0)) stop ("Q-matrix validation requires all items are fitted using the G-DINA model.",call. = FALSE)
-  if (internalextract(GDINA.obj,"att.str")) stop("Q-matrix validation is not available if attributes are structured.",call. = FALSE)
+  if (extract(GDINA.obj,"att.str")) stop("Q-matrix validation is not available if attributes are structured.",call. = FALSE)
   if (eps>1||eps<=0) stop("eps must be greater than 0 and less than 1.",call. = FALSE)
-  Y <- internalextract(GDINA.obj,"seq.dat")
-  Q <- internalextract(GDINA.obj,"Q")
+  Y <- extract(GDINA.obj,"seq.dat")
+  Q <- extract(GDINA.obj,"Q")
   if (max(Q)>1) stop("Q-validation can only be used for dichotomous attribute G-DINA model.",call. = FALSE)
 
 
-  N <- internalextract(GDINA.obj,"nobs")
+  N <- extract(GDINA.obj,"nobs")
 
-  J <- internalextract(GDINA.obj,"nitem")
+  J <- extract(GDINA.obj,"nitem")
 
-  K <- internalextract(GDINA.obj,"natt")
+  K <- extract(GDINA.obj,"natt")
 
   L <- no_LC(Q)
 
   Kj <- rowSums(alpha(K)[-1,])
-  w <- internalextract(GDINA.obj,"posterior.prob") #1 x L
+  w <- extract(GDINA.obj,"posterior.prob") #1 x L
   YY <- Y
   YY[is.na(YY)] <- 0
   rc <- apply(YY,2,function(x){
-    colSums(x*exp(internalextract(GDINA.obj,"logposterior.i")))
+    colSums(x*exp(extract(GDINA.obj,"logposterior.i")))
   })
   rn <- apply(1*(!is.na(Y)),2,function(x){
-    colSums(x*exp(internalextract(GDINA.obj,"logposterior.i")))
+    colSums(x*exp(extract(GDINA.obj,"logposterior.i")))
   })
   # est.p <- rc/c(w*N)
   est.p <- rc/rn
@@ -121,8 +122,8 @@ if(method=="PVAF"){
   out.vsg <- round(t(vsg),digits)
   out.PVAF <- round(t(PVAF),digits)
   rownames(out.vsg) <- rownames(out.PVAF) <- apply(alpha(K),1,paste,collapse = "")[-1]
-  Q <- data.frame(Q,row.names = internalextract(GDINA.obj,"item.names"))
-  rownames(val_q) <- colnames(out.vsg) <- colnames(out.PVAF) <- internalextract(GDINA.obj,"item.names")
+  Q <- data.frame(Q,row.names = extract(GDINA.obj,"item.names"))
+  rownames(val_q) <- colnames(out.vsg) <- colnames(out.PVAF) <- extract(GDINA.obj,"item.names")
   qvalid <- list(sug.Q = val_q,Q=Q,varsigma=out.vsg,PVAF=out.PVAF,eps = eps,est.p=est.p)
   class(qvalid) <- "Qval"
   return(qvalid)

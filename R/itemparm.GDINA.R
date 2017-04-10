@@ -7,8 +7,7 @@
 #' category success probabilities of each reduced attribute pattern, \code{"LCprob"} for
 #' item success probabilities of each attribute pattern,\code{"gs"} for guessing and slip parameters,
 #' \code{"delta"} for delta parameters, \code{"rrum"} for RRUM parameters when items
-#' are estimated using RRUM and \code{"higher.order"} for higher-order IRT
-#' parameters. Standard errors can be estimated if \code{withSE = TRUE}.
+#' are estimated using RRUM. Standard errors can be estimated if \code{withSE = TRUE}.
 #' See \code{\link{GDINA}} for examples.
 #'
 #' @param object estimated GDINA object returned from \code{\link{GDINA}}
@@ -17,15 +16,20 @@
 #' category success probabilities of each reduced attribute pattern, \code{"LCprob"} for
 #' item success probabilities of each attribute pattern, \code{"gs"} for guessing and slip parameters,
 #' \code{"delta"} for delta parameters, \code{"rrum"} for RRUM parameters when items
-#' are estimated using RRUM and \code{"higher.order"} for higher-order IRT
-#' parameters. The default is \code{"itemprob"}.
+#' are estimated using RRUM. The default is \code{"catprob"}.
 #' @param withSE show standard errors or not?
-#' @param SE.type type of standard errors.
+#' @param SE.type Type of standard errors. Can be 1, 2 or 3, indicating outer product of gradient (OPG) estimates
+#' based on itemwise, incomplete or complete information matrix. See Philipp, Strobl, de la Torre, & Zeileis (2016).
+#' Currently, the OPG method based on the complete information matrix assumes that all latent classes are identifiable.
 #' @param digits how many decimal places for the ouput?
 #' @param ... additional arguments
 #'
 #'
 #' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#'
+#' @references
+#'
+#' Philipp, M., Strobl, C., de la Torre, J., & Zeileis, A.(2016). On the estima-tion of standard errors in cognitive diagnosis models (Working Papers).   Fac-ulty  of  Economics  and  Statistics,  University  of  Innsbruck.Retrieved  from \url{http://EconPapers.repec.org/RePEc:inn:wpaper:2016-25}
 #'
 #'@export
 itemparm <- function(object,
@@ -36,10 +40,10 @@ itemparm <- function(object,
 
 
 #' @title NULL
-#' @description To extract lower-order structural (item) parameters, use S3 method \code{\link{itemparm}}.
+#' @description To extract lower-order structural (item) parameters, use method \code{\link{itemparm}}.
 #' @param object estimated GDINA object for various S3 methods
 #' @param what argument for various S3 methods
-#' @param withSE argument for S3 method \code{\link{itemparm}}; show standard errors or not?
+#' @param withSE argument for method \code{\link{itemparm}}; show standard errors or not?
 #' @param SE.type type of standard errors.
 #' @param digits How many decimal places in each number? The default is 4.
 #' @param ... additional arguments
@@ -47,59 +51,60 @@ itemparm <- function(object,
 #' @aliases itemparm.GDINA
 #' @export
 itemparm.GDINA <- function(object,
-                           what = c("catprob","itemprob","LCprob","gs","delta","rrum","higher.order"),
+                           what = c("catprob","itemprob","LCprob","gs","delta","rrum"),
                            withSE = FALSE, SE.type = 2,digits = 4, ...){
+  if(!class(object)=="GDINA") stop("object must be a GDINA estimate.",call. = FALSE)
   what <- match.arg(what)
   if(tolower(what)=="catprob"){
     if(withSE){
-      out <- mapply(rbind,internalextract(object,what = "catprob.parm"),
-                    internalextract(object,what = "catprob.se", type = SE.type),SIMPLIFY = F)
+      out <- mapply(rbind,extract(object,what = "catprob.parm"),
+                    extract(object,what = "catprob.se", SE.type = SE.type),SIMPLIFY = F)
       out <- lapply(out,function(x){rownames(x) <- c("Est.","S.E.");round(x,digits)})
     }else{
-      out <- lapply(internalextract(object,what = "catprob.parm"),round,digits)
+      out <- lapply(extract(object,what = "catprob.parm"),round,digits)
     }
   }else if(tolower(what)=="itemprob"){
-    if(withSE&!internalextract(object,what = "sequential")){
-        out <- mapply(rbind,internalextract(object,what = "itemprob.parm"),
-                      internalextract(object,what = "itemprob.se", type = SE.type),SIMPLIFY = F)
+    if(withSE&!extract(object,what = "sequential")){
+        out <- mapply(rbind,extract(object,what = "itemprob.parm"),
+                      extract(object,what = "itemprob.se", SE.type = SE.type),SIMPLIFY = F)
         out <- lapply(out,function(x){rownames(x) <- c("Est.","S.E.");round(x,digits)})
      }else{
-      out <- lapply(internalextract(object,what = "itemprob.parm"),round,digits)
+      out <- lapply(extract(object,what = "itemprob.parm"),round,digits)
     }
   }else if(tolower(what)=="lcprob"){
 
-      out <- round(internalextract(object,what = "LC.prob"),digits)
+      out <- round(extract(object,what = "LCprob.parm"),digits)
 
 }else if(tolower(what)=="gs"){
     if(withSE){
-      gs <- t(sapply(internalextract(object,what = "catprob.parm"),
+      gs <- t(sapply(extract(object,what = "catprob.parm"),
                       function(x)c(x[1],1-rev(x)[1])))
-      se <- t(sapply(internalextract(object,what = "catprob.se", type = SE.type),
+      se <- t(sapply(extract(object,what = "catprob.se", SE.type = SE.type),
                      function(x)c(x[c(1,length(x))])))
       out <- round(cbind(gs,se),digits)
       colnames(out) <- c("guessing","slip","SE[guessing]","SE[slip]")
     }else{
-    out <- round(t(sapply(internalextract(object,what = "catprob.parm"),
+    out <- round(t(sapply(extract(object,what = "catprob.parm"),
                     function(x)c(x[1],1-rev(x)[1]))),digits)
     colnames(out) <- c("guessing","slip")
     }
   }else if(tolower(what)=="delta"){
-    d <- format_delta(delta = internalextract(object,what = "delta.parm"),
-                      model = internalextract(object,what = "models_numeric"),
-                      Kj = internalextract(object,what = "Kj"),
-                      item.names = internalextract(object,what = "item.names"),
+    d <- format_delta(delta = extract(object,what = "delta.parm"),
+                      model = extract(object,what = "models_numeric"),
+                      Kj = extract(object,what = "Kj"),
+                      item.names = extract(object,what = "item.names"),
                       digits = digits+1)
     if(withSE){
       out <- mapply(rbind,d,
-                    internalextract(object,what = "delta.se", type = SE.type),SIMPLIFY = F)
+                    extract(object,what = "delta.se", SE.type = SE.type),SIMPLIFY = F)
       out <- lapply(out,function(x){rownames(x) <- c("Est.","S.E.");round(x,digits)})
     }else{
       out <- lapply(d,round,digits)
     }
   }else if(tolower(what)=="rrum"){
-    J <- internalextract(object,what = "ncat")
-    ip <- internalextract(object,what = "catprob.parm")
-    models <- internalextract(object,what = "models_numeric")
+    J <- extract(object,what = "ncat")
+    ip <- extract(object,what = "catprob.parm")
+    models <- extract(object,what = "models_numeric")
     if(all(models!=5)) stop("RRUM parameters are only available when RRUM is fitted.",call. = FALSE)
     out <- vector("list",J)
       for (j in 1:J){
@@ -113,7 +118,7 @@ itemparm.GDINA <- function(object,
         }
 
       }
-      names(out) <- internalextract(object,what = "item.names")
+      names(out) <- extract(object,what = "item.names")
       if(withSE) message("Standard errors are not available for RRUM parameters.")
     }else{
       stop(sprintf("No item parameters called \'%s\'", what), call.=FALSE)
