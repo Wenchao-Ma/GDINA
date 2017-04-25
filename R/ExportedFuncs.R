@@ -81,7 +81,7 @@ bdiagMatrix <- function(mlist,fill=0){
   out <- matrix(fill,rowSums(loc)[1],rowSums(loc)[2])
   cr <- cc <- 1
   for(i in 1:length(mlist)){
-    out[cr:(cr+nrow(mlist[[i]])-1),cc:(cc+ncol(mlist[[i]])-1)] <- mlist[[i]]
+    out[cr:(cr+nrow(mlist[[i]])-1),cc:(cc+ncol(mlist[[i]])-1)] <- as.matrix(mlist[[i]])
     cr <- cr + nrow(mlist[[i]])
     cc <- cc + ncol(mlist[[i]])
   }

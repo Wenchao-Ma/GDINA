@@ -40,8 +40,6 @@ if (!is.null(catprob.parm)){
 
   if(any(lower.p>=upper.p)) stop("lower.p must be less than upper.p.",call. = FALSE)
   if(any(upper.p<0)||any(upper.p>1)) stop("upper.p must range from 0 to 1.",call. = FALSE)
-
-  # if(is.null(att.prior) & higher.order == FALSE & empirical == FALSE) stop("When higher-order and empirical are FALSE, att.prior cannot be NULL.",call. = FALSE)
 }
 
 

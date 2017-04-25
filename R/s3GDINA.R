@@ -31,8 +31,6 @@ deviance.GDINA <- function(object,...){
   dev
 }
 
-
-
 #' @title Calculate the number of parameters
 #' @description Calculate the number of parameters for GDINA estimates.
 #' Returned the total number of parameters, the number of item parameters and

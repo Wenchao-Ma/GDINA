@@ -85,16 +85,17 @@ modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,
 
     for (j in item){ # for each item
       wald <- p <- dfj <- 0
-      Kj <- rowSums(Q[item,]) # Kj for each item
+      Kj <- rowSums(Q[item,,drop=FALSE]) # Kj for each item
       RDA <- RDINA(unique(Kj))
       RDO <- RDINO(unique(Kj))
       RAM <- RACDM(unique(Kj))
 
       # variance covariance matrix for item j
       if (is.null(varcov)) {
-        cov <- extract(GDINA.obj,"catprob.cov",type = SE.type)
+        cov <- extract(GDINA.obj,"catprob.cov",SE.type = SE.type)
         ind <- cov$index
-        vcov <- cov$cov[ind[which(ind[,1]==j),2],ind[which(ind[,1]==j),2]]
+        vcov <- cov$cov[ind[which(ind$cat==j),5],ind[which(ind$cat==j),5]]
+        # print(vcov)
         }
       else{vcov <- varcov[[j]]}
 
@@ -169,9 +170,16 @@ modelcomp <- function(GDINA.obj,item="all",DS=FALSE, SE.type = 2,
       df <- rbind(df,dfj)
     }
   }
-  W <- W[,-1]
-df <- df[,-1]
-  pvalues <- pvalues[,-1]
+  if(length(item)==1){
+    W <- matrix(W[,-1],nrow = 1)
+    df <- matrix(df[,-1],nrow = 1)
+    pvalues <- matrix(pvalues[,-1],nrow = 1)
+  }else{
+    W <- W[,-1]
+    df <- df[,-1]
+    pvalues <- pvalues[,-1]
+
+  }
 
   # W = round(W,digits)
   # pvalues = round(pvalues,digits)
@@ -195,7 +203,7 @@ if(length(models)<5) {
 
 
   colnames(W) <- colnames(df) <- colnames(pvalues) <- c("DINA","DINO","ACDM","LLM","RRUM")
-  rownames(W) <- rownames(df) <- rownames(pvalues) <- paste("Item",item)
+  rownames(W) <- rownames(df) <- rownames(pvalues) <- extract(GDINA.obj,"item.names")[item]
   out <- list(wald=W,wald.p=pvalues,df=df,DS=ds.f,models = models)
   class(out) <- "modelcomp"
   return(out)

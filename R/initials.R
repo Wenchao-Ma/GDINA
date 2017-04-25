@@ -1,6 +1,5 @@
 
 initials <- function(Q,nstarts=1,randomseed){
-
 set.seed(randomseed)
 
 if(nstarts==1){

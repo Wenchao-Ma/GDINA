@@ -81,8 +81,6 @@ Qval <- function(GDINA.obj, method = "PVAF", eps=0.95,digits = 4){
   patt <- alpha(K)[-1,]
   loc <- eta.loc(patt) #2^K-1 x 2^K
   vsg <- varsigma(as.matrix(t(loc)),as.matrix(est.p),c(w))
-# vsg[vsg<0] <- 0
-  # print(vsg)
   PVAF <- vsg/vsg[,L-1]
 if(method=="PVAF"){
   val_q <- NULL

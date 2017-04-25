@@ -32,23 +32,25 @@ hoparm.GDINA <- function(object, withSE = FALSE,theta.est = FALSE, digits = 4, .
     stop("Set att.dist = 'higher.order' to estimate a higher-order model.",call. = FALSE)
   }else{
     if(extract(object,"ngroup")>1) withSE <- theta.est <- FALSE
+    warning("SE for higher-order structural parameters cannot be estimated for multiple groups",call. = FALSE)
   }
 
   theta <- NULL
+  quad <- seq(-4,4,length.out = extract(mod12,"higher.order")$nquad)
+
   if(theta.est){
     K <- extract(object,what = "natt")
     Q <- extract(object,what = "Q")
     pattern <- alpha(K,T,Q)
     theta <- lambda <- NULL
-    quad <- seq(-4,4,by=0.1)
     lk <- HO.loglik(extract(object,what = "higher.order.struc.parm")[,1],
                     extract(object,what = "higher.order.struc.parm")[,2],
                     theta=quad,X=pattern) #nnode x 2^K
     theta <- round(t(apply(exp(extract(object,what = "logposterior.i")),1,function(x){
-      est <- sum(quad*colSums(exp(t(lk))*x)*dnorm(quad))/
-        sum(colSums(exp(t(lk))*x)*dnorm(quad))
-      se <- sqrt(sum((quad-est)^2*colSums(exp(t(lk))*x)*dnorm(quad))/
-                   sum(colSums(exp(t(lk))*x)*dnorm(quad)))
+      est <- sum(quad*colSums(exp(lk)*x)*dnorm(quad))/
+        sum(colSums(exp(lk)*x)*dnorm(quad))
+      se <- sqrt(sum((quad-est)^2*colSums(exp(lk)*x)*dnorm(quad))/
+                   sum(colSums(exp(lk)*x)*dnorm(quad)))
       return(c(est,se))
 
     })),digits)
@@ -64,14 +66,14 @@ hoparm.GDINA <- function(object, withSE = FALSE,theta.est = FALSE, digits = 4, .
       if (extract(object,what = "higher.order.model")=="2PL") {
         inv.info <- (solve((-1)*numDeriv::hessian(func=HO.SE.2,x=c(ho[,1],ho[,2]),
                                                   Xloglik=extract(object,what = "loglikelihood.i"),
-                                                  K=K,nnodes=19,
+                                                  K=K,nnodes=length(quad),
                                                   N=extract(object,what = "nobs"))))
         HO.se <- matrix(sqrt(diag(inv.info)),ncol = 2)
         colnames(HO.se) <- c("slope.se","intercept.se")
       }else if (extract(object,what = "higher.order.model")=="1PL") {
         inv.info <- (solve((-1)*numDeriv::hessian(func=HO.SE.1,x=c(ho[,1],ho[,2]),
                                                   Xloglik=extract(object,what = "loglikelihood.i"),
-                                                  K=K,nnodes=19,
+                                                  K=K,nnodes=length(quad),
                                                   N=extract(object,what = "nobs"))))
         HO.se <- sqrt(diag(inv.info))
         HO.se <- cbind(rep(HO.se[1],K),HO.se[2:(K+1)])
@@ -79,7 +81,7 @@ hoparm.GDINA <- function(object, withSE = FALSE,theta.est = FALSE, digits = 4, .
       }else if (extract(object,what = "higher.order.model")=="Rasch") {
         inv.info <- (solve((-1)*numDeriv::hessian(func=HO.SE.R,x=c(ho[,2]),
                                                   Xloglik=extract(object,what = "loglikelihood.i"),
-                                                  K=K,nnodes=19,
+                                                  K=K,nnodes=length(quad),
                                                   N=extract(object,what = "nobs"))))
         HO.se <- cbind(NA,sqrt(diag(inv.info)))
         colnames(HO.se) <- c("slope.se","intercept.se")

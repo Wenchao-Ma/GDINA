@@ -240,7 +240,6 @@ OPG_p <- function(object,SE.type){
       vars <- inverse_crossprod(cbind(do.call(cbind,scorejh),scopp[,-1]))
       vars <- vars[1:sum(np),1:sum(np)]
     }
-
   }else{
     grad <- vector("list",NC)
     for (nc in 1:NC) {
@@ -267,9 +266,12 @@ OPG_p <- function(object,SE.type){
   se <- vector("list",NC)
   for(h in 1:NC) {
 
-    if(m[h]==1|m[h]==2) {
+    if(m[h]==1) {
       se.pjh <- se.vector[covIndex$loc[which(covIndex$cat==h)]]
       se[[h]] <- c(rep(se.pjh[1],(2^Kj[h]-1)),se.pjh[2])
+    }else if(m[h]==2){
+      se.pjh <- se.vector[covIndex$loc[which(covIndex$cat==h)]]
+      se[[h]] <- c(se.pjh[1],rep(se.pjh[2],(2^Kj[h]-1)))
     }else{
       se[[h]] <- se.vector[covIndex$loc[which(covIndex$cat==h)]]
     }

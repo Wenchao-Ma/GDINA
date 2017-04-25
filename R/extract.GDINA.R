@@ -146,14 +146,6 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                   out
                 },
                 expectedTotal.LC = {
-                  # if(object$options$sequential){
-                  #   out <- apply(seq_coding(object$options$dat,object$options$Q),2,
-                  #                function(x)colSums(as.numeric(!is.na(x))*exp(object$technicals$logposterior.i),na.rm = TRUE))
-                  # }else{
-                  #   out <- matrix(colSums(exp(object$technicals$logposterior.i),na.rm = TRUE),
-                  #                 ncol = nrow(object$options$Q), nrow = ncol(object$technicals$logposterior.i))
-                  # }
-                  # out <- t(out)
                   if(object$options$sequential){
                     dat <- extract(object,"seq.dat")
                   }else{

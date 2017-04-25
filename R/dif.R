@@ -7,6 +7,10 @@
 #' Wald test method, and \code{"LR"} for likelihood ratio test.
 #' @param parm The type of parameters associated with the Wald test for the DIF detection. It can be either \code{"itemprob"}
 #'  or \code{"delta"} for item probabilities and delta parameters, respectively.
+#' @param p.adjust.methods adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
+#'  and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
+#'  \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
+#'  for more details. \code{"bonferroni"} is the default.
 #' @param difitem Items for the DIF detection. By default, all items will be examined.
 #' @param LR.type Type of likelihood ratio test for DIF detection. It can be \code{'free.all'} or
 #' \code{'free.one'}.
@@ -49,7 +53,7 @@
 #'
 
 
-dif <- function(dat, Q, group, method = "wald", LR.type="free.all",
+dif <- function(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",LR.type="free.all",
                 difitem = "all", parm = "delta", digits = 4, SE.type = 2,...){
   if (length(group)==1){
     gr <- dat[,group]
@@ -62,7 +66,7 @@ dif <- function(dat, Q, group, method = "wald", LR.type="free.all",
   gr.label <- unique(gr)
   J <- nrow(Q)
   if(length(difitem)==1&&difitem == "all") difitem <- 1:J
-  est <- GDINA::GDINA(dat = bdiag(list(dat[gr==gr.label[1],],dat[gr==gr.label[2],]),NA),
+  est <- GDINA::GDINA(dat = bdiagMatrix(list(dat[which(gr==gr.label[1]),],dat[which(gr==gr.label[2]),]),NA),
                       Q = rbind(Q,Q),
                       group = gr,...)
 
@@ -83,7 +87,7 @@ dif <- function(dat, Q, group, method = "wald", LR.type="free.all",
         }
 
         R <- cbind(diag(length(x)/2),-1*diag(length(x)/2))
-        vcov <- bdiag(list(pcov$cov[pcov$index$loc[pcov$index$item==difitem[j]],
+        vcov <- bdiagMatrix(list(pcov$cov[pcov$index$loc[pcov$index$item==difitem[j]],
                                     pcov$index$loc[pcov$index$item==difitem[j]]],
                            pcov$cov[pcov$index$loc[pcov$index$item==difitem[j]+J],
                                     pcov$index$loc[pcov$index$item==difitem[j]+J]]))
@@ -97,7 +101,7 @@ dif <- function(dat, Q, group, method = "wald", LR.type="free.all",
         x <- c(extract(est,"delta.parm")[[difitem[j]]],
                extract(est,"delta.parm")[[difitem[j]+J]])
         R <- cbind(diag(length(x)/2),-1*diag(length(x)/2))
-        vcov <- bdiag(list(dcov$cov[dcov$index$loc[dcov$index$item==difitem[j]],
+        vcov <- bdiagMatrix(list(dcov$cov[dcov$index$loc[dcov$index$item==difitem[j]],
                                     dcov$index$loc[dcov$index$item==difitem[j]]],
                            dcov$cov[dcov$index$loc[dcov$index$item==difitem[j]+J],
                                     dcov$index$loc[dcov$index$item==difitem[j]+J]]))
@@ -165,7 +169,8 @@ dif <- function(dat, Q, group, method = "wald", LR.type="free.all",
     rownames(output) <- extract(est,"item.names")[difitem]
     # output <- lr.out
   }
-output <- list(test=output,group=gr,mg.est=est)
+  output$'adj.pvalue' <- stats::p.adjust(output$'p.value', method = p.adjust.methods)
+output <- list(test=output,group=gr,mg.est=est,p.adjust.methods=p.adjust.methods)
 class(output) <- "dif"
 return(output)
 

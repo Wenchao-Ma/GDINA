@@ -668,7 +668,7 @@ GDINA <-
            att.str = FALSE, mono.constraint = FALSE, group = NULL,
            verbose = 1, catprob.parm = NULL,
            lower.p = 0.0001,upper.p = 0.9999, item.names = NULL,
-           nstarts = 1, conv.crit = 0.001, lower.prior=-1,
+           nstarts = 1, conv.crit = 0.001, lower.prior = -1,
            conv.type = "max.p.change", maxitr = 1000,
            digits = 4,diagnosis = 0, Mstep.warning = FALSE,optimizer = "all",
            randomseed = 123456, smallNcorrection = c(0.0005,0.001),
@@ -680,10 +680,7 @@ GDINA <-
     s1 <- Sys.time()
     GDINAcall <- match.call()
 
-    if (exists(".Random.seed", .GlobalEnv))
-               oldseed <- .GlobalEnv$.Random.seed
-         else
-               oldseed <- NULL
+    if (exists(".Random.seed", .GlobalEnv)) oldseed <- .GlobalEnv$.Random.seed else  oldseed <- NULL
 
     if (is.null(group)){
       no.mg <- 1
@@ -744,7 +741,9 @@ if(any(att.dist=="higher.order")) {
       Q <- Q[, -c(1, 2)]
     } else {
       if (max(dat, na.rm = TRUE) > 1) stop("Maximum response is greater than 1 - set sequential = TRUE to fit a sequential model.", call. = FALSE)
-      if (is.null(item.names)) item.names <- paste("Item", 1:nrow(Q))
+      if (is.null(item.names)) {
+        if(is.null(colnames(dat))) item.names <- paste("Item", 1:nrow(Q)) else item.names <- colnames(dat)
+      }
 
     }
   if(any(is.na(dat))){
@@ -898,10 +897,10 @@ if(any(att.dist=="higher.order")) {
       itr <- itr + 1
       if(verbose==1) {
         cat('\rIteration =',itr,' Max change =',formatC(dif,digits = 4, format = "f"),
-            ' Deviance =',formatC(-2*likepost$LL,digits = 4, format = "f"),'                                       ')
+            ' Deviance =',formatC(-2*likepost$LL,digits = 4, format = "f"),'                                                                 ')
       }else if (verbose==2) {
         cat('Iteration =',itr,' Max change =',formatC(dif,digits = 4, format = "f"),
-            ' Deviance =',formatC(-2*likepost$LL,digits = 4, format = "f"),"                                        \n")
+            ' Deviance =',formatC(-2*likepost$LL,digits = 4, format = "f"),"                                                                \n")
       }
       # update prior for each group
 
@@ -1053,10 +1052,7 @@ initial.parm <- m2l(initial.parm)
     }
     if(no.mg>1) lambda <- lam
 
-    if (!is.null(oldseed))
-               .GlobalEnv$.Random.seed <- oldseed
-         else
-               rm(".Random.seed", envir = .GlobalEnv)
+    if (!is.null(oldseed)) .GlobalEnv$.Random.seed <- oldseed  else  rm(".Random.seed", envir = .GlobalEnv)
 
     s2 <- Sys.time()
 

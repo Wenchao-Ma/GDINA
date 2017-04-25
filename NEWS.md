@@ -1,3 +1,11 @@
+# GDINA 1.4.3
+* Fixed     - Format of SEs for DINO model was incorrect when printing category proabilities
+* Fixed     - higher-order ability estimate was fixed; which was caused since v 1.4.1
+
+# GDINA 1.4.2
+* Fixed     - a bug in `modelcomp` in the version 1.4.1
+* Changed   - adjusted p values are provided for DIF detection
+
 # GDINA 1.4.1
 * Changed   - update GUI interface `startGDINA` to report absolute fit statistics
 * Changed   - estimation methods for higher-order models were adjusted

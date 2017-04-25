@@ -163,7 +163,6 @@
 #'# simulated attributes
 #'extract(sim,what = "attribute")
 #'
-#'
 #'####################################################
 #'#                     Example 2                    #
 #'#             Data simulation (RRUM)               #

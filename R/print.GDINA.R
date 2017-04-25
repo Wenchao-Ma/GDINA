@@ -17,7 +17,7 @@ print.GDINA <-
     cat("Fitted model(s)       =", unique(extract.GDINA(x,"models")), "\n")
     cat("Attribute structure   =",extract(x,"att.dist"),"\n")
     if (extract.GDINA(x,"ngroup")==1&&extract.GDINA(x,"att.dist")=="higher.order") cat("Higher-order model    =",extract.GDINA(x,"higher.order.model"),"\n")
-    tmp <- ifelse(extract.GDINA(x,"sequential"),max(extract.GDINA(x,"Q")),max(extract.GDINA(x,"Q")[,-c(1:2)]))
+    tmp <- max(extract.GDINA(x,"Q"))
     cat("Attribute level       =",ifelse(tmp>1,"Polytomous","Dichotomous"),"\n")
     cat("Response level        =",ifelse(max(extract.GDINA(x,"dat"),na.rm = TRUE)>1,"Polytomous","Dichotomous"),"\n")
     cat("\nNumber of parameters  =", extract.GDINA(x,"npar"), "\n")
@@ -27,7 +27,6 @@ print.GDINA <-
     cat("  Max abs change in success prob. =", formatC(extract(x,"dif.p"), digits = 4, format = "f"), "\n")
     cat("  Abs change in deviance          =", formatC(extract(x,"dif.LL"), digits = 4, format = "f"), "\n")
     cat("\nTime used             =", format(extract(x,"time"), digits = 4), "\n")
-
   }
 #' @export
 print.simGDINA <-
@@ -46,7 +45,7 @@ print.modelcomp <- function(x, ...)
 {
   cat("Wald statistics for items requiring two or more attributes:\n")
   wald <- extract.modelcomp(x,"wald")
-  print(wald[,colSums(is.na(wald))==0])
+  print(wald[,colSums(is.na(wald))==0],drop=FALSE)
   cat("\nWald test p-values for items requiring two or more attributes:\n")
   p <- extract.modelcomp(x,"wald.p")
   print(p[,colSums(is.na(p))==0])
@@ -112,7 +111,7 @@ print.dif <-
   {
     cat("\nDifferential Item Functioning Detection\n")
     print(x$test)
-
+cat("\nNote: adjusted pvalues are based on the",x$p.adjust.methods,"correction.\n")
   }
 
 #' @export

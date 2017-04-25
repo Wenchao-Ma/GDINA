@@ -36,8 +36,6 @@ HO.est <- function(Rl, K, N, IRTmodel = "Rasch", theta.range = c(-3,3),type="tes
       HOopt <- optim(vpar, fn = obj_fn_2PL, method = "L-BFGS-B",
                      lower = c(rep(a.bound[1], K), rep(b.bound[1], K)),
                      upper = c(rep(a.bound[2], K), rep(b.bound[2], K)))
-      # upd.Lx <- P2PL(HOopt$par[1:(length(vpar)/2)], HOopt$par[(1 + (length(vpar)/2)):length(vpar)],
-      #                Aq)
       lambda = data.frame(slope=HOopt$par[1:(length(vpar)/2)],
                           intercept=HOopt$par[(1 + (length(vpar)/2)):length(vpar)])
     }else if (IRTmodel=="Rasch"){
@@ -45,21 +43,16 @@ HO.est <- function(Rl, K, N, IRTmodel = "Rasch", theta.range = c(-3,3),type="tes
       HOopt <- optim(vpar, fn = obj_fn_Rasch, method = "L-BFGS-B",
                      lower = c(rep(b.bound[1], K)),
                      upper = c(rep(b.bound[2], K)))
-      # upd.Lx <- P2PL(rep(1,length(b)), HOopt$par, Aq)
-      lambda = data.frame(slope=rep(1,K), intercept=HOopt$par)
+       lambda = data.frame(slope=rep(1,K), intercept=HOopt$par)
     }else if (IRTmodel=="1PL"){
       vpar <- c(a[1],b)
       HOopt <- optim(vpar, fn = obj_fn_1PL, method = "L-BFGS-B",
                      lower = c(a.bound[1],rep(b.bound[1], K)),
                      upper = c(a.bound[2],rep(b.bound[2], K)))
-      # upd.Lx <- P2PL(rep(1,length(b)), HOopt$par, Aq)
       lambda = data.frame(slope=rep(HOopt$par[1],K), intercept=HOopt$par[2:length(vpar)])
     }
   }else{
     HOlike <- exp(HO.loglik(a,b,Aq,nnodes,X,K)) #2^K x nnodes - P(alpha_c|Aq,a,b)
-    # P(Xi|alpha_c)P(alpha_c|Aq,a,b)*p(Aq) - N x L * L x nnodes -> N x nnodes
-    # post <- exp(loglik) %*% HOlike * matrix(Wght, N, nnodes, byrow = T)
-    # Nlq: expected number of individuals for each alpha_c and Aq - 2^K x nnodes matrix
     Nlq <- c(Rl)*HOlike * matrix(Wght, 2^K, nnodes, byrow = T)/rowSums(HOlike * matrix(Wght, 2^K, nnodes, byrow = T))
     # Nq <- colSums(post/rowSums(post)) # length of nnodes - expected number of examinees with Aq - P(Xi|alpha_c)P(alpha_c|Aq,a,b)*p(Aq)/P(Xi)
     Nq <- colSums(Nlq)

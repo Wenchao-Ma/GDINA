@@ -17,7 +17,6 @@ summary.GDINA <-
     "Attribute Prevalence"=extract(object,"prevalence"),
     "Posterior Weights"=extract(object,"posterior.prob"),
     "ngroup"=extract(object,"ngroup"))
-
     class(output) <- "summary.GDINA"
     output
   }

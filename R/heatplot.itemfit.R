@@ -7,7 +7,6 @@
 #' @seealso \code{\link{GDINA}}, \code{\link{itemfit}}
 #' @export
 #'
-#'
 heatplot <- function(object,...){
   UseMethod("heatplot")
 }
