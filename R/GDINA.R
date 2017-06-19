@@ -213,7 +213,8 @@
 #' @param conv.type How is the convergence criterion evaluated? Can be \code{"max.p.change"}, indicating
 #'    the maximum absolute change in success probabilities, or \code{"dev.change"}, representing
 #'    the absolute change in deviance.
-#' @param maxitr The maximum number of EM cycles allowed.
+#' @param maxitr A vector for each item or nonzero category, or a scalar which will be used for all
+#'    items or nonzero categories to specify the maximum number of EM cycles allowed.
 #' @param lower.p A vector for each item or nonzero category, or a scalar which will be used for all
 #'    items or nonzero categories to specify the lower bound for success probabilities. The default is \code{1e-4} for all items.
 #' @param upper.p A vector for each item or nonzero category, or a scalar which will be used for all
@@ -729,7 +730,16 @@ if(any(att.dist=="higher.order")) {
                lower.p = lower.p, upper.p = upper.p, att.str = att.str, nstarts = nstarts,
                conv.crit = conv.crit, maxitr = maxitr,
                digits = digits, diagnosis = diagnosis)
-
+     if(any(is.na(dat))){
+       # some missings individuals with one or fewer valid response are
+       # removed
+       del.ind <- which(rowSums(1L - is.na(dat)) < 2L, arr.ind = TRUE)
+       if (length(del.ind) > 0L) {
+         warning(length(del.ind), " individuals with one or fewer valid responses are removed.")
+         dat <- dat[-del.ind, ]
+         gr <- gr[-del.ind]
+       }
+     }
     # polytomous responses -> dichotomous responses
     # copy Q and data
     Qc <- Q
@@ -746,16 +756,7 @@ if(any(att.dist=="higher.order")) {
       }
 
     }
-  if(any(is.na(dat))){
-    # some missings individuals with one or fewer valid response are
-      # removed
-      del.ind <- which(rowSums(1L - is.na(dat)) < 2L, arr.ind = TRUE)
-      if (length(del.ind) > 0L) {
-        warning(length(del.ind), " individuals with one or fewer valid responses are removed.")
-        dat <- dat[-del.ind, ]
-        gr <- gr[-del.ind]
-      }
-  }
+
 
     N <- nrow(dat)
 
@@ -786,6 +787,15 @@ if(any(att.dist=="higher.order")) {
       if (length(upper.p) != J)
         stop("upper.p must have length of 1 or J.", call. = FALSE)
     }
+
+    if(length(maxitr)==1) {
+      vmaxitr <- rep(maxitr,J)
+    }else if(length(maxitr)!=J){
+      warning("Length of maxitr must be equal to 1 or the number of nonzero categories.",call. = FALSE)
+    }else{
+      vmaxitr <- maxitr
+      maxitr <- max(maxitr)
+    }
     # location of item parameters
     parloc <- eta.loc(Q)  #J x L
 
@@ -794,9 +804,14 @@ if(any(att.dist=="higher.order")) {
       att.prior <- matrix(rep(1/L, L),ncol = no.mg)
       logprior <- matrix(log(att.prior),nrow = L,ncol = no.mg)
     } else {
-      if(is.vector(att.prior)) att.prior <- matrix(att.prior,ncol = no.mg) # vector -> matrix
-      if (nrow(att.prior) != L||ncol(att.prior)!=no.mg)
-        stop("Length of joint attribute distribution prior must be equal to 2^K if it is specified.", call. = FALSE)
+      if(is.vector(att.prior)) {
+        att.prior <- matrix(att.prior,ncol = no.mg) # vector -> matrix
+      }
+      if(is.matrix(att.prior)){
+        if (nrow(att.prior) != L||ncol(att.prior)!=no.mg)
+          stop("Joint attribute distribution priors must be a vector of length 2^K or a matrix with 2^K rows if specified.", call. = FALSE)
+      }
+
       if (any(att.prior < 0)) stop("Joint attribute distribution prior can only contain numerical values between 0 and 1.", call. = FALSE)
         logprior <- log(att.prior/matrix(colSums(att.prior),nrow = L,ncol = no.mg,byrow = TRUE))
     }
@@ -841,6 +856,8 @@ if(any(att.dist=="higher.order")) {
 
     while (dif > conv.crit && itr < maxitr)
     {
+      # length of J indicating whether a nonzero cat should  be est. (TRUE) or not (FALSE)
+      est.bin <- vmaxitr>itr
       item.parm_copy <- item.parm
       # --------E step probability of getting each score for each latent
       # class
@@ -876,7 +893,7 @@ if(any(att.dist=="higher.order")) {
       optims <- Mstep(Kj = Kj, RN = RN, model = model, itmpar = item.parm, delta = deltas,
                       constr = mono.constraint, correction = smallNcorrection, lower.p = lower.p,
                       upper.p = upper.p, itr = itr + 1, warning.immediate = Mstep.warning,
-                      optimizer = optimizer, designmatrices = designMlist,optim.control = optim.control)
+                      optimizer = optimizer, designmatrices = designMlist,optim.control = optim.control,est.bin = est.bin)
       item.parm <- optims$item.parm
       deltas <- optims$delta
 

@@ -31,12 +31,13 @@ hoparm.GDINA <- function(object, withSE = FALSE,theta.est = FALSE, digits = 4, .
   if(all(extract(object,what ="att.dist")!= "higher.order")) {
     stop("Set att.dist = 'higher.order' to estimate a higher-order model.",call. = FALSE)
   }else{
-    if(extract(object,"ngroup")>1) withSE <- theta.est <- FALSE
-    warning("SE for higher-order structural parameters cannot be estimated for multiple groups",call. = FALSE)
+    if(extract(object,"ngroup")>1) {
+      withSE <- theta.est <- FALSE
+    warning("SE for higher-order structural parameters cannot be estimated for multiple groups",call. = FALSE)}
   }
 
   theta <- NULL
-  quad <- seq(-4,4,length.out = extract(mod12,"higher.order")$nquad)
+  quad <- seq(-4,4,length.out = extract(object,"higher.order")$nquad)
 
   if(theta.est){
     K <- extract(object,what = "natt")

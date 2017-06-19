@@ -1,33 +1,69 @@
 Package: GDINA
 Type: Package
 Title: The Generalized DINA Model Framework
-Version: 1.4.3
-Date: 2017-4-25
+Version: 1.4.4
+Date: 2017-6-19
 Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre"),email = "wenchao.ma@rutgers.edu"),person(given = "Jimmy", family = "de la Torre", role = "aut"))
 Description: A set of psychometric tools for cognitive diagnostic analyses for both dichotomous and polytomous responses. Various cognitive diagnosis models can be estimated, include the generalized deterministic inputs, noisy and gate (G-DINA) model by de la Torre (2011) <DOI:10.1007/s11336-011-9207-7>, the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.12070>, and many other models they subsume. Joint attribute distribution can be saturated, higher-order or structured. Q-matrix validation, item and model fit statistics, model comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided.
 License: GPL-3
 LazyData: TRUE
 Depends: R (>= 3.1.0)
-Imports: alabama, data.table, graphics, ggplot2, MASS, nloptr,
-        numDeriv, Rcpp (>= 0.12.1), Rsolnp, stats, utils
-Suggests: CDM, testthat, shiny, shinydashboard
+Imports: alabama, data.table, doParallel, foreach, graphics, ggplot2, MASS, nloptr, 
+        numDeriv, Rcpp (>= 0.12.1), Rsolnp, stats, shiny, shinydashboard, utils
+Suggests: CDM, testthat
 LinkingTo: Rcpp, RcppArmadillo
 URL: https://github.com/Wenchao-Ma/GDINA
 BugReports: https://github.com/Wenchao-Ma/GDINA/issues
 RoxygenNote: 6.0.1
-Collate: 'CR.R' 'ExportedFuncs.R' 'GDINA.R' 'GDI.R' 'GDINA-package.R'
-        'HO.R' 'HOsupplement.R' 'M.R' 'M.mono.R' 'Mstep.R'
-        'Msupplement.R' 'RcppExports.R' 'anova.GDINA.R' 'att.struc.R'
-        'autoGDINA.R' 'designmatrix.R' 'dif.R' 'ecpe.R'
-        'extract.GDINA.R' 'extract.Qval.R' 'itemfit.R'
-        'extract.itemfit.R' 'modelcomp.R' 'extract.modelcomp.R'
-        'simGDINA.R' 'extract.simGDINA.R' 'frac20.R'
-        'heatplot.itemfit.R' 'hoparm.R' 'initials.R' 'itemparm.GDINA.R'
-        'monocheck.R' 'personparm.GDINA.R' 'plotIRF.GDINA.R'
-        'plotPVAF.Qval.R' 's3GDINA.R' 'print.GDINA.R' 'score.R'
-        'sim10GDINA.R' 'sim20seqGDINA.R' 'sim21seqDINA.R' 'sim30DINA.R'
-        'sim30GDINA.R' 'sim30pGDINA.R' 'startGDINA.R' 'summary.GDINA.R'
-        'utils.R' 'zzz.R'
+Collate: 
+    'CR.R'
+    'ExportedFuncs.R'
+    'GDINA.R'
+    'GDI.R'
+    'GDINA-package.R'
+    'HO.R'
+    'HOsupplement.R'
+    'M.R'
+    'M.mono.R'
+    'Mstep.R'
+    'Msupplement.R'
+    'RcppExports.R'
+    'anova.GDINA.R'
+    'att.struc.R'
+    'autoGDINA.R'
+    'designmatrix.R'
+    'dif.R'
+    'ecpe.R'
+    'extract.GDINA.R'
+    'extract.Qval.R'
+    'itemfit.R'
+    'extract.itemfit.R'
+    'modelcomp.R'
+    'extract.modelcomp.R'
+    'simGDINA.R'
+    'extract.simGDINA.R'
+    'frac20.R'
+    'heatplot.itemfit.R'
+    'hoparm.R'
+    'initials.R'
+    'itemparm.GDINA.R'
+    'monocheck.R'
+    'personparm.GDINA.R'
+    'plotIRF.GDINA.R'
+    'plotPVAF.Qval.R'
+    's3GDINA.R'
+    'print.GDINA.R'
+    'score.R'
+    'sim10GDINA.R'
+    'sim20seqGDINA.R'
+    'sim21seqDINA.R'
+    'sim30DINA.R'
+    'sim30GDINA.R'
+    'sim30pGDINA.R'
+    'startGDINA.R'
+    'summary.GDINA.R'
+    'utils.R'
+    'zzz.R'
 NeedsCompilation: yes
 Packaged: 2017-04-13 02:03:59 UTC; Wenchao
 Author: Wenchao Ma [aut, cre],

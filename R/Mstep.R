@@ -1,7 +1,9 @@
 
 Mstep <- function(Kj,RN,model,itmpar,delta,constr,
                   correction,lower.p,optimizer,
-                  upper.p,itr,warning.immediate,designmatrices,optim.control=list()){
+                  upper.p,itr,warning.immediate,
+                  designmatrices,optim.control=list(),
+                  est.bin = est.bin){
 
   J <- length(Kj)
 
@@ -13,7 +15,9 @@ Mstep <- function(Kj,RN,model,itmpar,delta,constr,
 
   if (is.null(delta)) delta <- calc_delta(itmpar,model,Kj)
 
-  for(j in 1:J){ #for each item
+
+
+  for(j in which(est.bin)){ #for each item
     Mj <- designmatrices[[j]]
     Rj <- RN$Rg[j,1:2^Kj[j]]
     Nj <- RN$Ng[j,1:2^Kj[j]]

@@ -129,23 +129,22 @@ cjoint <- function(...,fill = NA){
 #'
 #' @param df a data frame or matrix
 #'
-#' @return freq the number of rows
-#' @return group the data frame with a column named row.no giving unique labels for all unique rows
+#' @return data frame with unique rows
 #' @export
 #' @import data.table
 #' @examples
 #'
 #' df <- data.frame(V1=c(1L,2L),V2=LETTERS[1:3],V3=rep(1,12))
-#' rowCount(df)
+#' FreqTable(df)
 #'
 #'
 #'
-rowCount <- function(df){
+FreqTable <- function(df){
   DT <- data.table(df)
   varb <- colnames(DT)
   freq <- DT[,.N,by=c(varb)]
-  DT$gr <- as.numeric(factor(apply(DT,1,paste0,collapse="")))
-  return(list(freq=data.frame(freq),group=data.frame(DT)))
+  freq$FirstUnique <- which(!duplicated(DT))
+  return(data.frame(freq))
 }
 
 #' Count the frequency of a row vector in a data frame

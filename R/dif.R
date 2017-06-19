@@ -2,7 +2,8 @@
 #' @title  Differential item functioning for cognitive diagnosis models
 #'
 #' @description   This function is used to detect differential item functioning based on the models estimated
-#' in the \code{\link{GDINA}} function using the Wald test (Hou, de la Torre, & Nandakumar, 2014)
+#' in the \code{\link{GDINA}} function using the Wald test (Hou, de la Torre, & Nandakumar, 2014) and the likelihood ratio
+#' test (Ma, Terzi, Lee,& de la Torre, 2017).
 #' @param method DIF detection method; It can be \code{"wald"} for Hou, de la Torre, and Nandakumar's (2014)
 #' Wald test method, and \code{"LR"} for likelihood ratio test.
 #' @param parm The type of parameters associated with the Wald test for the DIF detection. It can be either \code{"itemprob"}
@@ -51,6 +52,8 @@
 #' Hou, L., de la Torre, J., & Nandakumar, R. (2014). Differential item functioning assessment in cognitive diagnostic modeling: Application of the Wald test to
 #' investigate DIF in the DINA model. \emph{Journal of Educational Measurement, 51}, 98-125.
 #'
+#' Ma, W., Terzi, R., Lee, S., & de la Torre, J. (2017, April). Multiplegroup cognitive diagnosis models and their applications in detectingdifferential item functioning.  Paper presented at the Annual Meeting ofthe American Educational Research Association, San Antonio, TX.
+#'
 
 
 dif <- function(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",LR.type="free.all",
@@ -91,6 +94,7 @@ dif <- function(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",
                                     pcov$index$loc[pcov$index$item==difitem[j]]],
                            pcov$cov[pcov$index$loc[pcov$index$item==difitem[j]+J],
                                     pcov$index$loc[pcov$index$item==difitem[j]+J]]))
+        print(vcov)
         output[j,1] <- t(R%*%x)%*%MASS::ginv(R%*%vcov%*%t(R))%*%(R%*%x)
         output[j,2] <- nrow(R)
         output[j,3] <- pchisq(output[j,1],nrow(R),lower.tail = FALSE)

@@ -3,7 +3,7 @@
 #include <stdlib.h> // for NULL
 #include <R_ext/Rdynload.h>
 
-/* FIXME: 
+/* FIXME:
    Check these declarations against the C/Fortran source code.
 */
 
@@ -15,6 +15,7 @@ extern SEXP GDINA_Lik(SEXP, SEXP, SEXP, SEXP);
 extern SEXP GDINA_NgRg(SEXP, SEXP, SEXP);
 extern SEXP GDINA_Rljs(SEXP, SEXP, SEXP);
 extern SEXP GDINA_scorefun(SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP GDINA_LouisC(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP GDINA_sequP(SEXP, SEXP, SEXP);
 extern SEXP GDINA_uP(SEXP, SEXP);
 extern SEXP GDINA_varsigma(SEXP, SEXP, SEXP);
@@ -27,6 +28,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"GDINA_NgRg",         (DL_FUNC) &GDINA_NgRg,         3},
     {"GDINA_Rljs",         (DL_FUNC) &GDINA_Rljs,         3},
     {"GDINA_scorefun",     (DL_FUNC) &GDINA_scorefun,     5},
+    {"GDINA_LouisC",       (DL_FUNC) &GDINA_LouisC,       7},
     {"GDINA_sequP",        (DL_FUNC) &GDINA_sequP,        3},
     {"GDINA_uP",           (DL_FUNC) &GDINA_uP,           2},
     {"GDINA_varsigma",     (DL_FUNC) &GDINA_varsigma,     3},

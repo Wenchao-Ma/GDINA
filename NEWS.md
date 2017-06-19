@@ -1,4 +1,7 @@
-# GDINA 1.4.3
+# GDINA 1.4.4
+* Changed   - rename function `rowCount` as `FreqTable`
+* Changed   - `maxitr` in the `GDINA` function can be a vector, indicating different no. of iterations for different items
+* Fixed     - when some observations are removed automatically, the standard errors may not be correctly calculated (thanks to Kazuhiro Yamaguchi)
 * Fixed     - Format of SEs for DINO model was incorrect when printing category proabilities
 * Fixed     - higher-order ability estimate was fixed; which was caused since v 1.4.1
 

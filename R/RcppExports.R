@@ -17,6 +17,10 @@ Lik <- function(mP, mX, vlogPrior, vgroup) {
     .Call('GDINA_Lik', PACKAGE = 'GDINA', mP, mX, vlogPrior, vgroup)
 }
 
+LouisC <- function(mX, np, mlogPost, itemparmLC, parloc, weight, SEtype) {
+    .Call('GDINA_LouisC', PACKAGE = 'GDINA', mX, np, mlogPost, itemparmLC, parloc, weight, SEtype)
+}
+
 NgRg <- function(mlogPost, mX, mloc) {
     .Call('GDINA_NgRg', PACKAGE = 'GDINA', mlogPost, mX, mloc)
 }
