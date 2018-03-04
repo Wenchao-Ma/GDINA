@@ -139,27 +139,6 @@ cjoint <- function(...,fill = NA){
 
 }
 
-#' Count and label unique rows in a data frame
-#'
-#' @param df a data frame or matrix
-#'
-#' @return data frame with unique rows
-#' @export
-#' @import data.table
-#' @examples
-#'
-#' df <- data.frame(V1=c(1L,2L),V2=LETTERS[1:3],V3=rep(1,12))
-#' FreqTable(df)
-#'
-#'
-#'
-FreqTable <- function(df){
-  DT <- data.table(df)
-  varb <- colnames(DT)
-  freq <- DT[,.N,by=c(varb)]
-  freq$FirstUnique <- which(!duplicated(DT))
-  return(data.frame(freq))
-}
 
 #' Count the frequency of a row vector in a data frame
 #'

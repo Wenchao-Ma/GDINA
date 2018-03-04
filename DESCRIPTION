@@ -8,7 +8,7 @@ Description: A set of psychometric tools for cognitive diagnosis modeling for bo
 License: GPL-3
 LazyData: TRUE
 Depends: R (>= 3.1.0)
-Imports: alabama, data.table, graphics, ggplot2, MASS, Matrix, nloptr, 
+Imports: alabama, graphics, ggplot2, MASS, Matrix, nloptr, 
         numDeriv, Rcpp (>= 0.12.1), Rsolnp, stats, shiny, shinydashboard, utils
 Suggests: CDM, testthat
 LinkingTo: Rcpp, RcppArmadillo

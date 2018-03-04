@@ -1,9 +1,11 @@
-# GDINA 1.4.4
-* Changed   - rename function `rowCount` as `FreqTable`
-* Changed   - `maxitr` in the `GDINA` function can be a vector, indicating different no. of iterations for different items
-* Fixed     - when some observations are removed automatically, the standard errors may not be correctly calculated (thanks to Kazuhiro Yamaguchi)
-* Fixed     - Format of SEs for DINO model was incorrect when printing category proabilities
-* Fixed     - higher-order ability estimate was fixed; which was caused since v 1.4.1
+# GDINA 1.9.9.9
+* This is a major update including a large number of new features. The `GDINA` function has been largely rewritten for both flexibility and speed. 
+  Users are now allowed to fit `MS-DINA` model, `Bugs` models, and define models by providing design matrix and link functions. For joint attribute
+  distribution, in addition to saturated and higher-order models, users are now allowed to fit independent model and loglinear model. Code for 
+  joint attribute distribution modelling has been restructured as well. Other major updates include model fit evaluation using M2 statistics and other
+  limited information measures, item-level model selection using likelihood ratio test and score test, classification accuracy evaluation indices, 
+  bootstrap standard error estimation, etc.
+* Note that due to the major update, some results from this version may be slightly different from those using the previous version. 
 
 # GDINA 1.4.2
 * Fixed     - a bug in `modelcomp` in the version 1.4.1
