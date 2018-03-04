@@ -49,12 +49,11 @@
 #' @param modelselection logical; conducting model selection or not?
 #' @param modelselectionrule how to conducted model selection? Possible options include
 #'    \code{simpler}, \code{largestp} and \code{DS}. See \code{Details}.
-#' @param eps cut-off value for PVAF if \code{Qvalid=TRUE}. The default is 0.95.
-#' @param reducedCDM a vector specifying which reduced CDMs are possible reduced CDMs for each
-#'   item. The default is "DINA","DINO","ACDM","LLM",and "RRUM".
-#' @param GDINA1.option options for initial G-DINA calibration
-#' @param GDINA2.option options for second G-DINA calibration
-#' @param CDM.option options for final calibration
+#' @param modelselection.args arguments passed to \code{modelcomp}
+#' @param Qvalid.args arguments passed to \code{Qval}
+#' @param GDINA1.args arguments passed to GDINA function for initial G-DINA calibration
+#' @param GDINA2.args arguments passed to GDINA function for the second G-DINA calibration
+#' @param CDM.args arguments passed to GDINA function for final calibration
 #' @inheritParams GDINA
 #' @seealso \code{\link{GDINA}}, \code{\link{modelcomp}}, \code{\link{Qval}}
 #'
@@ -67,7 +66,7 @@
 #' \item{CDM.obj}{Final CDM calibration of class \code{GDINA}}
 #' }
 #'
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #'
 #' @references
 #' Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification.
@@ -90,7 +89,8 @@
 #'
 #'
 #' #using the other selection rule
-#' out11 <- autoGDINA(dat,misQ,modelselectionrule="simpler",reducedCDM = c("DINO","DINA"))
+#' out11 <- autoGDINA(dat,misQ,modelselectionrule="simpler",
+#'                    modelselection.args = list(models = c("DINO","DINA")))
 #' out11
 #' summary(out11)
 #'
@@ -99,69 +99,44 @@
 #' out12
 #' summary(out12)
 #'
-#' # -- Only consider some reduced CDMs
-#' out2 <- autoGDINA(dat,misQ,reducedCDM = c("RRUM","LLM"))
 #'
 #' # Disable Q-matrix validation
-#' out3 <- autoGDINA(dat = dat, Q = misQ, Qvalid = FALSE,alpha.level=0.01)
+#' out3 <- autoGDINA(dat = dat, Q = misQ, Qvalid = FALSE)
 #' out3
 #' summary(out3)
 #'}
 #' @export
 
 autoGDINA <-
-  function(dat, Q, modelselection = TRUE, Qvalid = TRUE,
-           reducedCDM = c("DINA", "DINO", "ACDM", "LLM", "RRUM"),
-           alpha.level = 0.05, modelselectionrule = "simpler",
-           eps = 0.95, GDINA1.option = list(),
-           GDINA2.option = list(), CDM.option = list()) {
+  function(dat, Q, modelselection = TRUE,
+           modelselectionrule = "simpler", alpha.level = 0.05,
+           modelselection.args = list(),
+           Qvalid = TRUE, Qvalid.args = list(),
+           GDINA1.args = list(),
+           GDINA2.args = list(), CDM.args = list()) {
     ASEcall <- match.call()
-    # options(warn = -1)
-    CDM.opt <- GDINA2.opt <- GDINA1.opt <-
-      list(model = "GDINA", sequential = FALSE, item.names = NULL,
-           att.dist = "saturated", verbose = 0, catprob.parm = NULL,
-           mono.constraint = FALSE,
-           higher.order = list(model="Rasch",method="MMLE",nquad=19,type = "testwise",
-                               slope.range=c(0.1,5),intercept.range=c(-3,3),
-                               slope.prior=c(0,0.25),intercept.prior=c(0,1)),
-           att.prior = NULL, att.str = FALSE,
-           lower.p = 0.0001,upper.p = 0.9999, smallNcorrection = c(0.0005,0.001),
-           nstarts = 1, conv.crit = 0.001, conv.type = "max.p.change",maxitr = 1000,
-           diagnosis = 0,Mstep.warning = FALSE,optimizer = "all",
-           randomseed = 123456)
-    if(GDINA1.opt$sequential) stop("autoGDINA is not available for sequential models.",call. = FALSE)
-    GDINA1.opt[names(GDINA1.option)] <- GDINA1.option
-    # print(GDINA1.opt)
-    GDINA2.opt[names(GDINA2.option)] <- GDINA2.option
-    CDM.opt[names(CDM.option)] <- CDM.option
+
+    GDINA1.opt <- c(list(dat = dat, Q = Q, verbose = 0), GDINA1.args)
+
+
 
 
     cat("Initial calibration...")
-    if (length(GDINA1.option)>0){
-      GDINA1.opt$dat <- dat
-      GDINA1.opt$Q <- Q
-      GDINA1.obj <- do.call("GDINA",GDINA1.opt)
-    }else{
-      GDINA1.obj <- GDINA(dat = dat, verbose = 0, Q = Q)
-    }
+    GDINA1.obj <- do.call(GDINA,GDINA1.opt)
 
-    Q <- extract.GDINA(GDINA1.obj,what = "Q")
+
+    Q <- extract(GDINA1.obj,what = "Q")
     cat("done.\n")
     Qv <- NULL
     if (Qvalid)  {
       cat("Q-matrix validation...")
-      Qv <- Qval(GDINA1.obj, eps = eps)
-      mQ <- extract.Qval(Qv,what = "sug.Q")
+      Qvalid.args <- c(list(GDINA.obj = GDINA1.obj),Qvalid.args)
+      Qv <- do.call(Qval, Qvalid.args)
+      mQ <- extract(Qv,what = "sug.Q")
       if (any(mQ != Q)) {
-        if (length(GDINA2.option)>0){
-          GDINA2.opt$dat <- dat
-          GDINA2.opt$Q <- mQ
-          GDINA2.obj <- do.call("GDINA",GDINA2.opt)
-
-        }else{
-          GDINA2.obj <- GDINA(dat = dat, verbose = 0, Q = mQ)
-        }
-      } else{
+        GDINA2.opt <- c(list(dat = dat, Q = mQ, verbose = 0), GDINA2.args)
+        GDINA2.obj <- do.call("GDINA",GDINA2.opt)
+      }else{
         GDINA2.obj <- GDINA1.obj
       }
       cat("done.\n")
@@ -169,21 +144,17 @@ autoGDINA <-
       GDINA2.obj <- GDINA1.obj
     }
     Wp <- NULL
-    Q <- extract.GDINA(GDINA2.obj,what = "Q")
+    Q <- extract(GDINA2.obj,what = "Q")
     if (modelselection) {
       cat("Model selection... ")
-if (tolower(modelselectionrule)=="ds"){
-  Wp <- modelcomp(GDINA2.obj, models = reducedCDM,DS=TRUE)
-}else{
-  Wp <- modelcomp(GDINA2.obj, models = reducedCDM,DS=FALSE)
-}
-
-      ps <- extract.modelcomp(Wp,what = "wald.p")
+      modelselection.args <- c(list(GDINA.obj = GDINA2.obj),modelselection.args)
+      Wp <- do.call(modelcomp,modelselection.args)
+      ps <- extract(Wp,what = "pvalues")
 
       if (tolower(modelselectionrule) == "simpler") {
 
-        if(any(toupper(reducedCDM)%in%c("DINA","DINO"))){
-          if(any(toupper(reducedCDM)%in%c("LLM","RRUM","ACDM"))){
+        if(any(toupper(Wp$models)%in%c("DINA","DINO"))){
+          if(any(toupper(Wp$models)%in%c("LLM","RRUM","ACDM"))){
             #some DINO and DINA; some acdm
         model = apply(ps, 1, function(x) {
           if (max(x[1:2], na.rm = T) > alpha.level) {
@@ -226,17 +197,10 @@ if (tolower(modelselectionrule)=="ds"){
       models[which(rowSums(Q)!= 1)] <- model
       cat("done. \n")
     }else{models <- 0}
-
-
+    CDM.opt <- c(list(dat = dat, Q = Q, verbose = 0, model = models), CDM.args)
     cat("Final calibration... ")
-    if (length(CDM.option)>0){
-      CDM.opt$dat <- dat
-      CDM.opt$Q <- Q
-      CDM.opt$model <- models
-      CDM.obj <- do.call("GDINA",CDM.opt)
-    }else{
-      CDM.obj <- GDINA(dat = dat, Q = Q, verbose = 0, model = models)
-    }
+    CDM.obj <- do.call("GDINA",CDM.opt)
+
     cat("done.\n")
     out <-list( CDM.obj = CDM.obj,
         Qval.obj = Qv,
@@ -244,14 +208,14 @@ if (tolower(modelselectionrule)=="ds"){
         GDINA1.obj = GDINA1.obj,
         GDINA2.obj = GDINA2.obj,
         options = list(
-          reducedCDM = reducedCDM,
+          reducedCDM = Wp$models,
           alpha.level = alpha.level,
-          Qvalid = Qvalid, eps = eps,
+          Qvalid = Qvalid,eps=Qv$eps,
           modelselection = modelselection,
           modelselectionrule =modelselectionrule,
-          GDINA1.option = GDINA1.option,
-          GDINA2.option = GDINA2.option,
-          CDM.option = CDM.option,
+          GDINA1.option = GDINA1.args,
+          GDINA2.option = GDINA2.args,
+          CDM.option = CDM.args,
           ASEcall = ASEcall
         )
       )

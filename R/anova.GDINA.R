@@ -22,12 +22,12 @@ anova.GDINA <- function(object, ...)
   delta.chi <- dev-dev[which.max(np)]
   delta.df <- max(np)-np
   pval <- pchisq(delta.chi, delta.df,lower.tail = FALSE)
-  LR <- round(data.frame(chisq=delta.chi,df=delta.df,pvalue=pval),4)
+  LR <- round(data.frame(chisq=delta.chi,df=delta.df,pvalue=pval),2)
     IC <- data.frame(npar=np,
-                      logLik=formatC(logL,digits = 4, format = "f"),
-                      deviance=formatC(dev,digits = 4, format = "f"),
-                      AIC=formatC(aic,digits = 4, format = "f"),
-                      BIC=formatC(bic,digits = 4, format = "f"))
+                      logLik=formatC(logL,digits = 2, format = "f"),
+                      deviance=formatC(dev,digits = 2, format = "f"),
+                      AIC=formatC(aic,digits = 2, format = "f"),
+                      BIC=formatC(bic,digits = 2, format = "f"))
     rownames(IC) <- rownames(LR) <- paste(obj)[-1]
     output <- list(IC=IC,LR=LR)
     class(output) <- "anova.GDINA"

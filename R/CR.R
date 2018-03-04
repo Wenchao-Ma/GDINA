@@ -34,10 +34,8 @@
 #' CR
 #' }
 ClassRate <- function(att1,att2){
-  if (is.null(att1)|is.null(att2)) stop("att1 and att2 must be matrices or data frame.",call. = FALSE)
-  if(is.list(att1)|is.list(att2)) stop("att1 and att2 must be matrices or data frame.",call. = FALSE)
   if (any(dim(att1)!=dim(att2))) stop("att1 and att2 must have the same dimensions.",call. = FALSE)
-  comp <- att1==att2
+  comp <- as.matrix(att1)==as.matrix(att2)
   K <- ncol(att1)
   PCV <- NULL
   for (k in 1:K){

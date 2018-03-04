@@ -30,28 +30,28 @@
 #'
 #' @export
 mesaplot <- function(Qval.obj, item, type = "best", no.qvector = 10,
-                     data.label = TRUE, eps = 0.95,
+                     data.label = TRUE, eps = "auto",
                      original.q.label = FALSE,auto.ylim = TRUE,...){
   UseMethod("mesaplot")
 }
 #' @export
 mesaplot.Qval <-
   function(Qval.obj, item, type = "best", no.qvector = 10,
-           data.label = TRUE,eps = 0.95,
+           data.label = TRUE,eps = "auto",
            original.q.label = FALSE,auto.ylim = TRUE,...)
   {
+    if(eps=="auto") eps <- Qval.obj$eps
     Q <- extract.Qval(Qval.obj,"Q")
-    # Q <- Qval.obj$sugg.Q[,grep("orig.q",colnames(Qvalidation.obj$sugg.Q))]
     K <- ncol(Q)
     L <- (2^K-1) # L-1
+    patt <- attributepattern(K)
     fullPVAF <- extract.Qval(Qval.obj,"PVAF")
     if(tolower(type)=="all"){
 
       if (L<no.qvector) no.qvector <- L
       for (y in item){
         #which one is the true
-        locy0 <- which(apply(alpha(K)[-1,],1,function(x){
-          all(x==Q[y,])}))
+        locy0 <- which(apply(patt[-1,],1,function(x){all(x==Q[y,])}))
 
         locy <- no.qvector-(L-which(order(fullPVAF[,y],decreasing = F)==locy0))
         ordered.PVAF.j <- sort(fullPVAF[,y],decreasing = FALSE)
@@ -73,10 +73,10 @@ mesaplot.Qval <-
       }
     }else if(tolower(type)=="best"){
       fullPVAF <- rbind(0,fullPVAF)
-      Kj <- rowSums(alpha(K))
+      Kj <- rowSums(patt)
       bestPVAF <- aggregate(fullPVAF,by=list(Kj),max)[,-1]
       # bestPVAF <- rbind(0,bestPVAF) # add 0s
-      label.bestPVAF <- apply(alpha(K),1,paste0,collapse = "")
+      label.bestPVAF <- apply(patt,1,paste0,collapse = "")
       for(j in item){
         bestloc <- match(bestPVAF[,j],fullPVAF[,j])
         if (auto.ylim) ylim = c(max(0,round(min(bestPVAF[,j])-0.1,1)),1) else ylim=c(0,1)
@@ -87,7 +87,7 @@ mesaplot.Qval <-
         yloc <- bestPVAF[,j]-diff(ylim)/15
         yloc[yloc<=ylim[1]] <- yloc[yloc<=ylim[1]] + 2 * diff(ylim)/15
         if (data.label) text(c(1:nrow(bestPVAF)),yloc,bestPVAF[,j])
-        locy0 <- which(apply(alpha(K),1,function(x){
+        locy0 <- which(apply(patt,1,function(x){
           all(x==Q[j,])}))
         if(locy0%in%bestloc) points(which(bestloc==locy0),fullPVAF[locy0,j],col="red",pch=19)
         if (original.q.label) text(K-1,ylim[1]+diff(ylim)/6,paste("original q-vector:\n",names(fullPVAF[,j])[locy0]))

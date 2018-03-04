@@ -1,127 +1,188 @@
 
-HO.est <- function(Rl, K, N, IRTmodel = "Rasch", theta.range = c(-3,3),type="testwise",
-                   nnodes = 19, a = NULL, b = NULL, loga.prior = c(0,0.25),b.prior = c(0,1),
-                   method = "MMLE", a.bound = c(0.1, 5), b.bound = c(-4, 4))
+
+HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
 {
-  Aq <- seq(theta.range[1], theta.range[2], length.out = nnodes)
-  Wght <- dnorm(Aq)
-  Wght <- Wght/sum(Wght)
-  if (is.null(a)) a <- rep(1, K)
-  X <- alpha(K)
-  if (is.null(b)) b <- (-1)*qnorm(0.975 - 0.95 * colSums(X * matrix(rep(Rl, K), ncol = K))/N)
-  if (toupper(method)=="BL"){
 
-    obj_fn_2PL <- function(vpar)
-    {
-      # a1,a2,..aJ,b1,b2,.. bJ
-      LXl <- t(HO.loglik(vpar[1:(length(vpar)/2)], vpar[(1 + (length(vpar)/2)):length(vpar)],
-                       Aq,nnodes, X,K))
-      -1 * sum(Rl * log(colSums(exp(matrix(rep(log(Wght), 2^K), nrow = nnodes) +
-                                      LXl))))
+  Aq <- higher.order$QuadNodes
+  WAq <- higher.order$QuadWghts
+  if(is.null(lambda)){
+    lambda = higher.order$lambda
+  }
+  K <- log2(nrow(AlphaPattern))
+
+   NR <- list()
+   for(g in HOgr){
+    NR[[g]] <- expectedNR(AlphaPattern = AlphaPattern, nc = Rl[,g], theta = Aq[,g], f_theta = WAq[,g], a = lambda[[g]][,1], b = lambda[[g]][,2])
+   }
+
+
+  if(higher.order$Type=="SameTheta"){
+  for(g in HOgr){
+    for(k in seq_len(K)){
+      lambda[[g]][k,2] <- rootFinder(f = Lfj_intercept, interval = higher.order$InterceptRange,
+                           aj = lambda[[g]][k,1],theta = Aq[,g],r = NR[[g]]$r[,k], n = NR[[g]]$n,
+                           prior = higher.order$Prior, mu = higher.order$InterceptPrior[1], sigma = higher.order$InterceptPrior[2])
     }
-    obj_fn_Rasch <- function(vpar)
-    {
-      LXl <- t(HO.loglik(rep(1,length(vpar)), vpar, Aq,nnodes, X,K))
-      -1 * sum(Rl * log(colSums(exp(matrix(rep(log(Wght), 2^K), nrow = nnodes) +
-                                      LXl))))
-    }
-    obj_fn_1PL <- function(vpar)
-    {
-      LXl <- t(HO.loglik(rep(vpar[1],length(vpar)-1), vpar[2:length(vpar)], Aq,nnodes, X,K))
-      -1 * sum(Rl * log(colSums(exp(matrix(rep(log(Wght), 2^K), nrow = nnodes) +
-                                      LXl))))
-    }
-    if (IRTmodel=="2PL"){
-      vpar <- c(a, b)
-      HOopt <- optim(vpar, fn = obj_fn_2PL, method = "L-BFGS-B",
-                     lower = c(rep(a.bound[1], K), rep(b.bound[1], K)),
-                     upper = c(rep(a.bound[2], K), rep(b.bound[2], K)))
-      lambda = data.frame(slope=HOopt$par[1:(length(vpar)/2)],
-                          intercept=HOopt$par[(1 + (length(vpar)/2)):length(vpar)])
-    }else if (IRTmodel=="Rasch"){
-      vpar <- b
-      HOopt <- optim(vpar, fn = obj_fn_Rasch, method = "L-BFGS-B",
-                     lower = c(rep(b.bound[1], K)),
-                     upper = c(rep(b.bound[2], K)))
-       lambda = data.frame(slope=rep(1,K), intercept=HOopt$par)
-    }else if (IRTmodel=="1PL"){
-      vpar <- c(a[1],b)
-      HOopt <- optim(vpar, fn = obj_fn_1PL, method = "L-BFGS-B",
-                     lower = c(a.bound[1],rep(b.bound[1], K)),
-                     upper = c(a.bound[2],rep(b.bound[2], K)))
-      lambda = data.frame(slope=rep(HOopt$par[1],K), intercept=HOopt$par[2:length(vpar)])
-    }
-  }else{
-    HOlike <- exp(HO.loglik(a,b,Aq,nnodes,X,K)) #2^K x nnodes - P(alpha_c|Aq,a,b)
-    Nlq <- c(Rl)*HOlike * matrix(Wght, 2^K, nnodes, byrow = T)/rowSums(HOlike * matrix(Wght, 2^K, nnodes, byrow = T))
-    # Nq <- colSums(post/rowSums(post)) # length of nnodes - expected number of examinees with Aq - P(Xi|alpha_c)P(alpha_c|Aq,a,b)*p(Aq)/P(Xi)
-    Nq <- colSums(Nlq)
-    #Compute Rqk (each column) - number of examinees at each node that have mastered attribute k - nnodes x K
-    Rq <- (t(Nlq)%*%X)
+    if(higher.order$model=="1PL"){
+      lambda[[g]][,1] <- rootFinder(f = Lfj_commonslope, interval = higher.order$SlopeRange,
+                          d = lambda[[g]][,2],theta = Aq[,g],r = NR[[g]]$r, n = NR[[g]]$n,
+                          prior = higher.order$Prior, mu = higher.order$SlopePrior[1], sigma = higher.order$SlopePrior[2])
+    }else if(higher.order$model=="2PL"){
 
-    lambda <- matrix(1,K,2)
-    if (method=="BMLE") prior <- TRUE else if (method=="MMLE") prior <- FALSE
-    if(type=="attwise"){
-      if(toupper(IRTmodel)=="1PL"){
-        for(k in 1:K)   b[k] <- lambda[k,2] <- optimise(f=obj_fn_b,interval = b.bound,
-                                                        Nq = Nq, Rqk = Rq[,k], Aq=Aq,
-                                                        mu=b.prior[1], sigma2=b.prior[2],
-                                                        a = a[k],prior=prior)$minimum
-        lambda[,1] <- exp(optimise(f=obj_fn_1PLa,interval = log(a.bound),Nq = Nq, Rq = Rq,Aq=Aq,
-                                   mu=loga.prior[1], sigma2=loga.prior[2], b = b,prior=prior)$minimum)
+      for(k in seq_len(K)) lambda[[g]][k,1] <- rootFinder(f = Lfj_slope, interval = higher.order$SlopeRange,
+                                                d = lambda[[g]][k,2],theta = Aq[,g],r = NR[[g]]$r[,k], n = NR[[g]]$n,
+                                                prior = higher.order$Prior, mu = higher.order$SlopePrior[1], sigma = higher.order$SlopePrior[2])
 
-
-      }else if(toupper(IRTmodel)=="2PL"){
-        # HO.2PL.j <- function(vP, Nq, Rqk,Aq,mu.loga,mu.b,sigma2.loga,sigma2.b,prior=FALSE)
-        for(k in 1:K)  {
-          opt <-optim(c(log(a[k]),b[k]), HO.2PL.j, gr = NULL,
-                      lower = c(log(a.bound[1]), b.bound[1]),
-                      upper = c(log(a.bound[2]),b.bound[2]),
-                      method = "L-BFGS-B", control=list(fnscale=-1),
-                      Nq=Nq, Rqk=Rq[,k],Aq=Aq,mu.loga=loga.prior[1],sigma2.loga=loga.prior[2],
-                      mu.b=b.prior[1],sigma2.b=b.prior[2],prior=prior)$par
-          lambda[k,] <- c(exp(opt[1]),opt[2])
-
-        }
-
-      }else if (IRTmodel=="Rasch"){
-        for(k in 1:K)  lambda[k,2] <- optimise(f=gr.Rasch.j,interval = b.bound,
-                                               Nq = Nq, Rqk = Rq[,k],Aq=Aq,
-                                               mu=b.prior[1], sigma2=b.prior[2],
-                                               a = 1,prior = prior)$minimum
-      }
-    }else if(type=="testwise"){
-      if(toupper(IRTmodel)=="2PL"){
-        HOopt<-optim(c(log(a),b), HO.2PL, gr = NULL,
-                     lower = c(rep(log(a.bound[1]), K), rep(b.bound[1], K)),
-                     upper = c(rep(log(a.bound[2]), K), rep(b.bound[2], K)),
-                     method = "L-BFGS-B", control=list(fnscale=-1),
-                     Nq=Nq, Rq=Rq,Aq=Aq,mu.loga=loga.prior[1],sigma2.loga=loga.prior[2],
-                     mu.b=b.prior[1],sigma2.b=b.prior[2],prior=prior)$par
-        lambda[,1] <- exp(HOopt[1:(length(HOopt)/2)])
-        lambda[,2] <- HOopt[(1 + (length(HOopt)/2)):length(HOopt)]
-      }else if (IRTmodel=="Rasch"){
-        lambda[,2] <- optim(b, HO.Rasch, gr = NULL,
-                            lower = rep(b.bound[1], K),upper = rep(b.bound[2], K),
-                            method = "L-BFGS-B", control=list(fnscale=-1),
-                            Nq=Nq, Rq=Rq,Aq=Aq,
-                            mu=b.prior[1],sigma2=b.prior[2],prior=prior)$par
-      }else if(IRTmodel=="1PL"){
-        HOopt <- optim(c(log(a[1]),b), HO.1PL, gr = NULL,
-                       lower = c(log(a.bound[1]),rep(b.bound[1], K)),upper = c(log(a.bound[2]),rep(b.bound[2], K)),
-                       method = "L-BFGS-B", control=list(fnscale=-1),
-                       Nq=Nq, Rq=Rq,Aq=Aq,mu.loga=loga.prior[1],sigma2.loga=loga.prior[2],
-                       mu.b=b.prior[1],sigma2.b=b.prior[2],prior=prior)$par
-        lambda[,1] <- exp(HOopt[1])
-        lambda[,2] <- HOopt[-1]
-      }
-
+    }else if(higher.order$model=="Rasch"){
+      lambda[[g]][,1] <- 1
+    }else{
+      stop("Higher-order model is not correctly specified.",call. = FALSE)
     }
   }
 
-  upd.Lx <- HO.loglik(lambda[,1],lambda[,2], Aq,nnodes, X,K) #2^K x nnodes - P(alpha_c|Aq,a,b)
+  }else if(higher.order$Type=="SameLambda"){
+    n <- r <- 0
+    for(g in HOgr){
+      n <- n + NR[[g]]$n
+      r <- r + NR[[g]]$r
+    }
+    d <- a <- vector("numeric",K)
+    for(k in seq_len(K)){
+      d[k] <- rootFinder(f = Lfj_intercept, interval = higher.order$InterceptRange,
+                          aj = lambda[[HOgr[1]]][k,1],theta = Aq[,1],r = r[,k], n = n,
+                          prior = higher.order$Prior, mu = higher.order$InterceptPrior[1],
+                          sigma = higher.order$InterceptPrior[2])
+    }
+    if(higher.order$model=="1PL"){
+      a <- rootFinder(f = Lfj_commonslope, interval = higher.order$SlopeRange,
+                             d = lambda[[HOgr[1]]][,2],theta = Aq[,1],r = r, n = n,
+                             prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
+                             sigma = higher.order$SlopePrior[2])
+    }else if(higher.order$model=="2PL"){
+      for(k in seq_len(K)) a[k,] <- rootFinder(f = Lfj_slope, interval = higher.order$SlopeRange,
+                                               d = lambda[[HOgr[1]]][k,2],theta = Aq[,1],r = r[,k], n = n,
+                                               prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
+                                               sigma = higher.order$SlopePrior[2])
+    }else if(higher.order$model=="Rasch"){
+      a <- 1
+    }else{
+      stop("Higher-order model is not correctly specified.",call. = FALSE)
+    }
+    for(g in HOgr){
+      lambda[[g]][,1] <- a
+      lambda[[g]][,2] <- d
+    }
 
-  logprior <- log(rowSums(exp(matrix(log(Wght), nrow = 2^K, ncol = nnodes,byrow = TRUE) + upd.Lx)))
+    Pg_alpha_c <- ColNormalize(Rl)
+    for(gg in 2:max(HOgr)){
+      WAq[,gg] <- higher.order$QuadWghts[,gg]  <-  colSums(PostTheta(AlphaPattern = AlphaPattern, theta = Aq[,gg],
+                                                                  f_theta = WAq[,gg], a=lambda[[gg]][,1],b=lambda[[gg]][,2])*Pg_alpha_c[,gg])
+    }
 
-  return(list(logprior=logprior,lambda=lambda,HO.loglik=upd.Lx))
+  }
+logprior <- matrix(0,nrow(AlphaPattern),length(HOgr))
+for(g in HOgr){
+  logprior[,g] <- logP_AlphaPattern(AlphaPattern = AlphaPattern, theta = Aq[,g], f_theta = WAq[,g], a = lambda[[g]][,1], b = lambda[[g]][,2])
+}
+  return(list(logprior=logprior,lambda=lambda,higher.order=higher.order))
+}
+
+
+rootFinder <- function(f,interval,...){
+  f1 <- f(interval[1],...)
+  f2 <- f(interval[2],...)
+  if(f1*f2>0 | f1==f2){
+    ret <- ifelse(abs(f1)>abs(f2),interval[2],interval[1])
+  }else{
+    ret <- uniroot(f = f, interval = interval,...)$root
+  }
+  ret
+}
+
+Lfj_intercept <- function(dj,aj,theta,r,n, prior = FALSE, mu, sigma){
+  P <- Pr_2PL_vec(theta = theta, a = aj, b = dj) #nnodes x 1
+  if(prior){
+    ret <- sum(c(r)-c(n)*c(P)) + (dj - mu) / (sigma^2)
+  }else{
+    ret <- sum(c(r)-c(n)*c(P))
+  }
+  ret
+}
+Lfj_slope <- function(aj,dj,theta,r,n, prior = FALSE, mu, sigma){
+  P <- Pr_2PL_vec(theta = theta, a = aj, b = dj) #nnodes x 1
+  if(prior){
+    ret <- sum(theta*(c(r)-c(n)*c(P))) - (log(aj) - mu + sigma^2) /(aj * sigma^2)
+  }else{
+    ret <- sum(theta*(c(r)-c(n)*c(P)))
+  }
+  ret
+
+}
+Lfj_commonslope <- function(a,d,theta,r,n, prior = FALSE, mu, sigma){
+  avec <- rep(a,length(d))
+  P <- Pr_2PL_vec(theta = theta, a = avec, b = d) #nnodes x K
+
+  if(prior){
+    ret <- sum(theta*(r-c(n)*P)) - (log(a) - mu + sigma^2) /(a * sigma^2)
+  }else{
+    ret <- sum(theta*(r-c(n)*P))
+  }
+  ret
+}
+
+# HO.SE <- function(a,d,Xloglik,alphapattern,theta,weight,K,model="1PL",h = 1e-7){
+#   # This will overestimate standard errors
+#   inp <- incomplogL(a=a, b=d,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight)
+#
+#   hess <- matrix(NA,K,2)
+#   if(model=="2PL"){
+#
+#       for(rr in 1:K){
+#         aa <- a
+#         dd <- d
+#         x <- rep(0,K)
+#         x[rr] <- h
+#         hess[rr,1] <- (incomplogL(a=aa+x, b=d,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight)- 2*inp +
+#                          incomplogL(a=aa-x, b=d,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight))/(h^2)
+#         hess[rr,2] <- (incomplogL(a=a, b=dd+x,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight)- 2*inp +
+#                          incomplogL(a=a, b=dd-x,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight))/(h^2)
+#       }
+#
+#   }else if(model=="1PL"){
+#     hess[,1] <- (incomplogL(a=aa+h, b=d,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight)- 2*inp +
+#                      incomplogL(a=aa-h, b=d,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight))/(h^2)
+#     for(rr in 1:K){
+#       dd <- d
+#       x <- rep(0,K)
+#       x[rr] <- h
+#       hess[rr,2] <- (incomplogL(a=a, b=dd+x,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight)- 2*inp +
+#                        incomplogL(a=a, b=dd-x,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight))/(h^2)
+#     }
+#   }else if(model=="Rasch"){
+#     for(rr in 1:K){
+#       dd <- d
+#       x <- rep(0,K)
+#       x[rr] <- h
+#       hess[rr,2] <- (incomplogL(a=a, b=dd+x,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight)- 2*inp +
+#                        incomplogL(a=a, b=dd-x,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight))/(h^2)
+#     }
+#   }
+#
+#   return(hess)
+# }
+
+HO.SE <- function(v,Xloglik,alphapattern,theta,weight,K,model="1PL"){
+
+    if(model=="2PL"){
+    a <- v[1:K]
+    d <- v[(K+1):(2*K)]
+  }else if(model=="1PL"){
+    a <- rep(v[1],K)
+    d <- v[-1]
+  }else if(model=="Rasch"){
+    a <- rep(1,K)
+    d <- v
+  }
+
+  incomplogL(a=a, b=d,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight)
 }

@@ -16,7 +16,7 @@
 #' }
 #'
 #' @include GDINA.R
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @references
 #' de la Torre & Chiu. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
 #'
@@ -42,9 +42,7 @@
 #' # Draw a mesa plot
 #' mesaplot(out,item=10,type="all",no.qvector=5)
 #'}
-#' @references
-#' de la Torre, J., & Chiu, C.-Y. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika}. http://doi.org/10.1007/s11336-015-9467-8
-#'
+
 
 
 
@@ -66,7 +64,7 @@ Qval <- function(GDINA.obj, method = "PVAF", eps=0.95,digits = 4){
 
   L <- no_LC(Q)
 
-  Kj <- rowSums(alpha(K)[-1,])
+  Kj <- rowSums(attributepattern(K)[-1,])
   w <- extract(GDINA.obj,"posterior.prob") #1 x L
   YY <- Y
   YY[is.na(YY)] <- 0
@@ -78,8 +76,8 @@ Qval <- function(GDINA.obj, method = "PVAF", eps=0.95,digits = 4){
   })
   # est.p <- rc/c(w*N)
   est.p <- rc/rn
-  patt <- alpha(K)[-1,]
-  loc <- eta.loc(patt) #2^K-1 x 2^K
+  patt <- attributepattern(K)[-1,]
+  loc <- eta(patt) #2^K-1 x 2^K
   vsg <- varsigma(as.matrix(t(loc)),as.matrix(est.p),c(w))
   PVAF <- vsg/vsg[,L-1]
 if(method=="PVAF"){
@@ -102,7 +100,7 @@ if(method=="PVAF"){
   }
   #### modified Q-matrix and associated PVAF
   loc_q <- apply(val_q,1,function(x){x[which.max(x>0)]})
-  val_q <- alpha(K)[-1,][loc_q,]
+  val_q <- attributepattern(K)[-1,][loc_q,]
 }else{
   out <- PVAF[,which(Kj==1)]
   maxPVAF <- maxPVAF.loc <- NULL
@@ -119,9 +117,9 @@ if(method=="PVAF"){
 
   out.vsg <- round(t(vsg),digits)
   out.PVAF <- round(t(PVAF),digits)
-  rownames(out.vsg) <- rownames(out.PVAF) <- apply(alpha(K),1,paste,collapse = "")[-1]
+  rownames(out.vsg) <- rownames(out.PVAF) <- apply(attributepattern(K),1,paste,collapse = "")[-1]
   Q <- data.frame(Q,row.names = extract(GDINA.obj,"item.names"))
-  rownames(val_q) <- colnames(out.vsg) <- colnames(out.PVAF) <- extract(GDINA.obj,"item.names")
+  # rownames(val_q) <- colnames(out.vsg) <- colnames(out.PVAF) <- extract(GDINA.obj,"item.names")
   qvalid <- list(sug.Q = val_q,Q=Q,varsigma=out.vsg,PVAF=out.PVAF,eps = eps,est.p=est.p)
   class(qvalid) <- "Qval"
   return(qvalid)

@@ -8,7 +8,8 @@ using namespace Rcpp;
 
 List NgRg(arma::mat mlogPost,
                 arma::mat mX,
-                arma::mat mloc){
+                arma::mat mloc,
+                arma::vec weights){
     int J = mX.n_cols;
     //int L = mlogPost.n_cols;
     int Ljmax = mloc.max();
@@ -18,6 +19,7 @@ List NgRg(arma::mat mlogPost,
       arma::mat Ng = arma::zeros<arma::mat>(J,Ljmax);
       arma::mat Rg = arma::zeros<arma::mat>(J,Ljmax);
       arma::mat mPost = exp ( mlogPost ); //N x L
+      mPost.each_col() %= weights;
       --mloc;
     for (int j=0;j<J;++j){ //for each item
       int Kjmax = mloc.row(j).max()+1;
@@ -26,9 +28,8 @@ List NgRg(arma::mat mlogPost,
       arma::mat mXmiss=mX.rows(arma::find(mIndmiss.col(j)==1));
       for (int k=0;k<Kjmax;++k){
         arma::mat tmp = mPostmiss.cols(arma::find(mloc.row(j)==k));
-        arma::rowvec rve = arma::ones<arma::rowvec>(tmp.n_cols);
         Ng(j,k) = accu(tmp);
-        Rg(j,k) = accu((mXmiss.col(j)*rve) % tmp);
+        Rg(j,k) = accu((mXmiss.col(j)*arma::ones<arma::rowvec>(tmp.n_cols)) % tmp);
       }
     }
     return Rcpp::List::create(Rcpp::Named("Ng") = Ng,

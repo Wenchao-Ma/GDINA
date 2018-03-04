@@ -25,7 +25,6 @@
 #' @param ... additional arguments
 #'
 #'
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #'
 #' @references
 #'
@@ -54,6 +53,7 @@ itemparm.GDINA <- function(object,
                            what = c("catprob","itemprob","LCprob","gs","delta","rrum"),
                            withSE = FALSE, SE.type = 2,digits = 4, ...){
   if(!class(object)=="GDINA") stop("object must be a GDINA estimate.",call. = FALSE)
+  .Deprecated("coef", package="GDINA",msg = "'itemparm' is deprecated - use 'coef' instead.")
   what <- match.arg(what)
   if(tolower(what)=="catprob"){
     if(withSE){

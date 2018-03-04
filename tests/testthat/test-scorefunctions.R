@@ -36,7 +36,7 @@ test_that("checking GDINA score function LOGLIKE(I,J) for POLYTOMOUS data", {
     Q <- Qc[,-c(1:2)]
 
     J <- length(unique(Qc[,1]))
-    par.loc <- eta.loc(Q)
+    par.loc <- eta(Q)
     post <- exp(logpost) # posterior N x 2^K
 
     # urP <- itemparm(object,"itemprob",digits = 9) #unconditional reduced prob.
@@ -116,7 +116,7 @@ test_that("checking GDINA score function LOGLIKE(I,J) for POLYTOMOUS data v2", {
   # [3,]   0   1   1
   # [4,]   1   1   0
   # [5,]   1   1   1
-  parloc <- eta.loc(Qc[,-c(1:2)])
+  parloc <- eta(Qc[,-c(1:2)])
   itempar <- list(c(0.1,0.9), #ITEM 1
                   c(0.2,0.7), #ITEM 2 CAT 1
                   c(0.1,0.2,0.3,0.8)) #ITEM 2 CAT 2
@@ -144,7 +144,7 @@ test_that("checking GDINA score function LOGLIKE(I,J) for POLYTOMOUS data v2", {
     Q <- Qc[,-c(1:2)]
 
     J <- length(unique(Qc[,1]))
-    par.loc <- eta.loc(Q)
+    par.loc <- eta(Q)
     post <- exp(logpost) # posterior N x 2^K
 
     # urP <- itemparm(object,"itemprob",digits = 9) #unconditional reduced prob.

@@ -13,13 +13,7 @@ Rcpp::List LouisC(arma::mat mX,
                     arma::mat parloc, //J x L
                     arma::vec weight,
                     int SEtype){
-  //std::cout << "size of mlogPost: " << arma::size(mlogPost) << std::endl;
-  // model must be a vector; its elements must be 0, 1 or 2
-//  arma::vec np = arma::ones<arma::vec>(3);
-//np = 2*np;
-//np(3) = 4;
   int N = mX.n_rows;
-  //N = 1;
   int J = mX.n_cols; //test length - J
   int L = itemparmLC.n_cols; //2^K
   int NP = arma::accu(np); // total number of parameters
@@ -29,7 +23,7 @@ Rcpp::List LouisC(arma::mat mX,
   if (SEtype==3) {
     //std::cout << "size of postp: " << arma::trans(arma::sum(exp(mlogPost)%(weight*arma::ones<arma::mat>(1,L)),0)) << std::endl;
     postp = arma::trans(arma::sum(exp(mlogPost)%(weight*arma::ones<arma::mat>(1,L)),0))/arma::accu(weight);
-    NP = NP + L -1;
+    NP = NP + L - 1;
   }
   //postp.print();
   arma::mat term1 = arma::zeros<arma::mat>(NP,NP);
@@ -39,14 +33,19 @@ Rcpp::List LouisC(arma::mat mX,
   for (int i=0;i<N;++i){
     //std::cout << "i = " << i << "\n" << std::endl;
     arma::vec yi = arma::trans(mX.row(i));
+    yi(find_nonfinite(yi)).zeros();//missing->0
+
    // std::cout << "size of y1: " << arma::size(yi) << std::endl;
     arma::rowvec post = exp(mlogPost.row(i));
     arma::mat yiL = yi*arma::ones<arma::mat>(1,L); //J x L
     //std::cout << "size of yiL: " << arma::size(yiL) << "\n" << std::endl;
     arma::mat der1 = (yiL-itemparmLC)/(itemparmLC%(1-itemparmLC)); //J x L first deriv
-    //der1.print();
-    //std::cout << "\nsize of der1: " << arma::size(der1) << std::endl;
     arma::mat der2 = -1*yiL/arma::pow(itemparmLC,2)-(1-yiL)/arma::pow(1-itemparmLC,2);
+
+    //der1 and der2 for missing responses ->0
+    der1.rows(find_nonfinite(mX.row(i))).zeros();
+    der2.rows(find_nonfinite(mX.row(i))).zeros();
+    //der1.print();
     arma::mat sumcp = arma::zeros<arma::mat>(NP,NP);
     arma::mat sum2deriv = sumcp;
     arma::vec sumsco = arma::zeros<arma::vec>(NP);
@@ -105,7 +104,8 @@ Rcpp::List LouisC(arma::mat mX,
   arma::mat invAn = arma::inv(An);
 arma::mat robust = invAn*term3*invAn;
   arma::vec SE=sqrt(arma::diagvec(invAn));
-  return Rcpp::List::create(Rcpp::Named("invAn") = invAn,
+  return Rcpp::List::create(Rcpp::Named("An") = An,
+                            Rcpp::Named("invAn") = invAn,
                             Rcpp::Named("term1") = term1,
                             Rcpp::Named("term2") = term2,
                             Rcpp::Named("term3") = term3,

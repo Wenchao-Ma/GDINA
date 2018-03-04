@@ -15,29 +15,7 @@ score_pj <- function(Xj,                   # a vector of item responses to item 
 
   return(score.p)
 }
-#
-# # score function for delta
-# score_dj <- function(scorepj,                   # a list from scorepj
-#                     catprob.j,        # a list with H elements giving the reduced catprob.parm for each nonzero category
-#                     modelj, ...){     # model for item j - 0 to 5
-#   Lj <- sapply(catprob.j,length)
-#   Kj <- log2(Lj)
-#   score.d <- vector("list",length(scorepj))
-#   for(r in 1:length(score.d)){
-#     score.p[[r]] <- aggregateCol(post,parloc.j[r,])*(outer((Xj>=r),catprob.j[[r]],"/")-outer((Xj==r-1),(1-catprob.j[[r]]),"/"))
-#     if(modelj==0){
-#       score.d[[r]] <- scorepj[[r]]%*%designM_GDINA(Kj[r])
-#     }else if(modelj<4){
-#       score.d[[r]] <- scorepj[[r]]%*%designM(alpha(Kj[r]),modelj)
-#     }else if(modelj==4){
-#       score.d[[r]] <- (scorepj[[r]]*matrix(catprob.j[[r]]*(1-catprob.j[[r]]),nrow = nrow(scorepj[[r]]),ncol = Lj[r],byrow = TRUE))%*%matrixdesignM(alpha(Kj[r]),modelj)
-#     }else if(modelj==5){
-#       score.d[[r]] <- (scorepj[[r]]*matrix(catprob.j[[r]],nrow = nrow(scorepj[[r]]),ncol = Lj[r],byrow = TRUE))%*%matrixdesignM(alpha(Kj[r]),modelj)
-#     }
-#   }
-#
-#   return(score.d)
-# }
+
 
 # input is the estimation object
 scorefunc2 <- function(object, item = NULL, ...){
@@ -47,7 +25,7 @@ scorefunc2 <- function(object, item = NULL, ...){
   Q <- extract(object,"Q")
 
   J <- ncol(dat)
-  par.loc <- eta.loc(Q)
+  par.loc <- eta(as.matrix(Q))
   post <- exp(indlogPost(object)) # posterior N x 2^K
 
   # urP <- itemparm(object,"itemprob",digits = 9) #unconditional reduced prob.
@@ -117,7 +95,7 @@ score_p <- function(object){
   scof <- scorefun(mX=as.matrix(dat),
                    mlogPost=as.matrix(extract(object,"logposterior.i")),
                    itmpar=pj,
-                   parloc=eta.loc(Q),
+                   parloc=eta(as.matrix(Q)),
                    model=model)
   scorep <- scof$score
   ind <- scof$index + 1 # col 1: location; col 2: category
@@ -126,6 +104,8 @@ score_p <- function(object){
     score[[j]] <- as.matrix(scorep[,ind[which(ind[,2]==j),1]]) #score function for P(\alpha_c) for cateogry j
   }
   names(score) <- extract(object,"item.names")
+  lik <- exp(indlogLik(object))
+  score$structural <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]
   return(score)
 }
 
@@ -136,6 +116,8 @@ score_d <- function(object){
   N <- extract(object,"nobs")
   Kj <- rowSums(Q>0)
   pj <- extract(object,"catprob.parm")
+  linkfunc <- extract(object,"linkfunc")
+  des <- extract(object,"designmatrix")
   if(extract(object,"sequential")){
     Qc <- extract(object,"Qc")
     dat <- seq_coding(extract(object,"dat"),Qc)
@@ -146,7 +128,7 @@ score_d <- function(object){
   scof <- scorefun(mX=as.matrix(dat),
                    mlogPost=as.matrix(extract(object,"logposterior.i")),
                    itmpar=as.matrix(extract(object,"catprob.matrix")),
-                   parloc=eta.loc(extract(object,"Q")),
+                   parloc=eta(as.matrix(Q)),
                    model=rep(0,NC))
 
   scorep <- scof$score
@@ -155,45 +137,40 @@ score_d <- function(object){
   for (r in 1:NC){
     scorepj <- as.matrix(scorep[,ind[which(ind[,2]==r),1]]) #score function for P(\alpha_c) for cateogry j
 
-    if(model[r]==0){
-      score[[r]] <- scorepj%*%designM_GDINA(Kj[r])
-    }else if(model[r]<4){
-      score[[r]] <- scorepj%*%designM(alpha(Kj[r]),model[r])
-    }else if(model[r]==4){
-      score[[r]] <- (scorepj*matrix(pj[[r]]*(1-pj[[r]]),nrow = N,ncol = length(pj[[r]]),byrow = TRUE))%*%designM(alpha(Kj[r]),model[r])
-    }else if(model[r]==5){
-      score[[r]] <- (scorepj*matrix(pj[[r]],nrow = N,ncol = length(pj[[r]]),byrow = TRUE))%*%designM(alpha(Kj[r]),model[r])
+    if(linkfunc[r]=="identity"){
+      score[[r]] <- scorepj%*%des[[r]]
+    }else if(linkfunc[r]=="logit"){
+      score[[r]] <- (scorepj*matrix(pj[[r]]*(1-pj[[r]]),nrow = N,ncol = length(pj[[r]]),byrow = TRUE))%*%des[[r]]
+    }else if(linkfunc[r]=="log"){
+      score[[r]] <- (scorepj*matrix(pj[[r]],nrow = N,ncol = length(pj[[r]]),byrow = TRUE))%*%des[[r]]
     }
 
   }
   names(score) <- extract(object,"item.names")
+  lik <- exp(indlogLik(object))
+  score$structural <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]
   return(score)
 }
 
 # variance and SE of delta parameters for all models
 OPG_d <- function(object,SE.type){
-  # Q <- extract(object,"Q")
+  Q <- extract(object,"Q")
   Qc <- extract(object,"Qc")
   J <- extract(object,"nitem")
-  NC <- nrow(Qc)
-  # if(extract(object,"sequential")){
-  #   dat <- seq_coding(extract(object,"dat"),Qc)
-  # }else{
-  #   dat <- extract(object,"dat")
-  # }
+  NC <- nrow(Q)
   scorejh <- score_d(object) # a list of score function for delta with elements for each category
-  np <- sapply(scorejh,ncol)
+  np <- sapply(scorejh,ncol)[-length(scorejh)]
 # print(np)
   if(SE.type == 1){
     scorej <- vector("list",J)
+    scorejh <- scorejh[-length(scorejh)]
     for(j in 1:J)  scorej[[j]] <- do.call(cbind,scorejh[which(Qc[,1]==j)])
     vars <- bdiag(lapply(scorej,inverse_crossprod))
   }else if(SE.type == 2){
+    scorejh <- scorejh[-length(scorejh)]
     vars <- inverse_crossprod(do.call(cbind,scorejh))
   }else if(SE.type==3){
-    lik <- exp(indlogLik(object))
-    scopp <- (lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik))
-    vars <- inverse_crossprod(cbind(do.call(cbind,scorejh),scopp[,-1]))
+    vars <- inverse_crossprod(do.call(cbind,scorejh))
     vars <- vars[1:sum(np),1:sum(np)]
   }
   covIndex <- data.frame(item = rep(Qc[,1],np),
@@ -217,46 +194,47 @@ OPG_p <- function(object,SE.type){
   J <- extract(object,"nitem")
   NC <- nrow(Q)
   Kj <- rowSums(Q)
-  # if(extract(object,"sequential")){
-  #   dat <- seq_coding(extract(object,"dat"),Qc)
-  # }else{
-  #   dat <- extract(object,"dat")
-  # }
+  linkfunc <- extract(object,"linkfunc")
+  des <- extract(object,"designmatrix")
   m <- extract(object,"models_numeric")
-  if(all(m<=2)){
+
+
+
+  if(all(m<=2)&all(m>=0)){
 
     scorejh <- score_p(object) # a list with elements for each category
     np <- sapply(scorejh,ncol)
+    np <- np[-length(np)]
 
     if(SE.type == 1){
+      scorejh <- scorejh[-length(scorejh)]
       scorej <- vector("list",J)
       for(j in 1:J)  scorej[[j]] <- do.call(cbind,scorejh[which(Qc[,1]==j)])
       vars <- bdiag(lapply(scorej,inverse_crossprod))
     }else if(SE.type == 2){
+      scorejh <- scorejh[-length(scorejh)]
       vars <- inverse_crossprod(do.call(cbind,scorejh))
     }else if(SE.type==3){
-      lik <- exp(indlogLik(object))
-      scopp <- (lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik))
-      vars <- inverse_crossprod(cbind(do.call(cbind,scorejh),scopp[,-1]))
+      vars <- inverse_crossprod(do.call(cbind,scorejh))
       vars <- vars[1:sum(np),1:sum(np)]
     }
   }else{
     grad <- vector("list",NC)
     for (nc in 1:NC) {
-      if (m[nc] ==1 | m[nc]==2) {
-        grad[[nc]] <- designmatrix(1, m[nc])
-      }else if (m[nc] <= 3) {
-        grad[[nc]] <- designmatrix(Kj[nc], m[nc])
-      } else if (m[nc] == 4) {
-        grad[[nc]] <-diag(extract(object, "catprob.parm")[[nc]] * (1 - extract(object, "catprob.parm")[[nc]])) %*%designmatrix(Kj[nc], m[nc])
-        } else if (m[nc] == 5) {
-        grad[[nc]] <- diag(extract(object, "catprob.parm")[[nc]]) %*% designmatrix(Kj[nc], m[nc])
+      if (linkfunc[nc]=="identity") {
+        grad[[nc]] <- des[[nc]]
+      } else if (linkfunc[nc]=="logit") {
+        grad[[nc]] <-diag(extract(object, "catprob.parm")[[nc]] * (1 - extract(object, "catprob.parm")[[nc]])) %*%des[[nc]]
+        } else if (linkfunc[nc]=="log") {
+        grad[[nc]] <- diag(extract(object, "catprob.parm")[[nc]]) %*% des[[nc]]
         }
     }
     g <- bdiag(grad)
     np <- sapply(grad,nrow)
       vars <- g %*% OPG_d(object,SE.type)$cov %*% t(g)
     }
+
+
   covIndex <- data.frame(item = rep(Qc[,1],np),
                          itemcat = rep(Qc[,2],np),
                          cat = rep(1:NC,np),
@@ -264,6 +242,7 @@ OPG_p <- function(object,SE.type){
                          loc = 1:sum(np),row.names = NULL)
   se.vector <- sqrt(diag(vars))
   se <- vector("list",NC)
+  if(all(m<=2)&all(m>=0)){
   for(h in 1:NC) {
 
     if(m[h]==1) {
@@ -272,10 +251,12 @@ OPG_p <- function(object,SE.type){
     }else if(m[h]==2){
       se.pjh <- se.vector[covIndex$loc[which(covIndex$cat==h)]]
       se[[h]] <- c(se.pjh[1],rep(se.pjh[2],(2^Kj[h]-1)))
-    }else{
+    }else if(m[h]==0){
       se[[h]] <- se.vector[covIndex$loc[which(covIndex$cat==h)]]
     }
-
+  }
+    }else{
+    for(h in 1:NC) {se[[h]] <- se.vector[covIndex$loc[which(covIndex$cat==h)]]}
   }
   return(list(cov=vars,se=se,ind=covIndex))
 }

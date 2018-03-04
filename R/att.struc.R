@@ -14,7 +14,7 @@
 #' @return att.prob probabilities for all latent classes; 0 for impossible latent classes
 #'
 #' @seealso \code{\link{GDINA}}, \code{\link{autoGDINA}}
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @export
 #'
 #' @examples
@@ -60,7 +60,7 @@
 #' ## See Example 4 and 5 in GDINA function
 #'}
 att.structure <- function(hierarchy.list=NULL,K,att.prob="uniform"){
-  patt <- alpha(K)
+  patt <- attributepattern(K=K)
   if (!is.null(hierarchy.list)){
 
         impos.id <- lapply(hierarchy.list,function(x){

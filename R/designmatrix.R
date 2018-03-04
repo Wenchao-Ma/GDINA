@@ -1,48 +1,50 @@
-#' Design matrix for parameter transformation
+#' Generate design matrix
 #'
-#' This function calculates the design matrix \eqn{M_j} in de la Torre (2011),
-#' which can be useful for parameter transformation between probability of success and
-#' delta.
+#' This function generates the design matrix \eqn{M_j} in de la Torre (2011)
 #'
 #' @param Kj the number of attributes for item j
-#' @param model the model fitted to item j; it can be "GDINA","DINA","DINO","ACDM","LLM",or "RRUM".
-#'        The default is "GDINA".
+#' @param model the model associated with the design matrix; It can be "GDINA","DINA","DINO", "ACDM" or "MSDINA".
+#'        The default is "GDINA". Note that models "LLM" and "RRUM" have the same design matrix as the ACDM.
+#' @param Qj the Q-matrix for item j; This is required for "MSDINA" model; The number of rows is equal to the number
+#'        of strategies and the number of columns is equal to the number of attributes.
 #'
-#' @return a design matrix (Mj) which plays a critical role of transforming probability of success with
-#'         delta parameters. See de la Torre (2011) for details.
+#' @return a design matrix (Mj). See de la Torre (2011) for details.
 #' @references
 #'
 #' de la Torre, J. (2011). The generalized DINA model framework. \emph{Psychometrika, 76}, 179-199.
 #'
 #' @export
 #'
-#' @examples
-#'
-#' # transform probability of success to delta
-#' # based on saturated GDINA model
-#' # assuming an item with 2 attributes has the following
-#' # probability of success for 00, 10, 01 and 11
-#' pj <- c(0.2,0.4,0.6,0.8)
-#' Mj <- designmatrix(2)
-#' # delta parameters can be calculated in this way:
-#' deltaj <- solve(Mj)%*%pj
-#' # for reduced CDMs, OLS or WLS may be used
 #'
 #'
-designmatrix <- function(Kj,model="GDINA"){
-  if (!is.positiveInteger(Kj)) stop('Kj must be positive integer.',call. = FALSE)
-  if (toupper(model)=="GDINA"|model==0){
-    return(designM_GDINA(Kj))
-  }else if (toupper(model)%in%c("DINA","DINO","ACDM","LLM","RRUM")|model>=1){
-    if(is.character(model)) {
-      m <- which(c("DINA","DINO","ACDM","LLM","RRUM")==toupper(model))
-    }else if(is.numeric(model)){
-      if (!is.positiveInteger(model)|model>5) {
-        stop('model must be "DINA","DINO","ACDM","LLM",or "RRUM".',call. = FALSE)
+designmatrix <- function(Kj,model="GDINA",Qj=NULL){
+  stopifnot(is.nonNegativeInteger(Kj))
+  if(is.character(model)) {
+    stopifnot(toupper(model)%in%c("GDINA","DINA","DINO","ACDM","LLM","RRUM","MSDINA"))
+    m <- which(c("GDINA","DINA","DINO","ACDM","LLM","RRUM","MSDINA")==toupper(model))
+  }else if(is.numeric(model)){
+      if (!is.nonNegativeInteger(model)|model>7) {
+        stop('model must be "GDINA", "DINA","DINO","ACDM","LLM", "RRUM" or "MSDINA".',call. = FALSE)
       }else{
-        m <- model
+        m <- model + 1
       }
-    }
-    return(designM(alpha(Kj),m))
+  }else{
+      stop("model is not correctly specified.",call. = FALSE)
   }
+  if(m==7){ # MSDINA
+    # Kj is not necessary
+    if(is.null(Qj)||nrow(Qj)<2||max(Qj)>1) stop("Qj is not correctly specified for the MS-DINA model.",call. = F)
+    Qj <- as.matrix(Qj)
+    if(any(colSums(Qj)==0)) Qj <- Qj[,-which(colSums(Qj)==0)]
+    Ks <- rowSums(Qj)
+    Kj <- sum(apply(Qj,2,max))
+    patt <- attributepattern(Kj)
+
+    D <- matrix(c(rep(1,nrow(patt)),colSums(Qj%*%t(patt)==Ks)>0),ncol = 2)
+
+  }else{
+    D <- designM(Kj,m-1)
+  }
+    return(D)
+
 }

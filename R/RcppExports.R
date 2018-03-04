@@ -2,46 +2,162 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 aggregateCol <- function(mX, ind) {
-    .Call('GDINA_aggregateCol', PACKAGE = 'GDINA', mX, ind)
-}
-
-designM <- function(malpha, model) {
-    .Call('GDINA_designM', PACKAGE = 'GDINA', malpha, model)
+    .Call('_GDINA_aggregateCol', PACKAGE = 'GDINA', mX, ind)
 }
 
 fitstats <- function(mX, LCprob, attgroup) {
-    .Call('GDINA_fitstats', PACKAGE = 'GDINA', mX, LCprob, attgroup)
-}
-
-Lik <- function(mP, mX, vlogPrior, vgroup) {
-    .Call('GDINA_Lik', PACKAGE = 'GDINA', mP, mX, vlogPrior, vgroup)
-}
-
-LouisC <- function(mX, np, mlogPost, itemparmLC, parloc, weight, SEtype) {
-    .Call('GDINA_LouisC', PACKAGE = 'GDINA', mX, np, mlogPost, itemparmLC, parloc, weight, SEtype)
-}
-
-NgRg <- function(mlogPost, mX, mloc) {
-    .Call('GDINA_NgRg', PACKAGE = 'GDINA', mlogPost, mX, mloc)
-}
-
-Rljs <- function(mlogPost, mX, vC) {
-    .Call('GDINA_Rljs', PACKAGE = 'GDINA', mlogPost, mX, vC)
-}
-
-scorefun <- function(mX, mlogPost, itmpar, parloc, model) {
-    .Call('GDINA_scorefun', PACKAGE = 'GDINA', mX, mlogPost, itmpar, parloc, model)
-}
-
-sequP <- function(mloc, mpar, vC) {
-    .Call('GDINA_sequP', PACKAGE = 'GDINA', mloc, mpar, vC)
+    .Call('_GDINA_fitstats', PACKAGE = 'GDINA', mX, LCprob, attgroup)
 }
 
 uP <- function(mloc, mpar) {
-    .Call('GDINA_uP', PACKAGE = 'GDINA', mloc, mpar)
+    .Call('_GDINA_uP', PACKAGE = 'GDINA', mloc, mpar)
+}
+
+ObsLogLik <- function(mpar, mX, vlogPrior, vgroup, mloc, weights) {
+    .Call('_GDINA_ObsLogLik', PACKAGE = 'GDINA', mpar, mX, vlogPrior, vgroup, mloc, weights)
+}
+
+LikNR <- function(mpar, mX, vlogPrior, vgroup, mloc, weights, simplify = 1L) {
+    .Call('_GDINA_LikNR', PACKAGE = 'GDINA', mpar, mX, vlogPrior, vgroup, mloc, weights, simplify)
+}
+
+LikNR_LC <- function(mP, mX, vlogPrior, vgroup, weights, simplify = 1L) {
+    .Call('_GDINA_LikNR_LC', PACKAGE = 'GDINA', mP, mX, vlogPrior, vgroup, weights, simplify)
+}
+
+LouisC <- function(mX, np, mlogPost, itemparmLC, parloc, weight, SEtype) {
+    .Call('_GDINA_LouisC', PACKAGE = 'GDINA', mX, np, mlogPost, itemparmLC, parloc, weight, SEtype)
+}
+
+Mord <- function(item_no, LCprob, prior) {
+    .Call('_GDINA_Mord', PACKAGE = 'GDINA', item_no, LCprob, prior)
+}
+
+Calc_Pj <- function(par, designMj, linkfunc, boundary = 0L, eps = 1e-16) {
+    .Call('_GDINA_Calc_Pj', PACKAGE = 'GDINA', par, designMj, linkfunc, boundary, eps)
+}
+
+Calc_Dj <- function(par, designMj, linkfunc, boundary = 0L, eps = 1e-16) {
+    .Call('_GDINA_Calc_Dj', PACKAGE = 'GDINA', par, designMj, linkfunc, boundary, eps)
+}
+
+Calc_Pj_jac <- function(par, designMj, linkfunc, boundary = 0L, eps = 1e-16) {
+    .Call('_GDINA_Calc_Pj_jac', PACKAGE = 'GDINA', par, designMj, linkfunc, boundary, eps)
+}
+
+Mstep_obj_fn <- function(par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix = NULL, eps = 1e-16, ConstrType = 0L, greaterthan0 = TRUE) {
+    .Call('_GDINA_Mstep_obj_fn', PACKAGE = 'GDINA', par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix, eps, ConstrType, greaterthan0)
+}
+
+Mstep_obj_fn_prior <- function(par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix = NULL, eps = 1e-16, ConstrType = 0L, greaterthan0 = TRUE, m = 0, sd = 5) {
+    .Call('_GDINA_Mstep_obj_fn_prior', PACKAGE = 'GDINA', par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix, eps, ConstrType, greaterthan0, m, sd)
+}
+
+Mstep_obj_fn_max <- function(par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix = NULL, eps = 1e-16, ConstrType = 0L, greaterthan0 = TRUE) {
+    .Call('_GDINA_Mstep_obj_fn_max', PACKAGE = 'GDINA', par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix, eps, ConstrType, greaterthan0)
+}
+
+Mstep_obj_gr <- function(par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix = NULL, eps = 1e-16, ConstrType = 0L, greaterthan0 = TRUE) {
+    .Call('_GDINA_Mstep_obj_gr', PACKAGE = 'GDINA', par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix, eps, ConstrType, greaterthan0)
+}
+
+Mstep_ineq_fn <- function(par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix = NULL, eps = 1e-16, ConstrType = 0L, greaterthan0 = TRUE) {
+    .Call('_GDINA_Mstep_ineq_fn', PACKAGE = 'GDINA', par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix, eps, ConstrType, greaterthan0)
+}
+
+Mstep_ineq_jac <- function(par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix = NULL, eps = 1e-16, ConstrType = 0L, greaterthan0 = TRUE) {
+    .Call('_GDINA_Mstep_ineq_jac', PACKAGE = 'GDINA', par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatrix, eps, ConstrType, greaterthan0)
+}
+
+NgRg <- function(mlogPost, mX, mloc, weights) {
+    .Call('_GDINA_NgRg', PACKAGE = 'GDINA', mlogPost, mX, mloc, weights)
+}
+
+scorefun <- function(mX, mlogPost, itmpar, parloc, model) {
+    .Call('_GDINA_scorefun', PACKAGE = 'GDINA', mX, mlogPost, itmpar, parloc, model)
+}
+
+SE <- function(mX, mlogPost, itmpar, parloc, model, mIndmiss, SE_type) {
+    .Call('_GDINA_SE', PACKAGE = 'GDINA', mX, mlogPost, itmpar, parloc, model, mIndmiss, SE_type)
+}
+
+sequP <- function(mloc, mpar, vC) {
+    .Call('_GDINA_sequP', PACKAGE = 'GDINA', mloc, mpar, vC)
+}
+
+combnCpp <- function(n, k) {
+    .Call('_GDINA_combnCpp', PACKAGE = 'GDINA', n, k)
+}
+
+rowProd <- function(m, v) {
+    .Call('_GDINA_rowProd', PACKAGE = 'GDINA', m, v)
+}
+
+alpha2 <- function(K) {
+    .Call('_GDINA_alpha2', PACKAGE = 'GDINA', K)
+}
+
+alphap <- function(maxlevel) {
+    .Call('_GDINA_alphap', PACKAGE = 'GDINA', maxlevel)
+}
+
+ColNormalize <- function(X) {
+    .Call('_GDINA_ColNormalize', PACKAGE = 'GDINA', X)
+}
+
+RowNormalize <- function(X) {
+    .Call('_GDINA_RowNormalize', PACKAGE = 'GDINA', X)
+}
+
+Pr_2PL <- function(theta, a, b) {
+    .Call('_GDINA_Pr_2PL', PACKAGE = 'GDINA', theta, a, b)
+}
+
+Pr_2PL_vec <- function(theta, a, b, minvalue = 1e-16, maxvalue = 1 - 1e-16) {
+    .Call('_GDINA_Pr_2PL_vec', PACKAGE = 'GDINA', theta, a, b, minvalue, maxvalue)
+}
+
+logLikPattern <- function(AlphaPattern, theta, a, b) {
+    .Call('_GDINA_logLikPattern', PACKAGE = 'GDINA', AlphaPattern, theta, a, b)
+}
+
+PostTheta <- function(AlphaPattern, theta, f_theta, a, b) {
+    .Call('_GDINA_PostTheta', PACKAGE = 'GDINA', AlphaPattern, theta, f_theta, a, b)
+}
+
+expectedNR <- function(AlphaPattern, nc, theta, f_theta, a, b) {
+    .Call('_GDINA_expectedNR', PACKAGE = 'GDINA', AlphaPattern, nc, theta, f_theta, a, b)
+}
+
+logP_AlphaPattern <- function(AlphaPattern, theta, f_theta, a, b) {
+    .Call('_GDINA_logP_AlphaPattern', PACKAGE = 'GDINA', AlphaPattern, theta, f_theta, a, b)
+}
+
+HoIRTlogLik <- function(AlphaPattern, ns, theta, f_theta, a, b) {
+    .Call('_GDINA_HoIRTlogLik', PACKAGE = 'GDINA', AlphaPattern, ns, theta, f_theta, a, b)
+}
+
+HoIRTlogLik3 <- function(ns, mX, theta, f_theta, a, b) {
+    .Call('_GDINA_HoIRTlogLik3', PACKAGE = 'GDINA', ns, mX, theta, f_theta, a, b)
+}
+
+incomplogL <- function(a, b, logL, AlphaPattern, theta, f_theta) {
+    .Call('_GDINA_incomplogL', PACKAGE = 'GDINA', a, b, logL, AlphaPattern, theta, f_theta)
+}
+
+designM <- function(Kj, model) {
+    .Call('_GDINA_designM', PACKAGE = 'GDINA', Kj, model)
+}
+
+matchMatrix <- function(A, B) {
+    .Call('_GDINA_matchMatrix', PACKAGE = 'GDINA', A, B)
+}
+
+eta <- function(Q) {
+    .Call('_GDINA_eta', PACKAGE = 'GDINA', Q)
 }
 
 varsigma <- function(mloc, mP, vw) {
-    .Call('GDINA_varsigma', PACKAGE = 'GDINA', mloc, mP, vw)
+    .Call('_GDINA_varsigma', PACKAGE = 'GDINA', mloc, mP, vw)
 }
 

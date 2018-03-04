@@ -1,20 +1,21 @@
 #'@include GDINA-package.R GDINA.R
-#'@title calculate lower-order incidental (person) parameters
+#'@title calculate person (incidental) parameters
 #'
 #'
 #' @description
 #' Function to calculate various person attribute parameters, including \code{"EAP"},
 #' \code{"MAP"}, and \code{"MLE"}, for EAP, MAP and MLE estimates of
-#' attribute patterns, \code{"mp"} for marginal mastery probabilities.
-#' See \code{\link{GDINA}} for examples. To estimate higher-order person parameters,
-#' see \code{\link{hoparm}}.
+#' attribute patterns (see Huebner & Wang, 2011), \code{"mp"} for marginal mastery probabilities, and \code{"HO"}
+#' for higher-order ability estimates if a higher-order model is fitted.
+#' See \code{\link{GDINA}} for examples.
 #'
 #'
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @param object estimated GDINA object returned from \code{\link{GDINA}}
 #' @param what what to extract; It can be \code{"EAP"},
 #' \code{"MAP"}, and \code{"MLE"}, for EAP, MAP and MLE estimates of
-#' attribute patterns, and \code{"mp"} for marginal mastery probabilities.
+#' attribute patterns, and \code{"mp"} for marginal mastery probabilities, and \code{"HO"}
+#' for higher-order ability estimates if a higher-order model is fitted.
 #' @param digits number of decimal places.
 #' @param ... additional arguments
 #'
@@ -23,7 +24,7 @@
 #'
 #'
 #'@export
-personparm <- function (object, what=c("EAP","MAP","MLE", "mp"),digits = 4,...) {
+personparm <- function (object, what=c("EAP","MAP","MLE", "mp", "HO"),digits = 4,...) {
   UseMethod("personparm")
 }
 
@@ -37,13 +38,13 @@ personparm <- function (object, what=c("EAP","MAP","MLE", "mp"),digits = 4,...) 
 #' @aliases personparm.GDINA
 #' @export
 personparm.GDINA <- function(object,
-                             what=c("EAP","MAP","MLE", "mp"),digits = 4,...){
+                             what=c("EAP","MAP","MLE", "mp", "HO"),digits = 4,...){
   what <- match.arg(what)
   # The number of attributes
   K <- extract(object,what = "natt")
   # Q-matrix
   Q <- extract(object,what = "Q")
-  pattern <- alpha(K,T,Q)
+  pattern <- attributepattern(Q=Q)
   out <- NULL
       # dichotomous attributes
       switch(what,
@@ -73,23 +74,69 @@ personparm.GDINA <- function(object,
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
       },
       MLE={
-        if(max(Q) > 1) stop("Please use EAP for polytomous attributes.", call. = FALSE)
         out <- data.frame(MLE=pattern[max.col(extract(object,what = "loglikelihood.i")),],
                           multimodes=as.logical(rowSums(extract(object,what = "loglikelihood.i")==apply(extract(object,what = "loglikelihood.i"),1,max))-1))
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
       },
 MAP={
-        if(max(Q) > 1) stop("Please use EAP for polytomous attributes.", call. = FALSE)
         out <- data.frame(MAP=pattern[max.col(extract(object,what = "logposterior.i")),],
                           multimodes=as.logical(rowSums(extract(object,what = "logposterior.i")==apply(extract(object,what = "logposterior.i"),1,max))-1))
         colnames(out)[1:K] <- paste("A",1:K,sep = "")
       },
 mp={
-        if(max(Q) > 1) stop("Not available for polytomous attributes.", call. = FALSE)
-          out <- round(exp(extract(object,what = "logposterior.i")) %*% pattern,
-                       digits)
+  post <- exp(extract(object,what = "logposterior.i"))
+        if(max(Q) == 1){
+          out <- round(post %*% pattern, digits)
           colnames(out)[1:K] <- paste("A",1:K,sep = "")
-        })
+        }else{
+          C <- sum(apply(pattern,2,max))
+          out <- matrix(0,extract(object,"nobs"),C)
+          nam <- vector("character",C)
+          kkk <- 1
+          for(k in 1:K){
+            for(kk in 1:max(pattern[,k])){
+              out[,kkk] <- rowSums(post[,which(pattern[,k]==kk),drop=FALSE])
+              nam[kkk] <- paste0("A",k,"[Level",kk,"]",collapse = "")
+              kkk <- kkk + 1
+            }
+          }
+          colnames(out) <- nam
+        }
+         out
+        },
+HO={
+  if(any(extract(object,what ="att.dist")!= "higher.order")) {
+    stop("Set att.dist = 'higher.order' to estimate a higher-order model.",call. = FALSE)
+  }
+
+
+  quad <- extract(object,"higher.order")$QuadNodes
+  w <- extract(object,"higher.order")$QuadWghts
+  lambda <- NULL
+  K <- extract(object,what = "natt")
+  Q <- extract(object,what = "Q")
+  N <- extract(object,"nobs")
+  pattern <- attributepattern(K)
+  Lx <- exp(extract(object,what = "logposterior.i"))
+  g <- extract(object,"gr")
+
+  post <- list()
+  for(gg in 1:extract(object,"ngroup")){
+    post[[gg]] = PostTheta(AlphaPattern = pattern, theta = quad, f_theta = w, a=extract(object,what = "struc.parm")[[gg]][,1],
+                           b=extract(object,what = "struc.parm")[[gg]][,2]) # 2^K x nnodes P(theta_q|AlphaPattern)
+  }
+
+    theta <- se <- rep(0,N)
+
+    for(i in 1:N){
+      ptheta_i <- colSums(post[[g[i]]]*Lx[i,]) #vector of length nnodes
+      theta[i] <- sum(quad[,g[i]]*ptheta_i)
+      se[i] <- sqrt(sum((quad[,g[i]]-theta[i])^2*ptheta_i))
+    }
+    out <- round(data.frame(theta=theta,se=se),digits)
+    colnames(out) <- c("EAP","SE")
+
+})
 
 return(out)
 

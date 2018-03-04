@@ -76,10 +76,13 @@
 #' @param item.names A vector giving the name of items or categories. If it is \code{NULL} (default), items are named as "Item 1", "Item 2", etc.
 #' @param attribute optional user-specified person attributes. It is a \eqn{N\times K} matrix or data frame. If this is not supplied, attributes are simulated
 #'    from a distribution specified in \code{att.dist}.
-#' @param att.dist A string indicating the distribution for attribute simulation. It can be \code{"uniform"}, \code{"higher.order"} or
-#'    \code{"mvnorm"} for uniform, higher-order and multivariate normal distribution, respectively.
+#' @param att.dist A string indicating the distribution for attribute simulation. It can be \code{"uniform"}, \code{"higher.order"},
+#'    \code{"mvnorm"} or \code{"multinomial"} for uniform, higher-order, multivariate normal and multinomial distributions, respectively.
 #'    The default is the uniform distribution. To specify structural parameters for the higher-order
-#'    and multivariate normal distributions, see \code{higher.order.parm} and \code{mvnorm.parm}, respectively.
+#'    and multivariate normal distributions, see \code{higher.order.parm} and \code{mvnorm.parm}, respectively. To specify the probabilities
+#'    for the multinomial distribution, use \code{att.prior} argument.
+#'@param att.prior probability for each attribute pattern. Order is the same as that returned from \code{attributepattern(Q = Q)}. This is only
+#'    applicable when \code{att.dist="fixed"}.
 #' @param higher.order.parm A list specifying parameters for higher-order distribution for attributes
 #'    if \code{att.dist=higher.order}. Particularly, \code{theta} is a
 #'    vector of length \eqn{N} representing the higher-order ability
@@ -104,7 +107,7 @@
 #' \item{LCprob.parm}{A matrix of item/category success probabilities for each latent class}
 #' }
 #'
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @name simGDINA
 #'
 #' @export
@@ -423,12 +426,28 @@
 #'extract(simseq,what = "attribute")
 #'}
 #'
+#'####################################################
+#'#                   Example 13
+#'#         DINA model Attribute generated using
+#'#             multinomial distribution
+#'####################################################
+#'
+#' Q <- sim10GDINA$simQ
+#' gs <- matrix(0.1,nrow(Q),2)
+#' N <- 5000
+#' set.seed(12345)
+#' prior <- c(0.1,0.2,0,0,0.2,0,0,0.5)
+#' sim <- simGDINA(N,Q,gs.parm = gs, model="DINA", att.dist = "multinomial",att.prior = prior)
+#' # check latent class sizes
+#' table(sim$att.group)/N
+#'
+#'
 simGDINA <- function(N, Q, gs.parm=NULL, model = "GDINA", sequential = FALSE, type = "random",
                       catprob.parm = NULL, delta.parm = NULL,mono.constraint = TRUE,
                       attribute = NULL, att.dist = "uniform", item.names = NULL,
                       higher.order.parm=list(theta = NULL, lambda = NULL),
                       mvnorm.parm=list(mean = NULL,sigma = NULL,cutoffs = NULL),
-                      digits=4)
+                     att.prior = NULL, digits=4)
   {
   simGDINAcall <- match.call()
   catprob.parm <- catprob.parm
@@ -445,14 +464,14 @@ simGDINA <- function(N, Q, gs.parm=NULL, model = "GDINA", sequential = FALSE, ty
   }
   J <- nrow(Q)
   K <- ncol(Q)
-  pattern <- alpha(K, T, Q)
+  pattern <- attributepattern(Q = Q)
   pattern.t <- t(pattern)
   model <- model.transform(model,J)
   L <- nrow(pattern)  # the number of latent groups
   Kj <- apply(Q,1,function(x){sum(x>0)})  # The number of attributes for each item
   Kjmax <- max(Kj) # the maximum attributes required for each item
   catprob.matrix <- matrix(NA,J,2^Kjmax)
-  par.loc <- eta.loc(Q)
+  par.loc <- eta(as.matrix(Q))
 if (length(mono.constraint)==1)  mono.constraint <- rep(mono.constraint,J)
 
 ######################################################################################
@@ -484,7 +503,7 @@ if (!is.null(gs.parm)) {
         }else if (model[j]==5){
           catprob.matrix[j,1:nrow(Mj)] <- catprob.parm[[j]] <-round(exp(c(Mj%*%delta.parm[[j]])),digits)
         }
-        names(catprob.parm[[j]]) <- paste("P(",apply(alpha(Kj[j]),1,function(x){paste(x,collapse = "")}),")",sep = "")
+        names(catprob.parm[[j]]) <- paste("P(",apply(attributepattern(Kj[j]),1,function(x){paste(x,collapse = "")}),")",sep = "")
     }
   delta.parm <- format_delta(delta.parm,model,Kj,digits=digits)
   }else if(!is.null(catprob.parm)){
@@ -494,7 +513,7 @@ if (!is.null(gs.parm)) {
         catprob.matrix[j,1:length(catprob.parm[[j]])] <- round(c(catprob.parm[[j]]),digits)
         Mj <- designmatrix(Kj[j],model[j])
         delta.parm[[j]] <- round(c(solve(t(Mj)%*%Mj)%*%t(Mj)%*%c(catprob.parm[[j]])),digits)
-        names(catprob.parm[[j]]) <- paste("P(",apply(alpha(Kj[j]),1,function(x){paste(x,collapse = "")}),")",sep = "")
+        names(catprob.parm[[j]]) <- paste("P(",apply(attributepattern(Kj[j]),1,function(x){paste(x,collapse = "")}),")",sep = "")
       }
     delta.parm <- format_delta(delta.parm,model,Kj,digits=digits)
     }
@@ -510,7 +529,7 @@ if (!is.null(gs.parm)) {
     if (tolower(att.dist) == "uniform")
     {
       # uniform distribution
-      att.group <- sample(1:L, N, replace = T)  #uniform distribution
+      att.group <- sample.int(L, N, replace = T)
     } else if (tolower(att.dist) == "higher.order")
     {
       if (max(Q) > 1) stop("Higher order structure is not allowed currently when attributes are polytomous.",call. = FALSE)
@@ -521,17 +540,21 @@ if (!is.null(gs.parm)) {
       }
       a <- higher.order.parm$lambda[, 1]
       b <- higher.order.parm$lambda[, 2]
+      att <- (Pr_2PL_vec(theta = higher.order.parm$theta,
+                 a = as.vector(a,mode = "numeric"),
+                 b = as.vector(b,mode = "numeric"),
+                 minvalue = 0, maxvalue = 1)> matrix(runif(N * K), nrow = N)) * 1
       # higher order IRT model (intercept - slope style)
-      z <- outer(c(higher.order.parm$theta),a) + matrix(rep(b, N), ncol = K, byrow = T)
-      att <- ((1/(1 + exp(-z))) > matrix(runif(N * K), nrow = N)) * 1
-
-      att.group <- apply(att, 1, function(x) which.max(colSums(x==pattern.t)))
+      # z <- outer(c(higher.order.parm$theta),a) + matrix(rep(b, N), ncol = K, byrow = T)
+      # att <- ((1/(1 + exp(-z))) > matrix(runif(N * K), nrow = N)) * 1
+      att.group <- matchMatrix(pattern,att)
+      # att.group <- apply(att, 1, function(x) which.max(colSums(x==pattern.t)))
     }else if (tolower(att.dist) == "mvnorm"){
       if (is.null(mvnorm.parm$mean)||is.null(mvnorm.parm$sigma||is.null(mvnorm.parm$cutoffs)))
       {
         stop("multivariate normal parameters must be provided.",call. = FALSE)
       }
-      atts <- MASS::mvrnorm(N,mu = mvnorm.parm$mean, Sigma=mvnorm.parm$sigma)
+      atts <- MASS::mvrnorm(N,mu = mvnorm.parm$mean, Sigma=mvnorm.parm$sigma, empirical = FALSE)
       if (max(Q)==1){# dichotomous Q matrix
         att <- 1*(atts>matrix(mvnorm.parm$cutoffs,nrow = N,ncol = length(mvnorm.parm$cutoffs),byrow = TRUE))
         # Calculate which latent group each examinee belongs to return a vector
@@ -541,6 +564,8 @@ if (!is.null(gs.parm)) {
         # if Q matrix is polytomous, cutoffs must be a list - each for one attribute
         stop("multivariate normal distribution is only available for dichotomous attributes.",call. = FALSE)
       }
+    }else if(tolower(att.dist) == "multinomial"){
+      att.group <- sample.int(L, N, replace = T, prob = att.prior)
     }
 
   } else
@@ -549,7 +574,7 @@ if (!is.null(gs.parm)) {
     att <- attribute
     # Calculate which latent group each examinee belongs to return a vector
     # of N elements ranging from 1 to 2^K
-    att.group <- apply(att, 1, function(x) which.max(colSums(x==pattern.t)))
+    att.group <- matchMatrix(pattern,att)
   }
 
 

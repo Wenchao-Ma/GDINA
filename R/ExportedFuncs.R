@@ -1,28 +1,42 @@
 #' Generate all possible attribute patterns
 #'
-#' This function generates all possible attribute patterns.
-#' The Q-matrix is needed when any attributes are polytomous.
+#' This function generates all possible attribute patterns. The Q-matrix needs to be specified for polytomous attributes.
 #'
 #' @param K number of attributes
-#' @param poly logical; is Q matrix polytomous?
 #' @param Q Q-matrix; required when Q-matrix is polytomous
 #'
-#' @return attribute profiles for \eqn{2^K} latent classes
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @return A \eqn{2^K\times K} matrix consisting of attribute profiles for \eqn{2^K} latent classes
+#'
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @export
 #' @examples
 #' attributepattern(3)
 #'
 #' q <- matrix(scan(text = "0 1 2 1 0 1 1 2 0"),ncol = 3)
 #' q
-#' attributepattern(ncol(q),poly=TRUE,q)
+#' attributepattern(Q=q)
 #'
 #' q <- matrix(scan(text = "0 1 1 1 0 1 1 1 0"),ncol = 3)
 #' q
-#' attributepattern(ncol(q),poly=TRUE,q)
+#' attributepattern(K=ncol(q),Q=q)
 
-attributepattern <-  function(K,poly=F,Q=NULL){
-  return(alpha(K,poly,Q))
+attributepattern <-  function(K,Q){
+  if(missing(K)){
+    if(!missing(Q)){
+      K <- ncol(Q)
+    }else{
+      stop("The number of attribute or Q-matrix is needed.",call. = FALSE)
+    }
+  }
+  if (missing(Q)){
+    alpha <- alpha2(K)
+  }else if(max(Q)==1){
+    alpha <- alpha2(K)
+  }else{
+    alpha <- alphap(apply(Q,2,max))
+  }
+  colnames(alpha) <- paste("A",1:K,sep = "")
+  return(alpha)
 }
 
 
@@ -42,7 +56,7 @@ attributepattern <-  function(K,poly=F,Q=NULL){
 #'    be combined into \eqn{2^{Kj}} latent groups. This matrix gives
 #'    which latent group each of \eqn{2^K} latent classes belongs to for each item.
 #'
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @export
 #' @examples
 #' attributepattern(3)
@@ -54,7 +68,7 @@ attributepattern <-  function(K,poly=F,Q=NULL){
 
 LC2LG <-  function(Q,sequential = FALSE){
   if(sequential) Q <- Q[,-c(1:2)]
-  out <- eta.loc(Q)
+  out <- eta(Q)
   colnames(out) <- apply(attributepattern(ncol(Q)),1,function(x)paste0(x,collapse = ""))
   rownames(out) <- rownames(Q)
   out

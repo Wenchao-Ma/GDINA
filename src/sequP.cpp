@@ -9,9 +9,6 @@ using namespace Rcpp;
 List sequP(arma::mat mloc,
         arma::mat mpar,
         arma::vec vC){
-  //arma::mat mloc = Rcpp::as<arma::mat>(loc);
-  //arma::mat mpar = Rcpp::as<arma::mat>(itmpar);
-  //arma::vec vC = Rcpp::as<arma::vec>(C);
   mloc--;
   int L = mloc.n_cols;
   int S = mloc.n_rows;

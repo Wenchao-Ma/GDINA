@@ -1,5 +1,6 @@
-#' Calibrate dichotomous and polytomous responses
+#' @title CDM calibration under the G-DINA model framework
 #'
+#' @description
 #' \code{GDINA} calibrates the generalized deterministic inputs, noisy and
 #' gate (G-DINA; de la Torre, 2011) model for dichotomous responses, and its extension, the sequential
 #' G-DINA model (Ma, & de la Torre, 2016a) for ordinal and nominal responses.
@@ -7,16 +8,18 @@
 #' noisy and gate (DINA; de la Torre, 2009; Junker & Sijtsma, 2001) model,
 #' the deterministic inputs, noisy or gate (DINO; Templin & Henson, 2006)
 #' model, the reduced reparametrized unified model (R-RUM; Hartz, 2002),
-#' the additive CDM (A-CDM; de la Torre, 2011), and the linear logistic
-#' model (LLM; Maris, 1999) can also be calibrated. Note that the LLM is equivalent to
+#' the additive CDM (A-CDM; de la Torre, 2011), the linear logistic
+#' model (LLM; Maris, 1999) and the multiple strategy DINA model (de la Torre & Douglas, 2008; Huo & de la Torre, 2014)
+#' can also be calibrated. Note that the LLM is equivalent to
 #' the C-RUM (Hartz, 2002), a special case of the GDM (von Davier, 2008), and that the R-RUM
 #' is also known as a special case of the generalized NIDA model (de la Torre, 2011).
-#' Different models can be fitted to different
-#' items in a single test. The attributes can be either dichotomous or polytomous
-#' (Chen & de la Torre, 2013). Joint attribute distribution can be saturated, structured or higher-order
-#' (de la Torre & Douglas, 2004) when attributes are binary.
-#' Marginal maximum likelihood method with Expectation-Maximization (MMLE/EM) alogrithm
-#' is used for item parameter estimation.
+#'
+#' In addition, users are allowed to specify design matrix and link function for each item and for different items,
+#' distinct models may be used in a single test.
+#' The attributes can be either dichotomous or polytomous
+#' (Chen & de la Torre, 2013). Joint attribute distribution may be modelled using independent or saturated model,
+#' structured model, higher-order model (de la Torre & Douglas, 2004), or loglinear model (Xu & von Davier, 2008).
+#' Marginal maximum likelihood method with Expectation-Maximization (MMLE/EM) alogrithm is used for item parameter estimation.
 #'
 #' @section The G-DINA model:
 #'
@@ -36,9 +39,14 @@
 #' by \eqn{P(\bm{\alpha}_{lj}^*)}. To model this probability of success, different link functions
 #' as in the generalized linear models are used in the G-DINA model. The item response
 #' function of the G-DINA model using the identity link can be written as
-#' \deqn{P(\bm{\alpha}_{lj}^*)=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}+
+#' \deqn{
+#' f[P(\bm{\alpha}_{lj}^*)]=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}+
 #' \sum_{k'=k+1}^{K_j^*}\sum_{k=1}^{K_j^*-1}\delta_{jkk'}\alpha_{lk}\alpha_{lk'}+\cdots+
 #' \delta_{j12{\cdots}K_j^*}\prod_{k=1}^{K_j^*}\alpha_{lk},
+#' }
+#' or in matrix form,
+#' \deqn{
+#' f[\bm{P}_j]=\bm{M}_j\bm{\delta}_j,
 #' }
 #' where \eqn{\delta_{j0}} is the intercept for item \eqn{j}, \eqn{\delta_{jk}} is the main effect
 #' due to \eqn{\alpha_{lk}}, \eqn{\delta_{jkk'}} is the interaction effect due to
@@ -105,22 +113,14 @@
 #' For ACDM, LLM and RRUM, closed-form solutions do not exist, and therefore some general optimization techniques are
 #' adopted in M-step. See Ma, Iaconangelo and de la Torre (2016) for details.
 #' The selection of optimization techniques mainly depends on whether
-#' some specific constraints need to be added. It should
-#' be noted that adding monotone constraints to the G-DINA model may dramatically increase running time especially when the number of required
-#' attributes are large.
+#' some specific constraints need to be added.
 #'
 #' The sequential G-DINA model can be estimated as in Ma & de la Torre (2016a) using optimization techniques. However,
 #' Ma & de la Torre (2016b) found that the sequential G-DINA, DINA and DINO models can be estimated using
-#' close-form solutions, which can be implemented in a straightforward
-#' manner using the observation-coding (Tutz, 1997).
+#' close-form solutions, which can be implemented in a straightforward manner as in Tutz (1997).
 #'
-#' For estimating the joint attribute
-#' distribution, by default, an empirical Bayes method (\code{saturated}; Carlin & Louis, 2000) is adopted, which is referred to as
-#' the saturated attribute structure. Specifically,
-#' the prior distribution of joint attributes is uniform at the beginning, and then updated after
-#' each EM iteration based on the posterior distribution.
 #'
-#' The joint attribute distribution can also be modeled using some higher-order IRT models, which is referred to as
+#' The joint attribute distribution can be modeled using some higher-order IRT models, which is referred to as
 #' higher-order attribute structure. The higher-order attribute structure was originally proposed by de la Torre
 #' and Douglas (2004) for the DINA model. It has been extended in this package for the G-DINA model, DINA, DINO, A-CDM, LLM and RRUM.
 #' Particularly, three IRT models are available for the higher-order attribute structure:
@@ -152,97 +152,110 @@
 #' are counted at category level.
 #'
 #' @param dat A required \eqn{N \times J} \code{matrix} or \code{data.frame} consisting of the
-#' responses of \eqn{N} individuals to \eqn{J} items. Missing values need to be coded as \code{NA}.
+#'     responses of \eqn{N} individuals to \eqn{J} items. Missing values need to be coded as \code{NA}.
 #' @param Q A required \eqn{J \times K} item or category and attribute association matrix, wher \eqn{J} represents the number of
-#'    items or nonzero categories and \eqn{K} represents the number of attributes. For binary attributes,
+#'    items(or nonzero categories for polytomous items and total number of strategies when multiple-strategy DINA model involved)
+#'    and \eqn{K} represents the number of attributes. For binary attributes,
 #'    entry 1 indicates that the attribute is measured by the item, and 0 otherwise.
 #'    For polytomous attributes, non-zero elements indicate the level
 #'    of attributes that are needed for an individual to answer the item correctly (see Chen, & de la Torre, 2013).
 #'    Note that for polytomous items, the sequential G-DINA
 #'    model is used and either restricted or unrestricted category-level Q-matrix is needed.
 #'    In the category-level Q-matrix, the first column gives the item number, which must be numeric and match the number of column in the data.
-#'    The second column indicates the category number. See \code{Examples}.
+#'    The second column indicates the category number. When multiple-strategy DINA model is involved, the first column of
+#'    the Q-matrix gives the item number and the second column gives the strategy number. See \code{Examples}.
 #' @param model A vector for each item or nonzero category, or a scalar which will be used for all
 #'    items or nonzero categories to specify the CDMs fitted. The possible options
-#'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, and \code{"RRUM"}.
-#'    It is also possible to specify CDMs using numbers. Particularly, 0,1,2,3,4 and 5 represents
-#'    \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, and \code{"RRUM"}, respectively.
+#'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"} and \code{"UDF"}.
+#'    When \code{"UDF"}, indicating user defined function, is specified for any item, arguments \code{design.matrix} and \code{linkfunc} need to be defined.
 #' @param sequential logical; \code{TRUE} if the sequential model is fitted for polytomous responses.
-#' @param group a scalar indicating which column in \code{dat} is group indicator or
-#'    a numerical vector indicating the group each individual belongs to. If it is a vector,
-#'    its length must be equal to the number of individuals. Only at most two groups can be handled currently.
-#' @param att.dist How is the joint attribute distribution estimated? It can be \code{saturated}, indicating that
-#'    the proportion parameter for each permissible latent class is estimated separately; \code{higher.order}, indicating
+#' @param group a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its
+#'    length must be equal to the number of individuals.
+#' @param att.dist How is the joint attribute distribution estimated? It can be (1) \code{saturated}, which is the default, indicating that
+#'    the proportion parameter for each permissible latent class is estimated separately; (2) \code{higher.order}, indicating
 #'    that a higher-order joint attribute distribution is assumed (higher-order model can be specified in \code{higher.order} argument);
-#'    or \code{fixed}, indicating that the weights specified in \code{att.prior} argument are fixed in the estimation process.
-#'    If \code{att.prior} is not specified, a uniform joint attribute distribution is employed initially.
-#'    If different groups have different joint attribute distributions, specify \code{att.dist} as a character vector with the same
-#'    number of elements as the number of groups.
-#' @param item.names A vector giving the item names. By default, items are named as "Item 1", "Item 2", etc.
-#' @param higher.order A list specifying the higher-order joint attribute distribution with the following components:
-#'    (1) \code{model} - a character indicating the IRT model for higher-order joint attribute distribution. Can be
-#'    \code{"2PL"}, \code{"1PL"} or \code{"Rasch"}, representing two parameter logistic IRT model,
-#'    one parameter logistic IRT model and Rasch model,
-#'    respectively. For \code{"1PL"} model, a common slope parameter is
-#'    estimated (see \code{Details}). \code{"Rasch"} is the default model when \code{att.dist = "higher.order"}.
-#'    (2) \code{method} - a character indicating the algorithm for the higher-order structural parameter estimation;
-#'    Can be either \code{"BL"}, \code{"MMLE"}, which is the default, or \code{"BMLE"}, which allows parameter priors to be imposed.
-#'    (3) \code{nquad} - a scalar specifying the number of integral nodes. (4) \code{type} - a character specifying
-#'    whether all higher-order structural parameters are estimated at the same time (i.e., \code{type="testwise"}) or
-#'    estimated attribute by attribute (i.e., \code{type="attwise"}, only applicable when \code{method="MMLE"} or \code{method="BMLE"}).
-#'    (5) \code{slope.range} - a vector of length two specifying
-#'    the range of slope parameters. (6) \code{intercept.range} - a vector of length two specifying
-#'    the range of intercept parameters. (7) \code{slope.prior} - a vector of length two specifying
-#'    the mean and variance of log(slope) parameters, which are assumed normally distributed. (8) \code{intercept.prior} -
-#'    a vector of length two specifying the mean and variance of intercept parameters, which are assumed normally distributed.
+#'    (3) \code{fixed}, indicating that the weights specified in \code{att.prior} argument are fixed in the estimation process.
+#'    If \code{att.prior} is not specified, a uniform joint attribute distribution is employed initially;  (4) \code{independent}, indicating
+#'    that all attributes are assumed to be independent; and (5) \code{loglinear}, indicating a loglinear model is employed.
+#'    If different groups have different joint attribute distributions,
+#'    specify \code{att.dist} as a character vector with the same number of elements as the number of groups. However, if a higher-order model is used for any group,
+#'    it must be used for all groups.
 #' @param mono.constraint logical; \code{TRUE} indicates that \eqn{P(\bm{\alpha}_1) <=P(\bm{\alpha}_2)} if
 #'    for all \eqn{k}, \eqn{\alpha_{1k} < \alpha_{2k}}. Can be a vector for each item or nonzero category or a scalar which will be used for all
 #'    items to specify whether monotonicity constraint should be added.
 #' @param catprob.parm A list of initial success probability parameters for each nonzero category.
+#' @param item.names A vector giving the item names. By default, items are named as "Item 1", "Item 2", etc.
+#' @param higher.order A list specifying the higher-order joint attribute distribution with the following components:
+#'  \itemize{
+#'    \item \code{model} - a character indicating the IRT model for higher-order joint attribute distribution. Can be
+#'    \code{"2PL"}, \code{"1PL"} or \code{"Rasch"}, representing two parameter logistic IRT model,
+#'    one parameter logistic IRT model and Rasch model, respectively. For \code{"1PL"} model, a common slope parameter is
+#'    estimated. \code{"Rasch"} is the default model when \code{att.dist = "higher.order"}. Note that slope-intercept form
+#'    is used for parameterizing the higher-order IRT model (see \code{Details}).
+#'    \item \code{nquad} - a scalar specifying the number of integral nodes. Default = 25.
+#'    \item \code{SlopeRange} - a vector of length two specifying the range of slope parameters. Default = [0.1, 5].
+#'    \item \code{InterceptRange} - a vector of length two specifying the range of intercept parameters. Default = [-4, 4].
+#'    \item \code{SlopePrior} - a vector of length two specifying the mean and variance of log(slope) parameters, which are assumed normally distributed. Default: mean = 0 and sd = 0.25.
+#'    \item \code{InterceptPrior} - a vector of length two specifying the mean and variance of intercept parameters, which are assumed normally distributed. Default: mean = 0 and sd = 1.
+#'    \item \code{Prior} - logical; indicating whether prior distributions should be imposed to slope and intercept parameters. Default is \code{FALSE}.
+#'    }
 #' @param verbose How to print calibration information
 #'     after each EM iteration? Can be 0, 1 or 2, indicating to print no information,
 #'     information for current iteration, or information for all iterations.
-#' @param att.prior A vector of length \eqn{2^K} for single group estimation, or a matrix of dimension \eqn{2^K\times} no. of groups to specify
-#'    attribute prior distribution for \eqn{2^K} latent classes for all groups. Only applicable for dichotomous attributes.
-#'    The sum of all elements does not have to be equal to 1; however, it will be transformed so that the sum is equal to 1
-#'    before model calibration.
+#' @param att.prior A vector of length \eqn{2^K} for single group model, or a matrix of dimension \eqn{2^K\times} no. of groups to specify
+#'    attribute prior distribution for \eqn{2^K} latent classes for all groups under a multiple group model. Only applicable for dichotomous attributes.
+#'    The sum of all elements does not have to be equal to 1; however, it will be normalized so that the sum is equal to 1
+#'    before calibration.
 #'    The label for each latent class can be obtained by calling \code{attributepattern(K)}. See \code{examples} for more info.
-#' @param att.str logical; are attributes structured?
-#' @param nstarts how many sets of starting values? The default is 1.
-#' @param conv.crit The convergence criterion for max absolute change in item parameters or deviance.
-#' @param conv.type How is the convergence criterion evaluated? Can be \code{"max.p.change"}, indicating
+#' @param latent.var A string indicating the nature of the latent variables. It is \code{"att"} (by default) if the latent variables are attributes,
+#'    and \code{"bugs"} if the latent variables are misconceptions. When \code{"bugs"} is specified, only the DINA, DINO or G-DINA model can be
+#'    specified in \code{model} argument (Kuo, Chen, Yang & Mok, 2016).
+#' @param att.str logical; are attributes structured? If yes, \code{att.prior} must be specified where impossible latent classes have prior weights 0.
+#' @param loglinear the order of loglinear smooth for attribute space. It can be either 1 or 2 indicating the loglinear model with main effect only
+#'    and with main effect and first-order interaction.
+#' @param control A list of control parameters with elements:
+#' \itemize{
+#'      \item \code{maxitr} A vector for each item or nonzero category, or a scalar which will be used for all
+#'    items or nonzero categories to specify the maximum number of EM cycles allowed. Default = 1000.
+#'     \item \code{conv.crit} The convergence criterion for max absolute change in item parameters or deviance. Default = 0.001.
+#'     \item \code{conv.type} How is the convergence criterion evaluated? Can be \code{"max.ip.change"}, indicating
 #'    the maximum absolute change in success probabilities, or \code{"dev.change"}, representing
 #'    the absolute change in deviance.
-#' @param maxitr A vector for each item or nonzero category, or a scalar which will be used for all
-#'    items or nonzero categories to specify the maximum number of EM cycles allowed.
-#' @param lower.p A vector for each item or nonzero category, or a scalar which will be used for all
-#'    items or nonzero categories to specify the lower bound for success probabilities. The default is \code{1e-4} for all items.
-#' @param upper.p A vector for each item or nonzero category, or a scalar which will be used for all
-#'    items or nonzero categories to specify the upper bound for success probabilities. The default is 0.9999 for all items.
-#' @param lower.prior The lower bound for prior weights. Only applicable for nonstructured attributes.
-#'    The default value is -1, which means the lower bound is \eqn{1/2^K/100}.
-#' @param randomseed Random seed for generating initial item parameters. The default random seed is 123456.
-#' @param smallNcorrection A numeric vector with two elements specifying the corrections applied when the expected number of
+#'     \item \code{nstarts} how many sets of starting values? Default = 1.
+#'     \item \code{lower.p} A vector for each item or nonzero category,
+#'    or a scalar which will be used for all items or nonzero categories to specify the lower bound for success probabilities.
+#'    Default = .0001.
+#'     \item \code{upper.p} A vector for each item or nonzero category, or a scalar which will be used for all
+#'    items or nonzero categories to specify the upper bound for success probabilities. Default = .9999.
+#'     \item \code{lower.prior} The lower bound for mixing proportion parameters (latent class sizes). Default = 0.
+#'     \item \code{randomseed} Random seed for generating initial item parameters. Default = 123456.
+#'     \item \code{smallNcorrection} A numeric vector with two elements specifying the corrections applied when the expected number of
 #' individuals in some latent groups are too small. If the expected no. of examinees is less than the second element,
 #' the first element and two times the first element will be added to the numerator and denominator of the closed-form solution of
 #' probabilities of success. Only applicable for the G-DINA, DINA and DINO model estimation without monotonic constraints.
-#' @param Mstep.warning Logical; Should the warning message in Mstep, if any, be output immediately.
-#' @param diagnosis Run in diagnostic mode? If it is 1 or 2, some intermediate results obtained in each iteration can be extracted.
-#' @param optimizer A string indicating which optimizer should be used in M-step.
-#' @param optim.control Control options for optimizers in the M-step. Only available when \code{optimizer} is one specific optimization
-#' method, including \code{BFGS} from \link[stats]{optim}, \link[nloptr]{slsqp}, \link[Rsolnp]{solnp} and \link[alabama]{auglag}.
-#' For the \link[alabama]{auglag} method, \code{optim.control} specifies \code{control.outer}.
-#'
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#'     \item \code{MstepMessage} Integer; Larger number prints more information from Mstep optimizer. Default = 1.
+#'  }
+#' @param linkfunc a vector of link functions for each item/category; It can be \code{"identity"},\code{"log"} or \code{"logit"}. Only applicable
+#'    when, for some items, \code{model="UDF"}.
+#' @param design.matrix a list of design matrices; Its length must be equal to the number of items (or nonzero categories for sequential models).
+#'    If CDM for item j is specified as "UDF" in argument \code{model}, the corresponding design matrix must be provided; otherwise, the design matrix can be \code{NULL},
+#'    which will be generated automatically.
+#' @param solver A string indicating which solver should be used in M-step. By default, the solver is automatically chosen according to the models specified.
+#'    Possible options include \link[nloptr]{nloptr}, \link[Rsolnp]{solnp} and \link[alabama]{auglag}.
+#' @param auglag.args a list of control parameters to be passed to the alabama::auglag() function. It can contain two elements:
+#'    \code{control.outer} and \code{control.optim}. See \link[alabama]{auglag}.
+#' @param nloptr.args a list of control parameters to be passed to \code{opts} argument of \link[nloptr]{nloptr} function.
+#' @param solnp.args  a list of control parameters to be passed to \code{control} argument of \link[Rsolnp]{solnp} function.
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @seealso See \code{\link{autoGDINA}} for Q-matrix validation, item level model comparison and model calibration
 #' in one run; See \code{\link{itemfit}} for item fit analysis, \code{\link{Qval}} for Q-matrix validation,
 #' \code{\link{modelcomp}} for item level model comparison and \code{\link{simGDINA}} for data simulation.
 #' Also see \code{gdina} in \pkg{CDM} package for the G-DINA model estimation.
 #'
 #' @return \code{GDINA} returns an object of class \code{GDINA}. Methods for \code{GDINA} objects
-#'  include \code{\link{extract}} for extracting various components, \code{\link{itemparm}}
-#'  for extracting item parameters, \code{\link{personparm}}
-#'  for calculating person parameters, \code{summary} for summary information.
+#'  include \code{\link{extract}} for extracting various components, \code{\link{coef}}
+#'  for extracting structural parameters, \code{\link{personparm}}
+#'  for calculating incidental (person) parameters, \code{summary} for summary information.
 #'  \code{AIC}, \code{BIC},\code{logLik}, \code{deviance} and \code{npar} can also be used to
 #'  calculate AIC, BIC, observed log-likelihood, deviance and number of parameters.
 #'
@@ -253,7 +266,11 @@
 #'
 #' Bock, R. D., & Lieberman, M. (1970). Fitting a response model forn dichotomously scored items. \emph{Psychometrika, 35}, 179-197.
 #'
+#' Bor-Chen Kuo, Chun-Hua Chen, Chih-Wei Yang, & Magdalena Mo Ching Mok. (2016). Cognitive diagnostic models for tests with multiple-choice and constructed-response items. \emph{Educational Psychology, 36}, 1115-1133.
+#'
 #' Carlin, B. P., & Louis, T. A. (2000). Bayes and empirical bayes methods for data analysis. New York, NY: Chapman & Hall
+#'
+#' de la Torre, J., & Douglas, J. A. (2008). Model evaluation and multiple strategies in cognitive diagnosis: An analysis of fraction subtraction data. \emph{Psychometrika, 73}, 595-624.
 #'
 #' de la Torre, J. (2009). DINA Model and Parameter Estimation: A Didactic. \emph{Journal of Educational and Behavioral Statistics, 34}, 115-130.
 #'
@@ -270,6 +287,8 @@
 #' Hartz, S. M. (2002). A bayesian framework for the unified model for assessing cognitive abilities:
 #' Blending theory with practicality (Unpublished doctoral dissertation). University of Illinois at Urbana-Champaign.
 #'
+#' Huo, Y., & de la Torre, J. (2014). Estimating a Cognitive Diagnostic Model for Multiple Strategies via the EM Algorithm. \emph{Applied Psychological Measurement, 38}, 464-485.
+#'
 #' Junker, B. W., & Sijtsma, K. (2001). Cognitive assessment models with few assumptions, and connections with nonparametric
 #' item response theory. \emph{Applied Psychological Measurement, 25}, 258-272.
 #'
@@ -277,22 +296,19 @@
 #'
 #' Ma, W., & de la Torre, J. (2016b, July). A Q-matrix validation method for the sequential G-DINA model. Paper presented at the 80th International Meeting of the Psychometric Society, Asheville, NC.
 #'
-#' Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification.
-#' \emph{Applied Psychological Measurement, 40}, 200-217.
+#' Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. \emph{Applied Psychological Measurement, 40}, 200-217.
 #'
 #' Maris, E. (1999). Estimating multiple classification latent class models. \emph{Psychometrika, 64}, 187-212.
 #'
-#' Tatsuoka, K. K. (1983). Rule space: An approach for dealing with misconceptions based on
-#' item response theory. \emph{Journal of Educational Measurement, 20}, 345-354.
+#' Tatsuoka, K. K. (1983). Rule space: An approach for dealing with misconceptions based on item response theory. \emph{Journal of Educational Measurement, 20}, 345-354.
 #'
-#' Templin, J. L., & Henson, R. A. (2006). Measurement of psychological disorders using cognitive diagnosis models.
-#' \emph{Psychological Methods, 11}, 287-305.
+#' Templin, J. L., & Henson, R. A. (2006). Measurement of psychological disorders using cognitive diagnosis models. \emph{Psychological Methods, 11}, 287-305.
 #'
 #' Tutz, G. (1997). Sequential models for ordered responses. In W.J. van der Linden & R. K. Hambleton (Eds.), Handbook of modern item response theory p. 139-152). New York, NY: Springer.
 #'
 #'
 #' @export
-#' @importFrom  nloptr slsqp
+#' @importFrom  nloptr nloptr slsqp nl.grad nl.jacobian
 #' @useDynLib GDINA
 #' @importFrom Rcpp sourceCpp
 #' @import numDeriv
@@ -300,7 +316,7 @@
 #' @importFrom graphics plot axis points text abline
 #' @import ggplot2
 #' @import stats
-#' @importFrom utils combn
+#' @importFrom utils combn modifyList
 #'
 #' @examples
 #' \dontrun{
@@ -332,14 +348,14 @@
 #' head(indlogLik(mod1)) # individual log-likelihood
 #' head(indlogPost(mod1)) # individual log-posterior
 #'
-#' # item parameters
-#' # see ?itemparm
-#' itemparm(mod1) # item probabilities of success for each latent group
-#' itemparm(mod1, withSE = TRUE) # item probabilities of success & standard errors
-#' itemparm(mod1, what = "delta") # delta parameters
-#' itemparm(mod1, what = "delta",withSE=TRUE) # delta parameters
-#' itemparm(mod1, what = "gs") # guessing and slip parameters
-#' itemparm(mod1, what = "gs",withSE = TRUE) # guessing and slip parameters & standard errors
+#' # structural parameters
+#' # see ?coef
+#' coef(mod1) # item probabilities of success for each latent group
+#' coef(mod1, withSE = TRUE) # item probabilities of success & standard errors
+#' coef(mod1, what = "delta") # delta parameters
+#' coef(mod1, what = "delta",withSE=TRUE) # delta parameters
+#' coef(mod1, what = "gs") # guessing and slip parameters
+#' coef(mod1, what = "gs",withSE = TRUE) # guessing and slip parameters & standard errors
 #'
 #' # person parameters
 #' # see ?personparm
@@ -360,8 +376,8 @@
 #' Q <- sim10GDINA$simQ
 #' mod2 <- GDINA(dat = dat, Q = Q, model = "DINA")
 #' mod2
-#' itemparm(mod2, what = "gs") # guess and slip parameters
-#' itemparm(mod2, what = "gs",withSE = TRUE) # guess and slip parameters and standard errors
+#' coef(mod2, what = "gs") # guess and slip parameters
+#' coef(mod2, what = "gs",withSE = TRUE) # guess and slip parameters and standard errors
 #'
 #' # Model comparison at the test level via likelihood ratio test
 #' anova(mod1,mod2)
@@ -371,8 +387,8 @@
 #' Q <- sim10GDINA$simQ
 #' mod3 <- GDINA(dat = dat, Q = Q, model = "DINO")
 #' #slip and guessing
-#' itemparm(mod3, what = "gs") # guess and slip parameters
-#' itemparm(mod3, what = "gs",withSE = TRUE) # guess and slip parameters + standard errors
+#' coef(mod3, what = "gs") # guess and slip parameters
+#' coef(mod3, what = "gs",withSE = TRUE) # guess and slip parameters + standard errors
 #'
 #' # Model comparison at test level via likelihood ratio test
 #' anova(mod1,mod2,mod3)
@@ -420,11 +436,11 @@
 #' mod11c
 #' mod11d <- GDINA(dat = dat, Q = Q, model = "RRUM",mono.constraint = TRUE)
 #' mod11d
-#' itemparm(mod11d,"delta")
-#' itemparm(mod11d,"rrum")
+#' coef(mod11d,"delta")
+#' coef(mod11d,"rrum")
 #'
 #'####################################
-#'#           Example 3.             #
+#'#           Example 3a.            #
 #'#        Model estimations         #
 #'# With Higher-order att structure  #
 #'####################################
@@ -433,23 +449,34 @@
 #' Q <- sim10GDINA$simQ
 #' # --- Higher order G-DINA model ---#
 #' mod12 <- GDINA(dat = dat, Q = Q, model = "DINA",
-#'                att.dist="higher.order",higher.order=list(method="MMLE",nquad=31))
-#' hoest=hoparm(mod12) # extract higher-order parameters
-#' hoest$theta # ability
-#' hoest$lambda # structural parameters
+#'                att.dist="higher.order",higher.order=list(nquad=31,model = "2PL"))
+#' personparm(mod12,"HO") # higher-order ability
+#' # structural parameters
+#' # first column is slope and the second column is intercept
+#' coef(mod12,"struct")
 #' # --- Higher order DINA model ---#
-#' mod22 <- GDINA(dat = dat, Q = Q, model = "DINA",
-#'                att.dist="higher.order",higher.order=list(method="BMLE"))
-#' # --- Higher order DINO model ---#
-#' mod23 <- GDINA(dat = dat, Q = Q, model = "DINO",att.dist="higher.order")
-#' # --- Higher order ACDM model ---#
-#' mod24 <- GDINA(dat = dat, Q = Q, model = "ACDM",
-#'                att.dist="higher.order",higher.order=list(model="1PL"))
-#' # --- Higher order LLM model ---#
-#' mod25 <- GDINA(dat = dat, Q = Q, model = "LLM",att.dist="higher.order")
-#' # --- Higher order RRUM model ---#
-#' mod26 <- GDINA(dat = dat, Q = Q, model = "RRUM",att.dist="higher.order")
-#'
+#' mod22 <- GDINA(dat = dat, Q = Q, model = "DINA", att.dist="higher.order",
+#'                higher.order=list(model = "2PL",Prior=TRUE))
+#'####################################
+#'#           Example 3b.            #
+#'#        Model estimations         #
+#'#   With log-linear att structure  #
+#'####################################
+#' # --- DINA model with loglinear smoothed attribute space ---#
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
+#' mod23 <- GDINA(dat = dat, Q = Q, model = "DINA",att.dist="loglinear",loglinear=1)
+#' coef(mod23,"struct") # intercept and three main effects
+#'####################################
+#'#           Example 3c.            #
+#'#        Model estimations         #
+#'#  With independent att structure  #
+#'####################################
+#' # --- GDINA model with independent attribute space ---#
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
+#' mod33 <- GDINA(dat = dat, Q = Q, att.dist="independent")
+#' coef(mod33,"struct") # mastery probability for each attribute
 #'####################################
 #'#          Example 4.              #
 #'#        Model estimations         #
@@ -531,13 +558,12 @@
 #' true.att <- attributepattern(K)[true.lc,]
 #'  gs <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
 #'  # data simulation
-#'  simD <- simGDINA(N,Q,gs.parm = gs,
-#'                    model = "DINA",attribute = true.att)
+#'  simD <- simGDINA(N,Q,gs.parm = gs, model = "DINA",attribute = true.att)
 #'  dat <- extract(simD,"dat")
 #'
 #' modp1 <- GDINA(dat = dat, Q = Q, att.prior = struc$att.prob, att.str = TRUE, att.dist = "saturated")
 #' modp1
-#' # Note that fixed priors were used for all iterations
+#' # prior dist.
 #' extract(modp1,what = "att.prior")
 #' # Posterior weights were slightly different
 #' extract(modp1,what = "posterior.prob")
@@ -571,8 +597,8 @@
 #'  # attribute prior distribution matters if interested in the marginalized likelihood
 #'  dat <- frac20$dat
 #'  Q <- frac20$Q
-#'  mod.initial <- GDINA(dat,Q,maxit=20) # estimation- only 10 iterations for illustration purposes
-#'  par <- itemparm(mod.initial,digits=8)
+#'  mod.initial <- GDINA(dat,Q,maxit=20) # estimation- only 20 iterations for illustration purposes
+#'  par <- coef(mod.initial,digits=8)
 #'  weights <- extract(mod.initial,"posterior.prob",digits=8) #posterior weights
 #'  # use the weights as the priors
 #'  mod.fix <- GDINA(dat,Q,catprob.parm = par,att.prior=c(weights),maxitr=0) # re-estimation
@@ -625,477 +651,238 @@
 #' sGDINA <- GDINA(dat,Q,sequential = TRUE)
 #' sDINA <- GDINA(dat,Q,sequential = TRUE,model = "DINA")
 #' anova(sGDINA,sDINA)
-#' itemparm(sDINA) # processing function
-#' itemparm(sDINA,"itemprob") # success probabilities for each item
-#' itemparm(sDINA,"LCprob") # success probabilities for each category for all latent classes
+#' coef(sDINA) # processing function
+#' coef(sDINA,"itemprob") # success probabilities for each item
+#' coef(sDINA,"LCprob") # success probabilities for each category for all latent classes
 #'
 #'####################################
-#'#           Example 10.            #
+#'#           Example 10a.           #
 #'#    Multiple-Group G-DINA model   #
 #'####################################
 #' Q <- sim10GDINA$simQ
-#'
+#' K <- ncol(Q)
 #' # parameter simulation
 #' # Group 1 - female
-#' N1 <- 2000
+#' N1 <- 3000
 #' gs1 <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
 #' # Group 2 - male
-#' N2 <- 2000
+#' N2 <- 3000
 #' gs2 <- matrix(rep(0.2,2*nrow(Q)),ncol=2)
 #'
 #' # data simulation for each group
-#' sim1 <- simGDINA(N1,Q,gs.parm = gs1,model = "DINA")
-#' sim2 <- simGDINA(N2,Q,gs.parm = gs2,model = "DINO")
+#' sim1 <- simGDINA(N1,Q,gs.parm = gs1,model = "DINA",att.dist = "higher.order",
+#'                  higher.order.parm = list(theta = rnorm(N1),
+#'                  lambda = data.frame(a=rep(1.5,K),b=seq(-1,1,length.out=K))))
+#' sim2 <- simGDINA(N2,Q,gs.parm = gs2,model = "DINO",att.dist = "higher.order",
+#'                  higher.order.parm = list(theta = rnorm(N2),
+#'                  lambda = data.frame(a=rep(1,K),b=seq(-2,2,length.out=K))))
 #'
 #' # combine data
 #' # see ?bdiagMatrix
 #' dat <- bdiagMatrix(list(extract(sim1,"dat"),extract(sim2,"dat")),fill=NA)
 #' Q <- rbind(Q,Q)
-#' gr <- rep(c("female","male"),each=2000)
+#' gr <- rep(c(1,2),c(3000,3000))
 #' # Fit G-DINA model
-#' mg.est <- GDINA(dat = dat,Q = Q,group = gr)
+#' mg.est <- GDINA(dat = dat,Q = Q,group = gr,att.dist="higher.order",
+#' higher.order=list(model = "1PL",Prior=TRUE))
 #' summary(mg.est)
 #' extract(mg.est,"posterior.prob")
 #'
-#' # Fit G-DINA model with different joint attribute dist.
-#' mg.est2 <- GDINA(dat = dat,Q = Q,group = gr,
-#' att.dist = c("saturated","fixed"))
-#' summary(mg.est2)
 #'
-#' }
+#'
+#'####################################
+#'#           Example 10b.           #
+#'#    Multiple-Group G-DINA model   #
+#'####################################
+#' Q <- sim30GDINA$simQ
+#' K <- ncol(Q)
+#' # parameter simulation
+#' # Group 1 - female
+#' N1 <- 3000
+#' gs1 <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
+#' # Group 2 - male
+#' N2 <- 3000
+#' gs2 <- matrix(rep(0.2,2*nrow(Q)),ncol=2)
+#'
+#' # data simulation for each group
+#' # two groups have different theta distributions
+#' sim1 <- simGDINA(N1,Q,gs.parm = gs1,model = "DINA",att.dist = "higher.order",
+#'                  higher.order.parm = list(theta = rnorm(N1),
+#'                  lambda = data.frame(a=rep(1,K),b=seq(-2,2,length.out=K))))
+#' sim2 <- simGDINA(N2,Q,gs.parm = gs2,model = "DINO",att.dist = "higher.order",
+#'                  higher.order.parm = list(theta = rnorm(N2,1,1),
+#'                  lambda = data.frame(a=rep(1,K),b=seq(-2,2,length.out=K))))
+#'
+#' # combine data
+#' # see ?bdiagMatrix
+#' dat <- bdiagMatrix(list(extract(sim1,"dat"),extract(sim2,"dat")),fill=NA)
+#' Q <- rbind(Q,Q)
+#' gr <- rep(c(1,2),c(3000,3000))
+#' # Fit G-DINA model
+#' mg.est <- GDINA(dat = dat,Q = Q,group = gr,att.dist="higher.order",
+#' higher.order=list(model = "Rasch",Prior=FALSE,Type = "SameLambda"))
+#' summary(mg.est)
+#' extract(mg.est,"higher.order")
+#'
+#'
+#'####################################
+#'#           Example 11.            #
+#'#           Bug DINO model         #
+#'####################################
+#' set.seed(123)
+#' Q <- sim10GDINA$simQ # 1 represents misconceptions/bugs
+#' ip <- list(
+#' c(0.8,0.2),
+#' c(0.7,0.1),
+#' c(0.9,0.2),
+#' c(0.9,0.1,0.1,0.1),
+#' c(0.9,0.1,0.1,0.1),
+#' c(0.9,0.1,0.1,0.1),
+#' c(0.9,0.1,0.1,0.1),
+#' c(0.9,0.1,0.1,0.1),
+#' c(0.9,0.1,0.1,0.1),
+#' c(0.9,0.1,0.1,0.1,0.1,0.1,0.1,0.1))
+#' sim <- simGDINA(N=1000,Q=Q,catprob.parm = ip)
+#' dat <- extract(sim,"dat")
+#' # use latent.var to specify a bug model
+#' est <- GDINA(dat=dat,Q=Q,latent.var="bugs",model="DINO")
+#' coef(est)
+#'
+#'####################################
+#'#           Example 12.            #
+#'#           Bug DINA model         #
+#'####################################
+#' set.seed(123)
+#' Q <- sim10GDINA$simQ # 1 represents misconceptions/bugs
+#' ip <- list(
+#' c(0.8,0.2),
+#' c(0.7,0.1),
+#' c(0.9,0.2),
+#' c(0.9,0.9,0.9,0.1),
+#' c(0.9,0.9,0.9,0.1),
+#' c(0.9,0.9,0.9,0.1),
+#' c(0.9,0.9,0.9,0.1),
+#' c(0.9,0.9,0.9,0.1),
+#' c(0.9,0.9,0.9,0.1),
+#' c(0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.1))
+#' sim <- simGDINA(N=1000,Q=Q,catprob.parm = ip)
+#' dat <- extract(sim,"dat")
+#' # use latent.var to specify a bug model
+#' est <- GDINA(dat=dat,Q=Q,latent.var="bugs",model="DINA")
+#' coef(est)
+#'
+#'####################################
+#'#           Example 13a.           #
+#'#     user specified design matrix #
+#'#        LCDM (logit G-DINA)       #
+#'####################################
+#'
+#' dat <- sim30GDINA$simdat
+#' Q <- sim30GDINA$simQ
+#'
+#' #find design matrix for each item => must be a list
+#' D <- lapply(rowSums(Q),designmatrix,model="GDINA")
+#' # for comparison, use change in -2LL as convergence criterion
+#' # LCDM
+#' lcdm <- GDINA(dat = dat, Q = Q, model = "UDF", design.matrix = D,
+#' linkfunc = "logit", control=list(conv.type="dev.change"),solver="slsqp")
+#'
+#' # identity link GDINA
+#' iGDINA <- GDINA(dat = dat, Q = Q, model = "GDINA",
+#' control=list(conv.type="dev.change"),solver="slsqp")
+#'
+#' # compare two models => identical
+#' anova(lcdm,iGDINA)
+#'####################################
+#'#           Example 13b.           #
+#'#     user specified design matrix #
+#'#            RRUM                  #
+#'####################################
+#'
+#' dat <- sim30GDINA$simdat
+#' Q <- sim30GDINA$simQ
+#'
+#' # specify design matrix for each item => must be a list
+#' # D can be defined by the user
+#' D <- lapply(rowSums(Q),designmatrix,model="ACDM")
+#' # for comparison, use change in -2LL as convergence criterion
+#' # RRUM
+#' logACDM <- GDINA(dat = dat, Q = Q, model = "UDF", design.matrix = D,
+#' linkfunc = "log", control=list(conv.type="dev.change"),solver="slsqp")
+#'
+#' # identity link GDINA
+#' RRUM <- GDINA(dat = dat, Q = Q, model = "RRUM", control=list(conv.type="dev.change"),solver="slsqp")
+#'
+#' # compare two models => identical
+#' anova(logACDM,RRUM)
+#'
+#'####################################
+#'#           Example 14.            #
+#'#     Multiple-strategy DINA model #
+#'####################################
+#' set.seed(123)
+#' msQ <- matrix(
+#' c(1,1,0,1,
+#' 1,2,1,0,
+#' 2,1,1,0,
+#' 3,1,0,1,
+#' 4,1,1,1,
+#' 5,1,1,1),6,4,byrow = T)
+#' # J x L - 00,10,01,11
+#' LC.prob <- matrix(c(
+#' 0.2,0.8,0.8,0.8,
+#' 0.1,0.9,0.1,0.9,
+#' 0.1,0.1,0.8,0.8,
+#' 0.2,0.3,0.7,0.9,
+#' 0.2,0.4,0.7,0.9),5,4,byrow=TRUE)
+#' N <- 3000
+#' att <- sample(1:4,N,replace=TRUE)
+#' dat <- 1*(t(LC.prob[,att])>matrix(runif(N*5),N,5))
+#' # estimation
+#' # MSDINA need to be specified for each strategy
+#' est <- GDINA(dat,msQ,model = c("MSDINA","MSDINA","DINA","DINA","GDINA","ACDM"))
+#' coef(est)
+#'}
 #'
 GDINA <-
-  function(dat, Q, model = "GDINA", sequential = FALSE, att.dist = "saturated", att.prior = NULL,
-           att.str = FALSE, mono.constraint = FALSE, group = NULL,
-           verbose = 1, catprob.parm = NULL,
-           lower.p = 0.0001,upper.p = 0.9999, item.names = NULL,
-           nstarts = 1, conv.crit = 0.001, lower.prior = -1,
-           conv.type = "max.p.change", maxitr = 1000,
-           digits = 4,diagnosis = 0, Mstep.warning = FALSE,optimizer = "all",
-           randomseed = 123456, smallNcorrection = c(0.0005,0.001),
-           higher.order = list(model="Rasch",method="MMLE",nquad=19,type = "testwise",
-                               slope.range=c(0.1,5),intercept.range=c(-3,3),
-                               slope.prior=c(0,0.25),intercept.prior=c(0,1)),
-           optim.control=list())
+  function(dat, Q, model = "GDINA", sequential = FALSE, att.dist = "saturated", mono.constraint = FALSE,
+           group = NULL,linkfunc = NULL, design.matrix = NULL,
+           latent.var = "att", att.prior = NULL, att.str = FALSE, verbose = 1,
+           higher.order = list(),loglinear = 2,catprob.parm = NULL,control=list(),
+           item.names = NULL, solver = NULL,
+           nloptr.args=list(),auglag.args=list(),solnp.args = list(),...)
   {
+
     s1 <- Sys.time()
     GDINAcall <- match.call()
-
-    if (exists(".Random.seed", .GlobalEnv)) oldseed <- .GlobalEnv$.Random.seed else  oldseed <- NULL
-
-    if (is.null(group)){
-      no.mg <- 1
-      gr <- rep(1L,nrow(dat))
-      gr.label <- "all data"
-    }else {
-      # multiple groups
-      # scalar -> group variable column
-      if (length(group) == 1L) {
-        if(!is.positiveInteger(group)) stop("group specification is not correct.",call. = FALSE)
-        gr <- dat[, group] # group indicator variable - numeric
-        dat <- dat[, -group] # responses
-      } else{
-        if (nrow(dat) != length(group)) stop("The length of group variable must be equal to the number of individuals.", call. = FALSE)
-        gr <- group # group indicator variable
-      }
-
-      gr.label <- unique(gr) # group labels
-      no.mg <- length(gr.label) # the number of groups
-      if (!is.numeric(gr) || max(gr) > no.mg) {
-        for (g in 1L:no.mg) gr[gr == gr.label[g]] <- g
-        gr <- as.numeric(gr) # numeric variable
-      }
-if(no.mg>1&&length(att.dist)==1) att.dist <- rep(att.dist,no.mg)
-    }
-    lambda <- NULL
-    lam <- list() # lambda for multiple groups
-if(any(att.dist=="higher.order")) {
-
-  higher.order$model <- ifelse(is.null(higher.order$model),"Rasch",higher.order$model)
-  higher.order$method <- ifelse(is.null(higher.order$method),"MMLE",higher.order$method)
-  higher.order$nquad <- ifelse(is.null(higher.order$nquad),19,higher.order$nquad)
-  higher.order$type <- ifelse(is.null(higher.order$type),"testwise",higher.order$type)
-  if(is.null(higher.order$slope.range)) higher.order$slope.range <- c(0.1,5)
-  if(is.null(higher.order$intercept.range)) higher.order$intercept.range <- c(-3,3)
-  if(is.null(higher.order$slope.prior)) higher.order$slope.prior <- c(0,0.25)
-  if(is.null(higher.order$intercept.prior)) higher.order$intercept.prior <- c(0,1)
-  if(higher.order$method=="MMLE") higher.order$slope.prior <- higher.order$intercept.prior <- c(NA,NA)
-  if(higher.order$type=="attwise"&&higher.order$model=="1PL") warning("Estimating 1PL higher-order model using type='attwise' manner is not recommended.",call. = FALSE)
-
-}
-
-     inputcheck(dat = dat, Q = Q, model = model, sequential = sequential, att.dist = att.dist,
-               verbose = verbose, catprob.parm = catprob.parm, mono.constraint = mono.constraint,
-               att.prior = att.prior,
-               lower.p = lower.p, upper.p = upper.p, att.str = att.str, nstarts = nstarts,
-               conv.crit = conv.crit, maxitr = maxitr,
-               digits = digits, diagnosis = diagnosis)
-     if(any(is.na(dat))){
-       # some missings individuals with one or fewer valid response are
-       # removed
-       del.ind <- which(rowSums(1L - is.na(dat)) < 2L, arr.ind = TRUE)
-       if (length(del.ind) > 0L) {
-         warning(length(del.ind), " individuals with one or fewer valid responses are removed.")
-         dat <- dat[-del.ind, ]
-         gr <- gr[-del.ind]
-       }
-     }
-    # polytomous responses -> dichotomous responses
-    # copy Q and data
-    Qc <- Q
-    dat_d <- dat
-    if (sequential) {
-      dat <- seq_coding(dat, Q)
-      if (is.null(item.names)) item.names <- paste("Item", Qc[, 1], "Cat", Qc[, 2])
-
-      Q <- Q[, -c(1, 2)]
-    } else {
-      if (max(dat, na.rm = TRUE) > 1) stop("Maximum response is greater than 1 - set sequential = TRUE to fit a sequential model.", call. = FALSE)
-      if (is.null(item.names)) {
-        if(is.null(colnames(dat))) item.names <- paste("Item", 1:nrow(Q)) else item.names <- colnames(dat)
-      }
-
-    }
-
-
-    N <- nrow(dat)
-
-    J <- ncol(dat)
-
-    K <- ncol(Q)
-
-    Kj <- rowSums(Q>0)  # vector with length of J
-
-    Lj <- 2^Kj
-
-    L <- no_LC(Q)  # The number of latent groups
-
-    M <- c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM")
-
-    model <- model.transform(model, J)
-    model.names <- M[model + 1]
-    names(model.names) <- item.names
-    if (length(lower.p) == 1) {
-      lower.p <- rep(lower.p, J)
-    } else {
-      if (length(lower.p) != J)
-        stop("lower.p must have length of 1 or J.", call. = FALSE)
-    }
-    if (length(upper.p) == 1) {
-      upper.p <- rep(upper.p, J)
-    } else {
-      if (length(upper.p) != J)
-        stop("upper.p must have length of 1 or J.", call. = FALSE)
-    }
-
-    if(length(maxitr)==1) {
-      vmaxitr <- rep(maxitr,J)
-    }else if(length(maxitr)!=J){
-      warning("Length of maxitr must be equal to 1 or the number of nonzero categories.",call. = FALSE)
+    if (exists(".Random.seed", .GlobalEnv)){
+      oldseed <- .GlobalEnv$.Random.seed
+      on.exit(.GlobalEnv$.Random.seed <- oldseed)
     }else{
-      vmaxitr <- maxitr
-      maxitr <- max(maxitr)
+      on.exit(rm(".Random.seed", envir = .GlobalEnv))
     }
-    # location of item parameters
-    parloc <- eta.loc(Q)  #J x L
+    if(missing(dat)) missingMsg(dat)
+    if(missing(Q)) missingMsg(Q)
 
-    # Generate the log prior - a L x no.mg matrix
-    if (is.null(att.prior)) {
-      att.prior <- matrix(rep(1/L, L),ncol = no.mg)
-      logprior <- matrix(log(att.prior),nrow = L,ncol = no.mg)
-    } else {
-      if(is.vector(att.prior)) {
-        att.prior <- matrix(att.prior,ncol = no.mg) # vector -> matrix
-      }
-      if(is.matrix(att.prior)){
-        if (nrow(att.prior) != L||ncol(att.prior)!=no.mg)
-          stop("Joint attribute distribution priors must be a vector of length 2^K or a matrix with 2^K rows if specified.", call. = FALSE)
-      }
-
-      if (any(att.prior < 0)) stop("Joint attribute distribution prior can only contain numerical values between 0 and 1.", call. = FALSE)
-        logprior <- log(att.prior/matrix(colSums(att.prior),nrow = L,ncol = no.mg,byrow = TRUE))
-    }
-
-    # generating initial item parameters
-    if (is.null(catprob.parm)) {
-      item.parm <- initials(Q, nstarts, randomseed = randomseed)  #a list with nstarts matrices of size J x 2^Kjmax
-      ###### Multiple starting values
-      if (nstarts > 1L) {
-        neg2LL <- NULL
-        for (i in 1L:nstarts) {
-          LC.Prob <- uP(as.matrix(parloc), as.matrix(item.parm[[i]]))
-          # calculate likelihood and posterior
-          neg2LL <- c(neg2LL, -2 * Lik(mP = LC.Prob,
-                                       mX = as.matrix(dat),
-                                       vlogPrior = as.matrix(logprior),
-                                       vgroup = gr)$LL)
-        }
-        item.parm <- item.parm[[which.min(neg2LL)]]
-
-      }
-    } else {
-      item.parm <- l2m(catprob.parm)
-    }
-
-    initial.parm <- item.parm
-
-    dif <- 10L
-    itr <- 0L
-    diag.itemprob <- diag.RN <- diag.likepost <- diag.lambda <- diag.opts <- vector("list", maxitr)
-    diag.itrmaxchange <- NULL
-    deltas <- calc_delta(item.parm, model, Kj)
-    # print(deltas)
-
-    # cat('\nIteration maxchange -2LL\n') E-M algorithm
-    dif.p <- dif.LL <- LL.1 <- LL.2 <- 0
-
-    ############### START of while loop ##########
-    designMlist <- vector("list",J)
-    for(j in 1:J) designMlist[[j]] <- designmatrix(Kj[j],model[j])
+    saturated <- dots("saturated",list(type=1,prior=0),...)
+    item.prior <- dots("item.prior",list(on = FALSE, type="auto",beta=c(1.001,1.001),normal=c(0,5)),...)
+    constr.pairs <- dots("constr.pairs",NULL,...)
 
 
-    while (dif > conv.crit && itr < maxitr)
-    {
-      # length of J indicating whether a nonzero cat should  be est. (TRUE) or not (FALSE)
-      est.bin <- vmaxitr>itr
-      item.parm_copy <- item.parm
-      # --------E step probability of getting each score for each latent
-      # class
-      # print(item.parm)
-      LC.Prob <- uP(as.matrix(parloc), as.matrix(item.parm))
-      LC.Prob[is.nan(LC.Prob)] <- 0
-      # calculate likelihood and posterior
-      # vlogPrior: col vector for single group; matrix with g columns for g groups;
-      # g: group indicator from 1 to g;
-      # print(logprior)
-      likepost <- Lik(mP = LC.Prob,
-                      mX = as.matrix(dat),
-                      vlogPrior = as.matrix(logprior),
-                      vgroup = gr)
+    ret <- Est(dat = dat, Q = Q, model = model, sequential = sequential,
+             att.dist = att.dist, att.prior = att.prior,saturated=saturated,
+             att.str = att.str, mono.constraint=mono.constraint,
+             group = group, latent.var=latent.var, verbose = verbose,
+             catprob.parm = catprob.parm,loglinear = loglinear,
+             item.names = item.names, control = control, item.prior = item.prior,
+             nloptr_args = nloptr.args,auglag_args=auglag.args,solnp_args = solnp.args,
+             linkfunc = linkfunc,higher.order = higher.order, solver = solver,
+             DesignMatrices = design.matrix,ConstrPairs = constr.pairs)
 
-      # expected # of examinees of answering items correctly in each latent
-      # class expected # of examinees for each latent class
-      RN <- NgRg(mlogPost = likepost$logpost,
-                 mX = as.matrix(dat),
-                 mloc = as.matrix(parloc))
-      # print(RN)
-      LL.1 <- -2*likepost$LL
-      dif.LL <- abs(LL.1-LL.2)
-      if(tolower(conv.type)=="dev.change") {
-        dif <- dif.LL
-        if (dif.LL<=conv.crit) break
-      }
-      LL.2 <- LL.1
-
-
-
-      if (att.str) smallNcorrection <- c(-1,-1)
-      optims <- Mstep(Kj = Kj, RN = RN, model = model, itmpar = item.parm, delta = deltas,
-                      constr = mono.constraint, correction = smallNcorrection, lower.p = lower.p,
-                      upper.p = upper.p, itr = itr + 1, warning.immediate = Mstep.warning,
-                      optimizer = optimizer, designmatrices = designMlist,optim.control = optim.control,est.bin = est.bin)
-      item.parm <- optims$item.parm
-      deltas <- optims$delta
-
-      dif.p <- max(abs(item.parm - item.parm_copy),na.rm = TRUE)
-      if(tolower(conv.type)=="max.p.change") dif <- dif.p
-
-      if (diagnosis>=1) {
-        diag.itemprob[[itr+1]] <- item.parm_copy
-        diag.itrmaxchange <- rbind(diag.itrmaxchange,c(dif,-2*likepost$LL))
-        if (diagnosis>=2) {
-          diag.likepost[[itr+1]] <- likepost
-          diag.RN[[itr+1]] <- RN
-          diag.opts[[itr+1]] <- optims$optims
-        }
-
-      }
-
-      itr <- itr + 1
-      if(verbose==1) {
-        cat('\rIteration =',itr,' Max change =',formatC(dif,digits = 4, format = "f"),
-            ' Deviance =',formatC(-2*likepost$LL,digits = 4, format = "f"),'                                                                 ')
-      }else if (verbose==2) {
-        cat('Iteration =',itr,' Max change =',formatC(dif,digits = 4, format = "f"),
-            ' Deviance =',formatC(-2*likepost$LL,digits = 4, format = "f"),"                                                                \n")
-      }
-      # update prior for each group
-
-      for(g in 1:no.mg){
-        if (att.dist[g]=="saturated"){
-          if(att.str) {
-            logprior[,g] <- likepost$logprior[,g]
-          }else{
-            lower.prior <- ifelse(lower.prior==-1,1/L/1000,lower.prior)
-            priori <- exp(likepost$logprior[,g])
-            priori[which(priori<lower.prior)] <- lower.prior
-            priori <- priori/sum(priori)
-            logprior[,g] <- log(priori)
-          }
-        }else if (att.dist[g]=="higher.order")
-        {
-
-          Rl <- c(colSums(exp(likepost$logpost[which(gr==g),])))
-          a <- b <- NULL
-          if (!is.null(lambda)) a <- lambda[,1];b <- lambda[,2]
-          HO.out <- HO.est(Rl = Rl, K = K, N = N,
-                           IRTmodel = higher.order$model,nnodes = higher.order$nquad, type = higher.order$type,
-                           a.bound = higher.order$slope.range,b.bound = higher.order$intercept.range,
-                           loga.prior = higher.order$slope.prior,b.prior = higher.order$intercept.prior,
-                           method = higher.order$method, a = a, b = b)
-          logprior[,g] <- HOlogprior <- HO.out$logprior
-          lambda <- HO.out$lambda
-          colnames(lambda) <- c("slope", "intercept")
-          rownames(lambda) <- paste("Attribute", 1:K, sep = " ")
-          lam[[g]] <- lambda
-          # print(HO.out$lambda)
-          if (diagnosis >= 1) {
-            if(no.mg==1) diag.lambda[[itr+1]] <- lambda else diag.lambda[[itr+1]] <- lam
-          }
-        }else if (att.dist[g]=="fixed")
-        {
-          logprior[,g] <- log(att.prior[,g])
-        }
-      }
-
-}
-    ################ END of while loop ##########
-    if (diagnosis >= 1 & itr < maxitr) {
-      diag.itemprob[(itr + 1):maxitr] <- diag.RN[(itr + 1):maxitr] <-
-        diag.likepost[(itr + 1):maxitr] <- diag.lambda[(itr + 1):maxitr] <- diag.opts[(itr + 1):maxitr] <- NULL
-      names(diag.itemprob) <- names(diag.likepost) <- names(diag.lambda) <-
-        names(diag.likepost) <- names(diag.opts) <- names(diag.RN) <- c("Initial",  paste("Iter", 1:(itr - 1)))
-      rownames(diag.itrmaxchange) <- paste("Iter", 1:itr)
-      colnames(diag.itrmaxchange) <- c("Max change", "Deviance")
-
-    }
-
-
-    # ---------update posterior probability of getting each score for each
-    # latent class
-    LC.Prob <- uP(as.matrix(parloc), as.matrix(item.parm))
-    LC.Prob[is.nan(LC.Prob)] <- 0
-
-    likepost <- Lik(mP = LC.Prob,
-                    mX = as.matrix(dat),
-                    vlogPrior = as.matrix(logprior),
-                    vgroup = gr)
-    # print(likepost)
-    logprior0 <- logprior # old log priors
-    logprior <- likepost$logprior # marginal weights
-    RN <- NgRg(mlogPost = likepost$logpost,
-               mX = as.matrix(dat),
-               mloc = as.matrix(parloc))
-    # -----------------Test Fit information----------------#
-
-    neg2LL <- -2 * likepost$LL
-# print(neg2LL)
-    npar <- 0
-    for (j in 1:J) {
-      if (model[j] == 0) {
-        # GDINA
-        npar <- npar + Lj[j]
-      } else if (model[j] == 1) {
-        # DINA
-        npar <- npar + 2
-      } else if (model[j] == 2) {
-        # DINO
-        npar <- npar + 2
-      } else {
-        # ACDM,LLM or RRUM
-        npar <- npar + Kj[j] + 1
-      }
-    }
-    item.npar <- npar  #item parameters
-    for(g in 1:no.mg){
-      if (att.dist[g]=="saturated") {
-        if (!att.str) {
-          npar <- npar + L - 1
-        } else {
-          npar <- npar + sum(is.finite(logprior[,g])) - 1
-        }
-      } else if (att.dist[g]=="higher.order") {
-        if (higher.order$model == "Rasch") {
-          npar <- npar + K
-        } else if (higher.order$model == "2PL") {
-          npar <- npar + 2 * K
-        } else if (higher.order$model == "1PL") {
-          npar <- npar + 1 + K
-        }
-
-      }
-    }
-
-    AIC <- 2 * npar + neg2LL
-
-    BIC <- neg2LL + npar * log(N)
-
-# cat("AIC=",AIC)
-    item.prob <- vector("list",J)
-initial.parm <- m2l(initial.parm)
-    for (j in 1:J){
-      item.prob[[j]] <- item.parm[j,1:Lj[j]]
-      names(initial.parm[[j]]) <- names(item.prob[[j]]) <- paste0("P(",apply(alpha(Kj[j]),1,paste0,collapse = ""),")")
-    }
-    postP <- exp(t(logprior))
-  if(sequential){ # transform LC.prob
-    p <- LC.Prob
-    for (j in 1:J){
-      locj <- which(Qc[,1]==j)
-      Qj <- Qc[locj,-c(1:2),drop=FALSE]
-      if(nrow(Qj)>1){ # polytomous items
-        pj <- sj <- rbind(LC.Prob[locj,],0)
-        for (s in 1:(nrow(sj)-1)){
-          pj[s,] <- apply(sj[1:s,,drop=FALSE],2,prod)*(1-sj[s+1,])
-        }
-        p[locj,] <- pj[-nrow(pj),]
-      }else{ #dichotomous items
-        p[locj,] <- LC.Prob[locj,]
-      }
-
-    }
-    LC.Prob <- p
-  }
-    names(item.prob) <- names(initial.parm) <- rownames(LC.Prob) <- names(deltas) <- rownames(item.parm) <- item.names
-    colnames(LC.Prob) <- colnames(postP) <- colnames(likepost$loglik) <-
-      colnames(likepost$logpost) <- apply(alpha(K,T,Q),1,paste0,collapse = "")
-
-    if(!is.null(group)) rownames(postP) <- paste("Group",gr.label)
-
-    if(no.mg==1) {
-      att.prior = c(exp(logprior0))
-    }else{
-      att.prior = exp(logprior0)
-    }
-    if(no.mg>1) lambda <- lam
-
-    if (!is.null(oldseed)) .GlobalEnv$.Random.seed <- oldseed  else  rm(".Random.seed", envir = .GlobalEnv)
 
     s2 <- Sys.time()
 
-    output <-
-      list(
-        catprob.parm = item.prob, delta.parm = deltas, catprob.matrix = item.parm,
-        higher.order.struc.parm = lambda, model = model.names,LC.prob = LC.Prob,
-        testfit = list(npar = npar,Deviance = neg2LL,AIC = AIC,BIC = BIC),
-        posterior.prob = postP,
-        technicals = list(logposterior.i = likepost$logpost, loglikelihood.i = likepost$loglik,
-                          expectedCorrect = RN$Rg, expectedTotal = RN$Ng,initial.parm = initial.parm),
-        options = list(timeused = s2 - s1,
-                       start.time = s1, end.time = s2, dat = dat_d, Q = Qc, model = model,
-                       itr = itr, dif.LL = dif.LL,dif.p=dif.p, npar = npar, item.npar= item.npar,
-                       att.dist=att.dist, higher.order=higher.order,higher.order.model = higher.order$model,
-                       mono.constraint = mono.constraint, item.names = item.names,
-                       att.prior = att.prior, att.str=att.str,
-                       nstarts = nstarts, conv.crit = conv.crit, maxitr = maxitr,
-                       higher.order.method = higher.order$method, seq.dat = dat, no.group = no.mg,
-                       group.label = gr.label,
-                       verbose = verbose, catprob.parm = catprob.parm,sequential = sequential,
-                       higher.order.struc.parm = higher.order$lambda, digits = digits,
-                       diagnosis = diagnosis,call=GDINAcall),
-        diagnos = list(itemprob.matrix = diag.itemprob, RN = diag.RN, likepost=diag.likepost,
-                       changelog = diag.itrmaxchange, HO.parm = diag.lambda)
-      )
-    class(output) <- "GDINA"
-    invisible(output)
+    ret$extra <- list(timeused = s2 - s1, start.time = s1, end.time = s2, call = GDINAcall)
+    class(ret) <- "GDINA"
+    invisible(ret)
   }

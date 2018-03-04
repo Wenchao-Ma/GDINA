@@ -12,7 +12,9 @@
 #' the deterministic inputs, noisy or gate (DINO; Templin & Henson, 2006)
 #' model, the reduced reparametrized unified model (R-RUM; Hartz, 2002),
 #' the additive CDM (A-CDM; de la Torre, 2011), and the linear logistic
-#' model (LLM; Maris, 1999;).Note that the LLM is also called
+#' model (LLM; Maris, 1999;), the multiple-strategy DINA model and models defined
+#' by users under the G-DINA framework using different link functions and design
+#' matrices. Note that the LLM is also called
 #' compensatory RUM and the RRUM is equivalent to the generalized NIDA model.
 #'
 #' For ordinal and nominal responses,
@@ -22,15 +24,14 @@
 #' Item parameters are estimated using the MMLE/EM algorithm. Details about the estimation algorithm
 #' can be found in de la Torre (2009), de la Torre (2011),
 #' Ma, Iaconangelo, & de la Torre (2016) and Ma, & de la Torre (2016).
-#' The higher-order attribute structure (de la Torre, & Douglas, 2004),
-#' polytomous attributes (Chen, & de la Torre, 2013) and attribute
-#' structures (e.g., linear, divergent)
-#' can also be accommodated. Monotonicity constraints for item/category success
+#' The joint attribute distribution can be modelled using an independent model,
+#' a higher-order IRT model (de la Torre, & Douglas, 2004), a loglinear model (von Davier & Xu, 2008),
+#' a saturated model or a hierarchical structures (e.g., linear, divergent). Monotonicity constraints for item/category success
 #' probabilities can also be specified.
 #'
 #' Q-matrix validation (de la Torre, & Chiu, 2016; see \code{\link{Qval}}),
 #' item and model fit
-#' statistics (Chen, de la Torre, & Zhang, 2013; see \code{\link{itemfit}}),
+#' statistics (see\code{\link{modelfit}} and \code{\link{itemfit}}),
 #' model comparison at test and item level (de la Torre, & Lee, 2013;
 #' Ma, Iaconangelo, & de la Torre, 2016; see \code{\link{modelcomp}}),
 #' and differential item functioning (Hou, de la Torre, & Nandakumar, 2014;
@@ -38,7 +39,7 @@
 #' @name GDINA-package
 #' @aliases GDINA-package
 #' @docType package
-#' @author {Wenchao Ma, Rutgers University, \email{wenchao.ma@@rutgers.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @seealso \pkg{CDM} for estimating G-DINA model and a set of other CDMs;
 #' \pkg{ACTCD} and \pkg{NPCD}
 #' for nonparametric CDMs; \pkg{dina} for DINA model in Bayesian framework
