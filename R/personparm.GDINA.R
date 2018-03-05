@@ -34,6 +34,32 @@ personparm <- function (object, what=c("EAP","MAP","MLE", "mp", "HO"),digits = 4
 #' To plot item/category response function, use \code{\link{plotIRF}}. To
 #' check whether monotonicity is violated, use \code{\link{monocheck}}. To conduct anaysis in graphical user interface,
 #' use \code{\link{startGDINA}}.
+#' @param object GDINA object for various S3 methods
+#' @param what argument for various S3 methods; For calculating structural parameters using \code{\link{coef}},
+#' \code{what} can be
+#'  \itemize{
+#'    \item \code{itemprob} - item success probabilities of each reduced attribute pattern.
+#'    \item \code{catprob} - category success probabilities of each reduced attribute pattern; the same as \code{itemprob} for dichtomous response data.
+#'    \item \code{LCprob} - item success probabilities of each attribute pattern.
+#'    \item \code{gs} - guessing and slip parameters of each item/category.
+#'    \item \code{delta} - delta parameters of each item/category, see G-DINA formula in details.
+#'    \item \code{rrum} - RRUM parameters when items are estimated using \code{RRUM}.
+#'    \item \code{struct} - parameters for structural model.
+#'    }
+#'    For calculating incidental parameters using \code{\link{personparm}},
+#' \code{what} can be
+#'  \itemize{
+#'    \item \code{EAP} - EAP estimates of attribute pattern.
+#'    \item \code{MAP} - MAP estimates of attribute pattern.
+#'    \item \code{MLE} - MLE estimates of attribute pattern.
+#'    \item \code{mp} -  marginal mastery probabilities.
+#'    \item \code{HO} -  Higher-order ability if a higher-order is fitted.
+#'    }
+#' @param withSE argument for method \code{\link{coef}}; estimate standard errors or not?
+#' @param SE.type type of standard errors. For now, SEs are calculated based on outper-product of gradient.
+#'   It can be \code{1} based on item-wise information, \code{2} based on incomplete information and \code{3}
+#'   based on complete information.
+#' @param digits How many decimal places in each number? The default is 4.
 #' @describeIn GDINA calculate person attribute patterns and higher-order ability
 #' @aliases personparm.GDINA
 #' @export

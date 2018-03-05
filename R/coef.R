@@ -1,5 +1,6 @@
 #' @include GDINA.R
 #' @export
+#' @description To calculate structural parameters for item and joint attribute distributions, use method \code{\link{coef}}.
 #' @describeIn GDINA extract structural parameter estimates
 coef.GDINA <-
   function(object,

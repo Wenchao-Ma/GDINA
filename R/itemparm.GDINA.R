@@ -1,4 +1,3 @@
-#'@include GDINA-package.R GDINA.R
 #'@title extract lower-order structural (item) parameters
 #'
 #' @description
@@ -38,7 +37,7 @@ itemparm <- function(object,
 }
 
 
-#' @title NULL
+#' @title extract lower-order structural (item) parameters
 #' @description To extract lower-order structural (item) parameters, use method \code{\link{itemparm}}.
 #' @param object estimated GDINA object for various S3 methods
 #' @param what argument for various S3 methods
@@ -46,7 +45,6 @@ itemparm <- function(object,
 #' @param SE.type type of standard errors.
 #' @param digits How many decimal places in each number? The default is 4.
 #' @param ... additional arguments
-#' @describeIn GDINA extract various item parameters
 #' @aliases itemparm.GDINA
 #' @export
 itemparm.GDINA <- function(object,

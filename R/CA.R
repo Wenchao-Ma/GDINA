@@ -40,6 +40,9 @@
 
 
 CA <- function(GDINA.obj,what="MAP"){
+  if(extract(GDINA.obj, "ngroup")!=1) {
+    stop("classification accuracy is only applicable for single group analysis.", call. = FALSE)
+  }
   p_c <- extract(GDINA.obj,"posterior.prob")
   pp <- personparm(GDINA.obj,what = what)
   if(what=="MAP"||what=="MLE"){

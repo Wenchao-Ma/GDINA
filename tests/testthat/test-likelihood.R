@@ -120,14 +120,18 @@ test_that("checking -2LL for compact data", {
 
   LL <- sum(log(rowSums(mprior*exp(loglik_i))))
 
-  compdat <- FreqTable(dat)
+  compdat <-  matrix(c(1,0,1,
+                       0,1,1,
+                       0,0,1,
+                       1,1,0,
+                       1,0,0),ncol = 3,byrow = TRUE)
 
   LikNR(mpar = l2m(itempar),
         mX = as.matrix(compdat[,seq_len(ncol(dat))]),
         vlogPrior = as.matrix(log(prior)),
         vgroup = as.matrix(rep(1,nrow(dat))),
         mloc = eta(Q),
-        weights = c(compdat$N),
+        weights = rep(2,5),
         simplify = 0)
 
   est <- GDINA(dat,Q,catprob.parm = itempar,control=list(maxitr = 0),att.prior = prior)

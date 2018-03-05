@@ -47,7 +47,7 @@ the Q-matrix gives the item number and the second column gives the strategy numb
 
 \item{CDM.args}{arguments passed to GDINA function for final calibration}
 
-\item{object}{estimated GDINA object for various S3 methods}
+\item{object}{GDINA object for various S3 methods}
 
 \item{...}{additional arguments}
 }

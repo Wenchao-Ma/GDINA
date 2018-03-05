@@ -17,34 +17,42 @@
 #'
 #'
 #'
-designmatrix <- function(Kj,model="GDINA",Qj=NULL){
+designmatrix <- function(Kj, model = "GDINA", Qj = NULL) {
   stopifnot(is.nonNegativeInteger(Kj))
-  if(is.character(model)) {
-    stopifnot(toupper(model)%in%c("GDINA","DINA","DINO","ACDM","LLM","RRUM","MSDINA"))
-    m <- which(c("GDINA","DINA","DINO","ACDM","LLM","RRUM","MSDINA")==toupper(model))
-  }else if(is.numeric(model)){
-      if (!is.nonNegativeInteger(model)|model>7) {
-        stop('model must be "GDINA", "DINA","DINO","ACDM","LLM", "RRUM" or "MSDINA".',call. = FALSE)
-      }else{
-        m <- model + 1
-      }
-  }else{
-      stop("model is not correctly specified.",call. = FALSE)
+  if (is.character(model)) {
+    stopifnot(toupper(model) %in% c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA"))
+    m <-
+      which(c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA") == toupper(model))
+  } else if (is.numeric(model)) {
+    if (!is.nonNegativeInteger(model) | model > 7) {
+      stop('model must be "GDINA", "DINA","DINO","ACDM","LLM", "RRUM" or "MSDINA".',
+           call. = FALSE)
+    } else{
+      m <- model + 1
+    }
+  } else{
+    stop("model is not correctly specified.", call. = FALSE)
   }
-  if(m==7){ # MSDINA
+  if (m == 7) {
+    # MSDINA
     # Kj is not necessary
-    if(is.null(Qj)||nrow(Qj)<2||max(Qj)>1) stop("Qj is not correctly specified for the MS-DINA model.",call. = F)
+    if (is.null(Qj) ||
+        nrow(Qj) < 2 ||
+        max(Qj) > 1)
+      stop("Qj is not correctly specified for the MS-DINA model.", call. = F)
     Qj <- as.matrix(Qj)
-    if(any(colSums(Qj)==0)) Qj <- Qj[,-which(colSums(Qj)==0)]
+    if (any(colSums(Qj) == 0))
+      Qj <- Qj[, -which(colSums(Qj) == 0)]
     Ks <- rowSums(Qj)
-    Kj <- sum(apply(Qj,2,max))
+    Kj <- sum(apply(Qj, 2, max))
     patt <- attributepattern(Kj)
 
-    D <- matrix(c(rep(1,nrow(patt)),colSums(Qj%*%t(patt)==Ks)>0),ncol = 2)
+    D <-
+      matrix(c(rep(1, nrow(patt)), colSums(Qj %*% t(patt) == Ks) > 0), ncol = 2)
 
-  }else{
-    D <- designM(Kj,m-1)
+  } else{
+    D <- designM(Kj, m - 1)
   }
-    return(D)
+  return(D)
 
 }

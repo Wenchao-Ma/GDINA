@@ -29,9 +29,9 @@ Objects which can be extracted from \code{GDINA} objects include:
 \item{expectedCorrect}{expected # of examinees in each latent group answering item correctly}
 \item{expectedTotal}{expected # of examinees in each latent group}
 \item{higher.order}{higher-order model specifications}
+\item{linkfunc}{link functions for each item}
 \item{initial.catprob}{initial item category probability parameters}
   \item{prevalence}{prevalence of each attribute}
   \item{posterior.prob}{posterior weights for each latent class}
-  \item{struc.parm}{parameter estimates for structural model}
 }
 }

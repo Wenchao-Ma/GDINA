@@ -419,7 +419,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
       }
 
     }else if(att.dist[g]=="loglinear"){
-      npar <- npar + sum(sapply(seq_len(loglinear),choose,n=K)) + 1
+      npar <- npar + sum(sapply(seq_len(loglinear[g]),choose,n=K)) + 1
     }else if(att.dist[g]=="independent"){
       npar <- npar + K
     }
@@ -476,7 +476,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                       att.str= att.str,  seq.dat = dat, no.group = no.mg, group.label = gr.label,
                       verbose = verbose, catprob.parm = catprob.parm,sequential = sequential,
                       nloptr_args = nloptr_args,auglag_args=auglag_args,solnp_args = solnp_args,
-                      linkfunc = linkfunc,higher.order = higher.order, solver = solver,
+                      linkfunc = linkfunc,higher.order = higher.order, loglinear = loglinear, solver = solver,
                       DesignMatrices = DesignMatrices,ConstrPairs = ConstrPairs),
        control = control)
 

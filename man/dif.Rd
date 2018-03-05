@@ -51,7 +51,7 @@ for more details. \code{"bonferroni"} is the default.}
 
 \item{...}{Other arguments passed to GDINA function for model calibration}
 
-\item{object}{estimated GDINA object for various S3 methods}
+\item{object}{GDINA object for various S3 methods}
 }
 \value{
 A data frame giving the Wald statistics and associated p-values.

@@ -246,9 +246,10 @@
 #'    \code{control.outer} and \code{control.optim}. See \link[alabama]{auglag}.
 #' @param nloptr.args a list of control parameters to be passed to \code{opts} argument of \link[nloptr]{nloptr} function.
 #' @param solnp.args  a list of control parameters to be passed to \code{control} argument of \link[Rsolnp]{solnp} function.
+#' @param ... additional arguments
 #' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
-#' @seealso See \code{\link{autoGDINA}} for Q-matrix validation, item level model comparison and model calibration
-#' in one run; See \code{\link{itemfit}} for item fit analysis, \code{\link{Qval}} for Q-matrix validation,
+#' @seealso See \code{\link{autoGDINA}} for Q-matrix validation, item-level model comparison and model calibration
+#' in one run; See \code{\link{modelfit}} and \code{\link{itemfit}} for model and item fit analysis, \code{\link{Qval}} for Q-matrix validation,
 #' \code{\link{modelcomp}} for item level model comparison and \code{\link{simGDINA}} for data simulation.
 #' Also see \code{gdina} in \pkg{CDM} package for the G-DINA model estimation.
 #'

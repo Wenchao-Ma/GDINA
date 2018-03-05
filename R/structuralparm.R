@@ -22,8 +22,8 @@ structural.parm <- function(AlphaPattern,no.mg,logprior,att.dist,att.str,saturat
       }else if (att.dist[g]=="loglinear"){
         Z <- designM(K,0)
         if(K<2) stop("loglinear smoothing is not available when K < 2.",call. = FALSE)
-        if(loglinear>K) stop("Argument 'loglinear' cannot be greater than K.",call. = FALSE)
-        Z <- Z[,seq_len(1+sum(sapply(seq_len(loglinear),choose,n=K)))]
+        if(loglinear[g]>K) stop("Argument 'loglinear' cannot be greater than K.",call. = FALSE)
+        Z <- Z[,seq_len(1+sum(sapply(seq_len(loglinear[g]),choose,n=K)))]
         prior[prior[,g]<1e-9,g] <- 1e-9
         lambda[[g]] <- parm <- stats::lm.wfit(x=Z,log(N*prior[,g]),w=N*prior[,g])$coefficients
         logprior[,g] <- c(Z%*%parm)-log(sum(exp(Z%*%parm)))

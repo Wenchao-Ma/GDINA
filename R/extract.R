@@ -138,10 +138,10 @@ extract.simGDINA <- function(object,
 #' \item{expectedCorrect}{expected # of examinees in each latent group answering item correctly}
 #' \item{expectedTotal}{expected # of examinees in each latent group}
 #' \item{higher.order}{higher-order model specifications}
+#' \item{linkfunc}{link functions for each item}
 #' \item{initial.catprob}{initial item category probability parameters}
 #'   \item{prevalence}{prevalence of each attribute}
 #'   \item{posterior.prob}{posterior weights for each latent class}
-#'   \item{struc.parm}{parameter estimates for structural model}
 #' }
 #' @param object objects from class \code{GDINA},\code{itemfit}, \code{modelcomp}, \code{Qval} or \code{simGDINA}
 #' @param what what to extract
@@ -288,6 +288,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 logLik = -0.5*object$testfit$Deviance,
                 logposterior.i = object$technicals$logposterior.i,
                 loglikelihood.i = object$technicals$loglikelihood.i,
+                loglinear = object$options$loglinear,
                 models = object$model,
                 models_numeric = object$options$model,
                 mono.constraint = object$options$mono.constraint,
