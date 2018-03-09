@@ -18,8 +18,7 @@ missingMsg <- function(x){
 inputcheck <- function(dat, Q, model, sequential,att.dist,latent.var,
                        verbose, catprob.parm,mono.constraint,
                        att.prior, lower.p, upper.p,att.str,
-                       nstarts, conv.crit, maxitr,
-                       digits,diagnosis){
+                       nstarts, conv.crit, maxitr){
   if(!is.logical(sequential)) stop("sequential must be logical.",call. = FALSE)
   if (!all(is.nonNegativeInteger(Q))) stop("Q matrix can only contain 0 and positive integers.",call. = FALSE)
   if (!is.matrix(dat) & !is.data.frame(dat)) stop("Data must be a matrix or data frame.",call. = FALSE)
@@ -44,6 +43,7 @@ if (!is.null(catprob.parm)){
   if (att.str) {
     if (max(Q)>1) stop("Attribute structure cannot be specified if attributes are polytomous.",call. = FALSE)
     if(any(att.dist=="higher.order")) stop("Higher-order structure is not allowed if att.str = TRUE.",call.=FALSE)
+    if(any(model<0|model>2))stop("Only DINA, DINO and G-DINA is allowed for structured attributes.",call. = FALSE)
   }
 
 
@@ -176,7 +176,7 @@ format_delta <- function(delta,model,Kj,item.names = NULL,digits=4){
       }else{
         names(delta[[j]]) <- c("d0",paste("d",unlist(lapply(apply(alpha2(Kj[j]),1,function(x)which(x==1))[-1],function(x) paste(x,collapse = ""))),sep = ""))
       }
-    }else if (model[j]==1|model[j]==2){
+    }else if (model[j]==1|model[j]==2|model[j]==6){
       names(delta[[j]]) <- c("d0","d1")
     }else if (model[j]>2){
       names(delta[[j]]) <- paste("d",0:Kj[j],sep = "")

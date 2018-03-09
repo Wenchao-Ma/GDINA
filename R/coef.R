@@ -76,13 +76,36 @@ coef.GDINA <-
       if(withSE) message("Standard errors are not available for RRUM parameters.")
     }else if(tolower(what)=="struct"){
       if(extract(object,"ngroup")==1){
-        out <- extract(object,"struc.parm")[[1]]
+        out <- round(extract(object,"struc.parm")[[1]],digits)
+        if(any(extract(object,"att.dist")=="higher.order")){
+          rownames(out) <- paste0("A",seq_len(extract(object,"natt")))
+          colnames(out) <- c("slope","intercept")
+        }else if(extract(object,"att.dist")=="saturated"){
+          lab <- paste0("p(",apply(attributepattern(Q=extract(object,"Q")),1,paste0,collapse=""),")")
+          names(out) <- lab[-length(lab)]
+        }else if(extract(object,"att.dist")=="independent"){
+          names(out) <- paste0("P(A",seq_len(extract(object,"natt")),")")
+        }
       }else{
-        out <- extract(object,"struc.parm")
+        out <- lapply(extract(object,"struc.parm"),round,digits=digits)
+        names(out) <- paste0("G",seq_len(extract(object,"ngroup")))
+        for(g in seq_len(extract(object,"ngroup"))){
+          if(extract(object,"att.dist")[g]=="higher.order"){
+            rownames(out[[g]]) <- paste0("A",seq_len(extract(object,"natt")))
+            colnames(out[[g]]) <- c("slope","intercept")
+          }else if(extract(object,"att.dist")[g]=="saturated"){
+            lab <- paste0("p(",apply(attributepattern(Q=extract(object,"Q")),1,paste0,collapse=""),")")
+            names(out[[g]]) <- lab[-length(lab)]
+          }else if(extract(object,"att.dist")[g]=="independent"){
+            names(out[[g]]) <- paste0("P(A",seq_len(extract(object,"natt")),")")
+          }
+        }
+
+
       }
       if(withSE) warning("Please Calculate SEs for parameters of the structural model using bootstrap method.",call. = FALSE)
     }else{
-      stop(sprintf("No item parameters called \'%s\'", what), call.=FALSE)
+      stop(sprintf("No structural parameters called \'%s\'", what), call.=FALSE)
     }
 
     return(out)

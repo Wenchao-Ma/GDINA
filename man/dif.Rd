@@ -15,17 +15,15 @@ dif(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",
 \item{dat}{A required \eqn{N \times J} \code{matrix} or \code{data.frame} consisting of the
 responses of \eqn{N} individuals to \eqn{J} items. Missing values need to be coded as \code{NA}.}
 
-\item{Q}{A required \eqn{J \times K} item or category and attribute association matrix, wher \eqn{J} represents the number of
-items(or nonzero categories for polytomous items and total number of strategies when multiple-strategy DINA model involved)
-and \eqn{K} represents the number of attributes. For binary attributes,
-entry 1 indicates that the attribute is measured by the item, and 0 otherwise.
-For polytomous attributes, non-zero elements indicate the level
-of attributes that are needed for an individual to answer the item correctly (see Chen, & de la Torre, 2013).
-Note that for polytomous items, the sequential G-DINA
-model is used and either restricted or unrestricted category-level Q-matrix is needed.
-In the category-level Q-matrix, the first column gives the item number, which must be numeric and match the number of column in the data.
-The second column indicates the category number. When multiple-strategy DINA model is involved, the first column of
-the Q-matrix gives the item number and the second column gives the strategy number. See \code{Examples}.}
+\item{Q}{A required matrix; The number of rows occupied by a single-strategy dichotomous item is 1, by a polytomous item is
+the number of nonzero categories, and by a mutiple-strategy dichotomous item is the number of strategies.
+The number of column is equal to the number of attributes if all items are single-strategy dichotomous items, but
+the number of attributes + 2 if any items are polytomous or have multiple strategies.
+For a polytomous item, the first column represents the item number and the second column indicates the nonzero category number.
+For a multiple-strategy dichotomous item, the first column represents the item number and the second column indicates the strategy number.
+For binary attributes, 1 denotes the attributes are measured by the items and 0 means the attributes are not
+   measured. For polytomous attributes, non-zero elements indicate which level
+   of attributes are needed (see Chen, & de la Torre, 2013).  See \code{Examples}.}
 
 \item{group}{a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its
 length must be equal to the number of individuals.}

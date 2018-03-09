@@ -37,5 +37,5 @@ are estimated using RRUM. Standard errors can be estimated if \code{withSE = TRU
 See \code{\link{GDINA}} for examples.
 }
 \references{
-Philipp, M., Strobl, C., de la Torre, J., & Zeileis, A.(2016). On the estima-tion of standard errors in cognitive diagnosis models (Working Papers).   Fac-ulty  of  Economics  and  Statistics,  University  of  Innsbruck.Retrieved  from \url{http://EconPapers.repec.org/RePEc:inn:wpaper:2016-25}
+Philipp, M., Strobl, C., de la Torre, J., & Zeileis, A.(2017). On the estimation of standard errors in cognitive diagnosis models. \emph{Journal of Educational and Behavioral Statistics, 43}, 88-115.
 }

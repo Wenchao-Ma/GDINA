@@ -19,7 +19,17 @@ of strategies and the number of columns is equal to the number of attributes.}
 a design matrix (Mj). See de la Torre (2011) for details.
 }
 \description{
-This function generates the design matrix \eqn{M_j} in de la Torre (2011)
+This function generates the design matrix for an item
+}
+\examples{
+\dontrun{
+designmatrix(Kj = 2, model = "GDINA")
+designmatrix(Kj = 3, model = "DINA")
+msQj <- matrix(c(1,0,0,1,
+                 1,1,0,0),nrow=2,byrow=TRUE)
+designmatrix(model = "MSDINA",Qj = msQj)
+}
+
 }
 \references{
 de la Torre, J. (2011). The generalized DINA model framework. \emph{Psychometrika, 76}, 179-199.

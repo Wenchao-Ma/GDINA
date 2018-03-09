@@ -14,7 +14,7 @@ ecpe
 }
 \description{
 Examination for the Certificate of Proficiency in English (ECPE) data (the grammar section) has been used
-in Henson and Templin (2007), Templin and Hoffman (2013), Feng, Habing, and Huebner (2013), and
+in Henson and Templin (2007), Templin and Hoffman (2013), Feng, Habing, and Huebner (2014), and
 Templin and Bradshaw (2014), among others.
 }
 \details{
@@ -31,13 +31,13 @@ summary(mod1)
 mod2 <- GDINA(ecpe$dat,ecpe$Q,model="RRUM")
 mod2
 anova(mod1,mod2)
-# You may compare the following results with Feng, Habing, and Huebner (2013)
-itemparm(mod2,"rrum")
+# You may compare the following results with Feng, Habing, and Huebner (2014)
+coef(mod2,"rrum")
 }
 
 }
 \references{
-Feng, Y., Habing, B. T., & Huebner, A. (2013). Parameter estimation of the reduced RUM using the EM algorithm. \emph{Applied Psychological Measurement}, 0146621613502704.
+Feng, Y., Habing, B. T., & Huebner, A. (2014). Parameter estimation of the reduced RUM using the EM algorithm. \emph{Applied Psychological Measurement, 38}, 137-150.
 
 Henson, R. A., & Templin, J. (2007, April). Large-scale language assessment using cognitive diagnosis models. Paper presented at the annual meeting of the National Council for Measurement in Education in Chicago, Illinois.
 

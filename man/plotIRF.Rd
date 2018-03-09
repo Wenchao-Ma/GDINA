@@ -25,7 +25,7 @@ Q <- sim10GDINA$simQ
 mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #plot item response functions for item 10
 plotIRF(mod1,10)
-plotIRF(mod1,9, errorbar = TRUE)
+plotIRF(mod1,10, errorbar = TRUE)
 }
 }
 \seealso{

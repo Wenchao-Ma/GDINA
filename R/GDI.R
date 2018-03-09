@@ -18,7 +18,7 @@
 #' @include GDINA.R
 #' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @references
-#' de la Torre & Chiu. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
+#' de la Torre, J. & Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
 #'
 #' @seealso \code{\link{GDINA}}, \code{\link{mesaplot}}
 #' @export
@@ -46,81 +46,112 @@
 
 
 
-Qval <- function(GDINA.obj, method = "PVAF", eps=0.95,digits = 4){
-  if (class(GDINA.obj)!="GDINA") stop("GDINA.obj must be a GDINA object from GDINA function.",call. = FALSE)
-  # if (any(GDINA.obj$options$model!=0)) stop ("Q-matrix validation requires all items are fitted using the G-DINA model.",call. = FALSE)
-  if (extract(GDINA.obj,"att.str")) stop("Q-matrix validation is not available if attributes are structured.",call. = FALSE)
-  if (eps>1||eps<=0) stop("eps must be greater than 0 and less than 1.",call. = FALSE)
-  Y <- extract(GDINA.obj,"seq.dat")
-  Q <- extract(GDINA.obj,"Q")
-  if (max(Q)>1) stop("Q-validation can only be used for dichotomous attribute G-DINA model.",call. = FALSE)
+Qval <- function(GDINA.obj,
+                 method = "PVAF",
+                 eps = 0.95,
+                 digits = 4) {
+  if (class(GDINA.obj) != "GDINA")
+    stop("GDINA.obj must be a GDINA object from GDINA function.", call. = FALSE)
 
 
-  N <- extract(GDINA.obj,"nobs")
+  if (extract(GDINA.obj, "att.str"))
+    stop("Q-matrix validation is not available if attributes are structured.",
+         call. = FALSE)
 
-  J <- extract(GDINA.obj,"nitem")
+  if (eps > 1 || eps <= 0)
+    stop("eps must be greater than 0 and less than 1.", call. = FALSE)
 
-  K <- extract(GDINA.obj,"natt")
+  Y <- extract(GDINA.obj, "seq.dat")
+  Q <- extract(GDINA.obj, "Q")
+
+  if (max(Q) > 1)
+    stop("Q-validation can only be used for dichotomous attribute G-DINA model.",
+         call. = FALSE)
+
+
+  N <- extract(GDINA.obj, "nobs")
+
+  J <- extract(GDINA.obj, "nitem")
+
+  K <- extract(GDINA.obj, "natt")
 
   L <- no_LC(Q)
 
-  Kj <- rowSums(attributepattern(K)[-1,])
-  w <- extract(GDINA.obj,"posterior.prob") #1 x L
+  Kj <- rowSums(attributepattern(K)[-1, ])
+  w <- extract(GDINA.obj, "posterior.prob") #1 x L
   YY <- Y
   YY[is.na(YY)] <- 0
-  rc <- apply(YY,2,function(x){
-    colSums(x*exp(extract(GDINA.obj,"logposterior.i")))
+  rc <- apply(YY, 2, function(x) {
+    colSums(x * exp(extract(GDINA.obj, "logposterior.i")))
   })
-  rn <- apply(1*(!is.na(Y)),2,function(x){
-    colSums(x*exp(extract(GDINA.obj,"logposterior.i")))
+  rn <- apply(1 * (!is.na(Y)), 2, function(x) {
+    colSums(x * exp(extract(GDINA.obj, "logposterior.i")))
   })
   # est.p <- rc/c(w*N)
-  est.p <- rc/rn
-  patt <- attributepattern(K)[-1,]
+  est.p <- rc / rn
+  patt <- attributepattern(K)[-1, ]
   loc <- eta(patt) #2^K-1 x 2^K
-  vsg <- varsigma(as.matrix(t(loc)),as.matrix(est.p),c(w))
-  PVAF <- vsg/vsg[,L-1]
-if(method=="PVAF"){
-  val_q <- NULL
-  for (k in sort(unique(Kj))){
-    tmp <- PVAF[,which(Kj==k)]
-    if (length(which(Kj==k))==1){
-      tmp[which(tmp>eps)] <- 1
-      tmp[which(tmp<=eps)] <- 0
-      val_q <- cbind(val_q,tmp)
-    }else{
-      val_q <- cbind(val_q,apply(tmp,1,function(x){
-        ifelse (max(x)>eps,which.max(x),0)}))
+  vsg <- varsigma(as.matrix(t(loc)), as.matrix(est.p), c(w))
+  PVAF <- vsg / vsg[, L - 1]
+  if (method == "PVAF") {
+    val_q <- NULL
+    for (k in sort(unique(Kj))) {
+      tmp <- PVAF[, which(Kj == k)]
+      if (length(which(Kj == k)) == 1) {
+        tmp[which(tmp > eps)] <- 1
+        tmp[which(tmp <= eps)] <- 0
+        val_q <- cbind(val_q, tmp)
+      } else{
+        val_q <- cbind(val_q, apply(tmp, 1, function(x) {
+          ifelse (max(x) > eps, which.max(x), 0)
+        }))
+      }
     }
-  }
-  if (ncol(val_q)>1){
-    for (k in 2:ncol(val_q)){
-      val_q[which(val_q[,k]>0),k] <- val_q[which(val_q[,k]>0),k] + sum(Kj<k)
+    if (ncol(val_q) > 1) {
+      for (k in 2:ncol(val_q)) {
+        val_q[which(val_q[, k] > 0), k] <-
+          val_q[which(val_q[, k] > 0), k] + sum(Kj < k)
+      }
     }
-  }
-  #### modified Q-matrix and associated PVAF
-  loc_q <- apply(val_q,1,function(x){x[which.max(x>0)]})
-  val_q <- attributepattern(K)[-1,][loc_q,]
-}else{
-  out <- PVAF[,which(Kj==1)]
-  maxPVAF <- maxPVAF.loc <- NULL
-  for(k in 1:max(Kj)){
-    maxPVAF <- cbind(maxPVAF,apply(PVAF[,which(Kj==k),drop=FALSE],1,max))
-    maxPVAF.loc <- cbind(maxPVAF.loc,apply(PVAF[,which(Kj==k),drop=FALSE],1,which.max)+sum(Kj<k))
+    #### modified Q-matrix and associated PVAF
+    loc_q <- apply(val_q, 1, function(x) {
+      x[which.max(x > 0)]
+    })
+    val_q <- attributepattern(K)[-1, ][loc_q, ]
+  } else{
+    out <- PVAF[, which(Kj == 1)]
+    maxPVAF <- maxPVAF.loc <- NULL
+    for (k in 1:max(Kj)) {
+      maxPVAF <-
+        cbind(maxPVAF, apply(PVAF[, which(Kj == k), drop = FALSE], 1, max))
+      maxPVAF.loc <-
+        cbind(maxPVAF.loc, apply(PVAF[, which(Kj == k), drop = FALSE], 1, which.max) +
+                sum(Kj < k))
 
+    }
+    maxPVAF.change <- t(apply(cbind(0, maxPVAF), 1, diff))
+    elbow <- out / (1 - PVAF)
+    print(PVAF)
+    val_q <- patt[apply(elbow[, -ncol(elbow)], 1, which.max), ]
   }
-  maxPVAF.change <- t(apply(cbind(0,maxPVAF),1,diff))
-  elbow <- out/(1-PVAF)
-  print(PVAF)
-  val_q <- patt[apply(elbow[,-ncol(elbow)],1,which.max),]
-}
 
-  out.vsg <- round(t(vsg),digits)
-  out.PVAF <- round(t(PVAF),digits)
-  rownames(out.vsg) <- rownames(out.PVAF) <- apply(attributepattern(K),1,paste,collapse = "")[-1]
-  Q <- data.frame(Q,row.names = extract(GDINA.obj,"item.names"))
-  # rownames(val_q) <- colnames(out.vsg) <- colnames(out.PVAF) <- extract(GDINA.obj,"item.names")
-  qvalid <- list(sug.Q = val_q,Q=Q,varsigma=out.vsg,PVAF=out.PVAF,eps = eps,est.p=est.p)
+  out.vsg <- round(t(vsg), digits)
+  out.PVAF <- round(t(PVAF), digits)
+  rownames(out.vsg) <-
+    rownames(out.PVAF) <-
+    apply(attributepattern(K), 1, paste, collapse = "")[-1]
+  Q <- data.frame(Q, row.names = extract(GDINA.obj, "item.names"))
+
+
+  qvalid <-
+    list(
+      sug.Q = val_q,
+      Q = Q,
+      varsigma = out.vsg,
+      PVAF = out.PVAF,
+      eps = eps,
+      est.p = est.p
+    )
   class(qvalid) <- "Qval"
   return(qvalid)
 }

@@ -20,7 +20,7 @@
 #' if at least one reduced model was retained, three diferent rules can be implemented for selecting
 #' the best model:
 #'
-#' when \code{modelselectionrule} is \code{simpler}:
+#' When \code{modelselectionrule} is \code{simpler}:
 #'
 #'  If (a) the DINA or DINO model
 #'  was one of the retained models, then the DINA or DINO model with the larger p
@@ -38,7 +38,7 @@
 #'
 #'  The reduced model with non-significant p-values but the smallest dissimilarity index is selected as the most appropriate model.
 #'  Dissimilarity index can be viewed as an effect size measure, which quatifies how dis-similar the reduced model is from the
-#'  G-DINA model. See Ma, Iaconangelo, and de la Torre (2016).
+#'  G-DINA model (See Ma, Iaconangelo, and de la Torre, 2016 for details).
 #'
 #' @note Returned \code{GDINA1.obj}, \code{GDINA2.obj} and \code{CDM.obj} are objects of class \code{GDINA},
 #'  and all S3 methods suitable for \code{GDINA} objects can be applied. See \code{\link{GDINA}} and \code{\link{extract}}.

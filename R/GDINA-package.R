@@ -2,36 +2,35 @@
 #'
 #' For conducting CDM analysis within the G-DINA model framework
 #'
-#' This package provides a framework for a series of cognitive diagnostic analyses
+#' This package provides a framework for a series of cognitively diagnostic analyses
 #' for dichotomous and polytomous responses.
 #'
 #' Various cognitive
 #' diagnosis models (CDMs) can be calibrated using the \code{\link{GDINA}}
-#' function, including the G-DINA model, the deterministic inputs,
+#' function, including the G-DINA model (de la Torre, 2011), the deterministic inputs,
 #' noisy and gate (DINA; de la Torre, 2009; Junker & Sijtsma, 2001) model,
 #' the deterministic inputs, noisy or gate (DINO; Templin & Henson, 2006)
 #' model, the reduced reparametrized unified model (R-RUM; Hartz, 2002),
 #' the additive CDM (A-CDM; de la Torre, 2011), and the linear logistic
-#' model (LLM; Maris, 1999;), the multiple-strategy DINA model and models defined
+#' model (LLM; Maris, 1999), the multiple-strategy DINA model (de la Torre, & Douglas, 2008) and models defined
 #' by users under the G-DINA framework using different link functions and design
-#' matrices. Note that the LLM is also called
+#' matrices (de la Torre, 2011). Note that the LLM is also called
 #' compensatory RUM and the RRUM is equivalent to the generalized NIDA model.
 #'
 #' For ordinal and nominal responses,
-#' the sequential G-DINA model (Ma, & de la Torre, 2016) is fitted and all
-#' aforementioned CDMs can be used as the processing function at the category level.
+#' the sequential G-DINA model (Ma, & de la Torre, 2016) can be fitted and most of the
+#' aforementioned CDMs can be used as the processing functions (Ma, & de la Torre, 2016) at the category level.
 #' Different CDMs can be assigned to different items within a single assessment.
 #' Item parameters are estimated using the MMLE/EM algorithm. Details about the estimation algorithm
 #' can be found in de la Torre (2009), de la Torre (2011),
 #' Ma, Iaconangelo, & de la Torre (2016) and Ma, & de la Torre (2016).
 #' The joint attribute distribution can be modelled using an independent model,
-#' a higher-order IRT model (de la Torre, & Douglas, 2004), a loglinear model (von Davier & Xu, 2008),
+#' a higher-order IRT model (de la Torre, & Douglas, 2004), a loglinear model (Xu & von Davier, 2008),
 #' a saturated model or a hierarchical structures (e.g., linear, divergent). Monotonicity constraints for item/category success
 #' probabilities can also be specified.
 #'
 #' Q-matrix validation (de la Torre, & Chiu, 2016; see \code{\link{Qval}}),
-#' item and model fit
-#' statistics (see\code{\link{modelfit}} and \code{\link{itemfit}}),
+#' imodel fit statistics (see \code{\link{modelfit}} and \code{\link{itemfit}}),
 #' model comparison at test and item level (de la Torre, & Lee, 2013;
 #' Ma, Iaconangelo, & de la Torre, 2016; see \code{\link{modelcomp}}),
 #' and differential item functioning (Hou, de la Torre, & Nandakumar, 2014;
@@ -55,10 +54,12 @@
 #'
 #' de la Torre, J. (2011). The generalized DINA model framework. \emph{Psychometrika, 76}, 179-199.
 #'
-#' de la Torre & Chiu. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
+#' de la Torre, J. & Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
 #'
 #' de la Torre, J., & Douglas, J. A. (2004). Higher-order latent trait models for cognitive diagnosis.
 #' \emph{Psychometrika, 69}, 333-353.
+#'
+#' de La Torre, J., & Douglas, J. A. (2008). Model evaluation and multiple strategies in cognitive diagnosis: An analysis of fraction subtraction data. \emph{Psychometrika, 73}, 595.
 #'
 #' de la Torre, J., & Lee, Y. S. (2013). Evaluating the wald test for item-level comparison of
 #' saturated and reduced models in cognitive diagnosis. \emph{Journal of Educational Measurement, 50}, 355-373.
@@ -82,6 +83,7 @@
 #'
 #' Maris, E. (1999). Estimating multiple classification latent class models. \emph{Psychometrika, 64}, 187-212.
 #'
+#' Xu, X., & von Davier, M. (2008). Fitting the structured general diagnostic model to NAEP data. ETS research report, RR-08-27.
 #'
 #'
 #' @keywords package

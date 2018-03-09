@@ -1,5 +1,7 @@
 #' Mesa plot for Q-matrix validation
 #'
+#' The mesa plot was first proposed by de la Torre and Ma (2016) for graphically illustrating the best q-vector(s) for each item.
+#'
 #' @param Qval.obj model object of class \code{Qvalidation}
 #' @param item a vector specifying which item(s) the plots are drawn for
 #' @param type types of the plot. It can be \code{"best"} or \code{"all"}. If \code{"best"},
@@ -27,6 +29,9 @@
 #' mesaplot(out,item=10,type="all",no.qvector=5)
 #'}
 #'
+#' @references
+#'
+#' de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A general framework approach and its implementation in R. A Short Course at the Fourth Conference on Statistical Methods in Psychometrics, Columbia University, New York.
 #'
 #' @export
 mesaplot <- function(Qval.obj, item, type = "best", no.qvector = 10,

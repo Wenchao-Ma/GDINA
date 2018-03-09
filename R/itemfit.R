@@ -31,7 +31,7 @@
 #' \dontrun{
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
-#' # --- GDINA model ---#
+#'
 #' mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #' mod1
 #' itmfit <- itemfit(mod1)
@@ -121,21 +121,8 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni
 
      fitstat <- list()
 
-    # if(!extract(GDINA.obj, "sequential")) {
-      Yfit <- Pr[att_group, ] > matrix(runif(length(att_group) * J), ncol = J)
-    # } else{
-    #   Yfit <- matrix(0,length(att_group),J)
-    #   dichitems <- unique_only(Qc$Item)
-    #   if(length(dichitems)>0){
-    #     Yfit[,dichitems] <- Pr[att_group, dichitems]> matrix(runif(length(att_group) * length(dichitems)), ncol = length(dichitems))
-    #   }
-    #   polyitems <- setdiff(unique(Qc$Item),dichitems)
-    #   for(j in polyitems){
-    #     Yfit[,j] <- apply(cbind(1-rowSums(Pr[att_group, which(Qc$Item==j)]),Pr[att_group, which(Qc$Item==j)]),
-    #                       1,function(x){sample(c(0:length(x)),1,prob=x)})
-    #   }
-    # }
-     fitstat$r <- cor(dat, use = "pairwise.complete.obs")
+    Yfit <- Pr[att_group, ] > matrix(runif(length(att_group) * J), ncol = J)
+    fitstat$r <- cor(dat, use = "pairwise.complete.obs")
      fitstat$rfit <- cor(Yfit)
     fitstat$l <- crossprod.na(dat,dat)*crossprod.na(1-dat,1-dat)/(crossprod.na(1-dat,dat)*crossprod.na(dat,1-dat))
     fitstat$lfit <- crossprod.na(Yfit,Yfit)*crossprod.na(1-Yfit,1-Yfit)/(crossprod.na(1-Yfit,Yfit)*crossprod.na(Yfit,1-Yfit))

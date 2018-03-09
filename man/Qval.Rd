@@ -73,7 +73,7 @@ mesaplot(out,item=10,type="all",no.qvector=5)
 }
 }
 \references{
-de la Torre & Chiu. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
+de la Torre, J. & Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
 }
 \seealso{
 \code{\link{GDINA}}, \code{\link{mesaplot}}
