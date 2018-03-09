@@ -4,7 +4,8 @@
 #' CDMs without significant loss in model data fit for each item using the Wald test, likelihood ratio (LR) test or Lagrange multiplier (LM) test.
 #' For Wald test, see de la Torre and Lee (2013), and Ma, Iaconangelo and de la Torre (2016) for details.
 #' For LR test and a two-step LR approximation procedure, see Sorrel, de la Torre, Abad, and Olea (2017) and Ma (2017).
-#' For LM test, which is only applicable for DINA, DINO and ACDM, see Sorrel, de la Torre, Abad, and Olea (2017) as well. This function also calculates the dissimilarity
+#' For LM test, which is only applicable for DINA, DINO and ACDM, see Sorrel, Abad, Olea, de la Torre, and Barrada (2017).
+#' This function also calculates the dissimilarity
 #' between the reduced models and the G-DINA model, which can be viewed as a measure of effect size (Ma, Iaconangelo & de la Torre, 2016).
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
@@ -46,6 +47,8 @@
 #'
 #' Ma, W. (2017). \emph{A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-Matrix Validation,and Model Comparison. Unpublished doctoral dissertation.} New Brunswick, NJ: Rutgers University.
 #'
+#' Sorrel, M. A., Abad, F. J., Olea, J., de la Torre, J., & Barrada, J. R. (2017). Inferential Item-Fit Evaluation in Cognitive Diagnosis Modeling. \emph{Applied Psychological Measurement, 41,} 614-631.
+#'
 #' Sorrel, M. A., de la Torre, J., Abad, F. J., & Olea, J. (2017). Two-Step Likelihood Ratio Test for Item-Level Model Comparison in Cognitive Diagnosis Models. \emph{Methodology, 13}, 39-47.
 #'
 #'
@@ -57,22 +60,26 @@
 #' # --- GDINA model ---#
 #' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #' fit
+#'
 #' ###################
 #' #
 #' # Wald test
 #' #
 #' ###################
+#'
 #' w <- modelcomp(fit)
 #' w
 #' # wald statistics
 #' extract(w,"stats")
 #' #p values
 #' extract(w,"pvalues")
+#'
 #' ##########################
 #' #
 #' # LR and Two-step LR test
 #' #
 #' ##########################
+#'
 #' lr <- modelcomp(fit,models = c("DINA","DINO"),method = "LR")
 #' lr
 #' TwostepLR <- modelcomp(fit,items =c(6:10),method = "LR",LR.args = list(LR.approx = TRUE))
@@ -83,6 +90,7 @@
 #' # LM test
 #' #
 #' ##########################
+#'
 #' dina <- GDINA(dat = dat, Q = Q, model = "DINA")
 #' dino <- GDINA(dat = dat, Q = Q, model = "DINO")
 #' acdm <- GDINA(dat = dat, Q = Q, model = "ACDM")
@@ -129,7 +137,8 @@ modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all",
 
   }else{
     if(!class(GDINA.obj)=="GDINA") stop("GDINA.obj must be a GDINA estimate.",call. = FALSE)
-    if (any(extract(GDINA.obj,"models")!="GDINA")) stop ("Implementing the Wald and LR tests for item level model comparison requires all items to be fitted by the G-DINA model.",call. = FALSE)
+    if (any(extract(GDINA.obj,"models")!="GDINA")) stop ("Implementing the Wald and LR tests for item-level model comparison requires all items to be fitted by the G-DINA model.",call. = FALSE)
+    if(extract(GDINA.obj,"att.str"))stop("Item-level model comparison is not available for structured attribute distribution.",call. = FALSE)
     Q <- 1*(extract(GDINA.obj,"Q")>0.5)
     item.names <- extract(GDINA.obj,"item.names")
     }

@@ -21,15 +21,13 @@
 #' Iaconangelo, C.(2017). \emph{Uses of Classification Error Probabilities in the Three-Step Approach to Estimating Cognitive Diagnosis Models.} (Unpublished doctoral dissertation). New Brunswick, NJ: Rutgers University.
 #'
 #' Wang, W., Song, L., Chen, P., Meng, Y., & Ding, S. (2015). Attribute-Level and Pattern-Level Classification Consistency and Accuracy Indices for Cognitive Diagnostic Assessment.
-#' \emph{Journal of Educational Measurement ,52} , 457-476.
+#' \emph{Journal of Educational Measurement, 52} , 457-476.
 #'
-#' @author Wenchao Ma
 #'
 #' @examples
 #'\dontrun{
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
-#' # --- GDINA model ---#
 #' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #' fit
 #' CA(fit)

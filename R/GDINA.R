@@ -3,19 +3,19 @@
 #' @description
 #' \code{GDINA} calibrates the generalized deterministic inputs, noisy and
 #' gate (G-DINA; de la Torre, 2011) model for dichotomous responses, and its extension, the sequential
-#' G-DINA model (Ma, & de la Torre, 2016a) for ordinal and nominal responses.
+#' G-DINA model (Ma, & de la Torre, 2016a; Ma, 2017) for ordinal and nominal responses.
 #' By setting appropriate constraints, the deterministic inputs,
 #' noisy and gate (DINA; de la Torre, 2009; Junker & Sijtsma, 2001) model,
 #' the deterministic inputs, noisy or gate (DINO; Templin & Henson, 2006)
 #' model, the reduced reparametrized unified model (R-RUM; Hartz, 2002),
 #' the additive CDM (A-CDM; de la Torre, 2011), the linear logistic
-#' model (LLM; Maris, 1999) and the multiple strategy DINA model (de la Torre & Douglas, 2008; Huo & de la Torre, 2014)
+#' model (LLM; Maris, 1999), and the multiple-strategy DINA model (MSDINA; de la Torre & Douglas, 2008; Huo & de la Torre, 2014)
 #' can also be calibrated. Note that the LLM is equivalent to
 #' the C-RUM (Hartz, 2002), a special case of the GDM (von Davier, 2008), and that the R-RUM
 #' is also known as a special case of the generalized NIDA model (de la Torre, 2011).
 #'
-#' In addition, users are allowed to specify design matrix and link function for each item and for different items,
-#' distinct models may be used in a single test.
+#' In addition, users are allowed to specify design matrix and link function for each item and
+#' distinct models may be used in a single test for different items.
 #' The attributes can be either dichotomous or polytomous
 #' (Chen & de la Torre, 2013). Joint attribute distribution may be modelled using independent or saturated model,
 #' structured model, higher-order model (de la Torre & Douglas, 2004), or loglinear model (Xu & von Davier, 2008).
@@ -153,17 +153,15 @@
 #'
 #' @param dat A required \eqn{N \times J} \code{matrix} or \code{data.frame} consisting of the
 #'     responses of \eqn{N} individuals to \eqn{J} items. Missing values need to be coded as \code{NA}.
-#' @param Q A required \eqn{J \times K} item or category and attribute association matrix, wher \eqn{J} represents the number of
-#'    items(or nonzero categories for polytomous items and total number of strategies when multiple-strategy DINA model involved)
-#'    and \eqn{K} represents the number of attributes. For binary attributes,
-#'    entry 1 indicates that the attribute is measured by the item, and 0 otherwise.
-#'    For polytomous attributes, non-zero elements indicate the level
-#'    of attributes that are needed for an individual to answer the item correctly (see Chen, & de la Torre, 2013).
-#'    Note that for polytomous items, the sequential G-DINA
-#'    model is used and either restricted or unrestricted category-level Q-matrix is needed.
-#'    In the category-level Q-matrix, the first column gives the item number, which must be numeric and match the number of column in the data.
-#'    The second column indicates the category number. When multiple-strategy DINA model is involved, the first column of
-#'    the Q-matrix gives the item number and the second column gives the strategy number. See \code{Examples}.
+#' @param Q A required matrix; The number of rows occupied by a single-strategy dichotomous item is 1, by a polytomous item is
+#' the number of nonzero categories, and by a mutiple-strategy dichotomous item is the number of strategies.
+#' The number of column is equal to the number of attributes if all items are single-strategy dichotomous items, but
+#' the number of attributes + 2 if any items are polytomous or have multiple strategies.
+#' For a polytomous item, the first column represents the item number and the second column indicates the nonzero category number.
+#' For a multiple-strategy dichotomous item, the first column represents the item number and the second column indicates the strategy number.
+#' For binary attributes, 1 denotes the attributes are measured by the items and 0 means the attributes are not
+#'    measured. For polytomous attributes, non-zero elements indicate which level
+#'    of attributes are needed (see Chen, & de la Torre, 2013).  See \code{Examples}.
 #' @param model A vector for each item or nonzero category, or a scalar which will be used for all
 #'    items or nonzero categories to specify the CDMs fitted. The possible options
 #'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"} and \code{"UDF"}.
@@ -299,6 +297,8 @@
 #'
 #' Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. \emph{Applied Psychological Measurement, 40}, 200-217.
 #'
+#' Ma, W. (2017). \emph{A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-Matrix Validation,and Model Comparison. Unpublished doctoral dissertation.} New Brunswick, NJ: Rutgers University.
+#'
 #' Maris, E. (1999). Estimating multiple classification latent class models. \emph{Psychometrika, 64}, 187-212.
 #'
 #' Tatsuoka, K. K. (1983). Rule space: An approach for dealing with misconceptions based on item response theory. \emph{Journal of Educational Measurement, 20}, 345-354.
@@ -307,6 +307,7 @@
 #'
 #' Tutz, G. (1997). Sequential models for ordered responses. In W.J. van der Linden & R. K. Hambleton (Eds.), Handbook of modern item response theory p. 139-152). New York, NY: Springer.
 #'
+#' Xu, X., & von Davier, M. (2008). Fitting the structured general diagnostic model to NAEP data. ETS research report, RR-08-27.
 #'
 #' @export
 #' @importFrom  nloptr nloptr slsqp nl.grad nl.jacobian
@@ -424,6 +425,7 @@
 #'#        Model estimations         #
 #'# With monotonocity constraints    #
 #'####################################
+#'
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' # for item 10 only
@@ -458,26 +460,31 @@
 #' # --- Higher order DINA model ---#
 #' mod22 <- GDINA(dat = dat, Q = Q, model = "DINA", att.dist="higher.order",
 #'                higher.order=list(model = "2PL",Prior=TRUE))
+#'
 #'####################################
 #'#           Example 3b.            #
 #'#        Model estimations         #
 #'#   With log-linear att structure  #
 #'####################################
+#'
 #' # --- DINA model with loglinear smoothed attribute space ---#
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' mod23 <- GDINA(dat = dat, Q = Q, model = "DINA",att.dist="loglinear",loglinear=1)
 #' coef(mod23,"struct") # intercept and three main effects
+#'
 #'####################################
 #'#           Example 3c.            #
 #'#        Model estimations         #
 #'#  With independent att structure  #
 #'####################################
+#'
 #' # --- GDINA model with independent attribute space ---#
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' mod33 <- GDINA(dat = dat, Q = Q, att.dist="independent")
 #' coef(mod33,"struct") # mastery probability for each attribute
+#'
 #'####################################
 #'#          Example 4.              #
 #'#        Model estimations         #
@@ -586,6 +593,7 @@
 #'  Q <- sim10GDINA$simQ
 #'  mod.ini <- GDINA(dat,Q,catprob.parm = initials)
 #'  extract(mod.ini,"initial.catprob")
+#'
 #'####################################
 #'#           Example 7.             #
 #'#        Model estimation          #
@@ -660,6 +668,7 @@
 #'#           Example 10a.           #
 #'#    Multiple-Group G-DINA model   #
 #'####################################
+#'
 #' Q <- sim10GDINA$simQ
 #' K <- ncol(Q)
 #' # parameter simulation
@@ -695,13 +704,12 @@
 #'#           Example 10b.           #
 #'#    Multiple-Group G-DINA model   #
 #'####################################
+#'
 #' Q <- sim30GDINA$simQ
 #' K <- ncol(Q)
 #' # parameter simulation
-#' # Group 1 - female
 #' N1 <- 3000
 #' gs1 <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
-#' # Group 2 - male
 #' N2 <- 3000
 #' gs2 <- matrix(rep(0.2,2*nrow(Q)),ncol=2)
 #'
@@ -723,13 +731,14 @@
 #' mg.est <- GDINA(dat = dat,Q = Q,group = gr,att.dist="higher.order",
 #' higher.order=list(model = "Rasch",Prior=FALSE,Type = "SameLambda"))
 #' summary(mg.est)
-#' extract(mg.est,"higher.order")
+#' coef(mg.est,"struct")
 #'
 #'
 #'####################################
 #'#           Example 11.            #
 #'#           Bug DINO model         #
 #'####################################
+#'
 #' set.seed(123)
 #' Q <- sim10GDINA$simQ # 1 represents misconceptions/bugs
 #' ip <- list(
@@ -753,6 +762,7 @@
 #'#           Example 12.            #
 #'#           Bug DINA model         #
 #'####################################
+#'
 #' set.seed(123)
 #' Q <- sim10GDINA$simQ # 1 represents misconceptions/bugs
 #' ip <- list(
@@ -794,6 +804,7 @@
 #'
 #' # compare two models => identical
 #' anova(lcdm,iGDINA)
+#'
 #'####################################
 #'#           Example 13b.           #
 #'#     user specified design matrix #
@@ -821,28 +832,31 @@
 #'#           Example 14.            #
 #'#     Multiple-strategy DINA model #
 #'####################################
-#' set.seed(123)
-#' msQ <- matrix(
-#' c(1,1,0,1,
-#' 1,2,1,0,
-#' 2,1,1,0,
-#' 3,1,0,1,
-#' 4,1,1,1,
-#' 5,1,1,1),6,4,byrow = T)
-#' # J x L - 00,10,01,11
-#' LC.prob <- matrix(c(
-#' 0.2,0.8,0.8,0.8,
-#' 0.1,0.9,0.1,0.9,
-#' 0.1,0.1,0.8,0.8,
-#' 0.2,0.3,0.7,0.9,
-#' 0.2,0.4,0.7,0.9),5,4,byrow=TRUE)
-#' N <- 3000
-#' att <- sample(1:4,N,replace=TRUE)
-#' dat <- 1*(t(LC.prob[,att])>matrix(runif(N*5),N,5))
+#'
+#' Q <- matrix(c(1,1,1,1,0,
+#' 1,2,0,1,1,
+#' 2,1,1,0,0,
+#' 3,1,0,1,0,
+#' 4,1,0,0,1,
+#' 5,1,1,0,0,
+#' 5,2,0,0,1),ncol = 5,byrow = TRUE)
+#' d <- list(
+#'   item1=c(0.2,0.7),
+#'   item2=c(0.1,0.6),
+#'   item3=c(0.2,0.6),
+#'   item4=c(0.2,0.7),
+#'   item5=c(0.1,0.8))
+#'
+#'   set.seed(12345)
+#'sim <- simGDINA(N=1000,Q = Q, delta.parm = d,
+#'                model = c("MSDINA","MSDINA","DINA","DINA","DINA","MSDINA","MSDINA"))
+#'
+#'# simulated data
+#'dat <- extract(sim,what = "dat")
 #' # estimation
 #' # MSDINA need to be specified for each strategy
-#' est <- GDINA(dat,msQ,model = c("MSDINA","MSDINA","DINA","DINA","GDINA","ACDM"))
-#' coef(est)
+#' est <- GDINA(dat,Q,model = c("MSDINA","MSDINA","DINA","DINA","DINA","MSDINA","MSDINA"))
+#' coef(est,"delta")
 #'}
 #'
 GDINA <-

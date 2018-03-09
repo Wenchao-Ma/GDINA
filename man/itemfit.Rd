@@ -69,7 +69,7 @@ Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013)
 \dontrun{
 dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
-# --- GDINA model ---#
+
 mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
 mod1
 itmfit <- itemfit(mod1)

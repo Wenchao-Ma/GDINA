@@ -27,9 +27,6 @@ This function evaluates the classification rates for two sets of attribute profi
 \examples{
 \dontrun{
 N <- 2000
-# ---- Simulated G-DINA model ----- #
-
-# using probability of success in matrix format ---- #
 # model does not matter if item parameter is probability of success
 Q <- sim30GDINA$simQ
 J <- nrow(Q)

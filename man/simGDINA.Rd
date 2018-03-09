@@ -5,10 +5,11 @@
 \alias{extract.simGDINA}
 \title{Data simulation based on the G-DINA models}
 \usage{
-simGDINA(N, Q, gs.parm = NULL, model = "GDINA", sequential = FALSE,
-  type = "random", catprob.parm = NULL, delta.parm = NULL,
-  mono.constraint = TRUE, attribute = NULL, att.dist = "uniform",
-  item.names = NULL, higher.order.parm = list(theta = NULL, lambda = NULL),
+simGDINA(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NULL,
+  model = "GDINA", sequential = FALSE, gs.args = list(type = "random",
+  mono.constraint = TRUE), delta.args = list(design.matrix = NULL, linkfunc =
+  NULL), attribute = NULL, att.dist = "uniform", item.names = NULL,
+  higher.order.parm = list(theta = NULL, lambda = NULL),
   mvnorm.parm = list(mean = NULL, sigma = NULL, cutoffs = NULL),
   att.prior = NULL, digits = 4)
 
@@ -19,43 +20,56 @@ simGDINA(N, Q, gs.parm = NULL, model = "GDINA", sequential = FALSE,
 \arguments{
 \item{N}{Sample size.}
 
-\item{Q}{A required \eqn{J \times K} item/category and attribute association matrix, wher J represents the number of
-items/categories and K represents the number of attributes. For binary attributes,
-1 denotes attributes are measured by items and 0 means attributes are not
-necessary. For polytomous attributes, non-zero elements indicate which level
-of attributes are needed. Note that for polytomous items, the sequential G-DINA
-model is used and either restricted or unrestricted category-level Q-matrix is needed.
-The first column represents the item number and
-the second column indicates the category number. See \code{Examples}.}
+\item{Q}{A required matrix; The number of rows occupied by a single-strategy dichotomous item is 1, by a polytomous item is
+the number of nonzero categories, and by a mutiple-strategy dichotomous item is the number of strategies.
+The number of column is equal to the number of attributes if all items are single-strategy dichotomous items, but
+the number of attributes + 2 if any items are polytomous or have multiple strategies.
+For a polytomous item, the first column represents the item number and the second column indicates the nonzero category number.
+For a multiple-strategy dichotomous item, the first column represents the item number and the second column indicates the strategy number.
+For binary attributes, 1 denotes the attributes are measured by the items and 0 means the attributes are not
+   measured. For polytomous attributes, non-zero elements indicate which level
+   of attributes are needed.  See \code{Examples}.}
 
-\item{gs.parm}{A matrix or data frame for guessing and slip parameters. It
-must be of dimension \eqn{J \times 2}, where the first column represents the guessing parameters (or \eqn{P(0)}),
-and the second column represents slip parameters (or \eqn{1-P(1)}). This needs to be used in conjunction with
-the argument \code{type} if generating models include ACDM, LLM, or RRUM, and \code{model}.}
+\item{gs.parm}{A matrix or data frame for guessing and slip parameters. The number of rows occupied by a dichotomous item is 1, and by a polytomous item is
+the number of nonzero categories. The number of columns must be 2, where the first column represents the guessing parameters (or \eqn{P(0)}),
+   and the second column represents slip parameters (or \eqn{1-P(1)}). This may need to be used in conjunction with
+   the argument \code{gs.args}.}
 
-\item{model}{A vector for each item/category or a scalar which will be used for all
-items/categories to specify which model is fitted to each item/category. The possible options
-include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, and \code{"RRUM"}.
-If \code{model} is a scalar, the specified model is fitted to all items. Different
-models can be assigned to different items or categories.}
+\item{delta.parm}{A list of delta parameters of each latent group for each item or category. This may need to be used in conjunction with
+the argument \code{delta.args}.}
+
+\item{catprob.parm}{A list of success probabilities of each latent group for each non-zero category of each item. See \code{Examples} and
+\code{Details} for more information.}
+
+\item{model}{A character vector for each item or nonzero category, or a scalar which will be used for all
+items or nonzero categories to specify the CDMs. The possible options
+include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"} and \code{"UDF"}.
+When \code{"UDF"}, indicating user defined function, is specified for any item, \code{delta.parm} must be specified, as well as
+options \code{design.matrix} and \code{linkfunc} in argument \code{delta.args}.}
 
 \item{sequential}{logical; \code{TRUE} if the sequential model is used for polytomous responses simulation, and \code{FALSE}
 if there is no polytomously scored items.}
 
-\item{type}{How are the delta parameters for ACDM, LLM, RRUM generated?
-It can be either \code{"random"} or \code{"equal"}. \code{"random"} means the delta parameters are simulated randomly,
-while \code{"equal"} means that each required attribute contributes equally to the probability of success (P), logit(P) or
-log(P) for ACDM, LLM and RRUM, respectively. See \code{Details} for more information.}
+\item{gs.args}{a list of options when \code{gs.parm} is specified. It consists of two components:
+\itemize{
+     \item \code{type} How are the delta parameters for ACDM, LLM, RRUM generated?
+   It can be either \code{"random"} or \code{"equal"}. \code{"random"} means the delta parameters are simulated randomly,
+   while \code{"equal"} means that each required attribute contributes equally to the probability of success (P), logit(P) or
+   log(P) for ACDM, LLM and RRUM, respectively. See \code{Details} for more information.
+    \item \code{mono.constraint} A vector for each item/category or a scalar which will be used for all
+   items/categories to specify whether monotonicity constraints should be satisfied if the generating model is the G-DINA model. Note that
+   this is applicable only for the G-DINA model when \code{gs.parm} is used. For ACDM, LLM and RRUM, monotonicity constraints
+   are always satisfied and therefore this argument is ignored.
+   }}
 
-\item{catprob.parm}{A list of success probabilities for each latent group for each non-zero category of each item. See \code{Examples} and
-\code{Details} for more information.}
-
-\item{delta.parm}{A list of delta parameters for each latent group for each item or category.}
-
-\item{mono.constraint}{A vector for each item/category or a scalar which will be used for all
-items/categories to specify whether monotonicity constraints should be satisfied if the generating model is the G-DINA model. Note that
-this is applicable only for the G-DINA model when \code{gs.parm} is used. For ACDM, LLM and RRUM, monotonicity constraints
-are always satisfied and therefore this argument is ignored.}
+\item{delta.args}{a list of options when \code{delta.parm} is specified. It consists of two components:
+\itemize{
+     \item \code{linkfunc} a vector of link functions for each item/category; It can be \code{"identity"},\code{"log"} or \code{"logit"}. Only necessary
+   when, for some items, \code{model="UDF"}.
+    \item \code{design.matrix} a list of design matrices; Its length must be equal to the number of items (or nonzero categories for sequential models).
+   If CDM for item j is specified as "UDF" in argument \code{model}, the corresponding design matrix must be provided; otherwise, the design matrix can be \code{NULL},
+   which will be generated automatically.
+   }}
 
 \item{attribute}{optional user-specified person attributes. It is a \eqn{N\times K} matrix or data frame. If this is not supplied, attributes are simulated
 from a distribution specified in \code{att.dist}.}
@@ -81,7 +95,7 @@ symmetric matrix specifying the variance-covariance matrix. \code{cutoffs} is a 
 cutoff for each attribute. See \code{Examples}.}
 
 \item{att.prior}{probability for each attribute pattern. Order is the same as that returned from \code{attributepattern(Q = Q)}. This is only
-applicable when \code{att.dist="fixed"}.}
+applicable when \code{att.dist="multinomial"}.}
 
 \item{digits}{How many decimal places in each number? The default is 4.}
 
@@ -204,7 +218,7 @@ gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
 # Simulated LLM
 # By specifying type="equal", each required attribute is
 # assumed to contribute to logit(P) equally
-sim <- simGDINA(N,Q,gs.parm = gs,model = "LLM",type="equal")
+sim <- simGDINA(N,Q,gs.parm = gs,model = "LLM",gs.args = list (type="equal"))
 #check below for what the equal contribution means
 extract(sim,what = "delta.parm")
 
@@ -227,7 +241,7 @@ J <- nrow(Q)
 gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
 # Simulated different CDMs for different items
 models <- c("GDINA","DINO","DINA","ACDM","LLM","RRUM","GDINA","LLM","RRUM","DINA")
-sim <- simGDINA(N,Q,gs.parm = gs,model = models,type="random")
+sim <- simGDINA(N,Q,gs.parm = gs,model = models,gs.args = list(type="random"))
 
 # simulated data
 extract(sim,what = "dat")
@@ -368,13 +382,10 @@ struc <- att.structure(diverg,K)
 
 # data simulation
 N <- 1000
-true.lc <- sample(c(1:2^K),N,replace=TRUE,prob=struc$att.prob)
-table(true.lc) #check the sample
-true.att <- attributepattern(K)[true.lc,]
-gs <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
 # data simulation
+gs <- matrix(0.1,nrow(Q),2)
 simD <- simGDINA(N,Q,gs.parm = gs,
-                   model = "DINA",attribute = true.att)
+                   model = "DINA",att.dist = "multinomial",att.prior = struc$att.prob)
 
 
 ####################################################
@@ -390,7 +401,7 @@ Q <- sim30GDINA$simQ
 J <- nrow(Q)
 gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
 # Simulated different CDMs for different items
-sim <- simGDINA(N,Q,gs.parm = gs,model = "GDINA",mono.constraint=TRUE)
+sim <- simGDINA(N,Q,gs.parm = gs,model = "GDINA",gs.args=list(mono.constraint=TRUE))
 
 # True item success probabilities
 extract(sim,what = "catprob.parm")
@@ -419,7 +430,7 @@ Qc <- sim20seqGDINA$simQ
 J <- nrow(Qc)
 gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
 # simulate sequential DINA model
-simseq <- simGDINA(N, Qc, sequential = TRUE, gs.parm = gs, model = "DINA")
+simseq <- simGDINA(N, Qc, sequential = TRUE, gs.parm = gs, model = "GDINA")
 
 # True item success probabilities
 extract(simseq,what = "catprob.parm")
@@ -448,6 +459,37 @@ prior <- c(0.1,0.2,0,0,0.2,0,0,0.5)
 sim <- simGDINA(N,Q,gs.parm = gs, model="DINA", att.dist = "multinomial",att.prior = prior)
 # check latent class sizes
 table(sim$att.group)/N
+
+####################################################
+#                   Example 14
+#                  MS-DINA model
+####################################################
+
+
+Q <- matrix(c(1,1,1,1,0,
+1,2,0,1,1,
+2,1,1,0,0,
+3,1,0,1,0,
+4,1,0,0,1,
+5,1,1,0,0,
+5,2,0,0,1),ncol = 5,byrow = TRUE)
+d <- list(
+  item1=c(0.2,0.7),
+  item2=c(0.1,0.6),
+  item3=c(0.2,0.6),
+  item4=c(0.2,0.7),
+  item5=c(0.1,0.8))
+
+  set.seed(12345)
+sim <- simGDINA(N=1000,Q = Q, delta.parm = d,
+               model = c("MSDINA","MSDINA","DINA","DINA","DINA","MSDINA","MSDINA"))
+
+# simulated data
+extract(sim,what = "dat")
+
+# simulated attributes
+extract(sim,what = "attribute")
+
 
 
 }

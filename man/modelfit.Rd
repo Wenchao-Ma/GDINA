@@ -24,7 +24,6 @@ It also calculates SRMSR and RMSEA2.
 \dontrun{
 dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
-# --- GDINA model ---#
 mod1 <- GDINA(dat = dat, Q = Q, model = "DINA")
 modelfit(mod1)
 }

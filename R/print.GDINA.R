@@ -25,7 +25,7 @@ print.GDINA <-
     cat("\n-----------------------------------------------\n")
     cat("Fitted model(s)       =", unique(extract.GDINA(x,"models")), "\n")
     cat("Attribute structure   =",extract(x,"att.dist"),"\n")
-    if (extract.GDINA(x,"ngroup")==1&&extract.GDINA(x,"att.dist")=="higher.order") cat("Higher-order model    =",extract.GDINA(x,"higher.order.model"),"\n")
+    if (extract.GDINA(x,"ngroup")==1&&extract.GDINA(x,"att.dist")=="higher.order") cat("Higher-order model    =",extract(x,"higher.order")$model,"\n")
     tmp <- max(extract.GDINA(x,"Q"))
     cat("Attribute level       =",ifelse(tmp>1,"Polytomous","Dichotomous"),"\n")
     cat("===============================================\n")

@@ -43,36 +43,49 @@
 #'
 #'
 #' @param N Sample size.
-#' @param Q A required \eqn{J \times K} item/category and attribute association matrix, wher J represents the number of
-#'    items/categories and K represents the number of attributes. For binary attributes,
-#'    1 denotes attributes are measured by items and 0 means attributes are not
-#'    necessary. For polytomous attributes, non-zero elements indicate which level
-#'    of attributes are needed. Note that for polytomous items, the sequential G-DINA
-#'    model is used and either restricted or unrestricted category-level Q-matrix is needed.
-#'    The first column represents the item number and
-#'    the second column indicates the category number. See \code{Examples}.
-#' @param gs.parm A matrix or data frame for guessing and slip parameters. It
-#'    must be of dimension \eqn{J \times 2}, where the first column represents the guessing parameters (or \eqn{P(0)}),
-#'    and the second column represents slip parameters (or \eqn{1-P(1)}). This needs to be used in conjunction with
-#'    the argument \code{type} if generating models include ACDM, LLM, or RRUM, and \code{model}.
-#' @param type How are the delta parameters for ACDM, LLM, RRUM generated?
+#' @param Q A required matrix; The number of rows occupied by a single-strategy dichotomous item is 1, by a polytomous item is
+#' the number of nonzero categories, and by a mutiple-strategy dichotomous item is the number of strategies.
+#' The number of column is equal to the number of attributes if all items are single-strategy dichotomous items, but
+#' the number of attributes + 2 if any items are polytomous or have multiple strategies.
+#' For a polytomous item, the first column represents the item number and the second column indicates the nonzero category number.
+#' For a multiple-strategy dichotomous item, the first column represents the item number and the second column indicates the strategy number.
+#' For binary attributes, 1 denotes the attributes are measured by the items and 0 means the attributes are not
+#'    measured. For polytomous attributes, non-zero elements indicate which level
+#'    of attributes are needed.  See \code{Examples}.
+#' @param gs.parm A matrix or data frame for guessing and slip parameters. The number of rows occupied by a dichotomous item is 1, and by a polytomous item is
+#' the number of nonzero categories. The number of columns must be 2, where the first column represents the guessing parameters (or \eqn{P(0)}),
+#'    and the second column represents slip parameters (or \eqn{1-P(1)}). This may need to be used in conjunction with
+#'    the argument \code{gs.args}.
+#' @param delta.parm A list of delta parameters of each latent group for each item or category. This may need to be used in conjunction with
+#'    the argument \code{delta.args}.
+#' @param catprob.parm A list of success probabilities of each latent group for each non-zero category of each item. See \code{Examples} and
+#'    \code{Details} for more information.
+#' @param model A character vector for each item or nonzero category, or a scalar which will be used for all
+#'    items or nonzero categories to specify the CDMs. The possible options
+#'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"} and \code{"UDF"}.
+#'    When \code{"UDF"}, indicating user defined function, is specified for any item, \code{delta.parm} must be specified, as well as
+#'    options \code{design.matrix} and \code{linkfunc} in argument \code{delta.args}.
+#' @param sequential logical; \code{TRUE} if the sequential model is used for polytomous responses simulation, and \code{FALSE}
+#'    if there is no polytomously scored items.
+#' @param gs.args a list of options when \code{gs.parm} is specified. It consists of two components:
+#' \itemize{
+#'      \item \code{type} How are the delta parameters for ACDM, LLM, RRUM generated?
 #'    It can be either \code{"random"} or \code{"equal"}. \code{"random"} means the delta parameters are simulated randomly,
 #'    while \code{"equal"} means that each required attribute contributes equally to the probability of success (P), logit(P) or
 #'    log(P) for ACDM, LLM and RRUM, respectively. See \code{Details} for more information.
-#' @param model A vector for each item/category or a scalar which will be used for all
-#'    items/categories to specify which model is fitted to each item/category. The possible options
-#'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, and \code{"RRUM"}.
-#'    If \code{model} is a scalar, the specified model is fitted to all items. Different
-#'    models can be assigned to different items or categories.
-#' @param sequential logical; \code{TRUE} if the sequential model is used for polytomous responses simulation, and \code{FALSE}
-#'    if there is no polytomously scored items.
-#' @param mono.constraint A vector for each item/category or a scalar which will be used for all
+#'     \item \code{mono.constraint} A vector for each item/category or a scalar which will be used for all
 #'    items/categories to specify whether monotonicity constraints should be satisfied if the generating model is the G-DINA model. Note that
 #'    this is applicable only for the G-DINA model when \code{gs.parm} is used. For ACDM, LLM and RRUM, monotonicity constraints
 #'    are always satisfied and therefore this argument is ignored.
-#' @param catprob.parm A list of success probabilities for each latent group for each non-zero category of each item. See \code{Examples} and
-#'    \code{Details} for more information.
-#' @param delta.parm A list of delta parameters for each latent group for each item or category.
+#'    }
+#' @param delta.args a list of options when \code{delta.parm} is specified. It consists of two components:
+#' \itemize{
+#'      \item \code{linkfunc} a vector of link functions for each item/category; It can be \code{"identity"},\code{"log"} or \code{"logit"}. Only necessary
+#'    when, for some items, \code{model="UDF"}.
+#'     \item \code{design.matrix} a list of design matrices; Its length must be equal to the number of items (or nonzero categories for sequential models).
+#'    If CDM for item j is specified as "UDF" in argument \code{model}, the corresponding design matrix must be provided; otherwise, the design matrix can be \code{NULL},
+#'    which will be generated automatically.
+#'    }
 #' @param item.names A vector giving the name of items or categories. If it is \code{NULL} (default), items are named as "Item 1", "Item 2", etc.
 #' @param attribute optional user-specified person attributes. It is a \eqn{N\times K} matrix or data frame. If this is not supplied, attributes are simulated
 #'    from a distribution specified in \code{att.dist}.
@@ -82,7 +95,7 @@
 #'    and multivariate normal distributions, see \code{higher.order.parm} and \code{mvnorm.parm}, respectively. To specify the probabilities
 #'    for the multinomial distribution, use \code{att.prior} argument.
 #'@param att.prior probability for each attribute pattern. Order is the same as that returned from \code{attributepattern(Q = Q)}. This is only
-#'    applicable when \code{att.dist="fixed"}.
+#'    applicable when \code{att.dist="multinomial"}.
 #' @param higher.order.parm A list specifying parameters for higher-order distribution for attributes
 #'    if \code{att.dist=higher.order}. Particularly, \code{theta} is a
 #'    vector of length \eqn{N} representing the higher-order ability
@@ -196,7 +209,7 @@
 #'# Simulated LLM
 #'# By specifying type="equal", each required attribute is
 #'# assumed to contribute to logit(P) equally
-#'sim <- simGDINA(N,Q,gs.parm = gs,model = "LLM",type="equal")
+#'sim <- simGDINA(N,Q,gs.parm = gs,model = "LLM",gs.args = list (type="equal"))
 #' #check below for what the equal contribution means
 #'extract(sim,what = "delta.parm")
 #'
@@ -219,7 +232,7 @@
 #'gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
 #'# Simulated different CDMs for different items
 #'models <- c("GDINA","DINO","DINA","ACDM","LLM","RRUM","GDINA","LLM","RRUM","DINA")
-#'sim <- simGDINA(N,Q,gs.parm = gs,model = models,type="random")
+#'sim <- simGDINA(N,Q,gs.parm = gs,model = models,gs.args = list(type="random"))
 #'
 #'# simulated data
 #'extract(sim,what = "dat")
@@ -360,13 +373,10 @@
 #'
 #' # data simulation
 #' N <- 1000
-#' true.lc <- sample(c(1:2^K),N,replace=TRUE,prob=struc$att.prob)
-#' table(true.lc) #check the sample
-#' true.att <- attributepattern(K)[true.lc,]
-#' gs <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
 #' # data simulation
+#' gs <- matrix(0.1,nrow(Q),2)
 #' simD <- simGDINA(N,Q,gs.parm = gs,
-#'                    model = "DINA",attribute = true.att)
+#'                    model = "DINA",att.dist = "multinomial",att.prior = struc$att.prob)
 #'
 #'
 #'####################################################
@@ -382,7 +392,7 @@
 #'J <- nrow(Q)
 #'gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
 #'# Simulated different CDMs for different items
-#'sim <- simGDINA(N,Q,gs.parm = gs,model = "GDINA",mono.constraint=TRUE)
+#'sim <- simGDINA(N,Q,gs.parm = gs,model = "GDINA",gs.args=list(mono.constraint=TRUE))
 #'
 #'# True item success probabilities
 #'extract(sim,what = "catprob.parm")
@@ -411,7 +421,7 @@
 #'J <- nrow(Qc)
 #'gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
 #'# simulate sequential DINA model
-#'simseq <- simGDINA(N, Qc, sequential = TRUE, gs.parm = gs, model = "DINA")
+#'simseq <- simGDINA(N, Qc, sequential = TRUE, gs.parm = gs, model = "GDINA")
 #'
 #'# True item success probabilities
 #'extract(simseq,what = "catprob.parm")
@@ -441,18 +451,71 @@
 #' # check latent class sizes
 #' table(sim$att.group)/N
 #'
+#' ####################################################
+#'#                   Example 14
+#'#                  MS-DINA model
+#'####################################################
 #'
-simGDINA <- function(N, Q, gs.parm=NULL, model = "GDINA", sequential = FALSE, type = "random",
-                      catprob.parm = NULL, delta.parm = NULL,mono.constraint = TRUE,
+#'
+#' Q <- matrix(c(1,1,1,1,0,
+#' 1,2,0,1,1,
+#' 2,1,1,0,0,
+#' 3,1,0,1,0,
+#' 4,1,0,0,1,
+#' 5,1,1,0,0,
+#' 5,2,0,0,1),ncol = 5,byrow = TRUE)
+#' d <- list(
+#'   item1=c(0.2,0.7),
+#'   item2=c(0.1,0.6),
+#'   item3=c(0.2,0.6),
+#'   item4=c(0.2,0.7),
+#'   item5=c(0.1,0.8))
+#'
+#'   set.seed(12345)
+#'sim <- simGDINA(N=1000,Q = Q, delta.parm = d,
+#'                model = c("MSDINA","MSDINA","DINA","DINA","DINA","MSDINA","MSDINA"))
+#'
+#'# simulated data
+#'extract(sim,what = "dat")
+#'
+#'# simulated attributes
+#'extract(sim,what = "attribute")
+#'
+#'
+#'
+simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NULL,
+                     model = "GDINA", sequential = FALSE,
+                     gs.args = list(type = "random",mono.constraint = TRUE),
+                     delta.args = list(design.matrix = NULL, linkfunc = NULL),
                       attribute = NULL, att.dist = "uniform", item.names = NULL,
                       higher.order.parm=list(theta = NULL, lambda = NULL),
                       mvnorm.parm=list(mean = NULL,sigma = NULL,cutoffs = NULL),
                      att.prior = NULL, digits=4)
   {
   simGDINAcall <- match.call()
-  catprob.parm <- catprob.parm
-  inputcheck.sim(N=N, Q=Q, sequential=sequential, gs.parm=gs.parm, model = model, type = type,
+  mygs.args <- list(type = "random",mono.constraint = TRUE)
+  gs.args <- modifyList(mygs.args, gs.args)
+  inputcheck.sim(N=N, Q=Q, sequential=sequential, gs.parm=gs.parm, model = model, type = gs.args$type,
                              catprob.parm = catprob.parm, delta.parm = delta.parm)
+
+
+  originalQ <- Q
+  model <- model.transform(model,nrow(Q))
+  f2c <- ifelse(any(model==6)||sequential,TRUE,FALSE) #whether originalQ has additional first 2 columns
+
+  if (any(model == 6)) {
+    #MSDINA
+    msQ <- unrestrQ(Q[which(model == 6), ])
+    for (j in unique(msQ[, 1])) {
+      Q[which(Q[, 1] == j &
+                Q[, 2] == 1), ] <- msQ[which(msQ[, 1] == j & msQ[, 2] == 1), ]
+      loc <- which(Q[, 1] == j & Q[, 2] != 1)
+      Q <- Q[-loc, ]
+      model <- model[-loc]
+    }
+  }
+
+
 
   if(sequential){
     C <- table(Q[,1])
@@ -460,19 +523,22 @@ simGDINA <- function(N, Q, gs.parm=NULL, model = "GDINA", sequential = FALSE, ty
     if (is.null(item.names)) item.names <- paste("Item",Q[,1],"Cat",Q[,2])
     Q <- Q[,-c(1:2)]
   }else{
+    if (any(model == 6)) Q <- Q[,-c(1:2)]
     if (is.null(item.names)) item.names <- paste("Item",1:nrow(Q))
   }
   J <- nrow(Q)
   K <- ncol(Q)
   pattern <- attributepattern(Q = Q)
   pattern.t <- t(pattern)
-  model <- model.transform(model,J)
+
+  # if(any(model==6)){
+  #   stop("The MSDINA model cannot be simulated directly - please set model = UDF instead.",call. = FALSE)
+  # }
   L <- nrow(pattern)  # the number of latent groups
   Kj <- apply(Q,1,function(x){sum(x>0)})  # The number of attributes for each item
   Kjmax <- max(Kj) # the maximum attributes required for each item
   catprob.matrix <- matrix(NA,J,2^Kjmax)
   par.loc <- eta(as.matrix(Q))
-if (length(mono.constraint)==1)  mono.constraint <- rep(mono.constraint,J)
 
 ######################################################################################
   #
@@ -482,28 +548,58 @@ if (length(mono.constraint)==1)  mono.constraint <- rep(mono.constraint,J)
 
 ######### based on gs.parm for easy item parameter simulation
 if (!is.null(gs.parm)) {
-  if(nrow(gs.parm)!=nrow(Q)) stop("The number of rows in gs is not equal to the number of non-zero categories.",call. = FALSE)
+
+  if (length(gs.args$mono.constraint)==1)  gs.args$mono.constraint <- rep(gs.args$mono.constraint,J)
+  if(nrow(gs.parm)!=nrow(Q)) stop("The number of rows in gs is not equal to the number of items (or non-zero categories).",call. = FALSE)
   if(any(1-rowSums(gs.parm)<0)) stop("Data cannot be simulated because 1-s-g<0 for some items - check your parameters or specify parameters using delta.parm or catprob.parm.",call. = FALSE)
-  pd <- gs2p(Q=Q,gs=gs.parm,model=model,type=type,mono.constraint=mono.constraint,digits=8)
+  pd <- gs2p(Q=Q,gs=gs.parm,model=model,type=gs.args$type,mono.constraint=gs.args$mono.constraint,digits=8)
   delta.parm <- pd$delta.parm
   catprob.parm <- pd$itemprob.parm
   catprob.matrix <- pd$itemprob.matrix
 }else if(!is.null(delta.parm))
   {
+  myd.args <- list(design.matrix = NULL, linkfunc = NULL)
+  delta.args <- modifyList(myd.args, delta.args)
   catprob.parm <- vector("list",J)
+
+  if(is.null(delta.args$linkfunc)){
+    linkfunc <- rep(1,J)
+    for(j in seq_len(J)) if(model[j]==4) linkfunc[j] <- 2 else if(model[j]==5) linkfunc[j] <- 3
+  }else if (length(delta.args$linkfunc) == 1){
+    linkfunc <- which(tolower(delta.args$linkfunc)==c("identity","logit","log"))
+    linkfunc <- rep(linkfunc, J)
+  } else {
+    if (length(delta.args$linkfunc) != J) stop("linkfunc must have length of 1 or J.", call. = FALSE)
+    tmp <- delta.args$linkfunc
+    linkfunc <- rep(1,J)
+    linkfunc[which(tolower(tmp)=="logit")] <- 2
+    linkfunc[which(tolower(tmp)=="log")] <- 3
+  }
+
+
+  if(is.null(delta.args$design.matrix)){
+    if(any(model==-1)) stop("design.matrix must be provided for user-defined models.",call. = FALSE)
+    design.matrix <-  vector("list",J)
+  }else if(length(delta.args$design.matrix)!=J){
+    stop("length of design matrix is not correctly specified.",call. = FALSE)
+  }
+  for(j in seq_len(J)) {
+    if(model[j]>=0&model[j]<=5){
+      design.matrix[[j]] <- designmatrix(Kj[j],model[j])
+    }else if(model[j]==6){
+      design.matrix[[j]] <- designmatrix(Kj = 999, model = model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
+    }
+  }
+
 
     for (j in 1:J){
 
-        Mj <- designmatrix(Kj[j],model[j])
+      catprob.matrix[j,1:nrow(design.matrix[[j]])] <-
+        catprob.parm[[j]] <-
+        round(c(Calc_Pj(par = delta.parm[[j]],designMj = design.matrix[[j]], linkfunc = linkfunc[j])),digits)
+      if(any(catprob.parm[[j]]<0)||any(catprob.parm[[j]]>1)) stop("Calculated success probabilities from delta parameters cross the boundaries.",call. = FALSE)
 
-        if (model[j]<=3){
-          catprob.matrix[j,1:nrow(Mj)] <- catprob.parm[[j]] <- round(c(Mj%*%delta.parm[[j]]),digits)
-        }else if (model[j]==4){
-          catprob.matrix[j,1:nrow(Mj)] <- catprob.parm[[j]] <- round(plogis(c(Mj%*%delta.parm[[j]])),digits)
-        }else if (model[j]==5){
-          catprob.matrix[j,1:nrow(Mj)] <- catprob.parm[[j]] <-round(exp(c(Mj%*%delta.parm[[j]])),digits)
-        }
-        names(catprob.parm[[j]]) <- paste("P(",apply(attributepattern(Kj[j]),1,function(x){paste(x,collapse = "")}),")",sep = "")
+      names(catprob.parm[[j]]) <- paste("P(",apply(attributepattern(Kj[j]),1,paste,collapse = ""),")",sep = "")
     }
   delta.parm <- format_delta(delta.parm,model,Kj,digits=digits)
   }else if(!is.null(catprob.parm)){
@@ -606,7 +702,7 @@ if(!sequential){
 }
 
   names(delta.parm) <- names(catprob.parm) <- item.names
-  output <- list(dat = Y, Q = Q, attribute = pattern[att.group, ], att.group = att.group,
+  output <- list(dat = Y, Q = originalQ, attribute = pattern[att.group, ], att.group = att.group,
                  catprob.parm = catprob.parm, delta.parm = delta.parm,
                  LCprob.parm = LC.Prob,higher.order.parm = higher.order.parm,
        mvnorm.parm = mvnorm.parm,call=simGDINAcall)

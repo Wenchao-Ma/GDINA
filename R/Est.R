@@ -31,6 +31,9 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
   control <- utils::modifyList(myControl,control)
 
+
+
+
   if (is.null(group)){
     no.mg <- 1L
     gr <- rep(1L,nrow(dat))
@@ -47,8 +50,8 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     if (no.mg > 1) {
       if (length(att.dist) == 1)
         att.dist <- rep(att.dist, no.mg)
-      if (length(att.str) == 1)
-        att.str <- rep(att.str, no.mg)
+      # if (length(att.str) == 1)
+      #   att.str <- rep(att.str, no.mg)
       if (length(control$lower.prior) == 1)
         control$lower.prior <- rep(control$lower.prior, no.mg)
       if (length(loglinear) == 1)
@@ -71,6 +74,8 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
         gr <- gr[-del.ind]
       }
     }
+    originalQ <- Q
+    originalData <- dat
     if (sequential)
       dat <- seq_coding(dat, Q)
 
@@ -87,8 +92,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
   # polytomous responses -> dichotomous responses
   # copy Q and data
-    originalQ <- Q
-    originalData <- dat
+
     if (any(model == 6)) {
       #MSDINA
       msQ <- unrestrQ(Q[which(model == 6), ])
@@ -105,6 +109,27 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
   model.names <- M[model + 2]
   names(model.names) <- item.names
+
+  inputcheck(
+    dat = dat,
+    Q = Q,
+    model = model,
+    sequential = sequential,
+    att.dist = att.dist,
+    latent.var = latent.var,
+    verbose = verbose,
+    catprob.parm = catprob.parm,
+    mono.constraint = mono.constraint,
+    att.prior = att.prior,
+    lower.p = control$lower.p,
+    upper.p = control$upper.p,
+    att.str = att.str,
+    nstarts = control$nstarts,
+    conv.crit = control$conv.crit,
+    maxitr = control$maxitr
+  )
+
+  if(att.str&(any(model<0)|any(model>2)))stop("Attribute structure is only applicable for DINA, DINO and G-DINA models",call. = FALSE)
 
   if (sequential) {
     Q <- Q[,-c(1, 2)]
@@ -149,7 +174,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     if(model[j]>=0&model[j]<=5){
       DesignMatrices[[j]] <- designmatrix(Kj[j],model[j])
     }else if(model[j]==6){
-      DesignMatrices[[j]] <- designmatrix(Kj=999,model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
+      DesignMatrices[[j]] <- designmatrix(999,model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
     }
     if(mono.constraint[[j]]){
       ConstrType[j] <- 3
@@ -173,8 +198,8 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     if (length(linkfunc) != J) stop("linkfunc must have length of 1 or J.", call. = FALSE)
     tmp <- linkfunc
     linkfunc <- rep(1,J)
-    linkfunc[which(tolower(linkfunc)=="logit")] <- 2
-    linkfunc[which(tolower(linkfunc)=="log")] <- 3
+    linkfunc[which(tolower(tmp)=="logit")] <- 2
+    linkfunc[which(tolower(tmp)=="log")] <- 3
   }
 
 
@@ -341,7 +366,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                     auglag_args = auglag_args,solnp_args = solnp_args,nloptr_args = nloptr_args)
 
     item.parm <- optims$item.parm
-    delta <- optims$delta
+    delta <- c(optims$delta)
 
 
     struc.parm <- structural.parm(AlphaPattern = AlphaPattern, no.mg = no.mg, logprior=estep$logprior,
@@ -404,7 +429,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   item.npar <- npar  #item parameters
   for(g in 1:no.mg){
     if (att.dist[g]=="saturated") {
-      if (!att.str[g]) {
+      if (!att.str) {
         npar <- npar + L - 1
       } else {
         npar <- npar + sum(is.finite(logprior[,g])) - 1

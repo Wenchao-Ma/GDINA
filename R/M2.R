@@ -20,7 +20,6 @@
 #' \dontrun{
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
-#' # --- GDINA model ---#
 #' mod1 <- GDINA(dat = dat, Q = Q, model = "DINA")
 #' modelfit(mod1)
 #'}
@@ -36,10 +35,13 @@ modelfit <- function(GDINA.obj,CI=0.90,ItemOnly=FALSE)
       any(extract(GDINA.obj, "models_numeric") > 6))
     stop("modelfit is only applicable for GDINA, DINA, DINO, ACDM, LLM and RRUM.",
          call. = FALSE)
+  if (extract(GDINA.obj, "att.dist") %in% c("higher.order","independent","fixed")){
+    stop(paste("modelfit is not available for ",extract(GDINA.obj, "att.dist"),"joint attribute distribution."),call. = FALSE)
+  }
   delta <- extract(GDINA.obj, "delta.parm")
   Q <- extract(GDINA.obj, "Q")
   if (max(Q) > 1) {
-    stop("modelfit is only applicable for dichotomous attribute models.",
+    stop("modelfit is only available for dichotomous attribute models.",
          call. = FALSE)
   }
   Qc <- extract(GDINA.obj, "Qc")

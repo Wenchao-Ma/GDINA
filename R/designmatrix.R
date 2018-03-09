@@ -1,6 +1,6 @@
 #' Generate design matrix
 #'
-#' This function generates the design matrix \eqn{M_j} in de la Torre (2011)
+#' This function generates the design matrix for an item
 #'
 #' @param Kj the number of attributes for item j
 #' @param model the model associated with the design matrix; It can be "GDINA","DINA","DINO", "ACDM" or "MSDINA".
@@ -13,12 +13,25 @@
 #'
 #' de la Torre, J. (2011). The generalized DINA model framework. \emph{Psychometrika, 76}, 179-199.
 #'
+#'
+#' @examples
+#' \dontrun{
+#' designmatrix(Kj = 2, model = "GDINA")
+#' designmatrix(Kj = 3, model = "DINA")
+#' msQj <- matrix(c(1,0,0,1,
+#'                  1,1,0,0),nrow=2,byrow=TRUE)
+#' designmatrix(model = "MSDINA",Qj = msQj)
+#' }
+#'
 #' @export
 #'
 #'
 #'
 designmatrix <- function(Kj, model = "GDINA", Qj = NULL) {
-  stopifnot(is.nonNegativeInteger(Kj))
+  if(toupper(model)!="MSDINA"||model!=6){
+    stopifnot(is.nonNegativeInteger(Kj))
+  }
+
   if (is.character(model)) {
     stopifnot(toupper(model) %in% c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA"))
     m <-

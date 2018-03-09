@@ -261,7 +261,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                       }else{ #dichotomous items
                         pj <- matrix(itemparj[!is.na(itemparj)],nrow = 1)
                       }
-                      colnames(pj) <- paste0("P(", apply(alpha2(Kj), 1, paste0, collapse = ""), ")")
+                      colnames(pj) <- paste0("P(", apply(attributepattern(Kj), 1, paste0, collapse = ""), ")")
                       rownames(pj) <- paste("Cat",1:nrow(pj))
                       p[[j]] <- pj
                     }

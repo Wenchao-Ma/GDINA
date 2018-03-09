@@ -1,6 +1,6 @@
 #' @include GDINA.R
 #' @title Model Comparison
-#' @description To compare two or more \code{GDINA} models, use method \code{\link{anova}}.
+#' @description To compare two or more \code{GDINA} objects, use method \code{\link{anova}}.
 #' @export
 #' @aliases anova.GDINA
 #' @note anova function does NOT check whether models compared are nested or not.

@@ -4,10 +4,11 @@ library(shinydashboard)
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Input", tabName = "input", icon = icon("file-text")),
-    menuItem("Estimation", icon = icon("rocket"), tabName = "est"),
-    menuItem("Summary", icon = icon("check-square-o"), tabName = "summary"),
+    menuItem("Estimation Settings", icon = icon("rocket"), tabName = "est"),
+    menuItem("Estimation Summary", icon = icon("check-square-o"), tabName = "summary"),
     menuItem("Parameter Estimates", icon = icon("superscript"), tabName = "par"),
-    menuItem("Q-matrix Validation", icon = icon("th"), tabName = "Qval"),
+    menuItem("Q-matrix Validation Outputs", icon = icon("th"), tabName = "Qval"),
+    menuItem("Model selection Outputs", icon = icon("list"), tabName = "ms"),
     menuItem("Plots", icon = icon("bar-chart"), tabName = "plot"),
     menuItem("About", icon = icon("users"), tabName = "about")
   )
@@ -18,25 +19,33 @@ body <- dashboardBody(
     # input files
     tabItem(tabName = "input",
             h2("Response and Q-matrix files"),
-            fluidRow(box(
-              title = "Input Files", width = 8, solidHeader = TRUE, status = "primary",
+            fluidRow(
+              shinydashboard::box(
+              title = "Input Files", width = 6, solidHeader = TRUE, status = "primary",
             fileInput('file1', 'Choose Response File',
                       accept = c('text/csv','text/comma-separated-values',
                                  'text/tab-separated-values', 'text/plain',
                                  '.csv', '.tsv')
             ),
-            fileInput('file2', 'Choose Q-matrix',
-                      accept = c('text/csv','text/comma-separated-values',
-                                 'text/tab-separated-values','text/plain',
-                                 '.csv','.tsv')
-            )),
-            shinydashboard::box(title = "Input Specifications", width = 4, solidHeader = TRUE, status = "primary",
-                checkboxInput('header', 'Header', FALSE),
+            checkboxInput('header', 'Header', FALSE),
             radioButtons('sep', 'Separator',
                          c(Tab='\t', Comma=',',Semicolon=';',
-                           Pipe='|'),
-                         '\t')
-            )),
+                           Space=''),
+                         '\t',inline = TRUE)
+            ),
+            shinydashboard::box(
+              title = "Input Files", width = 6, solidHeader = TRUE, status = "primary",
+              fileInput('file2', 'Choose Q-matrix',
+                        accept = c('text/csv','text/comma-separated-values',
+                                   'text/tab-separated-values','text/plain',
+                                   '.csv','.tsv')
+              ),
+              checkboxInput('header2', 'Header', FALSE),
+              radioButtons('sep2', 'Separator',
+                                               c(Tab='\t', Comma=',',Semicolon=';',
+                                                 Space=''),
+                                               '\t',inline = TRUE)
+              )),
             fluidRow(
               shinydashboard::box(title = "First 6 observations of the responses", width = 12, solidHeader = TRUE, collapsible = TRUE, status = "primary",
                   tableOutput('contents1')
@@ -51,13 +60,12 @@ body <- dashboardBody(
 
     tabItem(tabName = "est",
             h2("Estimation Specifications"),
-
             fluidRow(
               shinydashboard::box(
                 title = "Models", width = 3, solidHeader = TRUE, collapsible = TRUE, status = "primary",
                 selectInput("type", label = "Fitted CDMs",
                             choices = list("GDINA" = "GDINA", "DINA" = "DINA","DINO" = "DINO",
-                                           "ACDM" = "ACDM", "LLM" = "LLM", "RRUM" = "RRUM","autoSelected"), selected = "GDINA")
+                                           "ACDM" = "ACDM", "LLM" = "LLM", "RRUM" = "RRUM"), selected = "GDINA")
               ),
               shinydashboard::box(
                 title = "Attribute Distribution", width = 5, collapsible = TRUE, solidHeader = TRUE,status = "primary",
@@ -70,16 +78,10 @@ body <- dashboardBody(
                 title = "Other Settings", width = 4, solidHeader = TRUE,collapsible = TRUE, status = "primary",
                 checkboxInput("seq", label = "Sequential models?", value = FALSE),
                 checkboxInput("mono", label = "Monotonic Constraints?", value = FALSE),
-                checkboxInput("qvalcheck", label = "Q-matrix validation?", value = FALSE)
-              )),
-            fluidRow(shinydashboard::box(
-              title = "Model Selection", width = 3, solidHeader = TRUE,collapsible = TRUE, status = "primary",
-              sliderInput("alphalevel", label = h3("alpha level for Wald test"), min = 0,
-                          max = 0.2, value = 0.05),
-              selectInput("waldmethod", label = "Selection method:",
-                          choices = list("simpler" = "simpler", "largestp" = "largestp","DS" = "DS"), selected = "simpler")
-            ),
-            shinydashboard::box(actionButton("goButton", "Estimation"),width = 5)
+                checkboxInput("qvalcheck", label = "Q-matrix validation?", value = FALSE),
+                checkboxInput("modelsel", label = "Item-level model selection?", value = FALSE)
+              ),
+            shinydashboard::box(actionButton("goButton", "Click to Estimate!"),width = 3)
     )
 ),
 tabItem(tabName = "summary",
@@ -155,6 +157,18 @@ tabItem(tabName = "Qval",
           plotOutput("mesaplot")
         ))
 ),
+tabItem(tabName = "ms",
+        h2("Item-level model selection outputs"),
+        fluidRow(
+          shinydashboard::box(
+            title = "Wald statistics", width = 6, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+            verbatimTextOutput('ws')
+          ),
+          shinydashboard::box(
+            title = "p-values", width = 6, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+            verbatimTextOutput('pv')
+          ))
+),
 tabItem(tabName = "plot",
         h2("Item Response Function Plots"),
         fluidRow(box(
@@ -170,7 +184,7 @@ tabItem(tabName = "plot",
           ))
 ),
 tabItem(tabName = "about",
-        h2("About the GDINA R package"),
+        h2("About the GDINA R package and this GUI"),
         fluidRow(box(
           title = "", width = 12,
 
@@ -189,7 +203,7 @@ tabItem(tabName = "about",
            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
            GNU General Public License for more details."),
 
-          p("This package is still under development. If you find bugs, please email Wenchao Ma.")
+          p("This package is still under development. If you find bugs, please email Wenchao Ma at wenchao.ma@ua.edu.")
         ))
 )
 )
