@@ -228,3 +228,106 @@ score <- function(object,parm="delta"){
     score_p(object)
   }
 }
+
+#' Functions for internal use
+#'
+#' @param ... arguments passed to internal functions
+#' @name internal_GDINA
+NULL
+
+
+#' @name internal_Lik
+#' @export
+#' @rdname internal_GDINA
+internal_Lik <- function(...){
+args <- list(...)
+stopifnot(length(args)>0)
+if(is.null(args$group)) args$group <- rep(1,nrow(args$dat))
+if(is.null(args$weights)) args$weights <- rep(1,nrow(args$dat))
+if(is.null(args$simplify)) args$simplify <- 0
+LikNR(mpar = args$catprob.parm,
+      mX = args$dat,
+      vlogPrior = args$logprior,
+      vgroup = args$group,
+      mloc = args$eta,
+      weights = args$weights,
+      simplify = args$simplify)
+}
+
+#' @name internal_aggregateCol
+#' @export
+#' @rdname internal_GDINA
+internal_aggregateCol <- function(...){
+  args <- list(...)
+  stopifnot(length(args)>0)
+  aggregateCol(mX=args$x,
+               ind = args$by)
+}
+
+#' @name internal_eta
+#' @export
+#' @rdname internal_GDINA
+internal_eta <- function(...){
+  args <- list(...)
+  stopifnot(length(args)>0)
+  eta(Q=args$Q)
+}
+
+#' @name internal_matchMatrix
+#' @export
+#' @rdname internal_GDINA
+internal_matchMatrix <- function(...){
+  args <- list(...)
+  stopifnot(length(args)>0)
+  matchMatrix(A=args$A,B=args$B)
+}
+
+#' @name internal_RowNormalize
+#' @export
+#' @rdname internal_GDINA
+internal_RowNormalize <- function(...){
+  args <- list(...)
+  stopifnot(length(args)>0)
+  RowNormalize(args$x)
+}
+
+#' @name internal_ColNormalize
+#' @export
+#' @rdname internal_GDINA
+internal_ColNormalize <- function(...){
+  args <- list(...)
+  stopifnot(length(args)>0)
+  ColNormalize(args$x)
+}
+
+#' @name internal_RowProd
+#' @export
+#' @rdname internal_GDINA
+internal_RowProd <- function(...){
+  args <- list(...)
+  stopifnot(length(args)>0)
+  rowProd(args$x,args$v)
+}
+
+#' @name internal_l2m
+#' @export
+#' @rdname internal_GDINA
+internal_l2m <- function(...){
+  l2m(...)
+}
+
+#' @name internal_l2m
+#' @export
+#' @rdname internal_GDINA
+internal_m2l <- function(...){
+  m2l(...)
+}
+
+#' @name internal_uP
+#' @export
+#' @rdname internal_GDINA
+internal_uP <- function(...){
+  args <- list(...)
+  stopifnot(length(args)>0)
+  uP(mloc = args$eta, mpar = args$catprob.parm)
+}

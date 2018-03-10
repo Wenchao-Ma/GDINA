@@ -101,8 +101,7 @@ tabItem(tabName = "summary",
           shinydashboard::box(
             title = "Absolute test fit", width = 12, solidHeader = TRUE, collapsible = TRUE, status = "primary",
             verbatimTextOutput('itfit')
-          ))
-        ),
+          ))),
 tabItem(tabName = "par",
         h2("Parameter Estimation"),
 
