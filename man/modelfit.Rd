@@ -4,14 +4,14 @@
 \alias{modelfit}
 \title{Model fit statistics}
 \usage{
-modelfit(GDINA.obj, CI = 0.9, ItemOnly = FALSE)
+modelfit(GDINA.obj, CI = 0.9, ...)
 }
 \arguments{
 \item{GDINA.obj}{An estimated model object of class \code{GDINA}}
 
 \item{CI}{numeric value from 0 to 1 indicating the range of the confidence interval for RMSEA. Default returns the 90\% interval.}
 
-\item{ItemOnly}{Whether population proportion parameters should be considered?}
+\item{...}{arguments passed to the function}
 }
 \description{
 Calculate various model-data fit statistics
