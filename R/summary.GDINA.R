@@ -15,7 +15,6 @@ summary.GDINA <-
     "BIC penalty due to item parameters"=log(extract(object,"nobs"))*extract(object,"npar.item"),
     "BIC penalty due to population parameters"=log(extract(object,"nobs"))*extract(object,"npar.att"),
     "Attribute Prevalence"=extract(object,"prevalence"),
-    "Posterior Weights"=extract(object,"posterior.prob"),
     "ngroup"=extract(object,"ngroup"),
     "Number of parameters"=extract.GDINA(object,"npar"),
     "Number of item parameters"=extract.GDINA(object,"npar.item"),

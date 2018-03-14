@@ -50,12 +50,18 @@ CA <- function(GDINA.obj,what="MAP"){
   mp <- personparm(GDINA.obj,what = "mp")
   patt <- attributepattern(Q = extract(GDINA.obj,"Q"))
   gr <- matchMatrix(patt,pp)
+  pseudo.gr <- setdiff(seq(nrow(patt)),unique(gr))
+  gr <- c(gr,pseudo.gr)
+  lab <- apply(patt,1,paste0,collapse="")
   # conditional classification matrix
   # row: true; col: estimated
-  CCM <- aggregateCol(exp(t(indlogPost(GDINA.obj))),gr)/c(extract(GDINA.obj,"nobs")*p_c)
+  post <- cbind(exp(t(indlogPost(GDINA.obj))),matrix(0,nrow(patt),length(pseudo.gr)))
+  CCM <- aggregateCol(post,gr)/c(extract(GDINA.obj,"nobs")*p_c)
   tau_c <- diag(CCM)
   tau <- sum(tau_c*c(p_c))
   tau_k <- colMeans(pp*mp+(1-pp)*(1-mp))
-
-  return(list(tau=tau,tau_l=tau_c,tau_k=tau_k,CCM = CCM))
+  names(tau_c) <- rownames(CCM) <- colnames(CCM) <- lab
+  ret <- list(tau=tau,tau_l=tau_c,tau_k=tau_k,CCM = CCM)
+  class(ret) <- "CA"
+  return(ret)
 }

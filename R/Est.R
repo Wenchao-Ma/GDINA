@@ -17,8 +17,8 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   Mynloptr_args <- list(xtol_rel = 1e-4)
   nloptr_args <- modifyList(Mynloptr_args, nloptr_args)
   myControl <- list(
-    maxitr = 1000,
-    conv.crit = 1e-3,
+    maxitr = 2000,
+    conv.crit = 1e-4,
     conv.type = "max.ip.change",
     nstarts = 3L,
     lower.p = 1e-4,

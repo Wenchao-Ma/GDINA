@@ -66,7 +66,7 @@ mesaplot.Qval <-
         if (locy>0){
           points(locy,fullPVAF[locy0,y],col="red",pch=19)
         }
-        if (!is.null(eps)&&eps>0&&eps<1) abline(h=eps,lty=3);text(2,eps+0.03,paste("eps =",eps))
+        if (!is.null(eps)&&eps>0&&eps<1) abline(h=eps,lty=3);text(1.5,eps+0.03,paste("eps =",eps))
         if (original.q.label) text(no.qvector-1,0.15,paste("original q-vector:\n",names(fullPVAF[,y])[locy0]))
         if (auto.ylim) ylim = c(max(0,round(min(ordered.PVAF.j)-0.1,1)),1) else ylim=c(0,1)
         yloc <- ordered.PVAF.j[(L-no.qvector+1):L]-diff(ylim)/15
@@ -88,7 +88,7 @@ mesaplot.Qval <-
         plot(bestPVAF[,j],xaxt="n",type="o",ylab = "PVAF",xlab="q-vectors",
              main = paste("Mesa Plot for Item",j),ylim = ylim,...)
         axis(1,at=c(1:nrow(bestPVAF)),labels = label.bestPVAF[bestloc])
-        if (!is.null(eps)&&eps>0&&eps<1) abline(h=eps,lty=3);text(2,eps+0.03,paste("eps =",eps))
+        if (!is.null(eps)&&eps>0&&eps<1) abline(h=eps,lty=3);text(1.5,eps+0.03,paste("eps =",eps))
         yloc <- bestPVAF[,j]-diff(ylim)/15
         yloc[yloc<=ylim[1]] <- yloc[yloc<=ylim[1]] + 2 * diff(ylim)/15
         if (data.label) text(c(1:nrow(bestPVAF)),yloc,bestPVAF[,j])

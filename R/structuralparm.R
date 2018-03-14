@@ -18,7 +18,7 @@ structural.parm <- function(AlphaPattern,no.mg,logprior,att.dist,att.str,saturat
         prior[which(prior[,g]<lower.prior[g]),g] <- lower.prior[g]
         prior[,g] <- prior[,g]/sum(prior[,g])
         logprior[,g] <- log(prior[,g])
-        lambda[[g]] <- prior[-length(prior[,g]),g]
+        lambda[[g]] <- prior[,g]
       }else if (att.dist[g]=="loglinear"){
         Z <- designM(K,0)
         if(K<2) stop("loglinear smoothing is not available when K < 2.",call. = FALSE)

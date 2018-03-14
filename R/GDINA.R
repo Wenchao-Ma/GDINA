@@ -214,8 +214,8 @@
 #' @param control A list of control parameters with elements:
 #' \itemize{
 #'      \item \code{maxitr} A vector for each item or nonzero category, or a scalar which will be used for all
-#'    items or nonzero categories to specify the maximum number of EM cycles allowed. Default = 1000.
-#'     \item \code{conv.crit} The convergence criterion for max absolute change in item parameters or deviance. Default = 0.001.
+#'    items or nonzero categories to specify the maximum number of EM cycles allowed. Default = 2000.
+#'     \item \code{conv.crit} The convergence criterion for max absolute change in item parameters or deviance. Default = 0.0001.
 #'     \item \code{conv.type} How is the convergence criterion evaluated? Can be \code{"max.ip.change"}, indicating
 #'    the maximum absolute change in success probabilities, or \code{"dev.change"}, representing
 #'    the absolute change in deviance.

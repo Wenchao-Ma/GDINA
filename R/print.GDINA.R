@@ -3,11 +3,10 @@
 print.GDINA <-
   function(x, ...)
   {
-    cat("The Generalized DINA Model Framework  \n")
-    packageinfo <- utils::packageDescription("GDINA")
-    cat( paste( "   Version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
     cat("Call:\n", paste(deparse(extract.GDINA(x,"call")), sep = "\n", collapse = "\n"),
-        "\n", sep = "")
+        "\n\n", sep = "")
+    packageinfo <- utils::packageDescription("GDINA")
+    cat( paste( "  GDINA version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
     cat("===============================================\n")
     cat("Data\n")
     cat("-----------------------------------------------\n")
@@ -31,7 +30,7 @@ print.GDINA <-
     cat("===============================================\n")
     cat("Estimation\n")
     cat("-----------------------------------------------\n")
-    cat("Number of iterations  =", extract.GDINA(x,"nitr"), "\n")
+    cat("Number of iterations  =", max(extract.GDINA(x,"nitr")), "\n")
     cat("For the final iteration:\n")
     cat("  Max abs change in item success prob. =", formatC(extract(x,"dif.p"), digits = 4, format = "f"), "\n")
     cat("  Max abs change in population prop.   =", formatC(extract(x,"dif.prior"), digits = 4, format = "f"), "\n")
@@ -49,6 +48,17 @@ print.simGDINA <-
     cat("Number of individuals =", nrow(x$dat), "\n")
     cat("To extract components, use the method extract. \n")
 
+  }
+#' @export
+print.CA <-
+  function(x, ...)
+  {
+    cat("Classification Accuracy \n")
+    cat("\nTest level accuracy = ", round(x$tau,4), "\n")
+    cat("\nPattern level accuracy: \n\n")
+    print(round(x$tau_l,4))
+    cat("\nAttribute level accuracy: \n\n")
+    print(round(x$tau_k,4))
   }
 #' @export
 print.modelcomp <- function(x, ...)
@@ -202,15 +212,15 @@ print.summary.GDINA <- function(x,...){
     }
 
 
-  cat("\nPosterior Weights\n\n")
-
-      print(round(x$`Posterior Weights`,4))
+  # cat("\nPosterior Weights\n\n")
+  #
+  #     print(round(x$`Posterior Weights`,4))
 
 }
 
 #'@export
 print.anova.GDINA <- function(x,...){
-  cat("\nInformation Criteria and Likelihood Ratio Tests\n\n")
+  cat("\nInformation Criteria and Likelihood Ratio Test\n\n")
    LR <- x$LR
    for(m in 1:nrow(LR)) {
      if(LR$pvalue[m]<0.001) LR$pvalue[m] <- "<0.001"
@@ -220,7 +230,7 @@ print.anova.GDINA <- function(x,...){
    out <- cbind(x$IC,LR)
    colnames(out) <- c("#par","logLik","Deviance","AIC","BIC","chisq","df","p-value")
    print(out)
-  if(nrow(x$IC)>2) cat("\nNotes: In LR tests, models were tested against",rownames(x$IC)[which.max(x$IC$npar)],"\n       LR tests did NOT check whether models are nested or not.")
+  if(nrow(x$IC)>2) cat("\nNotes: In LR tests, models were tested against",rownames(x$IC)[which.max(x$IC$npar)],"\n       LR test(s) do NOT check whether models are nested or not.")
 }
 
 #'@export
