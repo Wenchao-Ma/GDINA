@@ -7,13 +7,13 @@
 \title{Item-level model comparison using Wald, LR or LM tests}
 \usage{
 modelcomp(GDINA.obj = NULL, method = "Wald", items = "all",
-  models = c("DINA", "DINO", "ACDM", "LLM", "RRUM"), DS = FALSE,
-  Wald.args = list(SE.type = 2, varcov = NULL), LR.args = list(LR.approx =
-  FALSE), LM.args = list(reducedMDINA = NULL, reducedMDINO = NULL,
-  reducedMACDM = NULL, SE.type = 2))
+  p.adjust.methods = "bonferroni", models = c("DINA", "DINO", "ACDM", "LLM",
+  "RRUM"), DS = FALSE, Wald.args = list(SE.type = 2, varcov = NULL),
+  LR.args = list(LR.approx = FALSE), LM.args = list(reducedMDINA = NULL,
+  reducedMDINO = NULL, reducedMACDM = NULL, SE.type = 2))
 
-\method{extract}{modelcomp}(object, what = c("stats", "pvalues", "df", "DS",
-  "models"), digits = 4, ...)
+\method{extract}{modelcomp}(object, what = c("stats", "pvalues",
+  "adj.pvalues", "df", "DS", "models"), digits = 4, ...)
 
 \method{summary}{modelcomp}(object, ...)
 }
@@ -23,6 +23,11 @@ modelcomp(GDINA.obj = NULL, method = "Wald", items = "all",
 \item{method}{method for item level model comparison; can be \code{wald}, \code{LR} or \code{LM}.}
 
 \item{items}{a vector of items to specify the items for model comparsion}
+
+\item{p.adjust.methods}{adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
+and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
+\code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
+for more details. \code{"bonferroni"} is the default.}
 
 \item{models}{a vector specifying which reduced CDMs are possible reduced CDMs for each
 item. The default is "DINA","DINO","ACDM","LLM",and "RRUM".}
@@ -59,6 +64,7 @@ extracted using \code{extract} method include
 \describe{
 \item{stats}{Wald or LR statistics}
 \item{pvalues}{p-values associated with the test statistics}
+\item{adj.pvalues}{adjusted p-values}
 \item{df}{degrees of freedom}
 \item{DS}{dissimilarity between G-DINA and other CDMs}
 }

@@ -253,7 +253,22 @@ LikNR(mpar = args$catprob.parm,
       weights = args$weights,
       simplify = args$simplify)
 }
-
+#' @name internal_Lik2
+#' @export
+#' @rdname internal_GDINA
+internal_Lik2 <- function(...){
+  args <- list(...)
+  stopifnot(length(args)>0)
+  if(is.null(args$group)) args$group <- rep(1,nrow(args$dat))
+  if(is.null(args$weights)) args$weights <- rep(1,nrow(args$dat))
+  if(is.null(args$simplify)) args$simplify <- 0
+  LikNR_LC(mP = args$LCprob,
+        mX = args$dat,
+        vlogPrior = args$logprior,
+        vgroup = args$group,
+        weights = args$weights,
+        simplify = args$simplify)
+}
 #' @name internal_aggregateCol
 #' @export
 #' @rdname internal_GDINA

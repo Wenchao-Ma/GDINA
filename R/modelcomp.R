@@ -24,6 +24,10 @@
 #'   indicating whether a two-step LR approximation is implemented or not.
 #' @param LM.args a list of options for LM test including \code{reducedMDINA}, \code{reducedMDINO}, and \code{reducedMACDM} for
 #' DINA, DINO and ACDM estimates from the \code{GDINA} function; \code{SE.type} specifies the type of covariance matrix.
+#' @param p.adjust.methods adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
+#'  and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
+#'  \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
+#'  for more details. \code{"bonferroni"} is the default.
 #'
 #'
 #' @return an object of class \code{modelcomp}. Elements that can be
@@ -31,6 +35,7 @@
 #' \describe{
 #' \item{stats}{Wald or LR statistics}
 #' \item{pvalues}{p-values associated with the test statistics}
+#' \item{adj.pvalues}{adjusted p-values}
 #' \item{df}{degrees of freedom}
 #' \item{DS}{dissimilarity between G-DINA and other CDMs}
 #' }
@@ -102,7 +107,7 @@
 #' }
 #' @import MASS
 #' @export
-modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all",
+modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.methods = "bonferroni",
                       models=c("DINA","DINO","ACDM","LLM","RRUM"),DS = FALSE,
                       Wald.args = list(SE.type = 2,varcov = NULL),
                       LR.args = list(LR.approx = FALSE),
@@ -353,10 +358,13 @@ Kj <- Kjs[j]
 
   }
 
+  adj.pvalues <- pvalues
+  adj.pvalues[!is.na(pvalues)] <- stats::p.adjust(pvalues[!is.na(pvalues)], method = p.adjust.methods)
 
-  colnames(MCstat) <- colnames(df) <- colnames(pvalues) <- allModels
-  rownames(MCstat) <- rownames(df) <- rownames(pvalues) <- item.names[items]
-  out <- list(stats=MCstat,pvalues=pvalues,df=df,DS=ds.f,models = models,method=method,
+
+  colnames(MCstat) <- colnames(df) <- colnames(pvalues) <- colnames(adj.pvalues) <- allModels
+  rownames(MCstat) <- rownames(df) <- rownames(pvalues) <- rownames(adj.pvalues) <- item.names[items]
+  out <- list(stats=MCstat,pvalues=pvalues,adj.pvalues = adj.pvalues,df=df,DS=ds.f,models = models,method=method,
               DS = DS, Wald.args = Wald.args, LR.args = LR.args,neg2LL = neg2LL)
   class(out) <- "modelcomp"
   return(out)

@@ -3,6 +3,7 @@
 \name{internal_GDINA}
 \alias{internal_GDINA}
 \alias{internal_Lik}
+\alias{internal_Lik2}
 \alias{internal_aggregateCol}
 \alias{internal_eta}
 \alias{internal_matchMatrix}
@@ -16,6 +17,8 @@
 \title{Functions for internal use}
 \usage{
 internal_Lik(...)
+
+internal_Lik2(...)
 
 internal_aggregateCol(...)
 
