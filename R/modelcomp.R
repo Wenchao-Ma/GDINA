@@ -143,7 +143,7 @@ modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.met
   }else{
     if(!class(GDINA.obj)=="GDINA") stop("GDINA.obj must be a GDINA estimate.",call. = FALSE)
     if (any(extract(GDINA.obj,"models")!="GDINA")) stop ("Implementing the Wald and LR tests for item-level model comparison requires all items to be fitted by the G-DINA model.",call. = FALSE)
-    if(extract(GDINA.obj,"att.str"))stop("Item-level model comparison is not available for structured attribute distribution.",call. = FALSE)
+    if(extract(GDINA.obj,"att.str"))stop("Item-level model comparison is not available for structured attributes.",call. = FALSE)
     Q <- 1*(extract(GDINA.obj,"Q")>0.5)
     item.names <- extract(GDINA.obj,"item.names")
     }

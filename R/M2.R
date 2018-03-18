@@ -34,6 +34,7 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
   if(extract(GDINA.obj, "ngroup")!=1) {
     stop("modelfit is only applicable to single group analysis.", call. = FALSE)
   }
+  if(extract(GDINA.obj,"att.str"))stop("model-fit evaluation is not available for structured attributes.",call. = FALSE)
   if (any(extract(GDINA.obj, "models_numeric") < 0) ||
       any(extract(GDINA.obj, "models_numeric") > 6))
     stop("modelfit is only applicable to GDINA, DINA, DINO, ACDM, LLM and RRUM.",

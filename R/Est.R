@@ -260,7 +260,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     )
   }
 
-  logprior <- log(att.prior / matrix(colSums(att.prior), nrow = L, ncol = no.mg, byrow = TRUE))
+  logprior <- log(ColNormalize(att.prior))
 
   if (any(att.str)) control$smallNcorrection <- c(-1,-1)
 
@@ -401,10 +401,10 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     itr <- itr + 1
 
     if(verbose==1) {
-      cat('\rIter =',itr,' Max. abs. change =',formatC(max(dif.parm$ip,dif.parm$prior),digits = 4, format = "f"),
+      cat('\rIter =',itr,' Max. abs. change =',formatC(max(dif.parm$ip,dif.parm$prior),digits = 5, format = "f"),
           ' Deviance  =',formatC(-2 * estep$LL,digits = 3, format = "f"),'                                                                                 ')
     }else if (verbose==2) {
-      cat('Iter =',itr,' Max. abs. change =',formatC(max(dif.parm$ip,dif.parm$prior),digits = 4, format = "f"),
+      cat('Iter =',itr,' Max. abs. change =',formatC(max(dif.parm$ip,dif.parm$prior),digits = 5, format = "f"),
           ' Deviance  =',formatC(-2 * estep$LL,digits = 3, format = "f"),'                                                                                \n')
     }
 
@@ -424,8 +424,12 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                  mloc = as.matrix(parloc),
                  weights = rep(1,N),
                  simplify = 0)
-
+if(!att.str){
   npar <- sum(sapply(DesignMatrices,ncol))
+}else{
+  npar <- sum(is.finite(c(item.parm)))
+}
+
   item.npar <- npar  #item parameters
   for(g in 1:no.mg){
     if (att.dist[g]=="saturated") {

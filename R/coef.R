@@ -7,8 +7,12 @@ coef.GDINA <-
            what = c("catprob","delta","gs","itemprob","LCprob","rrum","lambda"),
            withSE = FALSE, SE.type = 2,digits = 4, ...)
   {
+
     if(!class(object)=="GDINA") stop("object must be a GDINA estimate.",call. = FALSE)
     what <- match.arg(what)
+    if(extract(object,"att.str")){
+      if(tolower(what)=="delta")stop("Delta parameters are not availabel for models with structured attributes.",call. = FALSE)
+    }
     if(tolower(what)=="catprob"){
       if(withSE){
         out <- mapply(rbind,extract(object,what = "catprob.parm"),

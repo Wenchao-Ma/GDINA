@@ -1,6 +1,6 @@
 library(shiny)
-# Define UI for miles per gallon application
 library(shinydashboard)
+library(ggplot2)
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Input", tabName = "input", icon = icon("file-text")),
@@ -101,6 +101,16 @@ tabItem(tabName = "summary",
           shinydashboard::box(
             title = "Absolute test fit", width = 12, solidHeader = TRUE, collapsible = TRUE, status = "primary",
             verbatimTextOutput('itfit')
+          )),
+        fluidRow(shinydashboard::box(
+          title = "Heatmap Plot Specifications", width = 4, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+          radioButtons("heatmap.type", "Plot type:",
+                       choices = c("log odds ratio", "transformed correlation")),
+          checkboxInput("heatmap.adjust", label = "Bonferroni adjusted?", value = TRUE)
+        ),
+          shinydashboard::box(
+            title = "Heatmap plots", width = 8, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+            plotOutput("heatplot1")
           ))),
 tabItem(tabName = "par",
         h2("Parameter Estimation"),
@@ -168,7 +178,7 @@ tabItem(tabName = "ms",
             verbatimTextOutput('pv')
           ))
 ),
-tabItem(tabName = "plot",
+tabItem(tabName = "Item Response Function Plots",
         h2("Item Response Function Plots"),
         fluidRow(box(
           title = "Item #", width = 4, solidHeader = TRUE, collapsible = TRUE, status = "primary",
@@ -209,7 +219,7 @@ tabItem(tabName = "about",
 )
 
 dashboardPage(
-  dashboardHeader(title = "CDM Analysis"),
+  dashboardHeader(title = "GDINA GUI"),
   sidebar,
   body
 )

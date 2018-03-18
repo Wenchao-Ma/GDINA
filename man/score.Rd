@@ -17,4 +17,5 @@ a list where elements give the score functions for each item or category
 }
 \description{
 Calculate score function for each dichotomous item or each nonzero category for polytomous items
+Only applicable to saturated model ofr joint attribute distribution
 }

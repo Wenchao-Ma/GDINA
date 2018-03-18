@@ -107,7 +107,8 @@ The sum of all elements does not have to be equal to 1; however, it will be norm
 before calibration.
 The label for each latent class can be obtained by calling \code{attributepattern(K)}. See \code{examples} for more info.}
 
-\item{att.str}{logical; are attributes structured? If yes, \code{att.prior} must be specified where impossible latent classes have prior weights 0.}
+\item{att.str}{logical; are attributes structured? If yes, \code{att.prior} must be specified where impossible latent classes have prior weights 0.
+If attributes are structured, only the DINA, DINO or G-DINA model can be specified in \code{model} argument.}
 
 \item{verbose}{How to print calibration information
 after each EM iteration? Can be 0, 1 or 2, indicating to print no information,
@@ -638,7 +639,7 @@ extract(modp1,what = "att.prior")
 # --- User-specified attribute structure ----#
 Q <- sim30GDINA$simQ
 K <- ncol(Q)
-# divergent structure A1->A2->A3;A1->A4->A5;A1->A4->A6
+# divergent structure A1->A2->A3;A1->A4->A5
 diverg <- list(c(1,2),
                c(2,3),
                c(1,4),
@@ -692,16 +693,18 @@ extract(modp2,what = "posterior.prob")
  # attribute prior distribution matters if interested in the marginalized likelihood
  dat <- frac20$dat
  Q <- frac20$Q
- mod.initial <- GDINA(dat,Q,maxit=20) # estimation- only 20 iterations for illustration purposes
+ mod.initial <- GDINA(dat,Q,control = list(maxitr=20)) # estimation- only 20 iterations for illustration purposes
  par <- coef(mod.initial,digits=8)
  weights <- extract(mod.initial,"posterior.prob",digits=8) #posterior weights
  # use the weights as the priors
- mod.fix <- GDINA(dat,Q,catprob.parm = par,att.prior=c(weights),maxitr=0) # re-estimation
+ mod.fix <- GDINA(dat,Q,catprob.parm = par,
+                  att.prior=c(weights),control = list(maxitr = 0)) # re-estimation
  anova(mod.initial,mod.fix) # very similar - good approximation most of time
  # prior used for the likelihood calculation for the last step
  priors <- extract(mod.initial,"att.prior")
  # use the priors as the priors
- mod.fix2 <- GDINA(dat,Q,catprob.parm = par,att.prior=priors,maxitr=0) # re-estimation
+ mod.fix2 <- GDINA(dat,Q,catprob.parm = par,
+                   att.prior=priors, control = list(maxitr=0)) # re-estimation
  anova(mod.initial,mod.fix2) # identical results
 
 ####################################

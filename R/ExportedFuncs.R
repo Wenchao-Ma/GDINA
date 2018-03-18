@@ -210,6 +210,7 @@ unrestrQ <- function(Qc){
 #' Score function
 #'
 #' Calculate score function for each dichotomous item or each nonzero category for polytomous items
+#' Only applicable to saturated model ofr joint attribute distribution
 #'
 #' @param object an object of class GDINA
 #' @param parm Either \code{delta} or \code{prob} indicating score function for delta parameters and

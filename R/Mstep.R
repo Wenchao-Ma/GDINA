@@ -35,10 +35,10 @@ GNLOptim <- function(par,fn,gr=NULL,hin=NULL,hin.gr=NULL,optimizer=NULL,
       }
       phat <- c(Rj/Nj)
     }else if(modelj==1 | modelj==2){
-      rNj <- c(rep(sum(Nj[designMj[,2]==0]),sum(designMj[,2]==0)),
-               rep(sum(Nj[designMj[,2]==1]),sum(designMj[,2]==1)))
-      rRj <- c(rep(sum(Rj[designMj[,2]==0]),sum(designMj[,2]==0)),
-               rep(sum(Rj[designMj[,2]==1]),sum(designMj[,2]==1)))
+      rNj <- c(rep(sum(Nj[designMj[,2]==0],na.rm = TRUE),sum(designMj[,2]==0)),
+               rep(sum(Nj[designMj[,2]==1],na.rm = TRUE),sum(designMj[,2]==1)))
+      rRj <- c(rep(sum(Rj[designMj[,2]==0],na.rm = TRUE),sum(designMj[,2]==0)),
+               rep(sum(Rj[designMj[,2]==1],na.rm = TRUE),sum(designMj[,2]==1)))
       if (any(rNj<correction[2])){
         rNj[which(rNj<correction[2])] <- rNj[which(rNj<correction[2])] + correction[2]
         rRj[which(rNj<correction[2])] <- rRj[which(rNj<correction[2])] + correction[1]

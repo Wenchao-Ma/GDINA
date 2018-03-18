@@ -2,7 +2,7 @@
 #'
 #' This function generates the design matrix for an item
 #'
-#' @param Kj the number of attributes for item j
+#' @param Kj Required except for the MS-DINA model; The number of attributes required for item j
 #' @param model the model associated with the design matrix; It can be "GDINA","DINA","DINO", "ACDM" or "MSDINA".
 #'        The default is "GDINA". Note that models "LLM" and "RRUM" have the same design matrix as the ACDM.
 #' @param Qj the Q-matrix for item j; This is required for "MSDINA" model; The number of rows is equal to the number
@@ -28,7 +28,7 @@
 #'
 #'
 designmatrix <- function(Kj, model = "GDINA", Qj = NULL) {
-  if(toupper(model)!="MSDINA"||model!=6){
+  if(toupper(model)!="MSDINA"&&model!=6){
     stopifnot(is.nonNegativeInteger(Kj))
   }
 

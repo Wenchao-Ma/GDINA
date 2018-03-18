@@ -5,7 +5,7 @@
   joint attribute distribution modelling has been restructured as well. Other major updates include model fit evaluation using M2 statistics and other
   limited information measures, item-level model selection using likelihood ratio test and score test, classification accuracy evaluation indices, 
   bootstrap standard error estimation, etc.
-* Note that due to the major update, some results from this version may be slightly different from those using the previous version. 
+* Note that due to the major updates, some results from this version may be slightly different from those using the previous versions. 
 
 # GDINA 1.4.2
 * Fixed     - a bug in `modelcomp` in the version 1.4.1

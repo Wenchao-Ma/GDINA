@@ -7,7 +7,7 @@
 designmatrix(Kj, model = "GDINA", Qj = NULL)
 }
 \arguments{
-\item{Kj}{the number of attributes for item j}
+\item{Kj}{Required except for the MS-DINA model; The number of attributes required for item j}
 
 \item{model}{the model associated with the design matrix; It can be "GDINA","DINA","DINO", "ACDM" or "MSDINA".
 The default is "GDINA". Note that models "LLM" and "RRUM" have the same design matrix as the ACDM.}

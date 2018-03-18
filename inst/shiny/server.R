@@ -114,51 +114,44 @@ shinyServer(function(input, output) {
     print(itf())
   })
 
-  makeHeatplot1 <- function(){
+
+
+  output$heatplot1 <- reactivePlot(function(){
     if (input$goButton == 0)
       return()
     item.pair.1 <- item.pair.2 <- unadj.pvalue <- test.adj.pvalue <- NULL
-    p <- ggplot2::ggplot(extract(itf(),"logOR"),
-                         aes(x=factor(item.pair.2),
-                             y=factor(item.pair.1),
-                             fill=unadj.pvalue))+
-      geom_tile()+ scale_fill_gradient(low="red",
-                                       high="gray",
-                                       limits=c(0,0.05))+
-      theme_bw() +
-      labs(x = "Items", y = "Items",
-           title = "Heatmap plot for unadjusted p-values of log odds ratio")
-    print(p)
-  }
+    if(input$heatmap.type=="log odds ratio"){
+      df <- extract(itf(),"logOR")
+    }else{
+      df <- extract(itf(),"r")
+    }
 
-  output$heatplot1 <- renderPlot({
-    if (input$goButton == 0)
-      return()
-    makeHeatplot1()
+    if(input$heatmap.adjust){
+      p <- ggplot(df, aes(x=factor(item.pair.2),
+                          y=factor(item.pair.1),
+                          fill=test.adj.pvalue))+
+        geom_tile()+ scale_fill_gradient(low="red",
+                                         high="gray",
+                                         limits=c(0,0.05))+
+        theme_bw() +
+        labs(x = "Items", y = "Items",
+             title = paste("Heatmap plot for adjusted p-values of ",input$heatmap.type))
+    }else{
+      p <- ggplot(df, aes(x=factor(item.pair.2),
+                          y=factor(item.pair.1),
+                          fill=unadj.pvalue))+
+        geom_tile()+ scale_fill_gradient(low="red",
+                                         high="gray",
+                                         limits=c(0,0.05))+
+        theme_bw() +
+        labs(x = "Items", y = "Items",
+             title = paste("Heatmap plot for unadjusted p-values of ",input$heatmap.type))
+    }
+
+
+    print(p)
   })
 
-  makeHeatplot2 <- function(){
-    if (input$goButton == 0)
-      return()
-    item.pair.1 <- item.pair.2 <- unadj.pvalue <- test.adj.pvalue <- NULL
-    p <- ggplot2::ggplot(extract(itf(),"logOR"),
-                         aes(x=factor(item.pair.2),
-                             y=factor(item.pair.1),
-                             fill=test.adj.pvalue))+
-      geom_tile()+ scale_fill_gradient(low="red",
-                                       high="gray",
-                                       limits=c(0,0.05))+
-      theme_bw() +
-      labs(x = "Items", y = "Items",
-           title = "Heatmap plot for adjusted p-values of log odds ratio")
-    print(p)
-  }
-
-  output$heatplot2 <- renderPlot({
-    if (input$goButton == 0)
-      return()
-    makeHeatplot2()
-  })
 
 
   ip <- reactive({

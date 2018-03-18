@@ -29,11 +29,6 @@ structural.parm <- function(AlphaPattern,no.mg,logprior,att.dist,att.str,saturat
         logprior[,g] <- c(Z%*%parm)-log(sum(exp(Z%*%parm)))
         logprior[logprior[,g]<log(.Machine$double.eps),g] <- log(.Machine$double.eps)
         logprior[logprior[,g]>log(1-.Machine$double.eps),g] <- log(1-.Machine$double.eps)
-      }else if(att.dist[g]=="higher.order"){
-        HO.out <- HO.est(lambda=lambda,AlphaPattern = AlphaPattern, HOgr = g, Rl = rowProd(prior,Ng),
-                         higher.order = higher.order)
-        logprior[,g] <- HO.out$logprior
-        lambda[[g]] <- HO.out$lambda[[g]]
       }else if(att.dist[g]=="independent"){
         lambda[[g]] <- pk <- colSums(rowProd(prior,Ng)[,g]*AlphaPattern)/Ng[g] #length of K
         logprior[,g] <- AlphaPattern%*%log(pk) + (1-AlphaPattern)%*%log(1-pk)
