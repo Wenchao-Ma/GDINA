@@ -23,7 +23,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     nstarts = 3L,
     lower.p = 1e-4,
     upper.p = 1 - 1e-4,
-    lower.prior = 0L,
+    lower.prior = .Machine$double.eps,
     randomseed = 123456,
     smallNcorrection = c(.0005, .001),
     MstepMessage = FALSE
@@ -56,8 +56,11 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
         control$lower.prior <- rep(control$lower.prior, no.mg)
       if (length(loglinear) == 1)
         loglinear <- rep(loglinear, no.mg)
-      if (any(att.dist == "higher.order"))
+      if (any(att.dist == "higher.order")){
+        if(any(att.dist != "higher.order")) stop("Higher-order model must be used for all groups.",call. = FALSE)
         att.dist <- rep("higher.order", no.mg)
+      }
+
     }
 
     if (any(is.na(dat))) {

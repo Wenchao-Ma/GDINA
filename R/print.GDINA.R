@@ -246,19 +246,19 @@ print.summary.autoGDINA <- function(x,...){
 
 #'@export
 print.AIC.GDINA <- function(x,...){
-  cat("AIC =",sprintf("%.4f", x))
+  cat("AIC =",x)
 }
 #'@export
 print.BIC.GDINA <- function(x,...){
-  cat("BIC =",sprintf("%.4f", x))
+  cat("BIC =",x)
 }
 #'@export
 print.logLik.GDINA <- function(x,...){
-  cat("logLik =",sprintf("%.4f", x))
+  cat("logLik =",x)
 }
 #'@export
 print.deviance.GDINA <- function(x,...){
-  cat("deviance =",sprintf("%.4f", x))
+  cat("deviance =",x)
 }
 #'@export
 print.npar.GDINA <- function(x,...){

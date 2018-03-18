@@ -9,7 +9,7 @@ sidebar <- dashboardSidebar(
     menuItem("Parameter Estimates", icon = icon("superscript"), tabName = "par"),
     menuItem("Q-matrix Validation Outputs", icon = icon("th"), tabName = "Qval"),
     menuItem("Model selection Outputs", icon = icon("list"), tabName = "ms"),
-    menuItem("Plots", icon = icon("bar-chart"), tabName = "plot"),
+    menuItem("Item Response Function Plots", icon = icon("bar-chart"), tabName = "plot"),
     menuItem("About", icon = icon("users"), tabName = "about")
   )
 )
@@ -178,7 +178,7 @@ tabItem(tabName = "ms",
             verbatimTextOutput('pv')
           ))
 ),
-tabItem(tabName = "Item Response Function Plots",
+tabItem(tabName = "plot",
         h2("Item Response Function Plots"),
         fluidRow(box(
           title = "Item #", width = 4, solidHeader = TRUE, collapsible = TRUE, status = "primary",

@@ -34,7 +34,7 @@ structural.parm <- function(AlphaPattern,no.mg,logprior,att.dist,att.str,saturat
         logprior[,g] <- AlphaPattern%*%log(pk) + (1-AlphaPattern)%*%log(1-pk)
       }else if(att.dist[g]=="fixed"){
         logprior[,g] <- initial.logprior[,g]
-        lambda <- NULL
+        lambda[[g]] <- NA
       }
     }
   }

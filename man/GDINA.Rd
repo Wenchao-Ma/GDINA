@@ -148,7 +148,7 @@ and with main effect and first-order interaction.}
    Default = .0001.
     \item \code{upper.p} A vector for each item or nonzero category, or a scalar which will be used for all
    items or nonzero categories to specify the upper bound for success probabilities. Default = .9999.
-    \item \code{lower.prior} The lower bound for mixing proportion parameters (latent class sizes). Default = 0.
+    \item \code{lower.prior} The lower bound for mixing proportion parameters (latent class sizes). Default = .Machine$double.eps.
     \item \code{randomseed} Random seed for generating initial item parameters. Default = 123456.
     \item \code{smallNcorrection} A numeric vector with two elements specifying the corrections applied when the expected number of
 individuals in some latent groups are too small. If the expected no. of examinees is less than the second element,
