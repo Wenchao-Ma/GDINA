@@ -456,7 +456,7 @@
 #' personparm(mod12,"HO") # higher-order ability
 #' # structural parameters
 #' # first column is slope and the second column is intercept
-#' coef(mod12,"struct")
+#' coef(mod12,"lambda")
 #' # --- Higher order DINA model ---#
 #' mod22 <- GDINA(dat = dat, Q = Q, model = "DINA", att.dist="higher.order",
 #'                higher.order=list(model = "2PL",Prior=TRUE))
@@ -471,7 +471,7 @@
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' mod23 <- GDINA(dat = dat, Q = Q, model = "DINA",att.dist="loglinear",loglinear=1)
-#' coef(mod23,"struct") # intercept and three main effects
+#' coef(mod23,"lambda") # intercept and three main effects
 #'
 #'####################################
 #'#           Example 3c.            #
@@ -483,7 +483,7 @@
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' mod33 <- GDINA(dat = dat, Q = Q, att.dist="independent")
-#' coef(mod33,"struct") # mastery probability for each attribute
+#' coef(mod33,"lambda") # mastery probability for each attribute
 #'
 #'####################################
 #'#          Example 4.              #
@@ -731,7 +731,7 @@
 #' mg.est <- GDINA(dat = dat,Q = Q,group = gr,att.dist="higher.order",
 #' higher.order=list(model = "Rasch",Prior=FALSE,Type = "SameLambda"))
 #' summary(mg.est)
-#' coef(mg.est,"struct")
+#' coef(mg.est,"lambda")
 #'
 #'
 #'####################################
