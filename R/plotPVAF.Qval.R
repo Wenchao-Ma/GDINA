@@ -1,6 +1,7 @@
 #' Mesa plot for Q-matrix validation
 #'
 #' The mesa plot was first proposed by de la Torre and Ma (2016) for graphically illustrating the best q-vector(s) for each item.
+#' The q-vector on the edge of the mesa is likely to be the best q-vector.
 #'
 #' @param Qval.obj model object of class \code{Qvalidation}
 #' @param item a vector specifying which item(s) the plots are drawn for

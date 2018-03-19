@@ -2,7 +2,7 @@
 #'
 #' Calculate various model-data fit statistics
 #'
-#' Various model-data fit statistics including M2 statistic for dichotmous CDMs and Mord or M2* statistic for graded responses.
+#' Various model-data fit statistics including M2 statistic for dichotmous CDMs and Mord or M2* statistic for graded responses (Ma, under review).
 #' It also calculates SRMSR and RMSEA2.
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
@@ -12,6 +12,8 @@
 #' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @export
 #' @references
+#'
+#' Ma, W. (under review). Evaluating model data fit using limited information statistics for the sequential G-DINA model.
 #'
 #' Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. \emph{Measurement, 11}, 71-101.
 #'
@@ -29,7 +31,7 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
 {
 
   ItemOnly <- dots("ItemOnly",FALSE,...)
-  if(extract(GDINA.obj,"sequential")) stop("modelfit is not available for sequential models.",call. = FALSE)
+  # if(extract(GDINA.obj,"sequential")) stop("modelfit is not available for sequential models.",call. = FALSE)
 
   if(extract(GDINA.obj, "ngroup")!=1) {
     stop("modelfit is only applicable to single group analysis.", call. = FALSE)

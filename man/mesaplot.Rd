@@ -33,6 +33,7 @@ which means the 10 q vectors with the largest PVAFs are plotted.}
 }
 \description{
 The mesa plot was first proposed by de la Torre and Ma (2016) for graphically illustrating the best q-vector(s) for each item.
+The q-vector on the edge of the mesa is likely to be the best q-vector.
 }
 \examples{
 \dontrun{

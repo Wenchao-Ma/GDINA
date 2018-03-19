@@ -101,28 +101,11 @@
 #'    }
 #'    }
 #'
+#' @section Joint Attribute Distribution:
 #'
-#'@section Model Estimation:
-#'
-#' The MMLE/EM algorithm is implemented in this package. For G-DINA, DINA and DINO models, closed-form solutions can be found.
-#' Specifically, for the G-DINA model, \deqn{P(\alpha_{lj}^*)=R_{jl}/N_{jl}} where \eqn{R_{jl}} is the expected number of examinees with attribute pattern \eqn{\alpha_{lj}^*}
-#' answering item \eqn{j} correctly and \eqn{N_{jl}} is the expected number of examinees with attribute pattern \eqn{\alpha_{lj}^*}.
-#' For DINA or DINO model, \eqn{R_{jl}} and \eqn{N_{jl}} are collapsed for latent classes having the same probability of success.
-#' See de la Torre (2009) and de la Torre (2011) for details.
-#'
-#' For ACDM, LLM and RRUM, closed-form solutions do not exist, and therefore some general optimization techniques are
-#' adopted in M-step. See Ma, Iaconangelo and de la Torre (2016) for details.
-#' The selection of optimization techniques mainly depends on whether
-#' some specific constraints need to be added.
-#'
-#' The sequential G-DINA model can be estimated as in Ma & de la Torre (2016a) using optimization techniques. However,
-#' Ma & de la Torre (2016b) found that the sequential G-DINA, DINA and DINO models can be estimated using
-#' close-form solutions, which can be implemented in a straightforward manner as in Tutz (1997).
-#'
-#'
-#' The joint attribute distribution can be modeled using some higher-order IRT models, which is referred to as
-#' higher-order attribute structure. The higher-order attribute structure was originally proposed by de la Torre
-#' and Douglas (2004) for the DINA model. It has been extended in this package for the G-DINA model, DINA, DINO, A-CDM, LLM and RRUM.
+#' The joint attribute distribution can be modeled using various method. This section mainly focuses on the so-called
+#' higher-order approach, which was originally proposed by de la Torre
+#' and Douglas (2004) for the DINA model. It has been extended in this package for all condensation rules.
 #' Particularly, three IRT models are available for the higher-order attribute structure:
 #' Rasch model (Rasch), one parameter logistic model (1PL) and two parameter logistic model (2PL).
 #' For the Rasch model, the probability of mastering attribute \eqn{k} for individual \eqn{i} is defined as
@@ -136,6 +119,18 @@
 #' whereas in the 1PL model, a common slope parameter \eqn{\lambda_{1}} is estimated.
 #' The probability of joint attributes can be written as
 #'  \deqn{P(\strong{\alpha}|\theta_i,\strong{\lambda})=\prod_k P(\alpha_k|\theta_i,\strong{\lambda})}.
+#'
+#'
+#'@section Model Estimation:
+#'
+#' The MMLE/EM algorithm is implemented in this package. For G-DINA, DINA and DINO models, closed-form solutions exist.
+#' See de la Torre (2009) and de la Torre (2011) for details.
+#' For ACDM, LLM and RRUM, closed-form solutions do not exist, and therefore some general optimization techniques are
+#' adopted in M-step (Ma, Iaconangelo & de la Torre, 2016). The selection of optimization techniques mainly depends on whether
+#' some specific constraints need to be added.
+#'
+#' The sequential G-DINA model is a special case of the diagnostic tree model (DTM; Ma, in press) and estimated using
+#' the mapping matrix accordingly (See Tutz, 1997; Ma, in press).
 #'
 #'
 #' @section The Number of Parameters:
@@ -292,9 +287,9 @@
 #' Junker, B. W., & Sijtsma, K. (2001). Cognitive assessment models with few assumptions, and connections with nonparametric
 #' item response theory. \emph{Applied Psychological Measurement, 25}, 258-272.
 #'
-#' Ma, W., & de la Torre, J. (2016a). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
+#' Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
 #'
-#' Ma, W., & de la Torre, J. (2016b, July). A Q-matrix validation method for the sequential G-DINA model. Paper presented at the 80th International Meeting of the Psychometric Society, Asheville, NC.
+#' Ma, W. (in press). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
 #'
 #' Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. \emph{Applied Psychological Measurement, 40}, 200-217.
 #'
@@ -570,13 +565,15 @@
 #'  simD <- simGDINA(N,Q,gs.parm = gs, model = "DINA",attribute = true.att)
 #'  dat <- extract(simD,"dat")
 #'
-#' modp1 <- GDINA(dat = dat, Q = Q, att.prior = struc$att.prob, att.str = TRUE, att.dist = "saturated")
+#' modp1 <- GDINA(dat = dat, Q = Q, att.prior = struc$att.prob,
+#'                att.str = TRUE, att.dist = "saturated")
 #' modp1
 #' # prior dist.
 #' extract(modp1,what = "att.prior")
 #' # Posterior weights were slightly different
 #' extract(modp1,what = "posterior.prob")
-#' modp2 <- GDINA(dat = dat, Q = Q, att.prior = struc$att.prob, att.str = TRUE, att.dist = "fixed")
+#' modp2 <- GDINA(dat = dat, Q = Q, att.prior = struc$att.prob,
+#'                att.str = TRUE, att.dist = "fixed")
 #' modp2
 #' extract(modp2,what = "att.prior")
 #' extract(modp2,what = "posterior.prob")
@@ -607,7 +604,8 @@
 #'  # attribute prior distribution matters if interested in the marginalized likelihood
 #'  dat <- frac20$dat
 #'  Q <- frac20$Q
-#'  mod.initial <- GDINA(dat,Q,control = list(maxitr=20)) # estimation- only 20 iterations for illustration purposes
+#'  # estimation- only 20 iterations for illustration purposes
+#'  mod.initial <- GDINA(dat,Q,control = list(maxitr=20))
 #'  par <- coef(mod.initial,digits=8)
 #'  weights <- extract(mod.initial,"posterior.prob",digits=8) #posterior weights
 #'  # use the weights as the priors
@@ -826,7 +824,8 @@
 #' linkfunc = "log", control=list(conv.type="dev.change"),solver="slsqp")
 #'
 #' # identity link GDINA
-#' RRUM <- GDINA(dat = dat, Q = Q, model = "RRUM", control=list(conv.type="dev.change"),solver="slsqp")
+#' RRUM <- GDINA(dat = dat, Q = Q, model = "RRUM",
+#'               control=list(conv.type="dev.change"),solver="slsqp")
 #'
 #' # compare two models => identical
 #' anova(logACDM,RRUM)
@@ -852,13 +851,15 @@
 #'
 #'   set.seed(12345)
 #'sim <- simGDINA(N=1000,Q = Q, delta.parm = d,
-#'                model = c("MSDINA","MSDINA","DINA","DINA","DINA","MSDINA","MSDINA"))
+#'                model = c("MSDINA","MSDINA","DINA",
+#'                          "DINA","DINA","MSDINA","MSDINA"))
 #'
 #'# simulated data
 #'dat <- extract(sim,what = "dat")
 #' # estimation
 #' # MSDINA need to be specified for each strategy
-#' est <- GDINA(dat,Q,model = c("MSDINA","MSDINA","DINA","DINA","DINA","MSDINA","MSDINA"))
+#' est <- GDINA(dat,Q,model = c("MSDINA","MSDINA","DINA",
+#'                              "DINA","DINA","MSDINA","MSDINA"))
 #' coef(est,"delta")
 #'}
 #'
