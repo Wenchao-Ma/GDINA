@@ -26,6 +26,18 @@ attribute patterns (see Huebner & Wang, 2011), \code{"mp"} for marginal mastery 
 for higher-order ability estimates if a higher-order model is fitted.
 See \code{\link{GDINA}} for examples.
 }
+\examples{
+\dontrun{
+dat <- sim10GDINA$simdat
+Q <- sim10GDINA$simQ
+fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+# EAP
+head(personparm(fit))
+# MAP
+head(personparm(fit, what = "MAP"))
+}
+
+}
 \references{
 Huebner, A., & Wang, C. (2011). A note on comparing examinee classification methods for cognitive diagnosis models. \emph{Educational and Psychological Measurement, 71}, 407-419.
 }

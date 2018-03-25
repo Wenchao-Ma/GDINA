@@ -12,6 +12,14 @@ indlogPost(object, ...)
 \item{...}{additional arguments}
 }
 \description{
-Extract individual log posterior
-See \code{\link{GDINA}} for examples.
+Extract individual log posterior.
+}
+\examples{
+\dontrun{
+dat <- sim10GDINA$simdat
+Q <- sim10GDINA$simQ
+fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+iP <- indlogPost(fit)
+iP[1:6,]
+}
 }

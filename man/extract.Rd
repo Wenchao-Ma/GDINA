@@ -35,3 +35,13 @@ Objects which can be extracted from \code{GDINA} objects include:
   \item{posterior.prob}{posterior weights for each latent class}
 }
 }
+\examples{
+\dontrun{
+dat <- sim10GDINA$simdat
+Q <- sim10GDINA$simQ
+fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+extract(fit,"discrim")
+extract(fit,"designmatrix")
+}
+
+}

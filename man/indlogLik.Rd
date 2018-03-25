@@ -12,6 +12,15 @@ indlogLik(object, ...)
 \item{...}{additional arguments}
 }
 \description{
-Extract individual log-likelihood
-See \code{\link{GDINA}} for examples.
+Extract individual log-likelihood.
+}
+\examples{
+\dontrun{
+dat <- sim10GDINA$simdat
+Q <- sim10GDINA$simQ
+
+fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+iL <- indlogLik(fit)
+iL[1:6,]
+}
 }

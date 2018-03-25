@@ -35,9 +35,16 @@ deviance.GDINA <- function(object,...){
 #' @description Calculate the number of parameters for GDINA estimates.
 #' Returned the total number of parameters, the number of item parameters and
 #' the number of population parameters.
-#' See \code{\link{GDINA}} for examples.
 #' @param object GDINA object
 #' @param ... additional arguments
+#' @examples
+#' \dontrun{
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
+#'
+#' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+#' npar(fit)
+#'}
 #' @export
 #'
 npar <- function(object,...){
@@ -56,10 +63,18 @@ npar.GDINA <- function(object,...){
 
 
 #' @title Extract log-likelihood for each individual
-#' @description Extract individual log-likelihood
-#' See \code{\link{GDINA}} for examples.
+#' @description Extract individual log-likelihood.
 #' @param object GDINA object
 #' @param ... additional arguments
+#' @examples
+#' \dontrun{
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
+#'
+#' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+#' iL <- indlogLik(fit)
+#' iL[1:6,]
+#'}
 #' @export
 #'
 indlogLik <- function(object,...){
@@ -72,10 +87,17 @@ indlogLik.GDINA <- function(object,...){
 }
 
 #' @title Extract log posterior for each individual
-#' @description Extract individual log posterior
-#' See \code{\link{GDINA}} for examples.
+#' @description Extract individual log posterior.
 #' @param object GDINA object
 #' @param ... additional arguments
+#' @examples
+#' \dontrun{
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
+#' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+#' iP <- indlogPost(fit)
+#' iP[1:6,]
+#'}
 #' @export
 #'
 indlogPost <- function(object,...){

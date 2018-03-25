@@ -1,7 +1,7 @@
 #' Calculating standard errors and variance-covariance matrix using bootstrap methods
 #'
 #' This function conducts nonparametric and parametric bootstrap to calculate standard errors of model parameters.
-#' Parametric bootstrap is only applicable for single group models.
+#' Parametric bootstrap is only applicable to single group models.
 #'
 #' @param GDINA.obj an object of class GDINA
 #' @param bootsample the number of bootstrap samples
@@ -10,7 +10,7 @@
 #'
 #' @return itemparm.se standard errors for item probability of success in list format
 #' @return delta.se standard errors for delta parameters in list format
-#' @return strucparm.se standard errors for structural model parameters
+#' @return lambda.se standard errors for structural parameters of joint attribute distribution
 #' @return boot.est resample estimates
 #'
 #' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
@@ -25,6 +25,7 @@
 #' fit <- GDINA(dat = dat, Q = Q, model = "GDINA",att.dist = "higher.order")
 #' boot.fit <- bootSE(fit,bootsample = 5,randomseed=123)
 #' boot.fit$delta.se
+#' boot.fit$lambda.se
 #' }
 bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=12345){
 
@@ -38,6 +39,7 @@ bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=123
   J <- ncol(Y)
   K <- ncol(Q)
   no.mg <- extract(GDINA.obj,"ngroup")
+  stopifnot(no.mg==1)
   out.list <- vector("list",bootsample)
   # By default
 
@@ -89,6 +91,6 @@ bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=123
 
   if (!is.null(oldseed)) .GlobalEnv$.Random.seed <- oldseed  else  rm(".Random.seed", envir = .GlobalEnv)
 
-  return(list(itemparm.se=se.ip,delta.se=se.d,strucparm.se=se.jointAtt,boot.est=out.list))
+  return(list(itemparm.se=se.ip,delta.se=se.d,lambda.se=se.jointAtt,boot.est=out.list))
 }
 

@@ -1,4 +1,7 @@
-# GDINA 1.9.9.9
+# GDINA 2.0.-
+* Fixed  - bugs in C++ codes
+
+# GDINA 2.0
 * This is a major update including a large number of new features. The `GDINA` function has been largely rewritten for both flexibility and speed. 
   Users are now allowed to fit `MS-DINA` model, `Bugs` models, and define models by providing design matrix and link functions. For joint attribute
   distribution, in addition to saturated and higher-order models, users are now allowed to fit independent model and loglinear model. Code for 

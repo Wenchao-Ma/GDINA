@@ -18,6 +18,16 @@
 #' for higher-order ability estimates if a higher-order model is fitted.
 #' @param digits number of decimal places.
 #' @param ... additional arguments
+#' @examples
+#' \dontrun{
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
+#' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+#' # EAP
+#' head(personparm(fit))
+#' # MAP
+#' head(personparm(fit, what = "MAP"))
+#'}
 #'
 #' @references
 #' Huebner, A., & Wang, C. (2011). A note on comparing examinee classification methods for cognitive diagnosis models. \emph{Educational and Psychological Measurement, 71}, 407-419.
@@ -44,7 +54,7 @@ personparm <- function (object, what=c("EAP","MAP","MLE", "mp", "HO"),digits = 4
 #'    \item \code{gs} - guessing and slip parameters of each item/category.
 #'    \item \code{delta} - delta parameters of each item/category, see G-DINA formula in details.
 #'    \item \code{rrum} - RRUM parameters when items are estimated using \code{RRUM}.
-#'    \item \code{struct} - parameters for structural model.
+#'    \item \code{lambda} - structural parameters for joint attribute distribution.
 #'    }
 #'    For calculating incidental parameters using \code{\link{personparm}},
 #' \code{what} can be
@@ -53,7 +63,7 @@ personparm <- function (object, what=c("EAP","MAP","MLE", "mp", "HO"),digits = 4
 #'    \item \code{MAP} - MAP estimates of attribute pattern.
 #'    \item \code{MLE} - MLE estimates of attribute pattern.
 #'    \item \code{mp} -  marginal mastery probabilities.
-#'    \item \code{HO} -  Higher-order ability if a higher-order is fitted.
+#'    \item \code{HO} -  EAP estimates of higher-order ability if a higher-order is fitted.
 #'    }
 #' @param withSE argument for method \code{\link{coef}}; estimate standard errors or not?
 #' @param SE.type type of standard errors. For now, SEs are calculated based on outper-product of gradient.

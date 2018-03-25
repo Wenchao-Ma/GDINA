@@ -15,5 +15,13 @@ npar(object, ...)
 Calculate the number of parameters for GDINA estimates.
 Returned the total number of parameters, the number of item parameters and
 the number of population parameters.
-See \code{\link{GDINA}} for examples.
+}
+\examples{
+\dontrun{
+dat <- sim10GDINA$simdat
+Q <- sim10GDINA$simQ
+
+fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+npar(fit)
+}
 }

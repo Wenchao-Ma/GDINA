@@ -105,7 +105,7 @@
 #'
 #'
 #' }
-#' @import MASS
+## @import MASS
 #' @export
 modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.methods = "bonferroni",
                       models=c("DINA","DINO","ACDM","LLM","RRUM"),DS = FALSE,

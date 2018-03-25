@@ -103,7 +103,7 @@
 #'
 #' @section Joint Attribute Distribution:
 #'
-#' The joint attribute distribution can be modeled using various method. This section mainly focuses on the so-called
+#' The joint attribute distribution can be modeled using various methods. This section mainly focuses on the so-called
 #' higher-order approach, which was originally proposed by de la Torre
 #' and Douglas (2004) for the DINA model. It has been extended in this package for all condensation rules.
 #' Particularly, three IRT models are available for the higher-order attribute structure:
@@ -305,17 +305,18 @@
 #'
 #' Xu, X., & von Davier, M. (2008). Fitting the structured general diagnostic model to NAEP data. ETS research report, RR-08-27.
 #'
-#' @export
-#' @importFrom  nloptr nloptr slsqp nl.grad nl.jacobian
-#' @useDynLib GDINA
+#' @importFrom nloptr nloptr slsqp nl.grad nl.jacobian
 #' @importFrom Rcpp sourceCpp
-#' @import numDeriv
+#' @importFrom numDeriv hessian jacobian
 #' @importFrom alabama auglag
+#' @importFrom MASS ginv
+#' @importFrom Rsolnp solnp
 #' @importFrom graphics plot axis points text abline
-#' @import ggplot2
-#' @import stats
 #' @importFrom utils combn modifyList
+#' @import stats ggplot2 shiny shinydashboard
 #'
+#' @useDynLib GDINA
+#' @export
 #' @examples
 #' \dontrun{
 #'####################################

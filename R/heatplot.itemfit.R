@@ -5,6 +5,16 @@
 #' @param object model object of class \code{itemfit}
 #' @param ... additional arguments
 #' @seealso \code{\link{GDINA}}, \code{\link{itemfit}}
+#'
+#' @examples
+#' \dontrun{
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
+#'
+#' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+#' ift <- itemfit(fit)
+#' heatplot(ift)
+#'}
 #' @export
 #'
 heatplot <- function(object,...){

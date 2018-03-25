@@ -14,6 +14,16 @@ heatplot(object, ...)
 \description{
 Create plots of bivariate heatmap for item fit
 }
+\examples{
+\dontrun{
+dat <- sim10GDINA$simdat
+Q <- sim10GDINA$simQ
+
+fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+ift <- itemfit(fit)
+heatplot(ift)
+}
+}
 \seealso{
 \code{\link{GDINA}}, \code{\link{itemfit}}
 }

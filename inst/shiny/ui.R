@@ -1,6 +1,3 @@
-library(shiny)
-library(shinydashboard)
-library(ggplot2)
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Input", tabName = "input", icon = icon("file-text")),

@@ -7,12 +7,12 @@
 using namespace Rcpp;
 
 // aggregateCol
-arma::mat aggregateCol(arma::mat mX, arma::vec ind);
+arma::mat aggregateCol(arma::mat& mX, arma::vec ind);
 RcppExport SEXP _GDINA_aggregateCol(SEXP mXSEXP, SEXP indSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type ind(indSEXP);
     rcpp_result_gen = Rcpp::wrap(aggregateCol(mX, ind));
     return rcpp_result_gen;
@@ -92,76 +92,59 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// LouisC
-Rcpp::List LouisC(arma::mat mX, arma::vec np, arma::mat mlogPost, arma::mat itemparmLC, arma::mat parloc, arma::vec weight, int SEtype);
-RcppExport SEXP _GDINA_LouisC(SEXP mXSEXP, SEXP npSEXP, SEXP mlogPostSEXP, SEXP itemparmLCSEXP, SEXP parlocSEXP, SEXP weightSEXP, SEXP SEtypeSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type np(npSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mlogPost(mlogPostSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type itemparmLC(itemparmLCSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type parloc(parlocSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type weight(weightSEXP);
-    Rcpp::traits::input_parameter< int >::type SEtype(SEtypeSEXP);
-    rcpp_result_gen = Rcpp::wrap(LouisC(mX, np, mlogPost, itemparmLC, parloc, weight, SEtype));
-    return rcpp_result_gen;
-END_RCPP
-}
 // Mord
-Rcpp::List Mord(arma::vec item_no, arma::mat LCprob, arma::vec prior);
+Rcpp::List Mord(arma::vec item_no, arma::mat& LCprob, arma::vec prior);
 RcppExport SEXP _GDINA_Mord(SEXP item_noSEXP, SEXP LCprobSEXP, SEXP priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type item_no(item_noSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type LCprob(LCprobSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type LCprob(LCprobSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type prior(priorSEXP);
     rcpp_result_gen = Rcpp::wrap(Mord(item_no, LCprob, prior));
     return rcpp_result_gen;
 END_RCPP
 }
 // Calc_Pj
-arma::vec Calc_Pj(const arma::vec par, const arma::mat designMj, const int& linkfunc, int boundary, const double eps);
+arma::vec Calc_Pj(const arma::vec par, const arma::mat designMj, const int linkfunc, const bool boundary, const double eps);
 RcppExport SEXP _GDINA_Calc_Pj(SEXP parSEXP, SEXP designMjSEXP, SEXP linkfuncSEXP, SEXP boundarySEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec >::type par(parSEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type designMj(designMjSEXP);
-    Rcpp::traits::input_parameter< const int& >::type linkfunc(linkfuncSEXP);
-    Rcpp::traits::input_parameter< int >::type boundary(boundarySEXP);
+    Rcpp::traits::input_parameter< const int >::type linkfunc(linkfuncSEXP);
+    Rcpp::traits::input_parameter< const bool >::type boundary(boundarySEXP);
     Rcpp::traits::input_parameter< const double >::type eps(epsSEXP);
     rcpp_result_gen = Rcpp::wrap(Calc_Pj(par, designMj, linkfunc, boundary, eps));
     return rcpp_result_gen;
 END_RCPP
 }
 // Calc_Dj
-arma::vec Calc_Dj(arma::vec par, const arma::mat designMj, const int& linkfunc, int boundary, const double eps);
+arma::vec Calc_Dj(arma::vec par, const arma::mat designMj, const int linkfunc, const bool boundary, const double eps);
 RcppExport SEXP _GDINA_Calc_Dj(SEXP parSEXP, SEXP designMjSEXP, SEXP linkfuncSEXP, SEXP boundarySEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type par(parSEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type designMj(designMjSEXP);
-    Rcpp::traits::input_parameter< const int& >::type linkfunc(linkfuncSEXP);
-    Rcpp::traits::input_parameter< int >::type boundary(boundarySEXP);
+    Rcpp::traits::input_parameter< const int >::type linkfunc(linkfuncSEXP);
+    Rcpp::traits::input_parameter< const bool >::type boundary(boundarySEXP);
     Rcpp::traits::input_parameter< const double >::type eps(epsSEXP);
     rcpp_result_gen = Rcpp::wrap(Calc_Dj(par, designMj, linkfunc, boundary, eps));
     return rcpp_result_gen;
 END_RCPP
 }
 // Calc_Pj_jac
-arma::mat Calc_Pj_jac(arma::vec par, arma::mat designMj, int& linkfunc, int boundary, double eps);
+arma::mat Calc_Pj_jac(arma::vec par, arma::mat designMj, int linkfunc, const bool boundary, double eps);
 RcppExport SEXP _GDINA_Calc_Pj_jac(SEXP parSEXP, SEXP designMjSEXP, SEXP linkfuncSEXP, SEXP boundarySEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type par(parSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type designMj(designMjSEXP);
-    Rcpp::traits::input_parameter< int& >::type linkfunc(linkfuncSEXP);
-    Rcpp::traits::input_parameter< int >::type boundary(boundarySEXP);
+    Rcpp::traits::input_parameter< int >::type linkfunc(linkfuncSEXP);
+    Rcpp::traits::input_parameter< const bool >::type boundary(boundarySEXP);
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     rcpp_result_gen = Rcpp::wrap(Calc_Pj_jac(par, designMj, linkfunc, boundary, eps));
     return rcpp_result_gen;
@@ -233,12 +216,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // Mstep_obj_gr
-arma::vec Mstep_obj_gr(arma::vec& par, arma::vec& Nj, arma::vec& Rj, arma::mat designMj, arma::vec& uPj, arma::vec& lPj, int linkfunc, Rcpp::Nullable<Rcpp::IntegerMatrix> ConstrMatrix, double eps, const int ConstrType, const bool greaterthan0);
+arma::vec Mstep_obj_gr(arma::vec par, arma::vec& Nj, arma::vec& Rj, arma::mat designMj, arma::vec& uPj, arma::vec& lPj, int linkfunc, Rcpp::Nullable<Rcpp::IntegerMatrix> ConstrMatrix, double eps, const int ConstrType, const bool greaterthan0);
 RcppExport SEXP _GDINA_Mstep_obj_gr(SEXP parSEXP, SEXP NjSEXP, SEXP RjSEXP, SEXP designMjSEXP, SEXP uPjSEXP, SEXP lPjSEXP, SEXP linkfuncSEXP, SEXP ConstrMatrixSEXP, SEXP epsSEXP, SEXP ConstrTypeSEXP, SEXP greaterthan0SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec& >::type par(parSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type par(parSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type Nj(NjSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type Rj(RjSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type designMj(designMjSEXP);
@@ -296,14 +279,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // NgRg
-List NgRg(arma::mat mlogPost, arma::mat mX, arma::mat mloc, arma::vec weights);
+List NgRg(arma::mat& mlogPost, arma::mat& mX, arma::mat& mloc, arma::vec weights);
 RcppExport SEXP _GDINA_NgRg(SEXP mlogPostSEXP, SEXP mXSEXP, SEXP mlocSEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type mlogPost(mlogPostSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mloc(mlocSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mlogPost(mlogPostSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mloc(mlocSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type weights(weightsSEXP);
     rcpp_result_gen = Rcpp::wrap(NgRg(mlogPost, mX, mloc, weights));
     return rcpp_result_gen;
@@ -614,7 +597,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GDINA_ObsLogLik", (DL_FUNC) &_GDINA_ObsLogLik, 6},
     {"_GDINA_LikNR", (DL_FUNC) &_GDINA_LikNR, 7},
     {"_GDINA_LikNR_LC", (DL_FUNC) &_GDINA_LikNR_LC, 6},
-    {"_GDINA_LouisC", (DL_FUNC) &_GDINA_LouisC, 7},
     {"_GDINA_Mord", (DL_FUNC) &_GDINA_Mord, 3},
     {"_GDINA_Calc_Pj", (DL_FUNC) &_GDINA_Calc_Pj, 5},
     {"_GDINA_Calc_Dj", (DL_FUNC) &_GDINA_Calc_Dj, 5},

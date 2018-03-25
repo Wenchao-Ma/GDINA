@@ -1,6 +1,6 @@
 
 initials <- function(Q,nstarts=1,randomseed,latent.var="att"){
-set.seed(randomseed)
+# set.seed(randomseed)
 if(tolower(latent.var)=="att"){
   if(nstarts==1){
     par <- gs2p(Q=Q,gs=matrix(runif(nrow(Q)*2,0.05,0.25),ncol = 2),

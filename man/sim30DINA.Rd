@@ -3,8 +3,8 @@
 \docType{data}
 \name{sim30DINA}
 \alias{sim30DINA}
-\title{Simulated data Q-matrix and item parameters (30 items, DINA model)}
-\format{A list of Q-matrix and item parameters for a 30-item test with components:
+\title{Simulated data (30 items, DINA model)}
+\format{A list with components:
 \describe{
 \item{\code{simdat}}{simulated responses of 1000 examinees}
 \item{\code{simQ}}{artificial Q-matrix}
@@ -14,8 +14,6 @@
 sim30DINA
 }
 \description{
-Artificial Q-matrix and item parameters for a 30-item test measuring 5 attributes
-are given. Based on the Q-matrix and item parameters, responses of 1000 examinees
-were simulated using the random seed of 12345.
+Simulated data, Q-matrix and item parameters for a 30-item test measuring 5 attributes.
 }
 \keyword{datasets}

@@ -2,39 +2,41 @@
 % Please edit documentation in R/itemparm.GDINA.R
 \name{itemparm}
 \alias{itemparm}
-\title{extract lower-order structural (item) parameters}
+\alias{itemparm.GDINA}
+\title{extract item parameters (deprecated)}
 \usage{
 itemparm(object, what = c("catprob", "gs", "delta", "rrum", "itemprob",
   "LCprob"), withSE = FALSE, SE.type = 2, digits = 4, ...)
+
+\method{itemparm}{GDINA}(object, what = c("catprob", "gs", "delta", "rrum",
+  "itemprob", "LCprob"), withSE = FALSE, SE.type = 2, digits = 4, ...)
 }
 \arguments{
 \item{object}{estimated GDINA object returned from \code{\link{GDINA}}}
 
-\item{what}{what to show; It can be \code{"itemprob"} for
-item success probabilities of each reduced attribute pattern, \code{"catprob"} for
-category success probabilities of each reduced attribute pattern, \code{"LCprob"} for
-item success probabilities of each attribute pattern, \code{"gs"} for guessing and slip parameters,
-\code{"delta"} for delta parameters, \code{"rrum"} for RRUM parameters when items
-are estimated using RRUM. The default is \code{"catprob"}.}
+\item{what}{what to show.}
 
 \item{withSE}{show standard errors or not?}
 
-\item{SE.type}{Type of standard errors. Can be 1, 2 or 3, indicating outer product of gradient (OPG) estimates
-based on itemwise, incomplete or complete information matrix. See Philipp, Strobl, de la Torre, & Zeileis (2016).
-Currently, the OPG method based on the complete information matrix assumes that all latent classes are identifiable.}
+\item{SE.type}{Type of standard errors.}
 
 \item{digits}{how many decimal places for the ouput?}
 
 \item{...}{additional arguments}
 }
 \description{
-Function to extract various item parameters, including \code{"itemprob"} for
-item success probabilities of each reduced attribute pattern, \code{"catprob"} for
-category success probabilities of each reduced attribute pattern, \code{"LCprob"} for
-item success probabilities of each attribute pattern,\code{"gs"} for guessing and slip parameters,
-\code{"delta"} for delta parameters, \code{"rrum"} for RRUM parameters when items
-are estimated using RRUM. Standard errors can be estimated if \code{withSE = TRUE}.
-See \code{\link{GDINA}} for examples.
+This function has been deprecated; use \code{coef} instead.
+}
+\examples{
+\dontrun{
+dat <- sim10GDINA$simdat
+Q <- sim10GDINA$simQ
+fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+# deprecated
+itemparm(fit)
+coef(fit)
+}
+
 }
 \references{
 Philipp, M., Strobl, C., de la Torre, J., & Zeileis, A.(2017). On the estimation of standard errors in cognitive diagnosis models. \emph{Journal of Educational and Behavioral Statistics, 43}, 88-115.

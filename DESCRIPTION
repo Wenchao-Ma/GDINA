@@ -1,14 +1,14 @@
 Package: GDINA
 Type: Package
 Title: The Generalized DINA Model Framework
-Version: 1.9.9.9-10
-Date: 2018-3-18
-Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre"),email = "wenchao.ma@ua.edu"),person(given = "Jimmy", family = "de la Torre", role = "aut"), person(given="Miguel",family = "Sorrel",role = "ctb"))
-Description: A set of psychometric tools for cognitive diagnosis modeling for both dichotomous and polytomous responses. Various cognitive diagnosis models can be estimated, include the generalized deterministic inputs, noisy and gate (G-DINA) model by de la Torre (2011) <DOI:10.1007/s11336-011-9207-7>, the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.12070>, and many other models they subsume. Joint attribute distribution can be idependent, saturated, higher-order, loglinear smoothed or structured. Q-matrix validation, item and model fit statistics, model comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided.
+Version: 2.0.1
+Date: 2018-3-24
+Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre", "cph"),email = "wenchao.ma@ua.edu"),person(given = "Jimmy", family = "de la Torre", role = c("aut", "cph")), person(given="Miguel",family = "Sorrel",role = "ctb"))
+Description: A set of psychometric tools for cognitive diagnosis modeling for both dichotomous and polytomous responses. Various cognitive diagnosis models can be estimated, include the generalized deterministic inputs, noisy and gate (G-DINA) model by de la Torre (2011) <DOI:10.1007/s11336-011-9207-7>, the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.12070>, and many other models they subsume. Joint attribute distribution can be independent, saturated, higher-order, loglinear smoothed or structured. Q-matrix validation, item and model fit statistics, model comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided.
 License: GPL-3
 LazyData: TRUE
 Depends: R (>= 3.1.0)
-Imports: alabama, graphics, ggplot2, MASS, Matrix, nloptr, 
+Imports: alabama, graphics, ggplot2, MASS, nloptr, 
         numDeriv, Rcpp (>= 0.12.1), Rsolnp, stats, shiny, shinydashboard, utils
 Suggests: CDM, testthat
 LinkingTo: Rcpp, RcppArmadillo
@@ -60,8 +60,7 @@ Collate:
     'structuralparm.R'
     'summary.GDINA.R'
     'utils.R'
-    'zzz.R'
 NeedsCompilation: yes
 Packaged: 2018-03-3 02:03:59 UTC; Wenchao
-Author: Wenchao Ma [aut, cre], Jimmy de la Torre [aut], Miguel Sorrel [ctb]
+Author: Wenchao Ma [aut, cre, cph], Jimmy de la Torre [aut, cph], Miguel Sorrel [ctb]
 Maintainer: Wenchao Ma <wenchao.ma@ua.edu>

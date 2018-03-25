@@ -7,7 +7,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 
 Rcpp::List Mord(arma::vec item_no, //first col in Qc matrix
-                    arma::mat LCprob, //S x L
+                    arma::mat & LCprob, //S x L
                     arma::vec prior) { //prior is a col vector
   //arma::vec item_no = Qc.col(0);
   arma::vec unique_item_no = arma::unique(item_no);

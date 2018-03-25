@@ -1,12 +1,11 @@
-#' Simulated data, Q-matrix and item parameters (20 items, sequential DINA model)
+#' Simulated data (20 items, sequential G-DINA model)
 #'
-#' Artificial Qc-matrix and item parameters for a 20-item test measuring 5 attributes
-#' are given. Based on the Qc-matrix and item parameters, responses of 2000 examinees
-#' were simulated using the random seed of 12345.
-#' @format A list of Q-matrix and item parameters for a 20-item test with components:
+#' Simulated data, Qc-matrix and item parameters for a 20-item test measuring 5 attributes.
+#'
+#' @format A list with components:
 #' \describe{
 #' \item{\code{simdat}}{simulated polytomous responses of 2000 examinees}
 #' \item{\code{simQ}}{artificial Qc-matrix}
-#' \item{\code{simItempar}}{artificial item parameters(category level probability of success for each latent group)}
+#' \item{\code{simItempar}}{artificial item parameters (category level probability of success for each latent group)}
 #' }
 "sim20seqGDINA"

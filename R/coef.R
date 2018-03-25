@@ -81,7 +81,7 @@ coef.GDINA <-
     }else if(tolower(what)=="lambda"){
       if(extract(object,"ngroup")==1){
         out <- round(extract(object,"struc.parm")[[1]],digits)
-        if(any(extract(object,"att.dist")=="higher.order")){
+        if(extract(object,"att.dist")=="higher.order"){
           rownames(out) <- paste0("A",seq_len(extract(object,"natt")))
           colnames(out) <- c("slope","intercept")
         }else if(extract(object,"att.dist")=="saturated"){

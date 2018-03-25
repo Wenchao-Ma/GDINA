@@ -119,6 +119,7 @@ Qval <- function(GDINA.obj,
     })
     val_q <- attributepattern(K)[-1, ][loc_q, ]
   } else{
+    stop("Only PVAF is available.",call. = FALSE)
     out <- PVAF[, which(Kj == 1)]
     maxPVAF <- maxPVAF.loc <- NULL
     for (k in 1:max(Kj)) {
@@ -131,7 +132,7 @@ Qval <- function(GDINA.obj,
     }
     maxPVAF.change <- t(apply(cbind(0, maxPVAF), 1, diff))
     elbow <- out / (1 - PVAF)
-    print(PVAF)
+
     val_q <- patt[apply(elbow[, -ncol(elbow)], 1, which.max), ]
   }
 
@@ -139,7 +140,7 @@ Qval <- function(GDINA.obj,
   out.PVAF <- round(t(PVAF), digits)
   rownames(out.vsg) <-
     rownames(out.PVAF) <-
-    apply(attributepattern(K), 1, paste, collapse = "")[-1]
+    apply(patt, 1, paste, collapse = "")
   Q <- data.frame(Q, row.names = extract(GDINA.obj, "item.names"))
 
 

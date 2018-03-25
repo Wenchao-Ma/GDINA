@@ -6,9 +6,9 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 
-List NgRg(arma::mat mlogPost,
-                arma::mat mX,
-                arma::mat mloc,
+List NgRg(arma::mat & mlogPost,
+                arma::mat & mX,
+                arma::mat & mloc,
                 arma::vec weights){
     int J = mX.n_cols;
     //int L = mlogPost.n_cols;

@@ -17,7 +17,7 @@ modelfit(GDINA.obj, CI = 0.9, ...)
 Calculate various model-data fit statistics
 }
 \details{
-Various model-data fit statistics including M2 statistic for dichotmous CDMs and Mord or M2* statistic for graded responses (Ma, under review).
+Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016) and for sequential G-DINA model with graded responses (Ma, under review).
 It also calculates SRMSR and RMSEA2.
 }
 \examples{

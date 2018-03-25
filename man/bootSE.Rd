@@ -21,13 +21,13 @@ itemparm.se standard errors for item probability of success in list format
 
 delta.se standard errors for delta parameters in list format
 
-strucparm.se standard errors for structural model parameters
+lambda.se standard errors for structural parameters of joint attribute distribution
 
 boot.est resample estimates
 }
 \description{
 This function conducts nonparametric and parametric bootstrap to calculate standard errors of model parameters.
-Parametric bootstrap is only applicable for single group models.
+Parametric bootstrap is only applicable to single group models.
 }
 \examples{
 \dontrun{
@@ -39,6 +39,7 @@ Q <- sim30GDINA$simQ
 fit <- GDINA(dat = dat, Q = Q, model = "GDINA",att.dist = "higher.order")
 boot.fit <- bootSE(fit,bootsample = 5,randomseed=123)
 boot.fit$delta.se
+boot.fit$lambda.se
 }
 }
 \author{

@@ -2,7 +2,7 @@
 #'
 #' Calculate various model-data fit statistics
 #'
-#' Various model-data fit statistics including M2 statistic for dichotmous CDMs and Mord or M2* statistic for graded responses (Ma, under review).
+#' Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016) and for sequential G-DINA model with graded responses (Ma, under review).
 #' It also calculates SRMSR and RMSEA2.
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
@@ -31,7 +31,6 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
 {
 
   ItemOnly <- dots("ItemOnly",FALSE,...)
-  # if(extract(GDINA.obj,"sequential")) stop("modelfit is not available for sequential models.",call. = FALSE)
 
   if(extract(GDINA.obj, "ngroup")!=1) {
     stop("modelfit is only applicable to single group analysis.", call. = FALSE)
@@ -83,9 +82,6 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
     (se %*% t(se))
   SRMSR <-
     sqrt(sum((difr[lower.tri(difr)]) ^ 2 / (nitems * (nitems - 1) / 2)))
-  ##### SRMSR
-  #  Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. Measurement, 11(3), 71–101.
-  #  https://doi.org/10.1080/15366367.2013.831680
   M2 <- sig <- df <- rmsea <- ci <- NULL
   if (ItemOnly &
       nitems * (nitems + 1) / 2 - extract(GDINA.obj, "npar.item") < 0) {
@@ -147,7 +143,7 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
     delta22E <- matrix(0, nitems * (nitems - 1) / 2, L)
     loc <- 1
     pcpl <- rbind(diag(L - 1), -1)
-    ##=============== need to double check
+
     for (j in 1:nitems) {
       locj <- which(item.no == j)
       for (sj in locj) {
@@ -181,15 +177,8 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
       } else if (extract(GDINA.obj, "att.dist") == "loglinear") {
         Z <- designM(K, 0)
         loglinear <- extract(GDINA.obj, "loglinear")
-        if (loglinear == 1) {
-          Z <- Z[, seq_len(1 + K)]
-        } else if (loglinear == 2) {
-          Z <- Z[, seq_len(1 + K * (K + 1) / 2)]
-        } else if (loglinear == 3) {
-          Z <- Z[, seq_len(1 + choose(K, 1) + choose(K, 2) + choose(K, 3))]
-        } else{
-          stop("Argument 'loglinear' must be 1, 2 or 3.", call. = FALSE)
-        }
+        Z <- Z[, seq_len(1 + sum(sapply(seq_len(extract(GDINA.obj,"loglinear")),choose,n=K)))]
+
         delta12 <- expected.score %*% (post * Z)
         delta22 <- delta22E %*% (post * Z)
       }
@@ -205,7 +194,7 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
 
     rmsea <- sqrt(max((M2 - df) / (N * df), 0))
 
-    ci <- RMSEA.CI(M2, df, N)
+    ci <- RMSEAfun(M2, df, N)
   }
 
 
@@ -216,49 +205,27 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
  return(out)
 }
 
+func.lambda <- function(lambda, X2, df, b) pchisq(X2, df=df, ncp=lambda) - (1 - b)
 
-RMSEA.CI <- function(X2, df, N, ci.lower=.05, ci.upper=.95) {
+RMSEAfun <- function(X2, df, N) {
 
-  ##########################################################################################################################
-  # RMSEA.CI
-  # This function is copied from mirt package with minor modifications
-  # R. Philip Chalmers (2012). mirt: A Multidimensional Item Response Theory Package for the R Environment. Journal of Statistical
-  # Software, 48(6), 1-29. doi:10.18637/jss.v048.i06
-  ##########################################################################################################################
-
-
-  lower.lambda <- function(lambda) pchisq(X2, df=df, ncp=lambda) - ci.upper
-
-  upper.lambda <- function(lambda) pchisq(X2, df=df, ncp=lambda) - ci.lower
-
-
-
-  lambda.l <- try(uniroot(f=lower.lambda, lower=0, upper=X2)$root, silent=TRUE)
-
-  lambda.u <- try(uniroot(f=upper.lambda, lower=0, upper=max(N, X2*5))$root, silent=TRUE)
-
-  if(!inherits(lambda.l, 'try-error')){
-
-    RMSEA.lower <- sqrt(lambda.l/(N*df))
-
-  } else {
-
-    RMSEA.lower <- 0
-
-  }
-
-  if(!inherits(lambda.u, 'try-error')){
-
-    RMSEA.upper <- sqrt(lambda.u/(N*df))
-
-  } else {
-
-    RMSEA.upper <- 0
-
+  lower <- 0
+  l.upper <- X2
+  u.upper <- max(N, X2*5)
+  if(func.lambda(lower,X2,df,b=0.05)*func.lambda(l.upper,X2,df,b=0.05)>0){
+    l.lambda <- 0
+  }else{
+    l.lambda <- uniroot(f=func.lambda, lower=lower, upper=l.upper, X2=X2, b=0.05, df=df)$root
   }
 
 
+  if(func.lambda(lower,X2,df,b=0.95)*func.lambda(u.upper,X2,df,b=0.95)>0){
+    u.lambda <- 0
+  }else{
+    u.lambda <- uniroot(f=func.lambda, lower=lower, upper=u.upper, X2=X2, b=0.95, df=df)$root
+  }
 
-  return(c(RMSEA.lower, RMSEA.upper))
+
+  return(c(sqrt(l.lambda/(N*df)), sqrt(u.lambda/(N*df))))
 
 }

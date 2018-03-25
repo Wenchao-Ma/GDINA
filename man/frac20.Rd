@@ -14,7 +14,6 @@ frac20
 }
 \description{
 Fraction Subtraction data (Tatsuoka, 2002) consists of responses of 536 examinees to 20 items measuring 8 attributes.
-The data set is obtained from \url{http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1467-9876/homepage/series_c_datasets.htm}.
 }
 \examples{
 \dontrun{

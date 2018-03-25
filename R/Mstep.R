@@ -98,7 +98,7 @@ GNLOptim <- function(par,fn,gr=NULL,hin=NULL,hin.gr=NULL,optimizer=NULL,
       }else{
       ret$delta <- op$par
       ret$opt <- op
-      ret$phat <- c(Calc_Pj(op$par,designMj,linkfunc,boundary = 0))
+      ret$phat <- c(Calc_Pj(op$par,designMj,linkfunc,FALSE))
       if(any(ret$phat<0)||any(ret$phat>1)){
         warning(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[stats::constrOptim]"),call. = FALSE)
         ret$convergence <- -3
@@ -125,7 +125,7 @@ GNLOptim <- function(par,fn,gr=NULL,hin=NULL,hin.gr=NULL,optimizer=NULL,
       }else{
       ret$delta <- op$par
       ret$opt <- op
-      ret$phat <- c(Calc_Pj(op$par,designMj,linkfunc,boundary = 0))
+      ret$phat <- c(Calc_Pj(op$par,designMj,linkfunc,FALSE))
       if(any(ret$phat<0)||any(ret$phat>1)){
         warning(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[alabama::auglag]"),call. = FALSE)
         ret$convergence <- -3
@@ -156,7 +156,7 @@ GNLOptim <- function(par,fn,gr=NULL,hin=NULL,hin.gr=NULL,optimizer=NULL,
       print(op$pars)
       ret$delta <- op$pars
       ret$opt <- op
-      ret$phat <- c(Calc_Pj(op$pars,designMj,linkfunc,boundary = 0))
+      ret$phat <- c(Calc_Pj(c(op$pars),designMj,linkfunc,FALSE))
       if(any(ret$phat<0)||any(ret$phat>1)){
         message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[Rsolnp:solnp]"),call. = FALSE)
         ret$convergence <- -3
@@ -184,7 +184,7 @@ GNLOptim <- function(par,fn,gr=NULL,hin=NULL,hin.gr=NULL,optimizer=NULL,
     }else{
       ret$delta <- op$solution
       ret$opt <- op
-      ret$phat <- c(Calc_Pj(op$solution,designMj,linkfunc,boundary = 0))
+      ret$phat <- c(Calc_Pj(op$solution,designMj,linkfunc,FALSE))
       if(any(ret$phat<0)||any(ret$phat>1)){
         message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[nloptr:slsqp]"),call. = FALSE)
         ret$convergence <- -3
@@ -211,7 +211,7 @@ GNLOptim <- function(par,fn,gr=NULL,hin=NULL,hin.gr=NULL,optimizer=NULL,
     }else{
       ret$delta <- op$solution
       ret$opt <- op
-      ret$phat <- c(Calc_Pj(op$solution,designMj,linkfunc,boundary = 0))
+      ret$phat <- c(Calc_Pj(op$solution,designMj,linkfunc,FALSE))
       if(any(ret$phat<0)||any(ret$phat>1)){
         message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[nloptr:nloptr]"),call. = FALSE)
         ret$convergence <- -3
@@ -227,7 +227,7 @@ GNLOptim <- function(par,fn,gr=NULL,hin=NULL,hin.gr=NULL,optimizer=NULL,
 initials_optim <- function(par,modelj,Nj,Rj,designMj,uPj,lPj, ConstrMatrix,linkfunc,eps=1e-5,ConstrType){
   # print(par)
   np <- length(par)
-  pj <- c(Calc_Pj(par,designMj,linkfunc,boundary = 0))
+  pj <- c(Calc_Pj(par,designMj,linkfunc,FALSE))
   if(ConstrType==1){
 
     if(any(pj<=lPj)||any(pj>=uPj)){
@@ -235,10 +235,10 @@ initials_optim <- function(par,modelj,Nj,Rj,designMj,uPj,lPj, ConstrMatrix,linkf
       pj[which(pj<=lPj)] <- lPj + eps
       pj[which(pj>=uPj)] <- uPj - eps
 
-      tmpar <- Calc_Dj(par = pj[seq_len(np)],
-                       designMj = designMj[seq_len(np),],
-                       linkfunc = linkfunc, boundary = 0)
-      tmpj <- c(Calc_Pj(tmpar,designMj,linkfunc,boundary = 0))
+      tmpar <- Calc_Dj(pj[seq_len(np)],
+                       designMj[seq_len(np),],
+                       linkfunc, FALSE)
+      tmpj <- c(Calc_Pj(tmpar,designMj,linkfunc,FALSE))
       if(any(tmpj<=lPj)||any(tmpj>=uPj)){
         if(modelj==4){
           pj <- qlogis(pj)
@@ -294,7 +294,7 @@ GNLOptim_call <- function(par,solver,modelj,correction,auglag_args,nloptr_args,s
 
       phat[phat<lPj] <- lPj
       phat[phat>uPj] <- uPj
-      ret$delta <- c(Calc_Dj(phat, designMj, linkfunc = linkfunc, boundary = 1))
+      ret$delta <- c(Calc_Dj(phat, designMj, linkfunc, TRUE))
       ret$opt <- list(convergence=0,message="converged - closed-form solution.")
       ret$phat <- phat
       ret$convergence <- 0
@@ -309,7 +309,7 @@ GNLOptim_call <- function(par,solver,modelj,correction,auglag_args,nloptr_args,s
 
       phat[phat<lPj] <- lPj
       phat[phat>uPj] <- uPj
-      ret$delta <- c(Calc_Dj(phat, designMj, linkfunc = linkfunc, boundary = 1))
+      ret$delta <- c(Calc_Dj(phat, designMj, linkfunc, TRUE))
       ret$opt <- list(convergence=0,message="converged - closed-form solution.")
       ret$phat <- phat
       ret$convergence <- 0
@@ -333,7 +333,7 @@ GNLOptim_call <- function(par,solver,modelj,correction,auglag_args,nloptr_args,s
       }else{
         ret$delta <- op$par
         ret$opt <- op
-        ret$phat <- c(Calc_Pj(op$par,designMj,linkfunc,boundary = 0))
+        ret$phat <- c(Calc_Pj(op$par,designMj,linkfunc,FALSE))
         if(any(ret$phat<0)||any(ret$phat>1)){
           message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[nloptr:slsqp]"),call. = FALSE)
           ret$convergence <- -3

@@ -182,7 +182,7 @@ Possible options include \link[nloptr]{nloptr}, \link[Rsolnp]{solnp} and \link[a
    \item \code{gs} - guessing and slip parameters of each item/category.
    \item \code{delta} - delta parameters of each item/category, see G-DINA formula in details.
    \item \code{rrum} - RRUM parameters when items are estimated using \code{RRUM}.
-   \item \code{struct} - parameters for structural model.
+   \item \code{lambda} - structural parameters for joint attribute distribution.
    }
    For calculating incidental parameters using \code{\link{personparm}},
 \code{what} can be
@@ -191,7 +191,7 @@ Possible options include \link[nloptr]{nloptr}, \link[Rsolnp]{solnp} and \link[a
    \item \code{MAP} - MAP estimates of attribute pattern.
    \item \code{MLE} - MLE estimates of attribute pattern.
    \item \code{mp} -  marginal mastery probabilities.
-   \item \code{HO} -  Higher-order ability if a higher-order is fitted.
+   \item \code{HO} -  EAP estimates of higher-order ability if a higher-order is fitted.
    }}
 
 \item{withSE}{argument for method \code{\link{coef}}; estimate standard errors or not?}
@@ -358,7 +358,7 @@ de la Torre(2011) for details.
 \section{Joint Attribute Distribution}{
 
 
-The joint attribute distribution can be modeled using various method. This section mainly focuses on the so-called
+The joint attribute distribution can be modeled using various methods. This section mainly focuses on the so-called
 higher-order approach, which was originally proposed by de la Torre
 and Douglas (2004) for the DINA model. It has been extended in this package for all condensation rules.
 Particularly, three IRT models are available for the higher-order attribute structure:

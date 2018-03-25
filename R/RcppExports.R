@@ -25,23 +25,19 @@ LikNR_LC <- function(mP, mX, vlogPrior, vgroup, weights, simplify = 1L) {
     .Call('_GDINA_LikNR_LC', PACKAGE = 'GDINA', mP, mX, vlogPrior, vgroup, weights, simplify)
 }
 
-LouisC <- function(mX, np, mlogPost, itemparmLC, parloc, weight, SEtype) {
-    .Call('_GDINA_LouisC', PACKAGE = 'GDINA', mX, np, mlogPost, itemparmLC, parloc, weight, SEtype)
-}
-
 Mord <- function(item_no, LCprob, prior) {
     .Call('_GDINA_Mord', PACKAGE = 'GDINA', item_no, LCprob, prior)
 }
 
-Calc_Pj <- function(par, designMj, linkfunc, boundary = 0L, eps = 1e-16) {
+Calc_Pj <- function(par, designMj, linkfunc, boundary = FALSE, eps = 1e-16) {
     .Call('_GDINA_Calc_Pj', PACKAGE = 'GDINA', par, designMj, linkfunc, boundary, eps)
 }
 
-Calc_Dj <- function(par, designMj, linkfunc, boundary = 0L, eps = 1e-16) {
+Calc_Dj <- function(par, designMj, linkfunc, boundary = FALSE, eps = 1e-16) {
     .Call('_GDINA_Calc_Dj', PACKAGE = 'GDINA', par, designMj, linkfunc, boundary, eps)
 }
 
-Calc_Pj_jac <- function(par, designMj, linkfunc, boundary = 0L, eps = 1e-16) {
+Calc_Pj_jac <- function(par, designMj, linkfunc, boundary = FALSE, eps = 1e-16) {
     .Call('_GDINA_Calc_Pj_jac', PACKAGE = 'GDINA', par, designMj, linkfunc, boundary, eps)
 }
 

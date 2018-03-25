@@ -148,6 +148,15 @@ extract.simGDINA <- function(object,
 #' @param what what to extract
 #' @param ... additional arguments
 #'
+#' @examples
+#'\dontrun{
+#' dat <- sim10GDINA$simdat
+#' Q <- sim10GDINA$simQ
+#' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
+#' extract(fit,"discrim")
+#' extract(fit,"designmatrix")
+#' }
+#'
 #' @export
 extract <- function (object, what, ...) {
   UseMethod("extract")
@@ -214,10 +223,10 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                   }else{
                     dat <- extract(object,"dat")
                   }
-                  out <- NgRg(mlogPost = object$technicals$logposterior.i,
-                              mX = dat,
-                              mloc = eta(matrix(1,extract(object,"ncat"),extract(object,"natt"))),
-                              weights = rep(1,nrow(dat)))$Rg
+                  out <- NgRg(object$technicals$logposterior.i,
+                              dat,
+                              eta(matrix(1,extract(object,"ncat"),extract(object,"natt"))),
+                              rep(1,nrow(dat)))$Rg
                   row.names(out) <- object$options$item.names
                   out
                 },
@@ -227,10 +236,10 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                   }else{
                     dat <- extract(object,"dat")
                   }
-                  out <- NgRg(mlogPost = object$technicals$logposterior.i,
-                              mX = dat,
-                              mloc = eta(matrix(1,extract(object,"ncat"),extract(object,"natt"))),
-                              weights = rep(1,nrow(dat)))$Ng
+                  out <- NgRg(object$technicals$logposterior.i,
+                              dat,
+                              eta(matrix(1,extract(object,"ncat"),extract(object,"natt"))),
+                              rep(1,nrow(dat)))$Ng
                   row.names(out) <- object$options$item.names
                   out
                 },

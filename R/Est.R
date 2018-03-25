@@ -31,7 +31,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
   control <- utils::modifyList(myControl,control)
 
-
+  set.seed(control$randomseed)
 
 
   if (is.null(group)){
@@ -177,7 +177,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     if(model[j]>=0&model[j]<=5){
       DesignMatrices[[j]] <- designmatrix(Kj[j],model[j])
     }else if(model[j]==6){
-      DesignMatrices[[j]] <- designmatrix(999,model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
+      DesignMatrices[[j]] <- designmatrix(model = model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
     }
     if(mono.constraint[[j]]){
       ConstrType[j] <- 3

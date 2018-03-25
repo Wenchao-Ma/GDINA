@@ -3,13 +3,13 @@ citHeader("To cite GDINA package in publications use:")
 citEntry(entry = "Manual",
   title        = "{GDINA: The generalized DINA model framework}",
   author       = as.person("Ma, W. and de la Torre, J."),
-  year         = "2017",
-  note         = "R package version 1.4.1",
+  year         = "2018",
+  note         = "R package version 2.0",
   url          = "https://CRAN.R-project.org/package=GDINA",
 
   textVersion  =
-  paste("Ma, W. & de la Torre, J. (2017).",
+  paste("Ma, W. & de la Torre, J. (2018).",
         "GDINA: The generalized DINA model framework.",
-        "R package version 1.4.1. Retrived from https://CRAN.R-project.org/package=GDINA")
+        "R package version 2.0. Retrived from https://CRAN.R-project.org/package=GDINA")
 )
 

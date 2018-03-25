@@ -12,7 +12,7 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
 
    NR <- list()
    for(g in HOgr){
-    NR[[g]] <- expectedNR(AlphaPattern = AlphaPattern, nc = Rl[,g], theta = Aq[,g], f_theta = WAq[,g], a = lambda[[g]][,1], b = lambda[[g]][,2])
+    NR[[g]] <- expectedNR(AlphaPattern, Rl[,g], Aq[,g], WAq[,g], lambda[[g]][,1], lambda[[g]][,2])
    }
 
 
@@ -75,14 +75,15 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
 
     Pg_alpha_c <- ColNormalize(Rl)
     for(gg in 2:max(HOgr)){
-      WAq[,gg] <- higher.order$QuadWghts[,gg]  <-  colSums(PostTheta(AlphaPattern = AlphaPattern, theta = Aq[,gg],
-                                                                  f_theta = WAq[,gg], a=lambda[[gg]][,1],b=lambda[[gg]][,2])*Pg_alpha_c[,gg])
+      WAq[,gg] <-
+        higher.order$QuadWghts[,gg]  <-
+        colSums(PostTheta(AlphaPattern, Aq[,gg], WAq[,gg], lambda[[gg]][,1],lambda[[gg]][,2])*Pg_alpha_c[,gg])
     }
 
   }
 logprior <- matrix(0,nrow(AlphaPattern),length(HOgr))
 for(g in HOgr){
-  logprior[,g] <- logP_AlphaPattern(AlphaPattern = AlphaPattern, theta = Aq[,g], f_theta = WAq[,g], a = lambda[[g]][,1], b = lambda[[g]][,2])
+  logprior[,g] <- logP_AlphaPattern(AlphaPattern, Aq[,g], WAq[,g], lambda[[g]][,1], lambda[[g]][,2])
 }
   return(list(logprior=logprior,lambda=lambda,higher.order=higher.order))
 }
@@ -171,18 +172,18 @@ Lfj_commonslope <- function(a,d,theta,r,n, prior = FALSE, mu, sigma){
 #   return(hess)
 # }
 
-HO.SE <- function(v,Xloglik,alphapattern,theta,weight,K,model="1PL"){
-
-    if(model=="2PL"){
-    a <- v[1:K]
-    d <- v[(K+1):(2*K)]
-  }else if(model=="1PL"){
-    a <- rep(v[1],K)
-    d <- v[-1]
-  }else if(model=="Rasch"){
-    a <- rep(1,K)
-    d <- v
-  }
-
-  incomplogL(a=a, b=d,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight)
-}
+# HO.SE <- function(v,Xloglik,alphapattern,theta,weight,K,model="1PL"){
+#
+#     if(model=="2PL"){
+#     a <- v[1:K]
+#     d <- v[(K+1):(2*K)]
+#   }else if(model=="1PL"){
+#     a <- rep(v[1],K)
+#     d <- v[-1]
+#   }else if(model=="Rasch"){
+#     a <- rep(1,K)
+#     d <- v
+#   }
+#
+#   incomplogL(a=a, b=d,logL = Xloglik, AlphaPattern = alphapattern, theta = theta, f_theta = weight)
+# }

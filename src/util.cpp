@@ -4,7 +4,6 @@
 
 using namespace Rcpp;
 
-using namespace arma;
 
 
 
@@ -20,7 +19,7 @@ arma::umat combnCpp(double n, double k) {
 
   arma::umat out = arma::zeros<arma::umat>(k, n_subsets);
 
-  arma::uvec a = arma::linspace<uvec>(1, k, k);
+  arma::uvec a = arma::linspace<arma::uvec>(1, k, k);
 
   out.col(0) = a;
 
@@ -50,7 +49,7 @@ arma::umat combnCpp(double n, double k) {
 
       ++h;
 
-      j = arma::linspace<uvec>(1, h, h);
+      j = arma::linspace<arma::uvec>(1, h, h);
 
     }
 
@@ -60,7 +59,7 @@ arma::umat combnCpp(double n, double k) {
 
   }
 
-  return(out);
+  return out;
 
 }
 
@@ -71,7 +70,7 @@ arma::mat rowProd(arma::mat & m,
 
   arma::rowvec vv =  arma::trans(v);
   arma::mat mm = m.each_row()%vv;
-  return (mm);
+  return mm;
 }
 
 
@@ -80,9 +79,9 @@ arma::mat rowProd(arma::mat & m,
 arma::umat alpha2(const int K) {
   arma::umat D;
   arma::umat A;
-
     A.eye(K,K);
-    arma::umat B = arma::ones<arma::umat>(K,pow(2,K)-K-1);
+
+    arma::umat B = arma::ones<arma::umat>(K,std::pow(2.0,K)-K-1);
     int j = 0;
     for(int l=2;l<K;++l){
       arma::umat cob = combnCpp(K, l);
@@ -96,7 +95,7 @@ arma::umat alpha2(const int K) {
     arma::umat C = arma::join_rows(A,B);
     D = arma::trans(arma::join_rows(arma::zeros<arma::umat>(K,1),C));
 
-  return(D);
+  return D;
 
 }
 
@@ -118,25 +117,25 @@ arma::umat alphap(const arma::uvec maxlevel) {
     ++kk;
   }
   arma::umat ret2 = as<arma::umat>(ret);
-  return (ret2);
+  return ret2;
 }
 
 // [[Rcpp::export]]
 
 arma::mat ColNormalize(arma::mat & X){
   arma::mat Y = X;
-  arma::rowvec denom = sum(X,0);
+  arma::rowvec denom = arma::sum(X,0);
   Y.each_row() /= denom;
-  return (Y);
+  return Y;
 }
 
 // [[Rcpp::export]]
 
 arma::mat RowNormalize(arma::mat & X){
   arma::mat Y = X;
-  arma::vec denom = sum(X,1);
+  arma::vec denom = arma::sum(X,1);
   Y.each_col() /= denom;
-  return (Y);
+  return Y;
 }
 
 // [[Rcpp::export]]
@@ -144,8 +143,8 @@ arma::mat RowNormalize(arma::mat & X){
 double Pr_2PL(double theta, double a, double b) {
 
   double L = a*theta+b;
-  L = 1/(1+exp(-1*L));
-  return(L);
+  L = 1/(1+std::exp(-1.0*L));
+  return L;
 
 }
 
@@ -157,10 +156,10 @@ arma::mat Pr_2PL_vec(const arma::vec & theta, //N x 1
                      const double minvalue = 1e-16,
                      const double maxvalue= 1 - 1e-16) {
   int N = theta.n_elem;
-  arma::mat P = 1/(1+1/exp(theta*a.t()+arma::ones<arma::mat>(N,1)*b.t()));
-  P.elem(find(P<minvalue)).fill(minvalue);
-  P.elem(find(P>maxvalue)).fill(maxvalue);
-  return(P); // N x K
+  arma::mat P = 1/(1+1/arma::exp(theta*a.t()+arma::ones<arma::mat>(N,1)*b.t()));
+  P.elem(arma::find(P<minvalue)).fill(minvalue);
+  P.elem(arma::find(P>maxvalue)).fill(maxvalue);
+  return P; // N x K
 }
 
 // [[Rcpp::export]]
@@ -170,8 +169,8 @@ arma::mat logLikPattern(arma::mat AlphaPattern, //2^K x K
                        arma::vec a,
                        arma::vec b){
   arma::mat P = arma::trans(Pr_2PL_vec(theta,a,b)); //K x nnodes
-  arma::mat logP = AlphaPattern*log(P) + (1-AlphaPattern)*log(1-P);
-  return (logP); // 2^K x nnodes log P(AlphaPattern|theta_q,a,b)
+  arma::mat logP = AlphaPattern*arma::log(P) + (1-AlphaPattern)*arma::log(1-P);
+  return logP; // 2^K x nnodes log P(AlphaPattern|theta_q,a,b)
 }
 
 // [[Rcpp::export]]
@@ -181,12 +180,13 @@ arma::mat PostTheta(arma::mat AlphaPattern, //2^K x K
                         arma::vec f_theta, // weights
                         arma::vec a,
                         arma::vec b){
+
   int N = AlphaPattern.n_rows; //2^K
-  arma::mat logP = logLikPattern(AlphaPattern = AlphaPattern, theta = theta, a=a,b=b); // 2^K x nnodes
-  arma::mat jointP = exp(logP+arma::ones<arma::mat>(N,1)*log(arma::trans(f_theta)));// 2^K x nnodes
+  arma::mat logP = logLikPattern(AlphaPattern, theta, a,b); // 2^K x nnodes
+  arma::mat jointP = arma::exp(logP+arma::ones<arma::mat>(N,1)*arma::log(arma::trans(f_theta)));// 2^K x nnodes
   arma::vec denom = arma::sum(jointP,1);
   arma::mat post = jointP.each_col() / denom; // 2^K x nnodes P(theta_q|AlphaPattern)
-  return (post);
+  return post;
 }
 
 // [[Rcpp::export]]
@@ -199,7 +199,7 @@ Rcpp::List expectedNR(arma::mat AlphaPattern, //2^K x K
   int Q = f_theta.n_elem;
   int N = AlphaPattern.n_rows; //2^K
   int K = log2(N);
-  arma::mat post = PostTheta(AlphaPattern = AlphaPattern, theta = theta, f_theta = f_theta, a=a,b=b); // 2^K x nnodes P(theta_q|AlphaPattern)
+  arma::mat post = PostTheta(AlphaPattern, theta, f_theta, a,b); // 2^K x nnodes P(theta_q|AlphaPattern)
   post.each_col()%=nc;
   arma::vec n = arma::sum(post,0).t();
   arma::mat r = arma::zeros<arma::mat>(K,Q);
@@ -220,9 +220,9 @@ arma::vec logP_AlphaPattern(arma::mat AlphaPattern, //2^K x K
                        arma::vec a,
                        arma::vec b){
   int N = AlphaPattern.n_rows;
-  arma::mat logP = logLikPattern(AlphaPattern = AlphaPattern, theta = theta, a=a,b=b); // 2^K x nnodes
-  arma::vec lP = log(sum(exp(logP + arma::ones<arma::mat>(N,1)*log(arma::trans(f_theta))),1));
-  return (lP); //log pi_c 2^K x 1
+  arma::mat logP = logLikPattern(AlphaPattern, theta, a,b); // 2^K x nnodes
+  arma::vec lP = arma::log(arma::sum(arma::exp(logP + arma::ones<arma::mat>(N,1)*log(arma::trans(f_theta))),1));
+  return lP; //log pi_c 2^K x 1
 }
 
 // [[Rcpp::export]]
@@ -236,7 +236,7 @@ double HoIRTlogLik(arma::mat AlphaPattern, //2^K x K
   arma::vec logL = logP_AlphaPattern(AlphaPattern,theta,f_theta,a,b);
   double L = arma::accu(ns%logL); //sum_c^{2^K} n_c log(pi_c)
 
-  return (L);
+  return L;
 }
 
 // [[Rcpp::export]]
@@ -249,12 +249,9 @@ double HoIRTlogLik3(arma::vec & ns,
                    arma::vec b){
   //int N = ns.n_elem;
   arma::mat P1 = arma::trans(Pr_2PL_vec(theta,a,b)); //K x nnodes
-  //arma::mat logP = mX*log(P1) + (1-mX)*log(1-P1); // N x nnodes P(Xpattern|theta_q)=prod_across all items (attributes)
-  //arma::vec logL = log(sum(exp(mX*log(P1) + (1-mX)*log(1-P1)+arma::ones<arma::mat>(N,1)*log(arma::trans(f_theta))),1));
-
   double L = arma::accu(ns%log(sum(exp(mX*log(P1) + (1-mX)*log(1-P1)+arma::ones<arma::mat>(ns.n_elem,1)*log(arma::trans(f_theta))),1)));
 
-  return (L);
+  return L;
 }
 // [[Rcpp::export]]
 double incomplogL(arma::vec a,
@@ -266,7 +263,7 @@ double incomplogL(arma::vec a,
                   ){
   arma::mat lP = exp(logLikPattern(AlphaPattern = AlphaPattern, theta = theta, a = a, b = b)); //2^K x nnodes P(alpha_c|theta_s)
   double L = arma::accu(log(sum(exp(logL)*rowProd(lP,f_theta),1))); //N x 2^K * 2^K x nnodes
-  return(L);
+  return L;
 }
 
 // [[Rcpp::export]]
@@ -275,7 +272,7 @@ arma::umat designM(const int Kj,
                   const int model) {
   arma::umat M;
   arma::umat malpha;
-  int Lj = pow(2,Kj);
+  int Lj = std::pow(2.0,Kj);
   if (model==0){//GDINA
       malpha = alpha2(Kj);
     arma::umat M0 = join_rows(arma::ones<arma::umat>(Lj,1),malpha);
@@ -308,7 +305,7 @@ arma::umat designM(const int Kj,
     malpha = alpha2(Kj);
     M = join_rows(arma::ones<arma::umat>(Lj,1),malpha);
   }
-  return (M);
+  return M;
 }
 
 // [[Rcpp::export]]
@@ -332,7 +329,7 @@ arma::uvec matchMatrix(arma::umat A,
 
   }
   R++;
-  return (R);
+  return R;
 }
 
 // [[Rcpp::export]]

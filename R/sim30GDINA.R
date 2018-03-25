@@ -1,10 +1,8 @@
-#' Simulated data, Q-matrix and item parameters (30 items, G-DINA model)
+#' Simulated data (30 items, G-DINA model)
 #'
-#' Artificial Q-matrix and item parameters for a 30-item test measuring 5 attributes
-#' are given. Based on the Q-matrix and item parameters, responses of 1000 examinees
-#' were simulated using the random seed of 12345.
+#' Simulated data, Q-matrix and item parameters for a 30-item test measuring 5 attributes.
 #'
-#' @format A list of responses, Q-matrix and item parameters for a 30-item test with components:
+#' @format A list with components:
 #' \describe{
 #' \item{\code{simdat}}{simulated responses of 1000 examinees}
 #' \item{\code{simQ}}{artificial \eqn{30 \times 5} Q-matrix}
