@@ -261,7 +261,7 @@ double incomplogL(arma::vec a,
                   arma::vec theta, //quand point
                   arma::vec f_theta // weights
                   ){
-  arma::mat lP = exp(logLikPattern(AlphaPattern = AlphaPattern, theta = theta, a = a, b = b)); //2^K x nnodes P(alpha_c|theta_s)
+  arma::mat lP = exp(logLikPattern(AlphaPattern, theta, a, b)); //2^K x nnodes P(alpha_c|theta_s)
   double L = arma::accu(log(sum(exp(logL)*rowProd(lP,f_theta),1))); //N x 2^K * 2^K x nnodes
   return L;
 }
@@ -362,6 +362,6 @@ arma::umat eta(arma::umat & Q) {
     }
     parloc.col(j) = matchMatrix(pattj, transform_patt);
   }
-  return (arma::trans(parloc)); //J x L
+  return arma::trans(parloc); //J x L
 }
 
