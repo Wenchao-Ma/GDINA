@@ -14,7 +14,7 @@ npar(object, ...)
 \description{
 Calculate the number of parameters for GDINA estimates.
 Returned the total number of parameters, the number of item parameters and
-the number of population parameters.
+the number parameters of joint attribute distribution.
 }
 \examples{
 \dontrun{

@@ -9,7 +9,6 @@
 arma::mat uP(const arma::mat & mloc, //J x L
              const arma::mat & mpar){
   // calculate mP J x L matrix P(Xij=1|alpha_c)
-
   const int L = mloc.n_cols;
   const int J = mloc.n_rows;
   const arma::vec Lj = arma::max(mloc,1);

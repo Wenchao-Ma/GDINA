@@ -11,10 +11,6 @@ using namespace Rcpp;
 
 arma::umat combnCpp(double n, double k) {
 
-  // this function is modified based on mycombnCpp function in selectr package
-  // under GNU GPL v2
-  // https://github.com/fditraglia/selectr/tree/master/R
-
   double n_subsets = Rf_choose(n, k);
 
   arma::umat out = arma::zeros<arma::umat>(k, n_subsets);
@@ -182,7 +178,7 @@ arma::mat PostTheta(arma::mat AlphaPattern, //2^K x K
                         arma::vec b){
 
   int N = AlphaPattern.n_rows; //2^K
-  arma::mat logP = logLikPattern(AlphaPattern, theta, a,b); // 2^K x nnodes
+  arma::mat logP = logLikPattern(AlphaPattern, theta, a, b); // 2^K x nnodes
   arma::mat jointP = arma::exp(logP+arma::ones<arma::mat>(N,1)*arma::log(arma::trans(f_theta)));// 2^K x nnodes
   arma::vec denom = arma::sum(jointP,1);
   arma::mat post = jointP.each_col() / denom; // 2^K x nnodes P(theta_q|AlphaPattern)
