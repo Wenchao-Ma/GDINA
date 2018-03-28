@@ -43,6 +43,8 @@ if (!is.null(catprob.parm)){
   if (att.str) {
     if (max(Q)>1) stop("Attribute structure cannot be specified if attributes are polytomous.",call. = FALSE)
     if(any(att.dist=="higher.order")) stop("Higher-order structure is not allowed if att.str = TRUE.",call.=FALSE)
+    if(any(att.dist=="independent")) stop("Independent structure is not allowed if att.str = TRUE.",call.=FALSE)
+    if(any(att.dist=="loglinear")) stop("Loglinear structure is not allowed if att.str = TRUE.",call.=FALSE)
     if(any(model<0|model>2))stop("Only DINA, DINO and G-DINA is allowed for structured attributes.",call. = FALSE)
   }
 

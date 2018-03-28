@@ -22,9 +22,13 @@ print.GDINA <-
     # cat("\n-----------------------------------------------\n")
     cat("Model")
     cat("\n-----------------------------------------------\n")
-    cat("Fitted model(s)       =", unique(extract.GDINA(x,"models")), "\n")
+    lv <- NULL
+    if(extract(x,"latent.var")=="bugs"){
+      lv <- "Bug"
+    }
+    cat("Fitted model(s)       =", lv,unique(extract.GDINA(x,"models")), "\n")
     cat("Attribute structure   =",extract(x,"att.dist"),"\n")
-    if (extract.GDINA(x,"ngroup")==1&&extract.GDINA(x,"att.dist")=="higher.order") cat("Higher-order model    =",extract(x,"higher.order")$model,"\n")
+    if (any(extract.GDINA(x,"att.dist")=="higher.order")) cat("Higher-order model    =",extract(x,"higher.order")$model,"\n")
     tmp <- max(extract.GDINA(x,"Q"))
     cat("Attribute level       =",ifelse(tmp>1,"Polytomous","Dichotomous"),"\n")
     cat("===============================================\n")
@@ -33,8 +37,8 @@ print.GDINA <-
     cat("Number of iterations  =", max(extract.GDINA(x,"nitr")), "\n")
     cat("For the final iteration:\n")
     cat("  Max abs change in item success prob. =", formatC(extract(x,"dif.p"), digits = 4, format = "f"), "\n")
-    cat("  Max abs change in population prop.   =", formatC(extract(x,"dif.prior"), digits = 4, format = "f"), "\n")
-    cat("  Change in deviance                   =", formatC(extract(x,"dif.LL"), digits = 4, format = "f"), "\n")
+    cat("  Max abs change in mixing proportions =", formatC(extract(x,"dif.prior"), digits = 4, format = "f"), "\n")
+    cat("  Change in -2 log-likelihood          =", formatC(extract(x,"dif.LL"), digits = 4, format = "f"), "\n")
     cat("Time used             =", format(extract(x,"time"), digits = 4), "\n")
   }
 #' @export

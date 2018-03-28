@@ -14,7 +14,7 @@
 #' the C-RUM (Hartz, 2002), a special case of the GDM (von Davier, 2008), and that the R-RUM
 #' is also known as a special case of the generalized NIDA model (de la Torre, 2011).
 #'
-#' In addition, users are allowed to specify design matrix and link function for each item and
+#' In addition, users are allowed to specify design matrix and link function for each item, and
 #' distinct models may be used in a single test for different items.
 #' The attributes can be either dichotomous or polytomous
 #' (Chen & de la Torre, 2013). Joint attribute distribution may be modelled using independent or saturated model,
@@ -212,9 +212,11 @@
 #'      \item \code{maxitr} A vector for each item or nonzero category, or a scalar which will be used for all
 #'    items or nonzero categories to specify the maximum number of EM cycles allowed. Default = 2000.
 #'     \item \code{conv.crit} The convergence criterion for max absolute change in item parameters or deviance. Default = 0.0001.
-#'     \item \code{conv.type} How is the convergence criterion evaluated? Can be \code{"max.ip.change"}, indicating
-#'    the maximum absolute change in success probabilities, or \code{"dev.change"}, representing
-#'    the absolute change in deviance.
+#'     \item \code{conv.type} How is the convergence criterion evaluated? A vector with possible elements: \code{"ip"}, indicating
+#'    the maximum absolute change in item success probabilities, \code{"mp"}, representing
+#'    the maximum absolute change in mixing proportion parameters, \code{"delta"}, indicating the maximum absolute change in delta
+#'    parameters or \code{neg2LL} indicating the absolute change in negative two times loglikeihood. Multiple criteria can be specified.
+#'    If so, all criteria need to be met. Default = c("ip", "mp").
 #'     \item \code{nstarts} how many sets of starting values? Default = 1.
 #'     \item \code{lower.p} A vector for each item or nonzero category,
 #'    or a scalar which will be used for all items or nonzero categories to specify the lower bound for success probabilities.
@@ -798,11 +800,11 @@
 #' # for comparison, use change in -2LL as convergence criterion
 #' # LCDM
 #' lcdm <- GDINA(dat = dat, Q = Q, model = "UDF", design.matrix = D,
-#' linkfunc = "logit", control=list(conv.type="dev.change"),solver="slsqp")
+#' linkfunc = "logit", control=list(conv.type="neg2LL"),solver="slsqp")
 #'
 #' # identity link GDINA
 #' iGDINA <- GDINA(dat = dat, Q = Q, model = "GDINA",
-#' control=list(conv.type="dev.change"),solver="slsqp")
+#' control=list(conv.type="neg2LL"),solver="slsqp")
 #'
 #' # compare two models => identical
 #' anova(lcdm,iGDINA)
@@ -822,11 +824,11 @@
 #' # for comparison, use change in -2LL as convergence criterion
 #' # RRUM
 #' logACDM <- GDINA(dat = dat, Q = Q, model = "UDF", design.matrix = D,
-#' linkfunc = "log", control=list(conv.type="dev.change"),solver="slsqp")
+#' linkfunc = "log", control=list(conv.type="neg2LL"),solver="slsqp")
 #'
 #' # identity link GDINA
 #' RRUM <- GDINA(dat = dat, Q = Q, model = "RRUM",
-#'               control=list(conv.type="dev.change"),solver="slsqp")
+#'               control=list(conv.type="neg2LL"),solver="slsqp")
 #'
 #' # compare two models => identical
 #' anova(logACDM,RRUM)

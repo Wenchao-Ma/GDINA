@@ -13,7 +13,7 @@ opts <- list()
              ConstrMatrix=ConstrMatrix[[j]],linkfunc=linkfunc[j],eps=1e-16,ConstrType=ConstrType[j])
     if(is.null(optims)) stop(paste("M-step fails for item",j,"at iteration",itr),call. = FALSE)
 
-     delta[[j]] <- optims$delta
+     delta[[j]] <- c(optims$delta)
      item.parm[j,1:(2^Kj[j])] <- optims$phat
     opts[[j]] <- optims
   }

@@ -1,5 +1,5 @@
-# GDINA 2.0.-
-* Fixed  - bugs in C++ codes
+# GDINA 2.0.7
+* bug fixed
 
 # GDINA 2.0
 * This is a major update including a large number of new features. The `GDINA` function has been largely rewritten for both flexibility and speed. 

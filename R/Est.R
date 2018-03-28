@@ -19,7 +19,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   myControl <- list(
     maxitr = 2000,
     conv.crit = 1e-4,
-    conv.type = "max.ip.change",
+    conv.type = c("ip","mp"),
     nstarts = 3L,
     lower.p = 1e-4,
     upper.p = 1 - 1e-4,
@@ -322,7 +322,6 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     neg2LL <- NA
   }
   initial.parm <- item.parm
-  parm0 <- list(ip = c(item.parm), prior = c(exp(logprior)), neg2LL = 0)
 
 
   ##############################
@@ -332,11 +331,13 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   #############################
   itr <- 0L
   delta <- calc_delta(item.parm, DesignMatrices = DesignMatrices, linkfunc = linkfunc)
-  # parm0  <-  item.parm
+
+  parm0 <- list(ip = c(item.parm), prior = c(exp(logprior)), neg2LL = 0, delt = unlist(delta))
 
   dif.parm <- list(ip = 0,
                    prior = 0,
-                   neg2LL = 0)
+                   neg2LL = 0,
+                   delt = 0)
   ##############################
   #
   #           E-M
@@ -369,7 +370,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                     auglag_args = auglag_args,solnp_args = solnp_args,nloptr_args = nloptr_args)
 
     item.parm <- optims$item.parm
-    delta <- c(optims$delta)
+    delta <- optims$delta
 
 
     struc.parm <- structural.parm(AlphaPattern = AlphaPattern, no.mg = no.mg, logprior=estep$logprior,
@@ -394,26 +395,31 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
     parm1 <- list(ip = c(item.parm),
                   prior = c(exp(estep$logprior)),
-                  neg2LL = -2 * estep$LL)
+                  neg2LL = -2 * estep$LL,
+                  delt = unlist(delta))
 
     dif.parm <- list(ip = max(abs(parm1$ip-parm0$ip),na.rm = TRUE),
                      prior = max(abs(parm1$prior-parm0$prior),na.rm = TRUE),
-                     neg2LL = parm0$neg2LL-parm1$neg2LL)
+                     neg2LL = parm0$neg2LL-parm1$neg2LL,
+                     delt = max(abs(parm1$delt-parm0$delt),na.rm = TRUE))
 
     parm0 <- parm1
     itr <- itr + 1
+    maxchg <- 0
+    if(any(tolower(control$conv.type)=="ip"))  maxchg <- max(maxchg,dif.parm$ip)
+    if(any(tolower(control$conv.type)=="delta"))  maxchg <- max(maxchg,dif.parm$delt)
+    if(any(tolower(control$conv.type)=="mp"))  maxchg <- max(maxchg,dif.parm$prior)
+    if(any(tolower(control$conv.type)=="neg2ll"))  maxchg <- max(maxchg,abs(dif.parm$neg2LL))
 
     if(verbose==1) {
-      cat('\rIter =',itr,' Max. abs. change =',formatC(max(dif.parm$ip,dif.parm$prior),digits = 5, format = "f"),
+      cat('\rIter =',itr,' Max. abs. change =',formatC(maxchg,digits = 5, format = "f"),
           ' Deviance  =',formatC(-2 * estep$LL,digits = 3, format = "f"),'                                                                                 ')
     }else if (verbose==2) {
-      cat('Iter =',itr,' Max. abs. change =',formatC(max(dif.parm$ip,dif.parm$prior),digits = 5, format = "f"),
+      cat('Iter =',itr,' Max. abs. change =',formatC(maxchg,digits = 5, format = "f"),
           ' Deviance  =',formatC(-2 * estep$LL,digits = 3, format = "f"),'                                                                                \n')
     }
 
-    if((tolower(control$conv.type)=="dev.change"&abs(dif.parm$neg2LL)<control$conv.crit)|
-       (tolower(control$conv.type)=="max.ip.change"&dif.parm$ip<control$conv.crit)|
-       (tolower(control$conv.type)=="max.parm.change"&max(dif.parm$ip,dif.parm$prior)<control$conv.crit)) break
+    if(maxchg < control$conv.crit) break
   }
 
   logprior0 <- logprior # old log priors
@@ -456,13 +462,13 @@ if(!att.str){
       npar <- npar + K
     }
   }
-  neg2LL=-2 * estep$LL
+  neg2LL <- -2 * estep$LL
 
   item.prob <- vector("list",J)
   initial.parm <- m2l(initial.parm)
   for (j in seq_len(J)){
     item.prob[[j]] <- item.parm[j,1:Lj[j]]
-    names(initial.parm[[j]]) <- names(item.prob[[j]]) <- paste0("P(",apply(alpha2(Kj[j]),1,paste0,collapse = ""),")")
+    names(initial.parm[[j]]) <- names(item.prob[[j]]) <- paste0("P(",apply(attributepattern(Kj[j]),1,paste0,collapse = ""),")")
   }
   postP <- exp(t(estep$logprior))
   pf <- LC.Prob <- uP(parloc,item.parm)
@@ -503,7 +509,7 @@ if(!att.str){
                          expectedCorrect = estep$Rg, expectedTotal = estep$Ng,initial.parm = initial.parm),
        options = list(dat = originalData, Q = originalQ, Qm = Q, Qcm = Qcm, model = model,
                       itr = itr, dif.LL = dif.parm$neg2LL,dif.p=dif.parm$ip,dif.prior=dif.parm$prior,
-                      att.dist=att.dist, higher.order=higher.order,att.prior = att.prior,
+                      att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, latent.var = latent.var,
                       mono.constraint = mono.constraint, item.names = item.names,group = group, gr = gr,
                       att.str= att.str,  seq.dat = dat, no.group = no.mg, group.label = gr.label,
                       verbose = verbose, catprob.parm = catprob.parm,sequential = sequential,
