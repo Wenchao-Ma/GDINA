@@ -1,4 +1,3 @@
-library(shiny)
 shinyServer(function(input, output) {
 
   ######## INPUTS
@@ -116,7 +115,7 @@ shinyServer(function(input, output) {
 
 
 
-  output$heatplot1 <- reactivePlot(function(){
+  output$heatplot1 <- renderPlot(function(){
     if (input$goButton == 0)
       return()
     item.pair.1 <- item.pair.2 <- unadj.pvalue <- test.adj.pvalue <- NULL

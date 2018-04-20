@@ -315,7 +315,9 @@
 #' @importFrom Rsolnp solnp
 #' @importFrom graphics plot axis points text abline
 #' @importFrom utils combn modifyList
-#' @import stats ggplot2 shiny shinydashboard
+#' @import stats ggplot2
+#' @import shiny
+#' @import shinydashboard
 #'
 #' @useDynLib GDINA
 #' @export

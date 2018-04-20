@@ -1,4 +1,6 @@
-sidebar <- dashboardSidebar(
+suppressMessages(require(shiny))
+suppressMessages(require(shinydashboard))
+sidebar <- shinydashboard::dashboardSidebar(
   sidebarMenu(
     menuItem("Input", tabName = "input", icon = icon("file-text")),
     menuItem("Estimation Settings", icon = icon("rocket"), tabName = "est"),
@@ -11,7 +13,7 @@ sidebar <- dashboardSidebar(
   )
 )
 
-body <- dashboardBody(
+body <- shinydashboard::dashboardBody(
   tabItems(
     # input files
     tabItem(tabName = "input",
@@ -215,7 +217,7 @@ tabItem(tabName = "about",
 )
 )
 
-dashboardPage(
+shinydashboard::dashboardPage(
   dashboardHeader(title = "GDINA GUI"),
   sidebar,
   body

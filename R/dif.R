@@ -80,10 +80,10 @@ dif <- function(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",
 
     est1 <- GDINA::GDINA(dat = dat[which(gr==gr.label[1]),], Q = Q,
                          catprob.parm = est$catprob.parm[1:J],
-                         att.prior = est$posterior.prob[1,],att.dist = "fixed",verbose = 0,control=list(maxitr = 0))
+                         att.prior = est$posterior.prob[1,],att.dist = "fixed",verbose = 0,control=list(maxitr = 0),...)
     est2 <- GDINA::GDINA(dat = dat[which(gr==gr.label[2]),], Q = Q,
                          catprob.parm = est$catprob.parm[(J+1):(2*J)],
-                         att.prior = est$posterior.prob[2,],att.dist = "fixed",verbose = 0,control=list(maxitr = 0))
+                         att.prior = est$posterior.prob[2,],att.dist = "fixed",verbose = 0,control=list(maxitr = 0),...)
 
     output <- matrix(0,length(difitems),3)
 
