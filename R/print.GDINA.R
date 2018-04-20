@@ -249,22 +249,6 @@ print.summary.autoGDINA <- function(x,...){
 
 
 #'@export
-print.AIC.GDINA <- function(x,...){
-  cat("AIC =",x)
-}
-#'@export
-print.BIC.GDINA <- function(x,...){
-  cat("BIC =",x)
-}
-#'@export
-print.logLik.GDINA <- function(x,...){
-  cat("logLik =",x)
-}
-#'@export
-print.deviance.GDINA <- function(x,...){
-  cat("deviance =",x)
-}
-#'@export
 print.npar.GDINA <- function(x,...){
   cat("No. of total parameters =",x$`No. of parameters`,"\n")
   cat("No. of item parameters =",x$`No. of item parameters`,"\n")

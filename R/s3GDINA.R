@@ -1,36 +1,32 @@
 #' @include GDINA.R
 
-#'@export
-#'@describeIn GDINA calculate AIC
-AIC.GDINA <- function(object,...){
-  aic <- extract(object, what = "AIC")
-  class(aic) <- "AIC.GDINA"
-  aic
-}
-
-#' @export
-#' @describeIn GDINA calculate BIC
-BIC.GDINA <- function(object,...){
-  bic <- extract(object, what = "BIC")
-  class(bic) <- "BIC.GDINA"
-  bic
-}
 
 #' @export
 #' @describeIn GDINA calculate log-likelihood
-logLik.GDINA <- function(object,...){
+logLik.GDINA <- function (object, ...){
+
   logL <- extract(object, what = "logLik")
-  class(logL) <- "logLik.GDINA"
-  logL
+
+  attr(logL, "df") <- extract(object, what = "npar")
+
+  attr(logL, "nobs") <- extract(object, what = "nobs")
+
+  class(logL) <- "logLik"
+
+  return(logL)
+
 }
+
 #' @export
 #' @describeIn GDINA calculate deviance
 deviance.GDINA <- function(object,...){
-  dev <- extract(object, what = "deviance")
-  class(dev) <- "deviance.GDINA"
-  dev
+  extract(object, what = "deviance")
 }
-
+#' @export
+#' @describeIn GDINA calculate number of observations
+nobs.GDINA <- function(object,...){
+  extract(object, what = "nobs")
+}
 #' @title Calculate the number of parameters
 #' @description Calculate the number of parameters for GDINA estimates.
 #' Returned the total number of parameters, the number of item parameters and

@@ -7,10 +7,9 @@
 \alias{coef.GDINA}
 \alias{extract.GDINA}
 \alias{personparm.GDINA}
-\alias{AIC.GDINA}
-\alias{BIC.GDINA}
 \alias{logLik.GDINA}
 \alias{deviance.GDINA}
+\alias{nobs.GDINA}
 \alias{npar.GDINA}
 \alias{indlogLik.GDINA}
 \alias{indlogPost.GDINA}
@@ -36,13 +35,11 @@ GDINA(dat, Q, model = "GDINA", sequential = FALSE, att.dist = "saturated",
 \method{personparm}{GDINA}(object, what = c("EAP", "MAP", "MLE", "mp", "HO"),
   digits = 4, ...)
 
-\method{AIC}{GDINA}(object, ...)
-
-\method{BIC}{GDINA}(object, ...)
-
 \method{logLik}{GDINA}(object, ...)
 
 \method{deviance}{GDINA}(object, ...)
+
+\method{nobs}{GDINA}(object, ...)
 
 \method{npar}{GDINA}(object, ...)
 
@@ -253,13 +250,11 @@ use \code{\link{startGDINA}}.
 
 \item \code{personparm}: calculate person attribute patterns and higher-order ability
 
-\item \code{AIC}: calculate AIC
-
-\item \code{BIC}: calculate BIC
-
 \item \code{logLik}: calculate log-likelihood
 
 \item \code{deviance}: calculate deviance
+
+\item \code{nobs}: calculate number of observations
 
 \item \code{npar}: calculate the number of parameters
 
