@@ -20,7 +20,7 @@
 #' @references
 #' de la Torre, J. & Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
 #'
-#' @seealso \code{\link{GDINA}}, \code{\link{mesaplot}}
+#' @seealso \code{\link{GDINA}}
 #' @export
 #' @examples
 #'\dontrun{
@@ -40,7 +40,7 @@
 #' extract(out,what = "sug.Q")
 #'
 #' # Draw a mesa plot
-#' mesaplot(out,item=10,type="all",no.qvector=5)
+#' plot(out,item=10,type="all",no.qvector=5)
 #'}
 
 

@@ -315,7 +315,8 @@
 #' @importFrom Rsolnp solnp
 #' @importFrom graphics plot axis points text abline
 #' @importFrom utils combn modifyList
-#' @import stats ggplot2
+#' @import stats
+#' @importFrom ggplot2 aes ggplot geom_tile scale_fill_gradient theme_bw labs geom_bar geom_errorbar ylim
 #' @import shiny
 #' @import shinydashboard
 #'
@@ -367,9 +368,10 @@
 #' personparm(mod1, what = "MLE") # MLE estimates of attribute profiles
 #'
 #' #plot item response functions for item 10
-#' plotIRF(mod1,item = 10)
-#' plotIRF(mod1,item = 10,errorbar = TRUE) # with error bars
-#' plotIRF(mod1,item = c(6,10))
+#' plot(mod1,IRF.args = list(item = 10))
+#' plot(mod1,IRF.args = list(item = 10,errorbar = TRUE)) # with error bars
+#' #plot mastery probability
+#' plot(mod1,what = "mp", mp.args = list(id=c(1,2)))
 #'
 #' # Use extract function to extract more components
 #' # See ?extract

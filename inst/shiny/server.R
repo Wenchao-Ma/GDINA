@@ -2,7 +2,7 @@ shinyServer(function(input, output) {
 
   ######## INPUTS
 
-  output$contents1 <- renderTable({
+  output$contents1 <- shiny::renderTable({
     inFile <- input$file1
     if (is.null(inFile))
       return(NULL)
@@ -11,7 +11,7 @@ shinyServer(function(input, output) {
     head(x)
   })
 
-  output$contents2 <- renderTable({
+  output$contents2 <- shiny::renderTable({
     inFile <- input$file2
     if (is.null(inFile))
       return(NULL)
@@ -25,7 +25,7 @@ shinyServer(function(input, output) {
   #  Model Estimation
   ##################
 
-  est.result <- reactive(
+  est.result <- shiny::reactive(
     withProgress(message = 'Model Estimating', value = 0.5, {
     inFile1 <- input$file1
     dat <- read.csv(inFile1$datapath, header = input$header,
@@ -56,10 +56,10 @@ shinyServer(function(input, output) {
   ##################
   # Summary
   ##################
-  info <- reactive({
+  info <- shiny::reactive({
     summary(est.result())
   })
-  iter.info <- reactive({
+  iter.info <- shiny::reactive({
     est.info <- function(x) {
       cat("\nThe Generalized DINA Model Framework  \n")
       packageinfo <- utils::packageDescription("GDINA")
@@ -92,101 +92,68 @@ shinyServer(function(input, output) {
 
 
 
-  output$info <- renderPrint({
+  output$info <- shiny::renderPrint({
     if (input$goButton == 0)
       return()
     info()
   })
 
-  output$iter.info <- renderPrint({
+  output$iter.info <- shiny::renderPrint({
     if (input$goButton == 0)
       return()
     iter.info()
   })
 
 
-  itf <- reactive({
+  itf <- shiny::reactive({
     itemfit(est.result())
   })
 
-  output$itfit <- renderPrint({
+  output$itfit <- shiny::renderPrint({
     print(itf())
   })
 
 
 
-  output$heatplot1 <- renderPlot(function(){
-    if (input$goButton == 0)
-      return()
-    item.pair.1 <- item.pair.2 <- unadj.pvalue <- test.adj.pvalue <- NULL
-    if(input$heatmap.type=="log odds ratio"){
-      df <- extract(itf(),"logOR")
-    }else{
-      df <- extract(itf(),"r")
-    }
-
-    if(input$heatmap.adjust){
-      p <- ggplot(df, aes(x=factor(item.pair.2),
-                          y=factor(item.pair.1),
-                          fill=test.adj.pvalue))+
-        geom_tile()+ scale_fill_gradient(low="red",
-                                         high="gray",
-                                         limits=c(0,0.05))+
-        theme_bw() +
-        labs(x = "Items", y = "Items",
-             title = paste("Heatmap plot for adjusted p-values of ",input$heatmap.type))
-    }else{
-      p <- ggplot(df, aes(x=factor(item.pair.2),
-                          y=factor(item.pair.1),
-                          fill=unadj.pvalue))+
-        geom_tile()+ scale_fill_gradient(low="red",
-                                         high="gray",
-                                         limits=c(0,0.05))+
-        theme_bw() +
-        labs(x = "Items", y = "Items",
-             title = paste("Heatmap plot for unadjusted p-values of ",input$heatmap.type))
-    }
-
-
-    print(p)
-  })
 
 
 
-  ip <- reactive({
+
+  ip <- shiny::reactive({
     if (input$goButton == 0) return()
     coef(est.result(),what = input$ips,withSE=TRUE)
   })
 
-  output$ip <- renderPrint({
+  output$ip <- shiny::renderPrint({
     if (input$goButton == 0)
       return()
     coef(est.result(),what = input$ips,withSE=TRUE)
   })
 
-  output$pparm <- renderPrint({
+  output$pparm <- shiny::renderPrint({
     head(personparm(object = est.result(),what = input$pp),10)
   })
 
-  q <- reactive({
+  q <- shiny::reactive({
     if (input$qvalcheck == 0)  return()
     Qval(est.result(),eps = input$PVAFcutoff)
   })
-  output$sugQ <- renderPrint({
+  output$sugQ <- shiny::renderPrint({
     if (input$qvalcheck == 0)  return()
-    extract(q(),what = "sug.Q")
+    # extract(q(),what = "sug.Q")
+    q()
   })
 
-  m <- reactive({
+  m <- shiny::reactive({
     if (input$modelsel == 0)  return()
     modelcomp(est.result())
   })
 
-  output$ws <- renderPrint({
+  output$ws <- shiny::renderPrint({
     if (input$modelsel == 0)  return()
     extract(m(),what = "stats")
   })
-  output$pv <- renderPrint({
+  output$pv <- shiny::renderPrint({
     if (input$modelsel == 0)  return()
     extract(m(),what = "pvalues")
   })
@@ -198,10 +165,10 @@ makeIRFplot <- function(){
   Q <- read.csv(inFile2$datapath, header = input$header,
                 sep = input$sep, quote = input$quote)
   if (input$item.plot<1||input$item.plot>nrow(Q)) NULL
-  plotIRF(est.result(),input$item.plot,errorbar=input$IRFplotse)
+  plot(est.result(),IRF.args = list(item = input$item.plot, errorbar = input$IRFplotse))
 }
 
-output$plot <- renderPlot({
+output$plot <- shiny::renderPlot({
   if (input$goButton == 0)
     return()
   makeIRFplot()
@@ -209,15 +176,55 @@ output$plot <- renderPlot({
 
 makeMesaplot <- function(){
   if (input$qvalcheck == 0)  return()
-  GDINA::mesaplot(q(),item = input$item.mesaplot,type = input$mesatype, data.label = input$datalabel)
+  plot(q(),item = input$item.mesaplot,type = input$mesatype, data.label = input$datalabel)
 }
 
-  output$mesaplot <- renderPlot({
+  output$mesaplot <- shiny::renderPlot({
     if (input$qvalcheck == 0)  return()
     makeMesaplot()
   })
 
-  output$downloadMesaplot <- downloadHandler(
+  makeHeatplot <- function(){
+
+    item.pair.1 <- item.pair.2 <- unadj.pvalue <- test.adj.pvalue <- NULL
+    if(input$heatmap.type=="log odds ratio"){
+      df <- extract(itf(),"logOR")
+    }else{
+      df <- extract(itf(),"r")
+    }
+
+    if(input$heatmap.adjust){
+      p <- ggplot2::ggplot(df, ggplot2::aes(x=factor(item.pair.2),
+                                   y=factor(item.pair.1),
+                                   fill=test.adj.pvalue))+
+        ggplot2::geom_tile()+ ggplot2::scale_fill_gradient(low="red",
+                                         high="gray",
+                                         limits=c(0,0.05))+
+        ggplot2::theme_bw() +
+        ggplot2::labs(x = "Items", y = "Items",
+                      title = paste("Heatmap plot for adjusted p-values of ",input$heatmap.type))
+    }else{
+      p <- ggplot2::ggplot(df, ggplot2::aes(x=factor(item.pair.2),
+                                   y=factor(item.pair.1),
+                                   fill=unadj.pvalue))+
+        ggplot2::geom_tile()+ ggplot2::scale_fill_gradient(low="red",
+                                         high="gray",
+                                         limits=c(0,0.05))+
+        ggplot2::theme_bw() +
+        ggplot2::labs(x = "Items", y = "Items",
+             title = paste("Heatmap plot for unadjusted p-values of ",input$heatmap.type))
+    }
+
+
+    print(p)
+  }
+  output$heatplot1 <- shiny::renderPlot({
+    if (input$goButton == 0)
+      return()
+    makeHeatplot()
+  })
+
+  output$downloadMesaplot <- shiny::downloadHandler(
     filename = function() {
       paste('MesaPlot', Sys.Date(), '.pdf', sep='')
     },
@@ -229,7 +236,7 @@ makeMesaplot <- function(){
   )
 
 
-  output$downloadpp <- downloadHandler(
+  output$downloadpp <- shiny::downloadHandler(
     # This function returns a string which tells the client
     # browser what name to use when saving the file.
     filename = function() {
@@ -246,7 +253,7 @@ makeMesaplot <- function(){
                   row.names = FALSE)
     }
   )
-  output$downloadIRFplot <- downloadHandler(
+  output$downloadIRFplot <- shiny::downloadHandler(
     filename = function() {
       paste('IRFPlot', Sys.Date(), '.pdf', sep='')
     },

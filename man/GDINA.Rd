@@ -236,7 +236,7 @@ To calculate structural parameters for item and joint attribute distributions, u
 
 To calculate lower-order incidental (person) parameters
 use method \code{\link{personparm}}. To extract other components returned, use \code{\link{extract}}.
-To plot item/category response function, use \code{\link{plotIRF}}. To
+To plot item/category response function, use \code{\link{plot}}. To
 check whether monotonicity is violated, use \code{\link{monocheck}}. To conduct anaysis in graphical user interface,
 use \code{\link{startGDINA}}.
 }
@@ -447,9 +447,10 @@ personparm(mod1, what = "MAP") # MAP estimates of attribute profiles
 personparm(mod1, what = "MLE") # MLE estimates of attribute profiles
 
 #plot item response functions for item 10
-plotIRF(mod1,item = 10)
-plotIRF(mod1,item = 10,errorbar = TRUE) # with error bars
-plotIRF(mod1,item = c(6,10))
+plot(mod1,IRF.args = list(item = 10))
+plot(mod1,IRF.args = list(item = 10,errorbar = TRUE)) # with error bars
+#plot mastery probability
+plot(mod1,what = "mp", mp.args = list(id=c(1,2)))
 
 # Use extract function to extract more components
 # See ?extract

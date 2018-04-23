@@ -56,7 +56,7 @@
 #' mod2 <- GDINA(dat,Q,model="DINA")
 #' itmfit2 <- itemfit(mod2)
 #' #misfit heatmap
-#' heatplot(itmfit2)
+#' plot(itmfit2)
 #' itmfit2
 #'}
 

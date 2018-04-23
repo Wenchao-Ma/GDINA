@@ -104,3 +104,4 @@ indlogPost <- function(object,...){
 indlogPost.GDINA <- function(object,...){
   return(extract(object,"logposterior.i"))
 }
+

@@ -69,14 +69,14 @@ extract(out,what = "varsigma")
 extract(out,what = "sug.Q")
 
 # Draw a mesa plot
-mesaplot(out,item=10,type="all",no.qvector=5)
+plot(out,item=10,type="all",no.qvector=5)
 }
 }
 \references{
 de la Torre, J. & Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
 }
 \seealso{
-\code{\link{GDINA}}, \code{\link{mesaplot}}
+\code{\link{GDINA}}
 }
 \author{
 {Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}

@@ -223,8 +223,8 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                   }else{
                     dat <- extract(object,"dat")
                   }
-                  out <- NgRg(object$technicals$logposterior.i,
-                              dat,
+                  out <- NgRg(as.matrix(object$technicals$logposterior.i),
+                              as.matrix(dat),
                               eta(matrix(1,extract(object,"ncat"),extract(object,"natt"))),
                               rep(1,nrow(dat)))$Rg
                   row.names(out) <- object$options$item.names
@@ -236,8 +236,8 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                   }else{
                     dat <- extract(object,"dat")
                   }
-                  out <- NgRg(object$technicals$logposterior.i,
-                              dat,
+                  out <- NgRg(as.matrix(object$technicals$logposterior.i),
+                              as.matrix(dat),
                               eta(matrix(1,extract(object,"ncat"),extract(object,"natt"))),
                               rep(1,nrow(dat)))$Ng
                   row.names(out) <- object$options$item.names

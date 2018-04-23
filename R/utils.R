@@ -492,8 +492,8 @@ Rmatrix.att <- function(K){
   Lk <- 2^K
   if (K<=1) return(warning("K must be 2 or more!"))
   # gives which groups should be set to equal
-  pattK <- alpha(K)
-  pattK_1 <- alpha(K-1)
+  pattK <- attributepattern(K)
+  pattK_1 <- attributepattern(K-1)
   for(a in 1:K){
     Rk <- matrix(0,Lk/2,Lk)
     for (l in 1:nrow(pattK_1)){

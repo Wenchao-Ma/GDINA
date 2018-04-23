@@ -41,7 +41,7 @@ personparm <- function (object, what=c("EAP","MAP","MLE", "mp", "HO"),digits = 4
 #' @title NULL
 #' @description To calculate lower-order incidental (person) parameters
 #' use method \code{\link{personparm}}. To extract other components returned, use \code{\link{extract}}.
-#' To plot item/category response function, use \code{\link{plotIRF}}. To
+#' To plot item/category response function, use \code{\link{plot}}. To
 #' check whether monotonicity is violated, use \code{\link{monocheck}}. To conduct anaysis in graphical user interface,
 #' use \code{\link{startGDINA}}.
 #' @param object GDINA object for various S3 methods
