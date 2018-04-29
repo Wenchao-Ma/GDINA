@@ -10,6 +10,7 @@
 \alias{logLik.GDINA}
 \alias{deviance.GDINA}
 \alias{nobs.GDINA}
+\alias{vcov.GDINA}
 \alias{npar.GDINA}
 \alias{indlogLik.GDINA}
 \alias{indlogPost.GDINA}
@@ -40,6 +41,8 @@ GDINA(dat, Q, model = "GDINA", sequential = FALSE, att.dist = "saturated",
 \method{deviance}{GDINA}(object, ...)
 
 \method{nobs}{GDINA}(object, ...)
+
+\method{vcov}{GDINA}(object, ...)
 
 \method{npar}{GDINA}(object, ...)
 
@@ -255,6 +258,8 @@ use \code{\link{startGDINA}}.
 \item \code{deviance}: calculate deviance
 
 \item \code{nobs}: calculate number of observations
+
+\item \code{vcov}: calculate covariance-matrix for delta parameters
 
 \item \code{npar}: calculate the number of parameters
 

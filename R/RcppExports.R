@@ -25,6 +25,10 @@ LikNR_LC <- function(mP, mX, vlogPrior, vgroup, weights, simplify = 1L) {
     .Call('_GDINA_LikNR_LC', PACKAGE = 'GDINA', mP, mX, vlogPrior, vgroup, weights, simplify)
 }
 
+Lik_DTM <- function(mP, mX, vC, vlogPrior) {
+    .Call('_GDINA_Lik_DTM', PACKAGE = 'GDINA', mP, mX, vC, vlogPrior)
+}
+
 Mord <- function(item_no, LCprob, prior) {
     .Call('_GDINA_Mord', PACKAGE = 'GDINA', item_no, LCprob, prior)
 }
@@ -67,6 +71,10 @@ Mstep_ineq_jac <- function(par, Nj, Rj, designMj, uPj, lPj, linkfunc, ConstrMatr
 
 NgRg <- function(mlogPost, mX, mloc, weights) {
     .Call('_GDINA_NgRg', PACKAGE = 'GDINA', mlogPost, mX, mloc, weights)
+}
+
+Rljs_DTM <- function(mlogPost, mX, vC) {
+    .Call('_GDINA_Rljs_DTM', PACKAGE = 'GDINA', mlogPost, mX, vC)
 }
 
 scorefun <- function(mX, mlogPost, itmpar, parloc, model) {

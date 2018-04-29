@@ -336,6 +336,151 @@ preloclist <- function(K){
     })
 }
 
+gs2p.DTM <- function(Q,
+                 gs,
+                 model,
+                 type,
+                 mono.constraint,
+                 linkfunc="logit",
+                 item.names=NULL,
+                 digits = 8) {
+  J <- nrow(Q)
+  K <- ncol(Q)
+  Kj <-rowSums(Q>0)  # The number of attributes for each item
+
+  pattern <- GDINA::attributepattern(K)
+  itemprob.matrix <- matrix(NA, J, 2 ^ max(Kj))
+  L <- nrow(pattern)  # the number of latent groups
+  #if(length(model)==1) M <- rep(model,J)
+  delta.param <- itemprob.param <- vector("list", J)
+  #calculate delta parameters in list format
+  for (j in 1:J) {
+    des <- designmatrix(Kj[j],model = model[j])
+    if (model[j] == 1 | model[j] == 2) {
+      delta.param[[j]] <- c(gs[j, 1], 1 - gs[j, 2] - gs[j, 1])
+    } else if (model[j] == 3) {
+      p0 <- gs[j, 1]
+      p1 <- 1 - gs[j, 2]
+      if (type == "equal") {
+        d <- rep((p1 - p0) / Kj[j], Kj[j])
+      } else if (type == "random") {
+        sumd <- p1 - p0
+        if (Kj[j] == 1) {
+          d <- sumd
+        } else{
+          d <- rep(0, Kj[j])
+          for (k in 1:(Kj[j] - 1)) {
+            d[k] <- runif(1, 0, sumd)
+            sumd <- sumd - d[k]
+
+          }
+          d[Kj[j]] <- p1 - p0 - sum(d)
+        }
+      }
+      delta.param[[j]] <- c(p0, d)
+
+    } else if (model[j] == 4) {
+      p0 <- qlogis(gs[j, 1])
+      p1 <- qlogis(1 - gs[j, 2])
+      if (type == "equal") {
+        d <- rep((p1 - p0) / Kj[j], Kj[j])
+      } else if (type == "random") {
+        sumd <- p1 - p0
+        if (Kj[j] == 1) {
+          d <- sumd
+        } else{
+          d <- rep(0, Kj[j])
+          for (k in 1:(Kj[j] - 1)) {
+            d[k] <- runif(1, 0, sumd)
+            sumd <- sumd - d[k]
+
+          }
+          d[Kj[j]] <- p1 - p0 - sum(d)
+        }
+      }
+      delta.param[[j]] <- c(p0, d)
+    } else if (model[j] == 5) {
+      p0 <- log(gs[j, 1])
+      p1 <- log(1 - gs[j, 2])
+      if (tolower(type) == "equal") {
+        d <- rep((p1 - p0) / Kj[j], Kj[j])
+      } else if (tolower(type) == "random") {
+        sumd <- p1 - p0
+        if (Kj[j] == 1) {
+          d <- sumd
+        } else{
+          d <- rep(0, Kj[j])
+          for (k in 1:(Kj[j] - 1)) {
+            d[k] <- runif(1, 0, sumd)
+            sumd <- sumd - d[k]
+            #print(sumd)
+          }
+          d[Kj[j]] <- p1 - p0 - sum(d)
+        }
+      }
+      delta.param[[j]] <- c(p0, d)
+    } else if (model[j] == 0) {
+      p0 <- gs[j, 1]
+      p1 <- 1 - gs[j, 2]
+      if(Kj[j]==1){
+        ps <- c(p0,p1)
+      }else{
+        if (mono.constraint[j]) {
+          preloc <- preloclist(Kj[j])
+          ps <- c(p0, rep(0, 2 ^ Kj[j] - 2), p1)
+          for (l in 2:(length(ps) - 1)) {
+            ps[l] <- runif(1, max(ps[preloc[[l]]]), p1)
+
+          }
+        } else{
+          ps <- c(p0,runif(2 ^ Kj[j] - 2, 0, 1),p1)
+        }
+      }
+      tmp <- ps
+      if(linkfunc=="logit")  tmp <- qlogis(ps)
+
+      delta.param[[j]] <- c(solve(designmatrix(Kj[j])) %*% tmp)
+    }
+  }
+
+
+
+  for (j in 1:J) {
+    Mj <- designmatrix(Kj[j], model[j])
+
+    if (model[j] <= 3 & model[j]>0) {
+      itemprob.matrix[j, 1:nrow(Mj)] <-
+        itemprob.param[[j]] <- round(c(Mj %*% delta.param[[j]]), digits)
+    } else if (model[j] == 4) {
+      itemprob.matrix[j, 1:nrow(Mj)] <-
+        itemprob.param[[j]] <-
+        round(qlogis(c(Mj %*% delta.param[[j]])), digits)
+    } else if (model[j] == 5) {
+      itemprob.matrix[j, 1:nrow(Mj)] <-
+        itemprob.param[[j]] <- round(exp(c(Mj %*% delta.param[[j]])), digits)
+    }else if(model[j]==0){
+      tmp <- round(c(Mj %*% delta.param[[j]]), digits)
+      if(linkfunc=="logit") itemprob.param[[j]] <- plogis(tmp) else itemprob.param[[j]] <- tmp
+    }
+
+
+
+    # prob[[j]] <- item.param[j,1:length(tmp)] <- round(tmp,digits)
+    names(itemprob.param[[j]]) <-
+      paste0("P(", apply(GDINA::attributepattern(Kj[j]), 1, paste0, collapse=""), ")")
+
+
+  }
+  delta.param <- format_delta(delta.param, model, Kj, digits = digits)
+  return(
+    list(
+      delta.parm = delta.param,
+      # itemprob.matrix = itemprob.matrix,
+      itemprob.parm = itemprob.param
+    )
+  )
+}
+
 
 
 #list to matrix transformation
@@ -638,4 +783,212 @@ itemprob_se_M <- function(object,type){
   covIndex <- vars$index+1
   covs <- vars$Var
   return(list(cov=covs,se=se,ind=data.frame(item=covIndex[,2],loc=covIndex[,1])))
+}
+
+
+
+##############
+#  DTM
+##############
+
+
+# For item j, calculate the category response function (probabilities of getting score h) from the probabilities of pseduo items (nodes)
+# > Tmatrix
+# column 1: observed item responses
+# column 2,...,M: the transformation matrix specifying how these observed responses are obtained from pseduo items (U1,U2,...,UM)
+#       [,1] [,2] [,3] [,4]
+# [1,]    0    0   NA   NA
+# [2,]    1    1    0   NA
+# [3,]    2    2   NA    0
+# [4,]    3    1    1   NA
+# [5,]    3    2   NA    1
+# nodes.pr must be a list of length M-1.
+# The first element is a matrix (L x 3) with 3 columns giving P(U1=0|alpha_l),P(U1=1|alpha_l),P(U1=2|alpha_l)
+# The second and third elements each must be a matrix with 2 columns giving P(U2=0|alpha_l),P(U2=1|alpha_l) and P(U3=0|alpha_l),P(U3=1|alpha_l)
+# Returned Pj - L x # of unique observed responses matrix
+# @export
+NodesP2ObsPj <- function(nodes.pr,Tmatrixj){
+  catp <- NULL
+  obsResp <- Tmatrixj[,1]
+  uniqeObsResp <- unique(obsResp)
+  Pj <- matrix(1,nrow = nrow(nodes.pr[[1]]),ncol = length(uniqeObsResp))
+  for(x in 1:length(uniqeObsResp)){ # all possible observed responses
+    Tx <- Tmatrixj[which(obsResp==uniqeObsResp[x]),,drop=FALSE]
+    if(nrow(Tx)==1){ # only one way to achieve score x
+      Txx <- Tx[,-1,drop=FALSE]
+      Uloc <- which(!is.na(Txx))
+      for(loc in Uloc){ # which nodes contribute to the prob
+        Pj[,x] <- Pj[,x]*nodes.pr[[loc]][,1+Txx[1,loc]]
+      }
+    }else{ # more than one way to achieve score x
+      Txx <- Tx[,-1,drop=FALSE]
+      tmp <- matrix(1,nrow = nrow(Pj),ncol = nrow(Txx))
+      for(w in 1:nrow(Txx)){
+        Uloc <- which(!is.na(Txx[w,,drop=FALSE]))
+        for(loc in Uloc){ # which nodes contribute to the prob
+          tmp[,w] <- tmp[,w]*nodes.pr[[loc]][,1+Txx[w,loc]]
+        }
+      }
+      Pj[,x] <- rowSums(tmp)
+    }
+
+  }
+  return(Pj)
+}
+
+# Qcj <- Qc[which(item.no==j),,drop=FALSE]
+# delta is ? x L matrix
+# returned prj is nodes.pr in NodesP2ObsPj functions
+#'export
+NodesV2NodesPj <- function(Qcj,delta){
+
+  pseudo.no <- Qcj[,2]
+  prj <- vector("list",length(unique(pseudo.no)))
+  for(i in unique(pseudo.no)){#pseudo items
+    tmp <- cbind(1,t(exp(delta[which(pseudo.no==i),,drop=FALSE])))
+    prj[[i]] <- tmp/rowSums(tmp)
+  }
+  return(prj)
+}
+
+# output.list - only applicable when type is tree: TRUE -> output is a list ; FALSE -> a matrix
+#'export
+v2p <- function(v,Qc,type="cumulative",linkfunc="identity",Tmatrix=NULL,output.list=FALSE){
+  #Input: v S x L matrix
+  #Output: p S0 x L matrix
+  item.no <- Qc[,1]
+  J <- length(unique(item.no))
+  p <- NULL # will be a S0 x L matrix
+  if(type=="cumulative"){
+    if(linkfunc=="identity"){
+      for(j in unique(item.no)) p <- rbind(p,-1*apply(rbind(1,v[which(item.no==j),,drop=FALSE],0),2,diff))
+    }else if(linkfunc=="logit"){
+      for(j in unique(item.no)) p <- rbind(p,-1*apply(rbind(1,plogis(v[which(item.no==j),,drop=FALSE]),0),2,diff))
+    }
+  }else if(type=="adjacent"){
+    if(linkfunc=="identity"){
+      for(j in unique(item.no)) {
+        tmp <- apply(rbind(1,v[which(item.no==j),,drop=FALSE]),2,cumprod)/apply(rbind(1,1-v[which(item.no==j),,drop=FALSE]),2,cumprod)
+        p <- rbind(p,tmp/matrix(colSums(tmp),nrow = nrow(tmp),ncol = ncol(tmp),byrow = TRUE))
+      }
+    }else if(linkfunc=="logit"){
+      for(j in unique(item.no)) {
+        tmp <- apply(rbind(1,exp(v[which(item.no==j),,drop=FALSE])),2,cumprod)
+        p <- rbind(p,tmp/matrix(colSums(tmp),nrow = nrow(tmp),ncol = ncol(tmp),byrow = TRUE))
+      }
+    }
+  }else if(type=="sequential"){
+    if(linkfunc=="identity"){
+      for(j in unique(item.no)) {
+        tmp1 <- apply(rbind(1,v[which(item.no==j),,drop=FALSE]),2,cumprod)
+        tmp2 <- rbind(1-v[which(item.no==j),,drop=FALSE],1)
+        p <- rbind(p,tmp1*tmp2)
+      }
+    }else if(linkfunc=="logit"){
+      for(j in unique(item.no)) {
+        tmp1 <- apply(rbind(1,plogis(v[which(item.no==j),,drop=FALSE])),2,cumprod)
+        tmp2 <- rbind(1-plogis(v[which(item.no==j),,drop=FALSE]),1)
+        p <- rbind(p,tmp1*tmp2)
+      }
+    }
+  }else if(type=="nominal"){
+    if(linkfunc=="identity"){
+      stop("Nominal model must be defined under logit link function.",call. = FALSE)
+    }else if(linkfunc=="logit"){
+      for(j in unique(item.no)) {
+        tmp <- rbind(1,exp(v[which(item.no==j),,drop=FALSE]))
+        p <- rbind(p,tmp/matrix(colSums(tmp),nrow = nrow(tmp),ncol = ncol(tmp),byrow = TRUE))
+      }
+    }
+  }else if(type=="tree"){
+    if(is.null(Tmatrix)) stop("Tmatrix must be specified for a tree model.",call. = FALSE)
+
+    if(linkfunc=="logit"){
+      pr <- list()
+      for(j in unique(item.no)) {
+        nodeprj <- NodesV2NodesPj(Qcj=Qc[which(item.no==j),,drop=FALSE],
+                                  delta = v[which(item.no==j),,drop=FALSE])
+        pr[[j]] <- NodesP2ObsPj(nodeprj,Tmatrix[[j]]) # P(X=h|alpha_l)
+      }
+      if(!output.list) p <- t(do.call(cbind,pr))
+    }
+  }
+  return(p)
+}
+
+
+v2pj <- function(vj,type="cumulative",linkfunc="identity",Tmatrixj=NULL,Qcj=NULL){
+  #vi must be a Sj x L matrix
+
+  if(type=="cumulative"){
+    if(linkfunc=="identity"){
+      p <- -1*apply(rbind(1,vj,0),2,diff)
+    }else if(linkfunc=="logit"){
+      p <- -1*apply(rbind(1,plogis(vj),0),2,diff)
+    }
+  }else if(type=="adjacent"){
+    if(linkfunc=="identity"){
+      tmp <- apply(rbind(1,vj),2,cumprod)/apply(rbind(1,1-vj),2,cumprod)
+    }else if(linkfunc=="logit"){
+      tmp <- apply(rbind(1,plogis(vj)),2,cumprod)/apply(rbind(1,1-plogis(vj)),2,cumprod)
+    }
+    p <- tmp/matrix(colSums(tmp),nrow = nrow(tmp),ncol = ncol(tmp),byrow = TRUE)
+  }else if(type=="sequential"){
+    if(linkfunc=="identity"){
+      p <- apply(rbind(1,vj),2,cumprod)*rbind(1-vj,1)
+    }else if(linkfunc=="logit"){
+      p <- apply(rbind(1,plogis(vj)),2,cumprod)*rbind(1-plogis(vj),1)
+    }
+  }else if(type=="nominal"){
+    if(linkfunc=="identity"){
+      stop("Nominal model must be defined under logit link function.",call. = FALSE)
+    }else if(linkfunc=="logit"){
+      tmp <- rbind(1,exp(vj))
+      p <- tmp/matrix(colSums(tmp),nrow = nrow(tmp),ncol = ncol(tmp),byrow = TRUE)
+
+    }
+  }else if(type=="tree"){
+    if(is.null(Tmatrixj)) stop("Tmatrix must be specified for a tree model.",call. = FALSE)
+
+    if(linkfunc=="logit"){
+      nodeprj <- NodesV2NodesPj(Qcj=Qcj, delta = vj)
+      p <- t(NodesP2ObsPj(nodeprj,Tmatrixj)) # P(X=h|alpha_l)
+    }
+  }
+  return(p) # Sj0 x L
+}
+
+null <- function(x) x
+first.not.zero <- function(x) {
+  if(all(x==0)) {
+    y=NULL
+  }else{
+    y=x[which(x!=0)]
+    y=y[1]
+  }
+  return(y)
+}
+
+parmtrans <- function(mparj,mIndj){
+  parj <- apply(mparj*mIndj,2,first.not.zero)[which(colSums(mIndj)>0)]
+  if(nrow(mIndj)>1) {
+    parj <- c(mparj[1,1],diff(mparj[,1]),parj[-1])
+  }else{
+    parj <- unlist(parj)
+  }
+  return(parj)
+}
+
+invparmtrans <- function(vparj,mIndj){
+  ncat <- nrow(mIndj)
+  tmp <- rep(1,ncol(mIndj))# 2^K
+  if(ncat>1){
+    tmp[which(colSums(mIndj)>0)] <- vparj[-c(1:(ncat-1))]
+    v <- tmp*t(mIndj)
+    v[1,] <- cumsum(vparj[1:ncat])
+  }else{
+    tmp[which(colSums(mIndj)>0)] <- vparj
+    v <- tmp*t(mIndj)
+  }
+  return(v)
 }

@@ -5,8 +5,8 @@ account: wenchaoma
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 327968
-bundleId: 1332480
+bundleId: 1333528
 url: https://wenchaoma.shinyapps.io/GDINA/
-when: 1524435565.75096
+when: 1524493428.56506
 asMultiple: FALSE
 asStatic: FALSE

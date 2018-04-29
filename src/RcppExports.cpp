@@ -92,6 +92,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Lik_DTM
+Rcpp::List Lik_DTM(arma::mat& mP, arma::mat& mX, arma::vec vC, arma::vec vlogPrior);
+RcppExport SEXP _GDINA_Lik_DTM(SEXP mPSEXP, SEXP mXSEXP, SEXP vCSEXP, SEXP vlogPriorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type mP(mPSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type vC(vCSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type vlogPrior(vlogPriorSEXP);
+    rcpp_result_gen = Rcpp::wrap(Lik_DTM(mP, mX, vC, vlogPrior));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Mord
 Rcpp::List Mord(arma::vec item_no, arma::mat& LCprob, arma::vec prior);
 RcppExport SEXP _GDINA_Mord(SEXP item_noSEXP, SEXP LCprobSEXP, SEXP priorSEXP) {
@@ -289,6 +303,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat& >::type mloc(mlocSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type weights(weightsSEXP);
     rcpp_result_gen = Rcpp::wrap(NgRg(mlogPost, mX, mloc, weights));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Rljs_DTM
+arma::mat Rljs_DTM(arma::mat& mlogPost, arma::mat& mX, arma::vec vC);
+RcppExport SEXP _GDINA_Rljs_DTM(SEXP mlogPostSEXP, SEXP mXSEXP, SEXP vCSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type mlogPost(mlogPostSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type vC(vCSEXP);
+    rcpp_result_gen = Rcpp::wrap(Rljs_DTM(mlogPost, mX, vC));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -597,6 +624,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GDINA_ObsLogLik", (DL_FUNC) &_GDINA_ObsLogLik, 6},
     {"_GDINA_LikNR", (DL_FUNC) &_GDINA_LikNR, 7},
     {"_GDINA_LikNR_LC", (DL_FUNC) &_GDINA_LikNR_LC, 6},
+    {"_GDINA_Lik_DTM", (DL_FUNC) &_GDINA_Lik_DTM, 4},
     {"_GDINA_Mord", (DL_FUNC) &_GDINA_Mord, 3},
     {"_GDINA_Calc_Pj", (DL_FUNC) &_GDINA_Calc_Pj, 5},
     {"_GDINA_Calc_Dj", (DL_FUNC) &_GDINA_Calc_Dj, 5},
@@ -608,6 +636,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GDINA_Mstep_ineq_fn", (DL_FUNC) &_GDINA_Mstep_ineq_fn, 11},
     {"_GDINA_Mstep_ineq_jac", (DL_FUNC) &_GDINA_Mstep_ineq_jac, 11},
     {"_GDINA_NgRg", (DL_FUNC) &_GDINA_NgRg, 4},
+    {"_GDINA_Rljs_DTM", (DL_FUNC) &_GDINA_Rljs_DTM, 3},
     {"_GDINA_scorefun", (DL_FUNC) &_GDINA_scorefun, 5},
     {"_GDINA_SE", (DL_FUNC) &_GDINA_SE, 7},
     {"_GDINA_sequP", (DL_FUNC) &_GDINA_sequP, 3},

@@ -1,5 +1,4 @@
-# suppressMessages(require(shiny))
-# suppressMessages(require(shinydashboard))
+library(GDINA)
 sidebar <- shinydashboard::dashboardSidebar(
   shinydashboard::sidebarMenu(
     shinydashboard::menuItem("Input", tabName = "input", icon = icon("file-text")),

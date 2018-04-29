@@ -27,6 +27,19 @@ deviance.GDINA <- function(object,...){
 nobs.GDINA <- function(object,...){
   extract(object, what = "nobs")
 }
+
+#' @export
+#' @describeIn GDINA calculate covariance-matrix for delta parameters
+vcov.GDINA <- function(object,...){
+  dn <- lapply(coef(object,"delta"),names)
+  nm <- names(dn)
+  v.names <- NULL
+  for(j in seq_len(length(dn))) v.names <- c(v.names,paste(nm[j],dn[[j]]))
+  opg <- OPG_d(object,SE.type = 2)$cov
+  rownames(opg) <- colnames(opg) <- v.names
+  opg
+  }
+
 #' @title Calculate the number of parameters
 #' @description Calculate the number of parameters for GDINA estimates.
 #' Returned the total number of parameters, the number of item parameters and

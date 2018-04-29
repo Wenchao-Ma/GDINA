@@ -1,3 +1,4 @@
+library(GDINA)
 shinyServer(function(input, output) {
 
   ######## INPUTS
@@ -136,7 +137,7 @@ shinyServer(function(input, output) {
 
   q <- shiny::reactive({
     if (input$qvalcheck == 0)  return()
-    Qval(est.result(),eps = input$PVAFcutoff)
+    GDINA::Qval(est.result(),eps = input$PVAFcutoff)
   })
   output$sugQ <- shiny::renderPrint({
     if (input$qvalcheck == 0)  return()
