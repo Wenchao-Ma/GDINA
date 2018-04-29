@@ -1,6 +1,6 @@
 #' Calibrate diagnostic tree model (experimental)
 #'
-#' This function estimates the diagnostic tree model (Ma, 2018). It is an experimental function, and it is expected to be further extended.
+#' This function estimates the diagnostic tree model (Ma, 2018). It is an experimental function, and will be further optimized.
 #'
 #'
 #' @param dat A required \eqn{N \times J} data matrix of N examinees to J items. Missing
@@ -17,7 +17,26 @@
 #' @param maxitr The maximum iterations allowed.
 #' @param Tmatrix The mapping matrix showing the relation between the OBSERVED responses (rows) and the PSEDUO items (columns);
 #' The first column gives the observed responses.
-#'
+#' @examples
+#'\dontrun{
+#' K=5
+#' g=0.2
+#' item.no <- rep(1:6,each=4)
+#' # the first node has three response categories: 0, 1 and 2
+#' node.no <- rep(c(1,1,2,3),6)
+#' Q1 <- matrix(0,length(item.no),K)
+#' Q2 <- cbind(7:(7+K-1),rep(1,K),diag(K))
+#' for(j in 1:length(item.no)) {
+#'   Q1[j,sample(1:K,sample(3,1))] <- 1
+#' }
+#' Qc <- rbind(cbind(item.no,node.no,Q1),Q2)
+#' Tmatrix.set <- list(cbind(c(0,1,2,3,3),c(0,1,2,1,2),c(NA,0,NA,1,NA),c(NA,NA,0,NA,1)),
+#' cbind(c(0,1,2,3,4),c(0,1,2,1,2),c(NA,0,NA,1,NA),c(NA,NA,0,NA,1)),
+#' cbind(c(0,1),c(0,1)))
+#' Tmatrix <- Tmatrix.set[c(1,1,1,1,1,1,rep(3,K))]
+#' sim <- simDTM(N=2000,Qc=Qc,gs.parm=matrix(0.2,nrow(Qc),2),Tmatrix=Tmatrix)
+#' est <- DTM(dat=sim$dat,Qc=Qc,Tmatrix = Tmatrix)
+#' }
 #' @references
 #'
 #' Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
@@ -122,7 +141,7 @@ DTM <- function(dat, Qc, delta = NULL, Tmatrix = NULL, conv.crit = 0.001, conv.t
 
 
     att <- exp(likepost$logprior)
-    att[which(att<1e-2)] <- 1e-2
+    # att[which(att<1e-2)] <- 1e-2
     att <- att/sum(att)
     logprior <- log(att)
 

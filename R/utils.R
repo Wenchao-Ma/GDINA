@@ -806,7 +806,6 @@ itemprob_se_M <- function(object,type){
 # The first element is a matrix (L x 3) with 3 columns giving P(U1=0|alpha_l),P(U1=1|alpha_l),P(U1=2|alpha_l)
 # The second and third elements each must be a matrix with 2 columns giving P(U2=0|alpha_l),P(U2=1|alpha_l) and P(U3=0|alpha_l),P(U3=1|alpha_l)
 # Returned Pj - L x # of unique observed responses matrix
-# @export
 NodesP2ObsPj <- function(nodes.pr,Tmatrixj){
   catp <- NULL
   obsResp <- Tmatrixj[,1]
@@ -839,7 +838,6 @@ NodesP2ObsPj <- function(nodes.pr,Tmatrixj){
 # Qcj <- Qc[which(item.no==j),,drop=FALSE]
 # delta is ? x L matrix
 # returned prj is nodes.pr in NodesP2ObsPj functions
-#'export
 NodesV2NodesPj <- function(Qcj,delta){
 
   pseudo.no <- Qcj[,2]
@@ -852,7 +850,6 @@ NodesV2NodesPj <- function(Qcj,delta){
 }
 
 # output.list - only applicable when type is tree: TRUE -> output is a list ; FALSE -> a matrix
-#'export
 v2p <- function(v,Qc,type="cumulative",linkfunc="identity",Tmatrix=NULL,output.list=FALSE){
   #Input: v S x L matrix
   #Output: p S0 x L matrix

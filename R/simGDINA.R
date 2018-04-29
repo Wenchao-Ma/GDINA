@@ -709,3 +709,95 @@ if(!sequential){
   class(output) <- "simGDINA"
   invisible(output)
 }
+
+
+
+
+
+#' Simulating data for diagnostic tree model
+#'
+#' Data generation for diagnostic tree model
+#'
+#' @param N sample size
+#' @param Qc Association matrix between attributes (column) and PSEUDO items (row); The first column is item number and
+#' the second column is the pseudo item number for each item. If a pseudo item has more than one nonzero categories,
+#' more than one rows are needed.
+#' @param red.delta reduced delta parameters using logit link function
+#' @param gs.parm the same as the gs.parm in simGDINA function in the GDINA package. It is a list with the same number of
+#' elements as the number of rows in the Qc matrix
+#' @param Tmatrix mapping matrix showing the relation between the OBSERVED responses (rows) and the PSEDUO items (columns);
+#' The first column gives the observed responses.
+#' @param att.gr attribute group indicator
+#' @examples
+#'\dontrun{
+#' K=5
+#' g=0.2
+#' item.no <- rep(1:6,each=4)
+#' # the first node has three response categories: 0, 1 and 2
+#' node.no <- rep(c(1,1,2,3),6)
+#' Q1 <- matrix(0,length(item.no),K)
+#' Q2 <- cbind(7:(7+K-1),rep(1,K),diag(K))
+#' for(j in 1:length(item.no)) {
+#'   Q1[j,sample(1:K,sample(3,1))] <- 1
+#' }
+#' Qc <- rbind(cbind(item.no,node.no,Q1),Q2)
+#' Tmatrix.set <- list(cbind(c(0,1,2,3,3),c(0,1,2,1,2),c(NA,0,NA,1,NA),c(NA,NA,0,NA,1)),
+#' cbind(c(0,1,2,3,4),c(0,1,2,1,2),c(NA,0,NA,1,NA),c(NA,NA,0,NA,1)),
+#' cbind(c(0,1),c(0,1)))
+#' Tmatrix <- Tmatrix.set[c(1,1,1,1,1,1,rep(3,K))]
+#' sim <- simDTM(N=2000,Qc=Qc,gs.parm=matrix(0.2,nrow(Qc),2),Tmatrix=Tmatrix)
+#' est <- DTM(dat=sim$dat,Qc=Qc,Tmatrix = Tmatrix)
+#' }
+#' @export
+#'
+simDTM <- function(N,Qc,gs.parm,Tmatrix,red.delta=NULL,att.gr=NULL){
+
+  ## Q matrix is used to specify the relation between attribute and PSEDUO items
+  ## observed item responses are given in Tmatrix (first column)
+  ## Tmatrix specifies the relation between the OBSERVED responses (rows) and the PSEDUO items
+  ## first column in the Q gives the observed item no.
+  ## second column gives the no. of the pseduo items (nodes) related with each observed item
+
+  Q <- Qc[,-c(1:2)]
+  item.no <- Qc[,1]
+  node.no <- 1:nrow(Q)
+  J <- length(unique(item.no))
+  if(is.null(red.delta)){
+    sim <- GDINA::simGDINA(3,Q,gs.parm = gs.parm,model = "GDINA",gs.args = list(type = "random",mono.constraint = TRUE))
+    delta <- list()
+  }else{
+    delta <- red.delta
+  }
+  Kj <- rowSums(Q)
+  K <- ncol(Q)
+  if(is.null(att.gr)){
+    att.gr <- sample.int(2^K,size = N,replace = TRUE)
+  }
+
+  resp <- matrix(0,N,J)
+
+  pr <- list()
+  logitP <- eta <- GDINA::LC2LG(Q)
+
+  for(j in unique(item.no)){
+    if(is.null(red.delta)){
+      for(nd in node.no[which(item.no==j)]){
+        tmp <- qlogis(sim$catprob.parm[[nd]]) # logitP for reduced latent group
+        logitP[nd,] <- tmp[eta[nd,]] #logit(P) for each latent class
+        delta[[nd]] <- c(solve(designmatrix(Kj[nd]))%*%tmp)
+      }
+    }else{
+      for(nd in node.no[which(item.no==j)]){
+        tmp <- designmatrix(Kj[nd])%*%delta[[nd]]
+        logitP[nd,] <- tmp[eta[nd,]] #logit(P) for each latent class
+      }
+
+    }
+
+
+    nodePj <- NodesV2NodesPj(Qc[which(item.no==j),,drop=FALSE],logitP[which(item.no==j),,drop=FALSE])
+    pr[[j]] <- NodesP2ObsPj(nodePj,Tmatrix[[j]])
+    resp[,j] <- apply(pr[[j]][att.gr,],1,function(x)sample(unique(Tmatrix[[j]][,1]),size = 1,prob = x))
+  }
+  return(list(dat=resp,delta=delta,pr=pr,att=attributepattern(K)[att.gr,]))
+}
