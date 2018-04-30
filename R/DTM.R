@@ -41,7 +41,6 @@
 #'
 #' Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
 #'
-
 #'
 #' @export
 DTM <- function(dat, Qc, delta = NULL, Tmatrix = NULL, conv.crit = 0.001, conv.type = "pr",maxitr = 1000){

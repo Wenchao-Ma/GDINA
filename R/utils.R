@@ -791,7 +791,6 @@ itemprob_se_M <- function(object,type){
 #  DTM
 ##############
 
-
 # For item j, calculate the category response function (probabilities of getting score h) from the probabilities of pseduo items (nodes)
 # > Tmatrix
 # column 1: observed item responses
