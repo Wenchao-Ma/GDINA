@@ -6,7 +6,8 @@
 \alias{summary.Qval}
 \title{Q-matrix validation}
 \usage{
-Qval(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4)
+Qval(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4,
+  wald.args = list())
 
 \method{extract}{Qval}(object, what = c("sug.Q", "varsigma", "PVAF", "eps",
   "Q"), ...)
@@ -21,6 +22,18 @@ Qval(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4)
 \item{eps}{cutoff value for PVAF. 0.95 is the default.}
 
 \item{digits}{How many decimal places in each number? The default is 4.}
+
+\item{wald.args}{a list of arguments for the stepwise Wald test method.
+\describe{
+\item{SE.type}{Type of covariance matrix for the Wald test}
+\item{alpha.level}{alpha level for the wald test}
+\item{GDI}{It can be 0, 1 or 2; 0 means GDI is not used to choose the attribute -
+when more than one attributes are significant, the one with the largest p-value will be selected;
+GDI=1 means the attribute with the largest GDI will be selected; GDI=2 means the q-vector with
+the largest GDI will be selected.}
+\item{verbose}{Print detailed information or not?}
+\item{stepwise}{\code{TRUE} for stepwise approach and \code{FALSE} for forward approach}
+}}
 
 \item{object}{\code{Qval} objects for S3 methods}
 
@@ -42,7 +55,7 @@ extracted using \code{extract} method include:
 }
 }
 \description{
-Q-matrix validation for the G-DINA model based on de la Torre and Chiu (2016).
+Q-matrix validation for the G-DINA model based on PVAF (de la Torre & Chiu, 2016) or stepwise Wald test (Ma, 2017).
 }
 \section{Methods (by generic)}{
 \itemize{
@@ -69,11 +82,13 @@ extract(out,what = "varsigma")
 extract(out,what = "sug.Q")
 
 # Draw a mesa plot
-plot(out,item=10,type="all",no.qvector=5)
+plot(out,item=10,type="best",no.qvector=5)
 }
 }
 \references{
 de la Torre, J. & Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
+
+Ma, W. (2017). A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-matrix Validation, and Model Comparison. Unpublished doctoral dissertation. Rutgers, The State University of New Jersey.
 }
 \seealso{
 \code{\link{GDINA}}

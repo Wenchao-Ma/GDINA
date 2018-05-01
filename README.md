@@ -16,6 +16,7 @@ Features of the package
 -   Estimating models within the G-DINA model framework using user-specified design matrix and link functions
 -   Estimating Bugs-DINA, DINO and G-DINA models for dichotomous responses
 -   Estimating sequential G-DINA model for ordinal and nominal responses
+-   Estimating dignostic tree model
 -   Modelling independent, saturated, higher-order, loglinear smoothed, and structured joint attribute distribution
 -   Accommodating multiple-group model analysis
 -   Imposing monotonic constrained success probabilities
