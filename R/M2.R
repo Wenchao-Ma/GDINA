@@ -27,8 +27,10 @@
 #'}
 
 
-modelfit <- function(GDINA.obj,CI=0.90,...)
+modelfit <- function(GDINA.obj,CI = 0.90,...)
 {
+
+  if(CI>=1||CI<=0) stop("CI must be between 0 and 1.",call. = FALSE)
 
   ItemOnly <- dots("ItemOnly",FALSE,...)
 
@@ -194,7 +196,7 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
 
     rmsea <- sqrt(max((M2 - df) / (N * df), 0))
 
-    ci <- RMSEAfun(M2, df, N)
+    ci <- RMSEAfun(M2, df, N, CI)
   }
 
 
@@ -207,22 +209,24 @@ modelfit <- function(GDINA.obj,CI=0.90,...)
 
 func.lambda <- function(lambda, X2, df, b) pchisq(X2, df=df, ncp=lambda) - (1 - b)
 
-RMSEAfun <- function(X2, df, N) {
+RMSEAfun <- function(X2, df, N, CI) {
+
+  bb <- (1 - CI)/2
 
   lower <- 0
   l.upper <- X2
   u.upper <- max(N, X2*5)
-  if(func.lambda(lower,X2,df,b=0.05)*func.lambda(l.upper,X2,df,b=0.05)>0){
+  if(func.lambda(lower,X2,df,b = bb)*func.lambda(l.upper,X2,df,b=bb)>0){
     l.lambda <- 0
   }else{
-    l.lambda <- uniroot(f=func.lambda, lower=lower, upper=l.upper, X2=X2, b=0.05, df=df)$root
+    l.lambda <- uniroot(f=func.lambda, lower=lower, upper=l.upper, X2=X2, b=bb, df=df)$root
   }
 
 
-  if(func.lambda(lower,X2,df,b=0.95)*func.lambda(u.upper,X2,df,b=0.95)>0){
+  if(func.lambda(lower,X2,df,b=CI + bb)*func.lambda(u.upper,X2,df,b = CI + bb)>0){
     u.lambda <- 0
   }else{
-    u.lambda <- uniroot(f=func.lambda, lower=lower, upper=u.upper, X2=X2, b=0.95, df=df)$root
+    u.lambda <- uniroot(f=func.lambda, lower=lower, upper=u.upper, X2=X2, b=CI + bb, df=df)$root
   }
 
 

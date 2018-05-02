@@ -14,7 +14,24 @@ knitr::opts_chunk$set(
 
 # GDINA Package for Cognitive Diagnosis Modelling
 
-[![](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA)
+[![Project Status: Active ? The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![Build Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travis-ci.org/Wenchao-Ma/GDINA)
+ 
+---
+ 
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.1.0-6666ff.svg)](https://cran.r-project.org/)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA)
+[![packageversion](https://img.shields.io/badge/Package%20version-2.1.7-orange.svg?style=flat-square)](commits/master)
+ 
+---
+ 
+[![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-yellowgreen.svg)](/commits/master)
+
+
+<!-- [![](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA) -->
+
+<!-- [![Travis CI status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travis-ci.org/Wenchao-Ma/GDINA) -->
 
 [![](https://cranlogs.r-pkg.org/badges/GDINA?color=brightgreen)](https://cran.r-project.org/package=GDINA)
 
