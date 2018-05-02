@@ -4,7 +4,7 @@
 
 using namespace Rcpp;
 
-
+using namespace arma;
 
 
 // [[Rcpp::export]]
@@ -20,27 +20,29 @@ arma::umat combnCpp(double n, double k) {
 
   out.col(0) = a;
 
-  unsigned int m = 0;
+  arma::uword m = 0;
 
-  unsigned int h = (unsigned int)k;
+  arma::uword kk = (arma::uword)k;
+
+  arma::uword h = (arma::uword)k;
 
   arma::uvec j;
 
 
 
-  for(unsigned long int i = 1; i < n_subsets; i++){
+  for(arma::uword i = 1; i < n_subsets; i++){
 
     if(m < (n - h)){
 
       h = 1;
 
-      m = a(k - 1);
+      m = a(kk - 1);
 
       j = arma::linspace<arma::uvec>(1, 1, 1);
 
     }else{
 
-      m = a(k - h - 1);
+      m = a(kk - h - 1);
 
       ++h;
 
@@ -48,7 +50,10 @@ arma::umat combnCpp(double n, double k) {
 
     }
 
-    a(k - h - 1 + j) = m + j;
+
+    arma::uvec x = kk - h - 1 + j;
+
+    a.elem(x) = m + j;
 
     out.col(i) = a;
 
