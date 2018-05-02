@@ -69,13 +69,17 @@ Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args =
   if (eps > 1 || eps <= 0)
     stop("eps must be greater than 0 and less than 1.", call. = FALSE)
 
-  Y <- extract(GDINA.obj, "seq.dat")
-  Q <- extract(GDINA.obj, "Q")
+  if(extract(GDINA.obj,"ngroup")>1) stop("Only available for single-group models.",call. = FALSE)
 
-  if (max(Q) > 1)
+  if(any(extract(GDINA.obj,"models_numeric")<0)||any(extract(GDINA.obj,"models_numeric")>5))
+    stop("Models must be GDINA, DINA, DINO, ACDM, LLM or RRUM",call. = FALSE)
+
+  if (max(extract(GDINA.obj, "Q")) > 1)
     stop("Q-validation can only be used for dichotomous attribute G-DINA model.",
          call. = FALSE)
 
+
+  updated.wald.args <- NULL
   if(toupper(method)=="PVAF"){
     ret <- Qval_PVAF(GDINA.obj,eps = eps, digits = digits)
   }else if (toupper(method)=="WALD"){
@@ -85,6 +89,8 @@ Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args =
     updated.wald.args <- modifyList(args.default,wald.args)
     ret <- do.call(Qval_wald,updated.wald.args)
   }
+  ret$method <- method
+  ret$wald.args <- updated.wald.args
   class(ret) <- "Qval"
   return(ret)
 }
@@ -359,13 +365,19 @@ Qval_PVAF <- function(GDINA.obj,
   rownames(out.vsg) <-
     rownames(out.PVAF) <-
     apply(patt, 1, paste, collapse = "")
-  Q <- data.frame(Q, row.names = extract(GDINA.obj, "item.names"))
-
+  # Q <- data.frame(Q, row.names = extract(GDINA.obj, "item.names"))
+  if(seqent){
+    ret.Q <- Qc
+    ret.sugQ <- cbind(Qc[,1:2],val_q)
+  }else{
+    ret.Q <- Q
+    ret.sugQ <- val_q
+  }
 
   qvalid <-
     list(
-      sug.Q = val_q,
-      Q = Q,
+      sug.Q = ret.sugQ,
+      Q = ret.Q,
       varsigma = out.vsg,
       PVAF = out.PVAF,
       eps = eps,
