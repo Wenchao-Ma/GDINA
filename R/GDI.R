@@ -107,9 +107,9 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
     dat <- extract(GDINA.obj,"dat")
   }
 
-  Qr <- Qc <- extract(GDINA.obj,"Qc")
+  Qc <- extract(GDINA.obj,"Qc")
 
-  Q <- extract(GDINA.obj,"Q")
+  Qr <- Q <- extract(GDINA.obj,"Q")
 
   N <- extract(GDINA.obj,"nobs")
 
@@ -151,8 +151,8 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
   # iteras <- NULL
   item <- c(1:nrow(Q))
   for (j in item) {
-    item.no <- Qc[j,1]
 
+    item.no <- Qc[j,1]
 
     inichoose[j] <- currentset <- first.att[j] # initial att. ---largest GDI
 
@@ -168,7 +168,7 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
       Wp.a <- NULL
       for (k in difset){ # 2nd att.
         #
-        Qr <- Q
+        Qr <- extract(GDINA.obj,"Q")
         Qr[j,seq_len(ncol(Qr))] <- 0
         Qr[j,c(currentset,k)] <- 1
 
@@ -256,18 +256,18 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
       }
     }
 
-    Qr[j,] <- 0
-    Qr[j,currentset] <- 1
+    Q[j,] <- 0
+    Q[j,currentset] <- 1
 
 
   }
 
   if(seqent){
     ret.Q <- Qc
-    ret.sugQ <- cbind(Qc[,1:2],Qr)
+    ret.sugQ <- cbind(Qc[,1:2],Q)
   }else{
-    ret.Q <- Q
-    ret.sugQ <- Qr
+    ret.Q <- extract(GDINA.obj,"Q")
+    ret.sugQ <- Q
   }
   out.vsg <- round(t(vsg), digits)
   out.PVAF <- round(t(vsg0), digits)
