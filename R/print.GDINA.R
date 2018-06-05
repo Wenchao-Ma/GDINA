@@ -141,7 +141,7 @@ print.dif <-
   function(x, ...)
   {
     cat("\nDifferential Item Functioning Detection\n")
-    print(x$test)
+    print(round(x$test,4))
 cat("\nNote: adjusted pvalues are based on the",x$p.adjust.methods,"correction.\n")
   }
 

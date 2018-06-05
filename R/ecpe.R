@@ -26,6 +26,16 @@
 #' anova(mod1,mod2)
 #' # You may compare the following results with Feng, Habing, and Huebner (2014)
 #' coef(mod2,"rrum")
+#'
+#' # G-DINA with hierarchical structure
+#' # see Templin & Bradshaw, 2014
+#' ast <- att.structure(list(c(3,2),c(2,1)),K=3)
+#'
+#' est.gdina2 <- GDINA(ecpe$dat,ecpe$Q,model = "GDINA",
+#'                    control = list(conv.crit = 1e-6),
+#'                    att.prior = ast$att.prob,att.str = TRUE)
+#' # see Table 7 in Templin & Bradshaw, 2014
+#' summary(est.gdina2)
 #'}
 #'
 #' @references

@@ -29,6 +29,10 @@
 #' a saturated model or a hierarchical structures (e.g., linear, divergent). Monotonicity constraints for item/category success
 #' probabilities can also be specified.
 #'
+#' In addition, to handle multiple strategies in ordinal response data, diagnostic treee model (Ma, 2018) can also
+#' be estimated using \code{\link{DTM}} function. Note that this function is experimental, and is expected to be further extended
+#' in the future.
+#'
 #' Q-matrix validation (de la Torre, & Chiu, 2016; see \code{\link{Qval}}),
 #' imodel fit statistics (see \code{\link{modelfit}} and \code{\link{itemfit}}),
 #' model comparison at test and item level (de la Torre, & Lee, 2013;
@@ -75,6 +79,8 @@
 #'
 #' Junker, B. W., & Sijtsma, K. (2001). Cognitive assessment models with few assumptions, and connections with nonparametric
 #' item response theory. \emph{Applied Psychological Measurement, 25}, 258-272.
+#'
+#' Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
 #'
 #' Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
 #'

@@ -217,7 +217,7 @@
 #'    the maximum absolute change in mixing proportion parameters, \code{"delta"}, indicating the maximum absolute change in delta
 #'    parameters or \code{neg2LL} indicating the absolute change in negative two times loglikeihood. Multiple criteria can be specified.
 #'    If so, all criteria need to be met. Default = c("ip", "mp").
-#'     \item \code{nstarts} how many sets of starting values? Default = 1.
+#'     \item \code{nstarts} how many sets of starting values? Default = 3.
 #'     \item \code{lower.p} A vector for each item or nonzero category,
 #'    or a scalar which will be used for all items or nonzero categories to specify the lower bound for success probabilities.
 #'    Default = .0001.
@@ -237,7 +237,7 @@
 #'    If CDM for item j is specified as "UDF" in argument \code{model}, the corresponding design matrix must be provided; otherwise, the design matrix can be \code{NULL},
 #'    which will be generated automatically.
 #' @param solver A string indicating which solver should be used in M-step. By default, the solver is automatically chosen according to the models specified.
-#'    Possible options include \link[nloptr]{nloptr}, \link[Rsolnp]{solnp} and \link[alabama]{auglag}.
+#'    Possible options include \link[nloptr]{slsqp}, \link[nloptr]{nloptr}, \link[Rsolnp]{solnp} and \link[alabama]{auglag}.
 #' @param auglag.args a list of control parameters to be passed to the alabama::auglag() function. It can contain two elements:
 #'    \code{control.outer} and \code{control.optim}. See \link[alabama]{auglag}.
 #' @param nloptr.args a list of control parameters to be passed to \code{opts} argument of \link[nloptr]{nloptr} function.
@@ -291,7 +291,7 @@
 #'
 #' Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
 #'
-#' Ma, W. (in press). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
+#' Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
 #'
 #' Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. \emph{Applied Psychological Measurement, 40}, 200-217.
 #'
@@ -368,10 +368,10 @@
 #' personparm(mod1, what = "MLE") # MLE estimates of attribute profiles
 #'
 #' #plot item response functions for item 10
-#' plot(mod1,IRF.args = list(item = 10))
-#' plot(mod1,IRF.args = list(item = 10,errorbar = TRUE)) # with error bars
-#' #plot mastery probability
-#' plot(mod1,what = "mp", mp.args = list(id=c(1,2)))
+#' plot(mod1,item = 10)
+#' plot(mod1,item = 10,withSE = TRUE) # with error bars
+#' #plot mastery probability for individuals 1, 20 and 50
+#' plot(mod1,what = "mp", person =c(1,20,50))
 #'
 #' # Use extract function to extract more components
 #' # See ?extract

@@ -16,6 +16,21 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   solnp_args <- modifyList(mySolnp_args, solnp_args)
   Mynloptr_args <- list(xtol_rel = 1e-4)
   nloptr_args <- modifyList(Mynloptr_args, nloptr_args)
+  if(att.str){
+    if(!is.null(control$lower.prior)){
+      if(control$lower.prior!=0){
+        warning("lower.prior must be 0 when att.str = TRUE.",call. = FALSE)
+        lower.prior <- 0
+      }
+    }
+
+    if(mono.constraint){
+      warning("Monotonic constraint cannot be imposed when att.str = TRUE.",call. = FALSE)
+      mono.constraint <- FALSE
+    }
+  }else{
+      lower.prior <- .Machine$double.eps
+      }
   myControl <- list(
     maxitr = 2000,
     conv.crit = 1e-4,
@@ -23,7 +38,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     nstarts = 3L,
     lower.p = 1e-4,
     upper.p = 1 - 1e-4,
-    lower.prior = .Machine$double.eps,
+    lower.prior = lower.prior,
     randomseed = 123456,
     smallNcorrection = c(.0005, .001),
     MstepMessage = FALSE

@@ -62,6 +62,7 @@ output <- list(fit=fit,Qval=object$Qval.obj,finalmodel=object$CDM.obj)
    }
 
  #' @export
+ #' @param object dif object for S3 method
  #' @describeIn dif print summary information
  summary.dif <-
    function(object, ...)

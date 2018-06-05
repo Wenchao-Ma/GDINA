@@ -4,8 +4,8 @@
 \alias{plot.GDINA}
 \title{Create plots for GDINA estimates}
 \usage{
-\method{plot}{GDINA}(x, what = "IRF", IRF.args = list(item = "all", errorbar
-  = FALSE, SE.type = 2), mp.args = list(id = 1, att.names = NULL), ...)
+\method{plot}{GDINA}(x, what = "IRF", item = "all", withSE = FALSE,
+  SE.type = 2, person = 1, att.names = NULL, ...)
 }
 \arguments{
 \item{x}{model object of class \code{\link{GDINA}}}
@@ -13,17 +13,15 @@
 \item{what}{type of plot. Can be \code{"IRF"} for item/category response function plot,
 or \code{"mp"} for mastery probabilities for individuals.}
 
-\item{IRF.args}{arguments for IRF plot - a list with the following possible options:
-\itemize{
-  \item \code{item} - A scalar or vector specifying the item(s) for IRF plots.
-  \item \code{erorbar} - Add error bar (estimate - SE, estimate + SE) to the IRF plots?
-  \item \code{SE.type} - How is SE estimated. By default, it's based on OPG using incomplete information.
-  }}
+\item{item}{A scalar or vector specifying the item(s) for IRF plots.}
 
-\item{mp.args}{arguments for mastery probability plot - a list with the following possible options:
-\itemize{
-  \item \code{id} - A scalar or vector specifying the number of individuals for mastery plots.
-  \item \code{att.names} - Optional; a vector for attribute names.#'    }}
+\item{withSE}{logical; Add error bar (estimate - SE, estimate + SE) to the IRF plots?}
+
+\item{SE.type}{How is SE estimated. By default, it's based on OPG using incomplete information.}
+
+\item{person}{A scalar or vector specifying the number of individuals for mastery plots.}
+
+\item{att.names}{Optional; a vector for attribute names.}
 
 \item{...}{additional arguments}
 }
@@ -36,10 +34,13 @@ dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
 mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #plot item response functions for item 10
-plot(mod1, what = "IRF", IRF.args=list(item = 10))
-plot(mod1, what = "IRF", IRF.args=list(item = 10,errorbar = TRUE))
+plot(mod1, item = 10)
+plot(mod1, what = "IRF", item = 10,withSE = TRUE)
+
 # plot mastery probabilities for individuals 4 and 10
-plot(mod1, what = "mp", mp.args = list(id = c(4,10)))
+plot(mod1, what = "mp", person = c(4,10))
+plot(mod1, what = "mp", person = c(4,10,15),
+satt.names = c("addition","subtraction","multiplication"))
 }
 }
 \seealso{

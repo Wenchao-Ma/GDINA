@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^research$
-^\.travis\.yml$
-^README\.Rmd$
-^README-.*\.png$
+^\.git$
+^\.gitignore$
+^\.Rhistory$
+^README\.rmd$

@@ -122,13 +122,13 @@ shinyServer(function(input, output) {
 
   ip <- shiny::reactive({
     if (input$goButton == 0) return()
-    coef(est.result(),what = input$ips,withSE=TRUE)
+    coef(est.result(),what = input$ips,withSE=input$ipse)
   })
 
   output$ip <- shiny::renderPrint({
     if (input$goButton == 0)
       return()
-    coef(est.result(),what = input$ips,withSE=TRUE)
+    coef(est.result(),what = input$ips,withSE=input$ipse)
   })
 
   output$pparm <- shiny::renderPrint({
@@ -166,7 +166,7 @@ makeIRFplot <- function(){
   Q <- read.csv(inFile2$datapath, header = input$header,
                 sep = input$sep, quote = input$quote)
   if (input$item.plot<1||input$item.plot>nrow(Q)) NULL
-  plot(est.result(),IRF.args = list(item = input$item.plot, errorbar = input$IRFplotse))
+  plot(est.result(),item = input$item.plot, withSE = input$IRFplotse)
 }
 
 output$plot <- shiny::renderPlot({

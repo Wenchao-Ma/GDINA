@@ -6,16 +6,11 @@
 #' @param x model object of class \code{\link{GDINA}}
 #' @param what type of plot. Can be \code{"IRF"} for item/category response function plot,
 #'      or \code{"mp"} for mastery probabilities for individuals.
-#' @param IRF.args arguments for IRF plot - a list with the following possible options:
-#'  \itemize{
-#'    \item \code{item} - A scalar or vector specifying the item(s) for IRF plots.
-#'    \item \code{erorbar} - Add error bar (estimate - SE, estimate + SE) to the IRF plots?
-#'    \item \code{SE.type} - How is SE estimated. By default, it's based on OPG using incomplete information.
-#'    }
-#' @param mp.args arguments for mastery probability plot - a list with the following possible options:
-#'  \itemize{
-#'    \item \code{id} - A scalar or vector specifying the number of individuals for mastery plots.
-#'    \item \code{att.names} - Optional; a vector for attribute names.#'    }
+#' @param item A scalar or vector specifying the item(s) for IRF plots.
+#' @param withSE logical; Add error bar (estimate - SE, estimate + SE) to the IRF plots?
+#' @param SE.type How is SE estimated. By default, it's based on OPG using incomplete information.
+#' @param person A scalar or vector specifying the number of individuals for mastery plots.
+#' @param att.names Optional; a vector for attribute names.
 #' @param ... additional arguments
 #' @seealso \code{\link{GDINA}}, \code{\link{autoGDINA}}
 #' @export
@@ -25,22 +20,23 @@
 #' Q <- sim10GDINA$simQ
 #' mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #' #plot item response functions for item 10
-#' plot(mod1, what = "IRF", IRF.args=list(item = 10))
-#' plot(mod1, what = "IRF", IRF.args=list(item = 10,errorbar = TRUE))
+#' plot(mod1, item = 10)
+#' plot(mod1, what = "IRF", item = 10,withSE = TRUE)
+#'
 #' # plot mastery probabilities for individuals 4 and 10
-#' plot(mod1, what = "mp", mp.args = list(id = c(4,10)))
+#' plot(mod1, what = "mp", person = c(4,10))
+#' plot(mod1, what = "mp", person = c(4,10,15),
+#' satt.names = c("addition","subtraction","multiplication"))
 #'}
 
 #' @export
 plot.GDINA <-
-  function(x, what = "IRF", IRF.args = list(item = "all", errorbar = FALSE, SE.type = 2),
-           mp.args = list(id = 1, att.names = NULL), ...)
+  function(x, what = "IRF", item = "all", withSE = FALSE, SE.type = 2,
+           person = 1, att.names = NULL,...)
   {
     if(class(x)!="GDINA") stop("x must be of class GDINA.",call. = FALSE)
 
     if(toupper(what)=="IRF"){
-      default.IRF.args = list(item = "all", errorbar = FALSE, SE.type = 2)
-      IRF.args <- modifyList(default.IRF.args,IRF.args)
       if(extract(x,"sequential")){
         tit <- "Processing functions"
       }else{
@@ -48,12 +44,16 @@ plot.GDINA <-
       }
 
       lc <- p <- upper <- lower <- NULL
-      if (IRF.args$errorbar) se <- extract(x,what = "catprob.se",SE.type=IRF.args$SE.type)
+      if (withSE) se <- extract(x,what = "catprob.se",SE.type=SE.type)
       ip <- extract(x,what = "catprob.parm")
-      if(IRF.args$item == "all"){
-        item <- seq_len(length(ip))
-      }else{
-          item <- IRF.args$item
+      if(length(item) == 1){
+        if(item == "all"){
+          item <- seq_len(length(ip))
+        }else{
+          item <- item
+        }
+      } else{
+          item <- item
         }
       for (j in item){
         tmp.obj <- ip[[j]]
@@ -63,7 +63,7 @@ plot.GDINA <-
         # names(tmp.obj) <- tmp.name
         lc <- factor(tmp.name,levels = tmp.name)
 
-        if(IRF.args$errorbar){
+        if(withSE){
           lower=tmp.obj-se[[j]]
           lower[lower<0] <- 0
           upper=tmp.obj+se[[j]]
@@ -88,31 +88,29 @@ plot.GDINA <-
 
       }
     }else if(tolower(what)=="mp"){
-      default.mp.args = list(id = 1, type = "barchart", att.names = NULL)
-      mp.args <- modifyList(default.mp.args,mp.args)
       df <- personparm(x,"mp")
-      if(is.null(mp.args$att.names)){
+      if(is.null(att.names)){
         att.names <- colnames(df)
       }else{
-        att.names <- mp.args$att.names
+        att.names <- att.names
       }
-      np <- length(mp.args$id)
+      np <- length(person)
       if(np>1){
-        dff <- c(t(df[mp.args$id,]))
-        dat <- data.frame(att = rep(att.names,np),mp = dff,id = factor(rep(mp.args$id,each = ncol(df))))
+        dff <- c(t(df[person,]))
+        dat <- data.frame(att = rep(att.names,np),mp = dff,person = factor(rep(person,each = ncol(df))))
         print(ggplot2::ggplot(data = dat, ggplot2::aes_string(x = "att", y = "mp")) +
-                geom_bar(stat = "identity", position = "dodge",ggplot2::aes_string(fill = "id")) +
+                geom_bar(stat = "identity", position = "dodge",ggplot2::aes_string(fill = "person")) +
                 ylim(0,1)+
                 labs(x = "Attributes", y = "Mastery probabilities",
                      title = paste("Mastery probabilities")))
       }else{
-        dff <- c(df[mp.args$id,])
-        dat <- data.frame(att = att.names,mp = dff,id = factor(rep(mp.args$id,ncol(df))))
+        dff <- c(df[person,])
+        dat <- data.frame(att = att.names,mp = dff,person = factor(rep(person,ncol(df))))
         print(ggplot2::ggplot(data = dat, ggplot2::aes_string(x = "att", y = "mp")) +
                 geom_bar(stat = "identity", position = "dodge") +
                 ylim(0,1)+
                 labs(x = "Attributes", y = "Mastery probabilities",
-                     title = paste("Mastery probabilities for individual",mp.args$id)))
+                     title = paste("Mastery probabilities for individual",person)))
       }
 
     }
@@ -126,6 +124,8 @@ plot.GDINA <-
 #' Create plots of bivariate heatmap for item fit
 #'
 #' @param x model object of class \code{itemfit}
+#' @param type type of heatmap plot
+#' @param adjusted logical; plot adjusted or unadjusted p-values?
 #' @param ... additional arguments
 #' @seealso \code{\link{GDINA}}, \code{\link{itemfit}}
 # #' @describeIn itemfit create bivariate heatmap plots
@@ -136,54 +136,72 @@ plot.GDINA <-
 #'
 #' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #' ift <- itemfit(fit)
+#' # plot the adjusted p values for log odds or transformed correlation
 #' plot(ift)
+#' # plot unadjusted p values for log odds
+#' plot(ift,adjusted = FALSE, type = "logOR")
 #'}
 #' @export
-plot.itemfit <- function(x,...){
+plot.itemfit <- function(x,type="all",adjusted=TRUE,...){
   item.pair.1 <- item.pair.2 <- unadj.pvalue <- test.adj.pvalue <- NULL
-  print(ggplot2::ggplot(extract.itemfit(x,"logOR"),
-                        aes(x=factor(item.pair.2),
-                            y=factor(item.pair.1),
-                            fill=unadj.pvalue))+
-          geom_tile()+ scale_fill_gradient(low="red",
-                                           high="gray",
-                                           limits=c(0,0.05))+
-          theme_bw() +
-          labs(x = "Items", y = "Items",
-               title = "Heatmap plot for unadjusted p-values of log odds ratio"))
+  if(type=="all"||toupper(type)=="LOGOR"){
+    if(adjusted==FALSE){
+      print(ggplot2::ggplot(extract.itemfit(x,"logOR"),
+                            aes(x=factor(item.pair.2),
+                                y=factor(item.pair.1),
+                                fill=unadj.pvalue))+
+              geom_tile()+ scale_fill_gradient(low="red",
+                                               high="gray",
+                                               limits=c(0,0.05))+
+              theme_bw() +
+              labs(x = "Items", y = "Items",
+                   title = "Heatmap plot for unadjusted p-values of log odds ratio"))
+    }else{
+      print(ggplot2::ggplot(extract.itemfit(x,"logOR"),
+                            aes(x=factor(item.pair.2),
+                                y=factor(item.pair.1),
+                                fill=test.adj.pvalue))+
+              geom_tile()+ scale_fill_gradient(low="red",
+                                               high="gray",
+                                               limits=c(0,0.05))+
+              theme_bw() +
+              labs(x = "Items", y = "Items",
+                   title = "Heatmap plot for adjusted p-values of log odds ratio"))
 
-  print(ggplot2::ggplot(extract.itemfit(x,"logOR"),
-                        aes(x=factor(item.pair.2),
-                            y=factor(item.pair.1),
-                            fill=test.adj.pvalue))+
-          geom_tile()+ scale_fill_gradient(low="red",
-                                           high="gray",
-                                           limits=c(0,0.05))+
-          theme_bw() +
-          labs(x = "Items", y = "Items",
-               title = "Heatmap plot for adjusted p-values of log odds ratio"))
+    }
 
-  print(ggplot2::ggplot(extract.itemfit(x,"r"),
-                        aes(x=factor(item.pair.2),
-                            y=factor(item.pair.1),
-                            fill=unadj.pvalue))+
-          geom_tile()+ scale_fill_gradient(low="red",
-                                           high="gray",
-                                           limits=c(0,0.05))+
-          theme_bw() +
-          labs(x = "Items", y = "Items",
-               title = "Heatmap plot for unadjusted p-values of transformed correlation"))
+  }
+  if(type=="all"||toupper(type)=="R"){
+      if(adjusted){
+        print(ggplot2::ggplot(extract.itemfit(x,"r"),
+                              aes(x=factor(item.pair.2),
+                                  y=factor(item.pair.1),
+                                  fill=test.adj.pvalue))+
+                geom_tile()+ scale_fill_gradient(low="red",
+                                                 high="gray",
+                                                 limits=c(0,0.05))+
+                theme_bw() +
+                labs(x = "Items", y = "Items",
+                     title = "Heatmap plot for adjusted p-values of transformed correlation"))
 
-  print(ggplot2::ggplot(extract.itemfit(x,"r"),
-                        aes(x=factor(item.pair.2),
-                            y=factor(item.pair.1),
-                            fill=test.adj.pvalue))+
-          geom_tile()+ scale_fill_gradient(low="red",
-                                           high="gray",
-                                           limits=c(0,0.05))+
-          theme_bw() +
-          labs(x = "Items", y = "Items",
-               title = "Heatmap plot for adjusted p-values of transformed correlation"))
+      }else{
+
+        print(ggplot2::ggplot(extract.itemfit(x,"r"),
+                              aes(x=factor(item.pair.2),
+                                  y=factor(item.pair.1),
+                                  fill=unadj.pvalue))+
+                geom_tile()+ scale_fill_gradient(low="red",
+                                                 high="gray",
+                                                 limits=c(0,0.05))+
+                theme_bw() +
+                labs(x = "Items", y = "Items",
+                     title = "Heatmap plot for unadjusted p-values of transformed correlation"))
+
+
+      }
+    }
+
+
 
 }
 

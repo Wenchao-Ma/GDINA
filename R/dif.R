@@ -5,6 +5,10 @@
 #' in the \code{\link{GDINA}} function using the Wald test (Hou, de la Torre, & Nandakumar, 2014) and the likelihood ratio
 #' test (Ma, Terzi, Lee, & de la Torre, 2017). It can only detect DIF for two groups currently.
 #'
+#' @param dat item responses from two groups; missing data need to be coded as \code{NA}
+#' @param Q Q-matrix specifying the association between items and attributes
+#' @param group a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its
+#'    length must be equal to the number of individuals.
 #' @param method DIF detection method; It can be \code{"wald"} for Hou, de la Torre, and Nandakumar's (2014)
 #' Wald test method, and \code{"LR"} for likelihood ratio test (Ma, Terzi, Lee,& de la Torre, 2017).
 #' @param p.adjust.methods adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
@@ -13,11 +17,11 @@
 #'  for more details. \code{"bonferroni"} is the default.
 #' @param difitem Items for the DIF detection. By default, all items will be examined.
 #' @param LR.type Type of likelihood ratio test for DIF detection. It can be \code{'free.all'} or
-#' \code{'free.one'}.
-#' @param LR.approx Whether an approximated LR test is implemented? If TRUE, anchor item parameters will not be re-estimated but fixed.
+#' \code{'free.one'}. For \code{'free.all'}, there are no anchor items, and for \code{'free.one'},
+#' all items except the studied item are treated as anchor items (i.e., they have the same item parameters between groups). See Ma, Terzi, Lee, and de la Torre (2017).
+#' @param LR.approx Whether an approximated LR test is implemented? If TRUE, parameters of items except the studied one will not be re-estimated.
 #' @param SE.type Type of standard error estimation methods for the Wald test.
-#' @inheritParams GDINA
-#' @param ... Other arguments passed to GDINA function for model calibration
+#' @param ... arguments passed to GDINA function for model calibration
 #' @return A data frame giving the Wald statistics and associated p-values.
 #'
 #' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
@@ -56,10 +60,10 @@
 
 
 dif <- function(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",LR.type="free.all", LR.approx = FALSE,
-                difitem = "all", digits = 4, SE.type = 2, ...){
+                difitem = "all", SE.type = 2, ...){
   if(!is.matrix(dat)){dat <- as.matrix(dat)}
   rownames(dat) <- colnames(dat) <- NULL
-
+  est <- NULL
   if (nrow(dat)!=length(group))stop("The length of group variable must be equal to the number of individuals.",call. = FALSE)
   if (length(unique(group))!=2)stop("Only two group DIF can be examined.",call. = FALSE)
   gr <- group
@@ -104,7 +108,7 @@ dif <- function(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",
       }
 
 
-    output <- round(data.frame(output),digits)
+    output <- data.frame(output)
     colnames(output) <- c("Wald stat.","df","p.value")
     rownames(output) <- extract(est,"item.names")[difitems]
     # output <- Wp
@@ -168,13 +172,12 @@ dif <- function(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",
 
 
     }
-    output <- round(output,digits)
     rownames(output) <- extract(est,"item.names")[difitems]
     # output <- lr.out
   }
   output$'adj.pvalue' <- stats::p.adjust(output$'p.value', method = p.adjust.methods)
 output <- list(test=output,group=gr,p.adjust.methods=p.adjust.methods)
 class(output) <- "dif"
-return(output)
+invisible(output)
 
 }

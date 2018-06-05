@@ -4,10 +4,14 @@
 \alias{plot.itemfit}
 \title{Item fit plots}
 \usage{
-\method{plot}{itemfit}(x, ...)
+\method{plot}{itemfit}(x, type = "all", adjusted = TRUE, ...)
 }
 \arguments{
 \item{x}{model object of class \code{itemfit}}
+
+\item{type}{type of heatmap plot}
+
+\item{adjusted}{logical; plot adjusted or unadjusted p-values?}
 
 \item{...}{additional arguments}
 }
@@ -21,7 +25,10 @@ Q <- sim10GDINA$simQ
 
 fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
 ift <- itemfit(fit)
+# plot the adjusted p values for log odds or transformed correlation
 plot(ift)
+# plot unadjusted p values for log odds
+plot(ift,adjusted = FALSE, type = "logOR")
 }
 }
 \seealso{
