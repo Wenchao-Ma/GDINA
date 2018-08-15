@@ -103,7 +103,7 @@
       <h1>GDINA-vignettes</h1>
                         <h4 class="author">Wenchao Ma</h4>
             
-            <h4 class="date">2018-08-14</h4>
+            <h4 class="date">2018-08-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/GDINA.Rmd"><code>vignettes/GDINA.Rmd</code></a></small>
       <div class="hidden name"><code>GDINA.Rmd</code></div>
@@ -112,237 +112,44 @@
 
     
     
-<p>Below is an example for estimating the G-DINA model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GDINA)
-<span class="co">#&gt; ==============================================</span>
-<span class="co">#&gt; GDINA Package for Cognitive Diagnosis Modeling</span>
-<span class="co">#&gt;         Version 2.1.15 (2018-6-6)</span>
-<span class="co">#&gt; ==============================================</span>
-
-<span class="co"># A simulated data in GDINA package</span>
-dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat
-Q &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simQ
-
-<span class="co"># Estimating GDINA model</span>
-est &lt;-<span class="st"> </span><span class="kw"><a href="../reference/GDINA.html">GDINA</a></span>(<span class="dt">dat =</span> dat, <span class="dt">Q =</span> Q, <span class="dt">model =</span> <span class="st">"GDINA"</span>, <span class="dt">verbose =</span> <span class="dv">0</span>)
-
-
-<span class="co"># print estimation information</span>
-est
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; GDINA(dat = dat, Q = Q, model = "GDINA", verbose = 0)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   GDINA version 2.1.15 (2018-6-6) </span>
-<span class="co">#&gt; ===============================================</span>
-<span class="co">#&gt; Data</span>
-<span class="co">#&gt; -----------------------------------------------</span>
-<span class="co">#&gt; # of individuals    groups    items         </span>
-<span class="co">#&gt;             1000         1       10</span>
-<span class="co">#&gt; ===============================================</span>
-<span class="co">#&gt; Model</span>
-<span class="co">#&gt; -----------------------------------------------</span>
-<span class="co">#&gt; Fitted model(s)       = GDINA </span>
-<span class="co">#&gt; Attribute structure   = saturated </span>
-<span class="co">#&gt; Attribute level       = Dichotomous </span>
-<span class="co">#&gt; ===============================================</span>
-<span class="co">#&gt; Estimation</span>
-<span class="co">#&gt; -----------------------------------------------</span>
-<span class="co">#&gt; Number of iterations  = 45 </span>
-<span class="co">#&gt; For the final iteration:</span>
-<span class="co">#&gt;   Max abs change in item success prob. = 0.0001 </span>
-<span class="co">#&gt;   Max abs change in mixing proportions = 0.0000 </span>
-<span class="co">#&gt;   Change in -2 log-likelihood          = 0.0004 </span>
-<span class="co">#&gt; Time used             = 0.06251 secs</span>
-
-<span class="co"># summary information</span>
-<span class="kw">summary</span>(est)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Test Fit Statistics</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Loglik = -5918.21 </span>
-<span class="co">#&gt; AIC    = 11926.42  | penalty   = 90 </span>
-<span class="co">#&gt; BIC    = 12147.27  | penalty   = 310.85 </span>
-<span class="co">#&gt; # par  = 45 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attribute Prevalence</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;    Level0 Level1</span>
-<span class="co">#&gt; A1 0.5027 0.4973</span>
-<span class="co">#&gt; A2 0.4974 0.5026</span>
-<span class="co">#&gt; A3 0.4784 0.5216</span>
-
-<span class="kw">AIC</span>(est) <span class="co">#AIC</span>
-<span class="co">#&gt; [1] 11926.42</span>
-<span class="kw">BIC</span>(est) <span class="co">#BIC</span>
-<span class="co">#&gt; [1] 12147.27</span>
-<span class="kw">logLik</span>(est) <span class="co">#log-likelihood value</span>
-<span class="co">#&gt; 'log Lik.' -5918.211 (df=45)</span>
-<span class="kw">deviance</span>(est) <span class="co"># deviance: -2 log-likelihood</span>
-<span class="co">#&gt; [1] 11836.42</span>
-
-<span class="kw">coef</span>(est, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># item probabilities of success &amp; standard errors</span>
-<span class="co">#&gt; $`Item 1`</span>
-<span class="co">#&gt;        P(0)   P(1)</span>
-<span class="co">#&gt; Est. 0.2052 0.8986</span>
-<span class="co">#&gt; S.E. 0.0258 0.0224</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 2`</span>
-<span class="co">#&gt;        P(0)   P(1)</span>
-<span class="co">#&gt; Est. 0.1391 0.7796</span>
-<span class="co">#&gt; S.E. 0.0221 0.0247</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 3`</span>
-<span class="co">#&gt;        P(0)   P(1)</span>
-<span class="co">#&gt; Est. 0.0893 0.9092</span>
-<span class="co">#&gt; S.E. 0.0213 0.0199</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 4`</span>
-<span class="co">#&gt;       P(00)  P(10)  P(01)  P(11)</span>
-<span class="co">#&gt; Est. 0.1159 0.2951 0.4741 0.8956</span>
-<span class="co">#&gt; S.E. 0.0279 0.0369 0.0379 0.0282</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 5`</span>
-<span class="co">#&gt;       P(00)  P(10)  P(01)  P(11)</span>
-<span class="co">#&gt; Est. 0.1057 0.0791 0.0904 0.8231</span>
-<span class="co">#&gt; S.E. 0.0249 0.0252 0.0256 0.0335</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 6`</span>
-<span class="co">#&gt;       P(00)  P(10)  P(01) P(11)</span>
-<span class="co">#&gt; Est. 0.1764 0.9029 0.9302 0.917</span>
-<span class="co">#&gt; S.E. 0.0412 0.0314 0.0280 0.023</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 7`</span>
-<span class="co">#&gt;       P(00)  P(10)  P(01)  P(11)</span>
-<span class="co">#&gt; Est. 0.0543 0.4712 0.3922 0.7712</span>
-<span class="co">#&gt; S.E. 0.0238 0.0393 0.0369 0.0322</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 8`</span>
-<span class="co">#&gt;       P(00)  P(10)  P(01)  P(11)</span>
-<span class="co">#&gt; Est. 0.1107 0.2585 0.2730 0.9000</span>
-<span class="co">#&gt; S.E. 0.0262 0.0382 0.0386 0.0349</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 9`</span>
-<span class="co">#&gt;       P(00)  P(10)  P(01)  P(11)</span>
-<span class="co">#&gt; Est. 0.0995 0.3746 0.4189 0.8057</span>
-<span class="co">#&gt; S.E. 0.0294 0.0372 0.0362 0.0288</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 10`</span>
-<span class="co">#&gt;      P(000) P(100) P(010) P(001) P(110) P(101) P(011) P(111)</span>
-<span class="co">#&gt; Est. 0.1757 0.1326 0.2846 0.3823 0.4928 0.4997 0.6734 0.9011</span>
-<span class="co">#&gt; S.E. 0.0449 0.0570 0.0563 0.0554 0.0567 0.0517 0.0479 0.0391</span>
-
-<span class="kw">coef</span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># delta parameters</span>
-<span class="co">#&gt; $`Item 1`</span>
-<span class="co">#&gt;          d0     d1</span>
-<span class="co">#&gt; Est. 0.2052 0.6934</span>
-<span class="co">#&gt; S.E. 0.0258 0.0383</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 2`</span>
-<span class="co">#&gt;          d0     d1</span>
-<span class="co">#&gt; Est. 0.1391 0.6405</span>
-<span class="co">#&gt; S.E. 0.0221 0.0364</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 3`</span>
-<span class="co">#&gt;          d0     d1</span>
-<span class="co">#&gt; Est. 0.0894 0.8199</span>
-<span class="co">#&gt; S.E. 0.0213 0.0317</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 4`</span>
-<span class="co">#&gt;          d0     d1     d2    d12</span>
-<span class="co">#&gt; Est. 0.1159 0.1792 0.3582 0.2423</span>
-<span class="co">#&gt; S.E. 0.0279 0.0492 0.0494 0.0738</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 5`</span>
-<span class="co">#&gt;          d0      d1      d2    d12</span>
-<span class="co">#&gt; Est. 0.1057 -0.0267 -0.0153 0.7594</span>
-<span class="co">#&gt; S.E. 0.0249  0.0399  0.0373 0.0618</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 6`</span>
-<span class="co">#&gt;          d0     d1     d2     d12</span>
-<span class="co">#&gt; Est. 0.1764 0.7265 0.7539 -0.7397</span>
-<span class="co">#&gt; S.E. 0.0412 0.0563 0.0542  0.0740</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 7`</span>
-<span class="co">#&gt;          d0     d1     d2     d12</span>
-<span class="co">#&gt; Est. 0.0543 0.4169 0.3379 -0.0380</span>
-<span class="co">#&gt; S.E. 0.0238 0.0490 0.0459  0.0749</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 8`</span>
-<span class="co">#&gt;          d0     d1     d2    d12</span>
-<span class="co">#&gt; Est. 0.1107 0.1478 0.1623 0.4792</span>
-<span class="co">#&gt; S.E. 0.0262 0.0487 0.0496 0.0792</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 9`</span>
-<span class="co">#&gt;          d0     d1     d2    d12</span>
-<span class="co">#&gt; Est. 0.0995 0.2751 0.3194 0.1117</span>
-<span class="co">#&gt; S.E. 0.0294 0.0515 0.0497 0.0736</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`Item 10`</span>
-<span class="co">#&gt;          d0      d1     d2     d3    d12    d13    d23    d123</span>
-<span class="co">#&gt; Est. 0.1757 -0.0431 0.1089 0.2066 0.2513 0.1604 0.1822 -0.1409</span>
-<span class="co">#&gt; S.E. 0.0449  0.0765 0.0759 0.0767 0.1215 0.1176 0.1117  0.1676</span>
-
-<span class="co"># Estimated proportions of latent classes</span>
-<span class="kw">coef</span>(est,<span class="st">"lambda"</span>)
-<span class="co">#&gt; p(000) p(100) p(010) p(001) p(110) p(101) p(011) p(111) </span>
-<span class="co">#&gt; 0.1268 0.1054 0.1149 0.1201 0.1313 0.1452 0.1409 0.1155</span>
-
-<span class="kw">head</span>(<span class="kw"><a href="../reference/personparm.html">personparm</a></span>(est)) <span class="co"># EAP estimates of attribute profiles</span>
-<span class="co">#&gt;      A1 A2 A3</span>
-<span class="co">#&gt; [1,]  1  0  1</span>
-<span class="co">#&gt; [2,]  1  1  1</span>
-<span class="co">#&gt; [3,]  0  1  1</span>
-<span class="co">#&gt; [4,]  1  1  1</span>
-<span class="co">#&gt; [5,]  0  0  1</span>
-<span class="co">#&gt; [6,]  1  0  0</span>
-
-<span class="kw">plot</span>(est, <span class="dt">item =</span> <span class="dv">10</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># with error bars</span></code></pre></div>
-<p><img src="GDINA_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot mastery probability for individuals 1, 20 and 50</span>
-<span class="kw">plot</span>(est, <span class="dt">what =</span> <span class="st">"mp"</span>, <span class="dt">person =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dv">50</span>))</code></pre></div>
-<p><img src="GDINA_files/figure-html/unnamed-chunk-1-2.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
-<span class="kw">sessionInfo</span>()
-<span class="co">#&gt; R version 3.5.1 (2018-07-02)</span>
-<span class="co">#&gt; Platform: i386-w64-mingw32/i386 (32-bit)</span>
-<span class="co">#&gt; Running under: Windows 10 x64 (build 17134)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Matrix products: default</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; locale:</span>
-<span class="co">#&gt; [1] LC_COLLATE=English_United States.1252 </span>
-<span class="co">#&gt; [2] LC_CTYPE=English_United States.1252   </span>
-<span class="co">#&gt; [3] LC_MONETARY=English_United States.1252</span>
-<span class="co">#&gt; [4] LC_NUMERIC=C                          </span>
-<span class="co">#&gt; [5] LC_TIME=English_United States.1252    </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; attached base packages:</span>
-<span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt; [1] GDINA_2.1.15</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;  [1] commonmark_1.5       digest_0.6.15        htmltools_0.3.6     </span>
-<span class="co">#&gt;  [4] R6_2.2.2             scales_1.0.0         Rsolnp_1.16         </span>
-<span class="co">#&gt;  [7] assertthat_0.2.0     rprojroot_1.3-2      grid_3.5.1          </span>
-<span class="co">#&gt; [10] fs_1.2.5             stringr_1.3.1        knitr_1.20          </span>
-<span class="co">#&gt; [13] numDeriv_2016.8-1    munsell_0.5.0        desc_1.2.0          </span>
-<span class="co">#&gt; [16] shinydashboard_0.7.0 pillar_1.3.0         tibble_1.4.2        </span>
-<span class="co">#&gt; [19] compiler_3.5.1       httpuv_1.4.5         mime_0.5            </span>
-<span class="co">#&gt; [22] xml2_1.2.0           labeling_0.3         pkgdown_1.1.0       </span>
-<span class="co">#&gt; [25] roxygen2_6.1.0       later_0.7.3          shiny_1.1.0         </span>
-<span class="co">#&gt; [28] rstudioapi_0.7       ggplot2_3.0.0        MASS_7.3-50         </span>
-<span class="co">#&gt; [31] plyr_1.8.4           stringi_1.2.4        magrittr_1.5        </span>
-<span class="co">#&gt; [34] rmarkdown_1.10       evaluate_0.11        gtable_0.2.0        </span>
-<span class="co">#&gt; [37] rlang_0.2.1          colorspace_1.3-2     promises_1.0.1      </span>
-<span class="co">#&gt; [40] yaml_2.2.0           tools_3.5.1          alabama_2015.3-1    </span>
-<span class="co">#&gt; [43] parallel_3.5.1       truncnorm_1.0-8      nloptr_1.0.4        </span>
-<span class="co">#&gt; [46] xtable_1.8-2         lazyeval_0.2.1       crayon_1.3.4        </span>
-<span class="co">#&gt; [49] backports_1.1.2      memoise_1.1.0        Rcpp_0.12.18</span></code></pre></div>
+<div id="below-are-key-functions-you-may-need-for-various-cdm-analyses" class="section level2">
+<h2 class="hasAnchor">
+<a href="#below-are-key-functions-you-may-need-for-various-cdm-analyses" class="anchor"></a>Below are key functions you may need for various CDM analyses:</h2>
+<ul>
+<li>To estimate various CDMs, use <strong>GDINA</strong> function</li>
+<li>To evaluate absolute model fit, use <strong>modelfit</strong> or <strong>itemfit</strong> functions</li>
+<li>To evaluate relative model fit, use <strong>AIC</strong>, <strong>BIC</strong> or <strong>deviance</strong> functions</li>
+<li>To validate Q-matrix, use <strong>Qval</strong> function</li>
+<li>To detect differential item functioning, use <strong>dif</strong> function</li>
+<li>To run graphical user interface, use <strong>startGDINA</strong> function</li>
+<li>To simulate data from various CDMs, use <strong>simGDINA</strong> function</li>
+</ul>
+<p>Visit <a href="https://wenchao-ma.github.io/GDINA/reference/index.html">here</a> for online reference</p>
+</div>
+<div id="examples-for-cdm-analysis" class="section level2">
+<h2 class="hasAnchor">
+<a href="#examples-for-cdm-analysis" class="anchor"></a>Examples for CDM analysis:</h2>
+<ul>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html">G-DINA model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINA_example.html">DINA model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINO_example.html">DINO model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/ACDM_example.html">ACDM model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LLM_example.html">LLM model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/RRUM_example.html">RRUM model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html">LCDM model estimation</a></li>
+</ul>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#below-are-key-functions-you-may-need-for-various-cdm-analyses">Below are key functions you may need for various CDM analyses:</a></li>
+      <li><a href="#examples-for-cdm-analysis">Examples for CDM analysis:</a></li>
+      </ul>
+</div>
       </div>
 
 </div>

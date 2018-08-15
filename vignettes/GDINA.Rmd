@@ -16,41 +16,26 @@ knitr::opts_chunk$set(
 )
 ```
 
-Below is an example for estimating the G-DINA model:
-```{r}
-library(GDINA)
-
-# A simulated data in GDINA package
-dat <- sim10GDINA$simdat
-Q <- sim10GDINA$simQ
-
-# Estimating GDINA model
-est <- GDINA(dat = dat, Q = Q, model = "GDINA", verbose = 0)
+## Below are key functions you may need for various CDM analyses:
 
 
-# print estimation information
-est
+* To estimate various CDMs, use **GDINA** function
+* To evaluate absolute model fit, use **modelfit** or **itemfit** functions
+* To evaluate relative model fit, use **AIC**, **BIC** or **deviance** functions
+* To validate Q-matrix, use **Qval** function
+* To detect differential item functioning, use **dif** function
+* To run graphical user interface, use **startGDINA** function
+* To simulate data from various CDMs, use **simGDINA** function
 
-# summary information
-summary(est)
+Visit [here](https://wenchao-ma.github.io/GDINA/reference/index.html) for online reference
 
-AIC(est) #AIC
-BIC(est) #BIC
-logLik(est) #log-likelihood value
-deviance(est) # deviance: -2 log-likelihood
+## Examples for CDM analysis:
 
-coef(est, withSE = TRUE) # item probabilities of success & standard errors
+* [G-DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html)
+* [DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINA_example.html) 
+* [DINO model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINO_example.html) 
+* [ACDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/ACDM_example.html) 
+* [LLM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LLM_example.html) 
+* [RRUM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/RRUM_example.html) 
+* [LCDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html)  
 
-coef(est, what = "delta", withSE = TRUE) # delta parameters
-
-# Estimated proportions of latent classes
-coef(est,"lambda")
-
-head(personparm(est)) # EAP estimates of attribute profiles
-
-plot(est, item = 10, withSE = TRUE) # with error bars
-#plot mastery probability for individuals 1, 20 and 50
-plot(est, what = "mp", person = c(1, 20, 50))
-
-sessionInfo()
-```
