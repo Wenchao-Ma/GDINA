@@ -1,6 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.git$
-^\.gitignore$
-^\.Rhistory$
-^README\.rmd$
+^research$
+^\.travis\.yml$
+^README\.Rmd$
+^README-.*\.png$
+^_pkgdown\.yml$
+^docs$
+^vignettes\OnlineExercises$

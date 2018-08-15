@@ -4,8 +4,8 @@
 \alias{personparm}
 \title{calculate person (incidental) parameters}
 \usage{
-personparm(object, what = c("EAP", "MAP", "MLE", "mp", "HO"), digits = 4,
-  ...)
+personparm(object, what = c("EAP", "MAP", "MLE", "mp", "HO"),
+  digits = 4, ...)
 }
 \arguments{
 \item{object}{estimated GDINA object returned from \code{\link{GDINA}}}

@@ -17,24 +17,25 @@
 \alias{summary.GDINA}
 \title{CDM calibration under the G-DINA model framework}
 \usage{
-GDINA(dat, Q, model = "GDINA", sequential = FALSE, att.dist = "saturated",
-  mono.constraint = FALSE, group = NULL, linkfunc = NULL,
-  design.matrix = NULL, latent.var = "att", att.prior = NULL,
-  att.str = FALSE, verbose = 1, higher.order = list(), loglinear = 2,
-  catprob.parm = NULL, control = list(), item.names = NULL,
-  solver = NULL, nloptr.args = list(), auglag.args = list(),
-  solnp.args = list(), ...)
+GDINA(dat, Q, model = "GDINA", sequential = FALSE,
+  att.dist = "saturated", mono.constraint = FALSE, group = NULL,
+  linkfunc = NULL, design.matrix = NULL, latent.var = "att",
+  att.prior = NULL, att.str = FALSE, verbose = 1,
+  higher.order = list(), loglinear = 2, catprob.parm = NULL,
+  control = list(), item.names = NULL, solver = NULL,
+  nloptr.args = list(), auglag.args = list(), solnp.args = list(),
+  ...)
 
 \method{anova}{GDINA}(object, ...)
 
-\method{coef}{GDINA}(object, what = c("catprob", "delta", "gs", "itemprob",
-  "LCprob", "rrum", "lambda"), withSE = FALSE, SE.type = 2, digits = 4,
-  ...)
+\method{coef}{GDINA}(object, what = c("catprob", "delta", "gs",
+  "itemprob", "LCprob", "rrum", "lambda"), withSE = FALSE, SE.type = 2,
+  digits = 4, ...)
 
 \method{extract}{GDINA}(object, what, SE.type = 2, ...)
 
-\method{personparm}{GDINA}(object, what = c("EAP", "MAP", "MLE", "mp", "HO"),
-  digits = 4, ...)
+\method{personparm}{GDINA}(object, what = c("EAP", "MAP", "MLE", "mp",
+  "HO"), digits = 4, ...)
 
 \method{logLik}{GDINA}(object, ...)
 
@@ -138,7 +139,7 @@ and with main effect and first-order interaction.}
 \itemize{
      \item \code{maxitr} A vector for each item or nonzero category, or a scalar which will be used for all
    items or nonzero categories to specify the maximum number of EM cycles allowed. Default = 2000.
-    \item \code{conv.crit} The convergence criterion for max absolute change in item parameters or deviance. Default = 0.0001.
+    \item \code{conv.crit} The convergence criterion. Default = 0.0001.
     \item \code{conv.type} How is the convergence criterion evaluated? A vector with possible elements: \code{"ip"}, indicating
    the maximum absolute change in item success probabilities, \code{"mp"}, representing
    the maximum absolute change in mixing proportion parameters, \code{"delta"}, indicating the maximum absolute change in delta
@@ -789,7 +790,7 @@ mg.est <- GDINA(dat = dat,Q = Q,group = gr,att.dist="higher.order",
 higher.order=list(model = "1PL",Prior=TRUE))
 summary(mg.est)
 extract(mg.est,"posterior.prob")
-
+coef(mg.est,"lambda")
 
 
 ####################################

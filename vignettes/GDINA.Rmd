@@ -1,0 +1,56 @@
+---
+title: "GDINA-vignettes"
+author: "Wenchao Ma"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GDINA-vignettes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Below is an example for estimating the G-DINA model:
+```{r}
+library(GDINA)
+
+# A simulated data in GDINA package
+dat <- sim10GDINA$simdat
+Q <- sim10GDINA$simQ
+
+# Estimating GDINA model
+est <- GDINA(dat = dat, Q = Q, model = "GDINA", verbose = 0)
+
+
+# print estimation information
+est
+
+# summary information
+summary(est)
+
+AIC(est) #AIC
+BIC(est) #BIC
+logLik(est) #log-likelihood value
+deviance(est) # deviance: -2 log-likelihood
+
+coef(est, withSE = TRUE) # item probabilities of success & standard errors
+
+coef(est, what = "delta", withSE = TRUE) # delta parameters
+
+# Estimated proportions of latent classes
+coef(est,"lambda")
+
+head(personparm(est)) # EAP estimates of attribute profiles
+
+plot(est, item = 10, withSE = TRUE) # with error bars
+#plot mastery probability for individuals 1, 20 and 50
+plot(est, what = "mp", person = c(1, 20, 50))
+
+sessionInfo()
+```

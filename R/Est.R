@@ -21,7 +21,11 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
       if(control$lower.prior!=0){
         warning("lower.prior must be 0 when att.str = TRUE.",call. = FALSE)
         lower.prior <- 0
+      }else{
+        lower.prior <- 0
       }
+    }else{
+      lower.prior <- 0
     }
 
     if(mono.constraint){
@@ -228,7 +232,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   if(any(att.dist=="higher.order")){
 
     myHO <- list(model = "Rasch",nquad = 25L, SlopeRange = c(0.1,5), InterceptRange = c(-4,4), Prior = FALSE,
-                 SlopePrior = c(0,0.25), InterceptPrior = c(0L,1L), Type = "SameTheta")
+                 SlopePrior = c(0,0.25), InterceptPrior = c(0L,1L), anchor = "all")
     # GH <- gaussHermiteData(myHO$nquad)
     # myHO$QuadNodes = matrix(GH$x*sqrt(2),nrow = myHO$nquad,ncol = no.mg)
     # myHO$QuadWghts = matrix(GH$w/sqrt(pi),nrow = myHO$nquad,ncol = no.mg)
@@ -394,12 +398,9 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                                   Ng=Ng,K=K,N=N,higher.order=higher.order,lambda = lambda)
 
     if(!is.null(higher.order)){
-      if(no.mg>1&all(att.dist=="higher.order")&higher.order$Type == "SameLambda"){
-
-        higher.order <- struc.parm$higher.order
-
+      higher.order <- struc.parm$higher.order
+      ho.npar <- struc.parm$higher.order.npar
       }
-    }
 
 
 
@@ -426,10 +427,10 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     if(any(tolower(control$conv.type)=="mp"))  maxchg <- max(maxchg,dif.parm$prior)
     if(any(tolower(control$conv.type)=="neg2ll"))  maxchg <- max(maxchg,abs(dif.parm$neg2LL))
 
-    if(verbose==1) {
+    if(verbose==1L) {
       cat('\rIter =',itr,' Max. abs. change =',formatC(maxchg,digits = 5, format = "f"),
           ' Deviance  =',formatC(-2 * estep$LL,digits = 3, format = "f"),'                                                                                 ')
-    }else if (verbose==2) {
+    }else if (verbose==2L) {
       cat('Iter =',itr,' Max. abs. change =',formatC(maxchg,digits = 5, format = "f"),
           ' Deviance  =',formatC(-2 * estep$LL,digits = 3, format = "f"),'                                                                                \n')
     }
@@ -448,13 +449,25 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                  mloc = as.matrix(parloc),
                  weights = rep(1,N),
                  simplify = 0)
-if(!att.str){
-  npar <- sum(sapply(DesignMatrices,ncol))
-}else{
-  npar <- sum(is.finite(c(item.parm)))
+
+  est.item <- 1:J
+  npar <- 0
+  if(any(control$vmaxitr==0)){
+    est.item <- which(control$vmaxitr>0)
+  }
+if(length(est.item>0)){
+  if(!att.str){
+    npar <- sum(sapply(DesignMatrices[est.item],ncol))
+  }else{
+    npar <- sum(is.finite(c(item.parm[est.item,,drop=FALSE])))
+  }
 }
 
+
   item.npar <- npar  #item parameters
+  if (any(att.dist=="higher.order")) {
+    npar <- npar + ho.npar
+  }
   for(g in 1:no.mg){
     if (att.dist[g]=="saturated") {
       if (!att.str) {
@@ -462,21 +475,15 @@ if(!att.str){
       } else {
         npar <- npar + sum(is.finite(logprior[,g])) - 1
       }
-    } else if (att.dist[g]=="higher.order") {
-      if (higher.order$model == "Rasch") {
-        npar <- npar + K
-      } else if (higher.order$model == "2PL") {
-        npar <- npar + 2 * K
-      } else if (higher.order$model == "1PL") {
-        npar <- npar + 1 + K
-      }
-
     }else if(att.dist[g]=="loglinear"){
       npar <- npar + sum(sapply(seq_len(loglinear[g]),choose,n=K)) + 1
     }else if(att.dist[g]=="independent"){
       npar <- npar + K
     }
   }
+
+
+
   neg2LL <- -2 * estep$LL
 
   item.prob <- vector("list",J)

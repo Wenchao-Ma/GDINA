@@ -1,20 +1,23 @@
 Package: GDINA
 Type: Package
 Title: The Generalized DINA Model Framework
-Version: 2.1.13
-Date: 2018-6-5
+Version: 2.1.16
+Date: 2018-7-24
 Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre", "cph"),email = "wenchao.ma@ua.edu"),person(given = "Jimmy", family = "de la Torre", role = c("aut", "cph")), person(given="Miguel",family = "Sorrel",role = "ctb"))
 Description: A set of psychometric tools for cognitive diagnosis modeling for both dichotomous and polytomous responses. Various cognitive diagnosis models can be estimated, include the generalized deterministic inputs, noisy and gate (G-DINA) model by de la Torre (2011) <DOI:10.1007/s11336-011-9207-7>, the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.12070>, and many other models they subsume. Joint attribute distribution can be independent, saturated, higher-order, loglinear smoothed or structured. Q-matrix validation, item and model fit statistics, model comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided.
 License: GPL-3
 LazyData: TRUE
 Depends: R (>= 3.1.0)
-Imports: alabama, graphics, ggplot2, MASS, nloptr, numDeriv, Rcpp (>= 0.12.1), Rsolnp, stats, shiny, shinydashboard, utils
-Suggests: CDM, testthat
+Imports: alabama, graphics, ggplot2, MASS, nloptr, numDeriv, Rcpp (>=
+        0.12.1), Rsolnp, stats, shiny, shinydashboard, utils
+Suggests: CDM, Matrix, testthat,
+    knitr,
+    rmarkdown
 LinkingTo: Rcpp, RcppArmadillo
 URL: https://github.com/Wenchao-Ma/GDINA
 BugReports: https://github.com/Wenchao-Ma/GDINA/issues
-RoxygenNote: 6.0.1
-Collate: 
+RoxygenNote: 6.1.0
+Collate:
     'CA.R'
     'CR.R'
     'DTM.R'
@@ -24,6 +27,7 @@ Collate:
     'GDI.R'
     'GDINA-package.R'
     'HO.R'
+    'Louis.R'
     'M2.R'
     'Mstep.R'
     'Mstep_DTM.R'
@@ -64,3 +68,4 @@ NeedsCompilation: yes
 Packaged: 2018-05-27 02:03:59 UTC; Wenchao
 Author: Wenchao Ma [aut, cre, cph], Jimmy de la Torre [aut, cph], Miguel Sorrel [ctb]
 Maintainer: Wenchao Ma <wenchao.ma@ua.edu>
+VignetteBuilder: knitr

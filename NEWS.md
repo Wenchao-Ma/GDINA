@@ -1,4 +1,14 @@
-# GDINA 2.1
+# GDINA 2.1.16
+* Changed - set anchor attributes for multiple group higher-order CDMs
+* Fixed   - calculation of the number of parameters when parameters of some items are fixed
+* Fixed   - mesa plot with best q-vectors when some q-vectors have the same PVAF
+
+# GDINA 2.1.15
+* Changed - arguments for `plot` function
+* Added   - additional example for `ecpe` data
+* Changed - graphical interface
+
+# GDINA 2.1.7
 * Added   - experimental functions for simulating and estimating diagnostic tree model (to be optimized)
 * Fixed   - bugs in `dif` function and `startGDINA` function
 * Changed - `logLik` function to be consistent with default S3 methods

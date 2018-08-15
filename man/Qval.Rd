@@ -9,8 +9,8 @@
 Qval(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4,
   wald.args = list())
 
-\method{extract}{Qval}(object, what = c("sug.Q", "varsigma", "PVAF", "eps",
-  "Q"), ...)
+\method{extract}{Qval}(object, what = c("sug.Q", "varsigma", "PVAF",
+  "eps", "Q"), ...)
 
 \method{summary}{Qval}(object, ...)
 }

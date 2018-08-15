@@ -7,10 +7,10 @@
 \title{Item-level model comparison using Wald, LR or LM tests}
 \usage{
 modelcomp(GDINA.obj = NULL, method = "Wald", items = "all",
-  p.adjust.methods = "bonferroni", models = c("DINA", "DINO", "ACDM", "LLM",
-  "RRUM"), DS = FALSE, Wald.args = list(SE.type = 2, varcov = NULL),
-  LR.args = list(LR.approx = FALSE), LM.args = list(reducedMDINA = NULL,
-  reducedMDINO = NULL, reducedMACDM = NULL, SE.type = 2))
+  p.adjust.methods = "bonferroni", models = c("DINA", "DINO", "ACDM",
+  "LLM", "RRUM"), DS = FALSE, Wald.args = list(SE.type = 2, varcov =
+  NULL), LR.args = list(LR.approx = FALSE), LM.args = list(reducedMDINA
+  = NULL, reducedMDINO = NULL, reducedMACDM = NULL, SE.type = 2))
 
 \method{extract}{modelcomp}(object, what = c("stats", "pvalues",
   "adj.pvalues", "df", "DS", "models"), digits = 4, ...)

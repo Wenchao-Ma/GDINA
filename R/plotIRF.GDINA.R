@@ -286,19 +286,20 @@ plot.Qval <-
       bestPVAF <- aggregate(fullPVAF,by=list(Kj),max)[,-1]
       # bestPVAF <- rbind(0,bestPVAF) # add 0s
       label.bestPVAF <- apply(patt,1,paste0,collapse = "")
+      bestloc <- rbind(1,aggregate(fullPVAF,by=list(Kj),which.max)[-1,-1]+cumsum(table(Kj))[-length(unique(Kj))])
       for(j in item){
-        bestloc <- match(bestPVAF[,j],fullPVAF[,j])
+        bestlocj <- bestloc[,j]
         if (auto.ylim) ylim = c(max(0,round(min(bestPVAF[,j])-0.1,1)),1) else ylim=c(0,1)
         graphics::plot(bestPVAF[,j],xaxt="n",type="o",ylab = "PVAF",xlab="q-vectors",
                        main = paste("Mesa Plot for Item",j),ylim = ylim,...)
-        graphics::axis(1,at=c(1:nrow(bestPVAF)),labels = label.bestPVAF[bestloc])
+        graphics::axis(1,at=c(1:nrow(bestPVAF)),labels = label.bestPVAF[bestlocj])
         if (!is.null(eps)&&eps>0&&eps<1) abline(h=eps,lty=3);text(1.5,eps+0.03,paste("eps =",eps))
         yloc <- bestPVAF[,j]-diff(ylim)/15
         yloc[yloc<=ylim[1]] <- yloc[yloc<=ylim[1]] + 2 * diff(ylim)/15
         if (data.label) graphics::text(c(1:nrow(bestPVAF)),yloc,bestPVAF[,j])
         locy0 <- which(apply(patt,1,function(x){
           all(x==Q[j,])}))
-        if(locy0%in%bestloc) graphics::points(which(bestloc==locy0),fullPVAF[locy0,j],col="red",pch=19)
+        if(locy0%in%bestlocj) graphics::points(which(bestlocj==locy0),fullPVAF[locy0,j],col="red",pch=19)
         if (original.q.label) text(K-1,ylim[1]+diff(ylim)/6,paste("original q-vector:\n",names(fullPVAF[,j])[locy0]))
       }
     }

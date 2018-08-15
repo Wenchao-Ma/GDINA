@@ -6,8 +6,8 @@
 \title{Differential item functioning for cognitive diagnosis models}
 \usage{
 dif(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",
-  LR.type = "free.all", LR.approx = FALSE, difitem = "all", SE.type = 2,
-  ...)
+  LR.type = "free.all", LR.approx = FALSE, difitem = "all",
+  SE.type = 2, ...)
 
 \method{summary}{dif}(object, ...)
 }

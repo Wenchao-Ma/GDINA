@@ -29,6 +29,10 @@ Lik_DTM <- function(mP, mX, vC, vlogPrior) {
     .Call('_GDINA_Lik_DTM', PACKAGE = 'GDINA', mP, mX, vC, vlogPrior)
 }
 
+LouisC <- function(mX, np, mlogPost, itemparmLC, parloc, weight, SEtype) {
+    .Call('_GDINA_LouisC', PACKAGE = 'GDINA', mX, np, mlogPost, itemparmLC, parloc, weight, SEtype)
+}
+
 Mord <- function(item_no, LCprob, prior) {
     .Call('_GDINA_Mord', PACKAGE = 'GDINA', item_no, LCprob, prior)
 }

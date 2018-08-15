@@ -3,7 +3,6 @@ structural.parm <- function(AlphaPattern,no.mg,logprior,att.dist,att.str,saturat
   prior <- exp(logprior)
   parm <- NULL
   ho <- NULL
-
   if(att.str){
     if (all(att.dist=="saturated")){
       for(g in seq_len(no.mg)){
@@ -12,6 +11,7 @@ structural.parm <- function(AlphaPattern,no.mg,logprior,att.dist,att.str,saturat
           prior[,g] <- prior[,g]/sum(prior[,g])
           logprior[,g] <- log(prior[,g])
           lambda[[g]] <- prior[,g]
+
         }
     }else if(all(att.dist=="fixed")){
       for(g in seq_len(no.mg)){
@@ -23,14 +23,14 @@ structural.parm <- function(AlphaPattern,no.mg,logprior,att.dist,att.str,saturat
       stop("Only att.dist = saturated or fixed is available when att.str = TRUE.",call. = FALSE)
     }
   }else{
-    if (all(att.dist=="higher.order"))
+    if (all(tolower(att.dist)=="higher.order"))
     {
-      if(no.mg==1) higher.order$Type <- "SameTheta"
       HO.out <- HO.est(lambda=lambda,AlphaPattern = AlphaPattern, HOgr = seq_len(no.mg), Rl = rowProd(prior,Ng),
                        higher.order = higher.order)
       logprior <- HO.out$logprior
       lambda <- HO.out$lambda
       ho <- HO.out$higher.order
+      npar <- HO.out$npar
     }else{
       for(g in seq_len(no.mg)){
         if (att.dist[g]=="saturated"){
@@ -63,5 +63,5 @@ structural.parm <- function(AlphaPattern,no.mg,logprior,att.dist,att.str,saturat
 
 
 
-  return(list(logprior=logprior,lambda=lambda,higher.order = ho))
+  return(list(logprior=logprior,lambda=lambda,higher.order = ho,higher.order.npar=npar))
 }

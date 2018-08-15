@@ -5,10 +5,11 @@
 \alias{extract.simGDINA}
 \title{Data simulation based on the G-DINA models}
 \usage{
-simGDINA(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NULL,
-  model = "GDINA", sequential = FALSE, gs.args = list(type = "random",
-  mono.constraint = TRUE), delta.args = list(design.matrix = NULL, linkfunc =
-  NULL), attribute = NULL, att.dist = "uniform", item.names = NULL,
+simGDINA(N, Q, gs.parm = NULL, delta.parm = NULL,
+  catprob.parm = NULL, model = "GDINA", sequential = FALSE,
+  gs.args = list(type = "random", mono.constraint = TRUE),
+  delta.args = list(design.matrix = NULL, linkfunc = NULL),
+  attribute = NULL, att.dist = "uniform", item.names = NULL,
   higher.order.parm = list(theta = NULL, lambda = NULL),
   mvnorm.parm = list(mean = NULL, sigma = NULL, cutoffs = NULL),
   att.prior = NULL, digits = 4)

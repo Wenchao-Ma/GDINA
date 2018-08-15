@@ -6,8 +6,9 @@
 \alias{summary.itemfit}
 \title{Item fit statistics}
 \usage{
-itemfit(GDINA.obj, person.sim = "post", p.adjust.methods = "bonferroni",
-  digits = 4, N.resampling = NULL, randomseed = 123456)
+itemfit(GDINA.obj, person.sim = "post",
+  p.adjust.methods = "bonferroni", digits = 4, N.resampling = NULL,
+  randomseed = 123456)
 
 \method{extract}{itemfit}(object, what, ...)
 

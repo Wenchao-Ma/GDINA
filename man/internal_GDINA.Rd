@@ -11,7 +11,6 @@
 \alias{internal_ColNormalize}
 \alias{internal_RowProd}
 \alias{internal_l2m}
-\alias{internal_l2m}
 \alias{internal_m2l}
 \alias{internal_uP}
 \title{Functions for internal use}

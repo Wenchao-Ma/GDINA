@@ -106,6 +106,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// LouisC
+Rcpp::List LouisC(arma::mat mX, arma::vec np, arma::mat mlogPost, arma::mat itemparmLC, arma::mat parloc, arma::vec weight, int SEtype);
+RcppExport SEXP _GDINA_LouisC(SEXP mXSEXP, SEXP npSEXP, SEXP mlogPostSEXP, SEXP itemparmLCSEXP, SEXP parlocSEXP, SEXP weightSEXP, SEXP SEtypeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type np(npSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type mlogPost(mlogPostSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type itemparmLC(itemparmLCSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type parloc(parlocSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type weight(weightSEXP);
+    Rcpp::traits::input_parameter< int >::type SEtype(SEtypeSEXP);
+    rcpp_result_gen = Rcpp::wrap(LouisC(mX, np, mlogPost, itemparmLC, parloc, weight, SEtype));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Mord
 Rcpp::List Mord(arma::vec item_no, arma::mat& LCprob, arma::vec prior);
 RcppExport SEXP _GDINA_Mord(SEXP item_noSEXP, SEXP LCprobSEXP, SEXP priorSEXP) {
@@ -625,6 +642,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GDINA_LikNR", (DL_FUNC) &_GDINA_LikNR, 7},
     {"_GDINA_LikNR_LC", (DL_FUNC) &_GDINA_LikNR_LC, 6},
     {"_GDINA_Lik_DTM", (DL_FUNC) &_GDINA_Lik_DTM, 4},
+    {"_GDINA_LouisC", (DL_FUNC) &_GDINA_LouisC, 7},
     {"_GDINA_Mord", (DL_FUNC) &_GDINA_Mord, 3},
     {"_GDINA_Calc_Pj", (DL_FUNC) &_GDINA_Calc_Pj, 5},
     {"_GDINA_Calc_Dj", (DL_FUNC) &_GDINA_Calc_Dj, 5},

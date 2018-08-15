@@ -1,7 +1,12 @@
 .Rproj.user
 .Rhistory
 .RData
-.Ruserdata
 src/*.o
 src/*.so
 src/*.dll
+inst/doc
+src-i386
+src-x64
+*.pdf
+research
+

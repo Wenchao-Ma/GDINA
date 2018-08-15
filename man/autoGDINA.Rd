@@ -5,10 +5,10 @@
 \alias{summary.autoGDINA}
 \title{Q-matrix validation, model selection and calibration in one run}
 \usage{
-autoGDINA(dat, Q, modelselection = TRUE, modelselectionrule = "simpler",
-  alpha.level = 0.05, modelselection.args = list(), Qvalid = TRUE,
-  Qvalid.args = list(), GDINA1.args = list(), GDINA2.args = list(),
-  CDM.args = list())
+autoGDINA(dat, Q, modelselection = TRUE,
+  modelselectionrule = "simpler", alpha.level = 0.05,
+  modelselection.args = list(), Qvalid = TRUE, Qvalid.args = list(),
+  GDINA1.args = list(), GDINA2.args = list(), CDM.args = list())
 
 \method{summary}{autoGDINA}(object, ...)
 }
