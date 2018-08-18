@@ -205,7 +205,10 @@ print.summary.GDINA <- function(x,...){
   # cat("Deviance      =", formatC(x$Deviance,digits = 2, format = "f"), "\n")
   cat("AIC    =", formatC(x$AIC,digits = 2, format = "f")," | penalty   =",x$`AIC Penalty`,"\n")
   cat("BIC    =", formatC(x$BIC,digits = 2, format = "f")," | penalty   =",formatC(x$`BIC penalty`,digits = 2, format = "f"),"\n")
-  cat("# par  =",formatC(x$`Number of parameters`,digits = 0, format = "d"), "\n")
+  cat("\nNo. of parameters  =",formatC(x$`Number of parameters`,digits = 0, format = "d"), "\n")
+  cat("  No. of estimated item parameters = ",formatC(x$`Number of estimated item parameters`,digits = 0, format = "d"), "\n")
+  cat("  No. of fixed item parameters = ",formatC(x$`Number of fixed item parameters`,digits = 0, format = "d"), "\n")
+  cat("  No. of distribution parameters = ",formatC(x$`Number of population parameters`,digits = 0, format = "d"), "\n")
     cat("\nAttribute Prevalence\n\n")
     ap <- lapply(x$`Attribute Prevalence`,round,digits=4)
     if(x$ngroup==1) {
@@ -258,6 +261,8 @@ print.summary.autoGDINA <- function(x,...){
 #'@export
 print.npar.GDINA <- function(x,...){
   cat("No. of total parameters =",x$`No. of parameters`,"\n")
-  cat("No. of item parameters =",x$`No. of item parameters`,"\n")
   cat("No. of population parameters =",x$`No. of population parameters`,"\n")
+  cat("No. of free item parameters =",x$`No. of estimated item parameters`,"\n")
+  cat("No. of fixed item parameters =",x$`No. of fixed item parameters`,"\n")
+
 }

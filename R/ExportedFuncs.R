@@ -91,6 +91,10 @@ LC2LG <-  function(Q,sequential = FALSE){
 #'
 bdiagMatrix <- function(mlist,fill=0){
 
+  if(!all(sapply(mlist,is.matrix))){
+    for(m in seq_len(length(mlist))) mlist[[m]] <- as.matrix(mlist[[m]])
+  }
+
   loc <- sapply(mlist,dim)
   out <- matrix(fill,rowSums(loc)[1],rowSums(loc)[2])
   cr <- cc <- 1

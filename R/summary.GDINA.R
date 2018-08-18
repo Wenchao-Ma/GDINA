@@ -17,7 +17,8 @@ summary.GDINA <-
     "Attribute Prevalence"=extract(object,"prevalence"),
     "ngroup"=extract(object,"ngroup"),
     "Number of parameters"=extract.GDINA(object,"npar"),
-    "Number of item parameters"=extract.GDINA(object,"npar.item"),
+    "Number of estimated item parameters" = extract.GDINA(object,"npar.item"),
+    "Number of fixed item parameters"=extract.GDINA(object,"npar.fixeditem"),
     "Number of population parameters"=extract.GDINA(object,"npar.att"))
     class(output) <- "summary.GDINA"
     output

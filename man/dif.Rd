@@ -5,8 +5,8 @@
 \alias{summary.dif}
 \title{Differential item functioning for cognitive diagnosis models}
 \usage{
-dif(dat, Q, group, method = "wald", p.adjust.methods = "bonferroni",
-  LR.type = "free.all", LR.approx = FALSE, difitem = "all",
+dif(dat, Q, group, method = "wald", anchor.items = "none",
+  dif.items = "all", p.adjust.methods = "bonferroni", approx = FALSE,
   SE.type = 2, ...)
 
 \method{summary}{dif}(object, ...)
@@ -22,18 +22,17 @@ length must be equal to the number of individuals.}
 \item{method}{DIF detection method; It can be \code{"wald"} for Hou, de la Torre, and Nandakumar's (2014)
 Wald test method, and \code{"LR"} for likelihood ratio test (Ma, Terzi, Lee,& de la Torre, 2017).}
 
+\item{anchor.items}{which items are used as anchors? Default is \code{"none"}, which means none of the items are used as anchors.
+For LR method, it can also be an integer vector giving the item numbers for anchors or \code{"all"}, which means all items are treated as anchor items.}
+
+\item{dif.items}{Items for the DIF detection. By default, all items will be examined.}
+
 \item{p.adjust.methods}{adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
 and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
 for more details. \code{"bonferroni"} is the default.}
 
-\item{LR.type}{Type of likelihood ratio test for DIF detection. It can be \code{'free.all'} or
-\code{'free.one'}. For \code{'free.all'}, there are no anchor items, and for \code{'free.one'},
-all items except the studied item are treated as anchor items (i.e., they have the same item parameters between groups). See Ma, Terzi, Lee, and de la Torre (2017).}
-
-\item{LR.approx}{Whether an approximated LR test is implemented? If TRUE, parameters of items except the studied one will not be re-estimated.}
-
-\item{difitem}{Items for the DIF detection. By default, all items will be examined.}
+\item{approx}{Whether an approximated LR test is implemented? If TRUE, parameters of items except the studied one will not be re-estimated.}
 
 \item{SE.type}{Type of standard error estimation methods for the Wald test.}
 

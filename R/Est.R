@@ -45,7 +45,8 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     lower.prior = lower.prior,
     randomseed = 123456,
     smallNcorrection = c(.0005, .001),
-    MstepMessage = FALSE
+    MstepMessage = FALSE,
+    countitemparm = 0 # if an item parameter is fixed, it will not count as a parameter
   )
 
   control <- utils::modifyList(myControl,control)
@@ -450,39 +451,45 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                  weights = rep(1,N),
                  simplify = 0)
 
-  est.item <- 1:J
-  npar <- 0
-  if(any(control$vmaxitr==0)){
-    est.item <- which(control$vmaxitr>0)
-  }
-if(length(est.item>0)){
+  total.item.npar <- 0
+
   if(!att.str){
-    npar <- sum(sapply(DesignMatrices[est.item],ncol))
+    total.item.npar <- sum(sapply(DesignMatrices,ncol))
   }else{
-    npar <- sum(is.finite(c(item.parm[est.item,,drop=FALSE])))
+    total.item.npar <- sum(is.finite(c(item.parm)))
   }
-}
 
+  free.item.npar <- 0
 
-  item.npar <- npar  #item parameters
+  if(any(control$vmaxitr>0)){
+    est.item <- which(control$vmaxitr>0)
+    if(!att.str){
+      free.item.npar <- sum(sapply(DesignMatrices[est.item],ncol))
+    }else{
+      free.item.npar <- sum(is.finite(c(item.parm[est.item,,drop=FALSE])))
+    }
+  }
+
+  stru.npar <- 0
+
   if (any(att.dist=="higher.order")) {
-    npar <- npar + ho.npar
+    stru.npar <- ho.npar
   }
   for(g in 1:no.mg){
     if (att.dist[g]=="saturated") {
       if (!att.str) {
-        npar <- npar + L - 1
+        stru.npar <- stru.npar + L - 1
       } else {
-        npar <- npar + sum(is.finite(logprior[,g])) - 1
+        stru.npar <- stru.npar + sum(is.finite(logprior[,g])) - 1
       }
     }else if(att.dist[g]=="loglinear"){
-      npar <- npar + sum(sapply(seq_len(loglinear[g]),choose,n=K)) + 1
+      stru.npar <- stru.npar + sum(sapply(seq_len(loglinear[g]),choose,n=K)) + 1
     }else if(att.dist[g]=="independent"){
-      npar <- npar + K
+      stru.npar <- stru.npar + K
     }
   }
 
-
+  npar <- free.item.npar + stru.npar
 
   neg2LL <- -2 * estep$LL
 
@@ -526,8 +533,9 @@ if(length(est.item>0)){
   list(catprob.parm = item.prob, delta.parm = delta, catprob.matrix = item.parm,
        struc.parm = lambda, model = model.names, LC.prob = LC.Prob,
        posterior.prob = postP, pf = pf,
-       testfit = list(Deviance=neg2LL,npar = npar,item.npar = item.npar, AIC=2 * npar + neg2LL, BIC=neg2LL + npar * log(N)),
-       technicals = list(logposterior.i = estep$logpost, loglikelihood.i = estep$loglik,
+       testfit = list(Deviance=neg2LL,npar = npar,item.npar = free.item.npar, AIC=2 * npar + neg2LL, BIC=neg2LL + npar * log(N)),
+       technicals = list(logposterior.i = estep$logpost, loglikelihood.i = estep$loglik, free.item.npar = free.item.npar,
+                         total.item.npar = total.item.npar, stru.npar = stru.npar, total.npar = npar,
                          expectedCorrect = estep$Rg, expectedTotal = estep$Ng,initial.parm = initial.parm),
        options = list(dat = originalData, Q = originalQ, Qm = Q, Qcm = Qcm, model = model,
                       itr = itr, dif.LL = dif.parm$neg2LL,dif.p=dif.parm$ip,dif.prior=dif.parm$prior,
