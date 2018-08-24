@@ -66,14 +66,15 @@ shinyServer(function(input, output) {
       packageinfo <- utils::packageDescription("GDINA")
       cat( paste( "   GDINA Version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
       cat(  "   Wenchao Ma & Jimmy de la Torre \n" )
+      cat("See https://wenchao-ma.github.io/GDINA for more information.\n")
 
       cat("\nNumber of items       =", extract(x,"nitem"), "\n")
       cat("Number of individuals =", extract(x,"nobs"), "\n")
       cat("Number of attributes  =", extract(x,"natt"), "\n")
       M <- c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM")
       cat("Number of iterations  =", extract(x,"nitr"), "\n")
-      cat("Fitted model(s)       =\n")
-      print(extract(x,"models"))
+      cat("Fitted model(s)       =",c(extract(x,"models"))[1],"\n")
+
 
       tmp <- ifelse(extract(x,"sequential"),max(extract(x,"Q")),max(extract(x,"Q")[,-c(1:2)]))
       cat("Attribute level       =",ifelse(tmp>1,"Polytomous","Dichotomous"),"\n")
@@ -133,6 +134,19 @@ shinyServer(function(input, output) {
 
   output$pparm <- shiny::renderPrint({
     head(personparm(object = est.result(),what = input$pp),10)
+  })
+
+  output$plc.output <- shiny::renderPrint({
+    x=extract(est.result(),"posterior.prob")
+    xx <- data.frame(latentclass=attr(x,"dimnames")[[2]],proportion=c(x))
+    if(input$plc=="default"){
+      return(head(xx,10))
+    }else if(input$plc=="decreasing"){
+      return(head(xx[order(xx$proportion,decreasing = TRUE),],10))
+    }else if(input$plc=="increasing"){
+      return(head(xx[order(xx$proportion,decreasing = FALSE),],10))
+    }
+
   })
 
   q <- shiny::reactive({
@@ -252,6 +266,30 @@ makeMesaplot <- function(){
       # Write to a file specified by the 'file' argument
       write.table(personparm(object = est.result(),what = input$pp), file, sep = sep,
                   row.names = FALSE)
+    }
+  )
+  output$downloadplc <- shiny::downloadHandler(
+    # This function returns a string which tells the client
+    # browser what name to use when saving the file.
+    filename = function() {
+      paste(input$plc, input$plcfiletype, sep = ".")
+    },
+
+    # This function should write data to a file given to it by
+    # the argument 'file'.
+    content = function(file) {
+      sep <- switch(input$plcfiletype, "csv" = ",", "tsv" = "\t")
+      x=extract(est.result(),"posterior.prob")
+      xx <- data.frame(latentclass=attr(x,"dimnames")[[2]],proportion=c(x))
+      if(input$plc=="default"){
+        y <- xx
+      }else if(input$plc=="decreasing"){
+        y <- xx[order(xx$proportion,decreasing = TRUE),]
+      }else if(input$plc=="increasing"){
+        y <- xx[order(xx$proportion,decreasing = FALSE),]
+      }
+      # Write to a file specified by the 'file' argument
+      write.table(y, file, sep = sep, row.names = FALSE)
     }
   )
   output$downloadIRFplot <- shiny::downloadHandler(

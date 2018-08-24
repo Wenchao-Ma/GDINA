@@ -246,10 +246,15 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
   }else{
     higher.order <- NULL
-    for(g in seq_len(no.mg)){
-      if(att.dist[g]=="independent"){lambda[[g]] <- matrix(c(rep(0,K),rnorm(K,0,0.5)),ncol = 2)}
+    if(any(att.dist=="independent")){
+      for(g in seq_len(no.mg)){
+        if(att.dist[g]=="independent")
+          lambda[[g]] <- matrix(c(rep(0,K),rnorm(K,0,0.5)),ncol = 2)
+      }
     }
+
   }
+
 
   # Generate the log prior - a L x no.mg matrix
   if (is.null(att.prior)) {

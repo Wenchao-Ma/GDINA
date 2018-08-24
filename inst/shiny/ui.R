@@ -118,7 +118,10 @@ shinydashboard::tabItem(tabName = "par",
           shinydashboard::box(
             title = "Item Parameter Estimation Specifications", width = 4, solidHeader = TRUE, collapsible = TRUE, status = "primary",
             shiny::selectInput("ips", label = "Item Parameters",
-                        choices = list("catprob" = "catprob", "gs" = "gs","delta" = "delta","LCprob"="LCprob"), selected = "catprob"),
+                        choices = list("Success probabilities of reduced latent classes" = "catprob",
+                                       "Guessing and slip parameters" = "gs",
+                                       "Delta parameters" = "delta",
+                                       "Success probabilities of all latent classes"="LCprob"), selected = "catprob"),
             shiny::checkboxInput("ipse", label = "Estimate S.E.?", value = TRUE)
             ),
           shinydashboard::box(
@@ -137,6 +140,19 @@ shinydashboard::tabItem(tabName = "par",
         shinydashboard::box(
             title = "Person Parameter Estimates of first 10 observations", width = 8, solidHeader = TRUE, collapsible = TRUE, status = "primary",
             shiny::verbatimTextOutput('pparm')
+          )),
+        shiny::fluidRow(
+          shinydashboard::box(
+            title = "Estimated Proportions of Latent Classes Specifications", width = 4, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+            shiny::selectInput("plc", label = "Sorted by:",
+                               choices = list("default" = "default", "decreasing" = "decreasing","increasing" = "increasing"), selected = "default"),
+            shiny::downloadButton('downloadplc', 'Download'),
+            shiny::radioButtons("plcfiletype", "File type:",
+                                choices = c("csv", "tsv"))
+          ),
+          shinydashboard::box(
+            title = "Estimated Proportions of first 10 Latent Classes", width = 8, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+            shiny::verbatimTextOutput('plc.output')
           ))
 ),
 shinydashboard::tabItem(tabName = "Qval",

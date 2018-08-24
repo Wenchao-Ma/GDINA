@@ -39,6 +39,7 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
                         sigma = higher.order$SlopePrior[2])
         npar <- npar + 1
       }else if(higher.order$model=="2PL"){
+        # print(higher.order$Prior)
         for(k in seq_len(K)) {
           a[k] <- rootFinder(f = Lfj_slope, interval = higher.order$SlopeRange,
                                                  dj = lambda[[HOgr[1]]][k,2],theta = Aq[,1],r = r[,k], n = n,
@@ -199,9 +200,11 @@ Lfj_slope <- function(aj,dj,theta,r,n, prior = FALSE, mu, sigma){
   P <- Pr_2PL_vec(theta = theta, a = aj, b = dj) #nnodes x 1
   if(prior){
     ret <- sum(theta*(c(r)-c(n)*c(P))) - (log(aj) - mu + sigma^2) /(aj * sigma^2)
+
   }else{
     ret <- sum(theta*(c(r)-c(n)*c(P)))
   }
+
   ret
 
 }
