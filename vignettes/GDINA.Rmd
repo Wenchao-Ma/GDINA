@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Below are key functions you may need for various CDM analyses:
+## Overview
 
 
 * To estimate various CDMs, use **GDINA** function
@@ -30,13 +30,14 @@ knitr::opts_chunk$set(
 
 Visit [here](https://wenchao-ma.github.io/GDINA/reference/index.html) for online reference
 
-## Examples for CDM analysis:
+## Examples
 
-* [G-DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html)
+* [G-DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html) 
+* [LCDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html) 
 * [DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINA_example.html) 
 * [DINO model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINO_example.html) 
 * [ACDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/ACDM_example.html) 
 * [LLM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LLM_example.html) 
 * [RRUM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/RRUM_example.html) 
-* [LCDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html)  
+* [Higher-order GDINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.html)  
 

@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.16</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.20</span>
       </span>
     </div>
 
@@ -65,6 +65,9 @@
     </li>
     <li>
       <a href="../../articles/OnlineExercises/GDINA_example.html">GDINA Estimation</a>
+    </li>
+    <li>
+      <a href="../../articles/OnlineExercises/HOGDINA_example.html">Higher-order GDINA Estimation</a>
     </li>
     <li>
       <a href="../../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
@@ -103,7 +106,7 @@
       <h1>DINO Estimation</h1>
                         <h4 class="author">Wenchao</h4>
             
-            <h4 class="date">August 13, 2018</h4>
+            <h4 class="date">2018-08-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/DINO_example.Rmd"><code>vignettes/OnlineExercises/DINO_example.Rmd</code></a></small>
       <div class="hidden name"><code>DINO_example.Rmd</code></div>
@@ -113,10 +116,9 @@
     
     
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GDINA)</code></pre></div>
-<pre><code>## ==============================================
-## GDINA Package for Cognitive Diagnosis Modeling
-##         Version 2.1.16 (2018-7-24)
-## ==============================================</code></pre>
+<pre><code>## GDINA Package [Version 2.1.20; 2018-8-24]
+## For examples and more information, 
+## see https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># A simulated data in GDINA package</span>
 dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat
 Q &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simQ
@@ -202,7 +204,7 @@ est</code></pre></div>
 <pre><code>## Call:
 ## GDINA(dat = dat, Q = Q, model = "DINO")
 ## 
-##   GDINA version 2.1.16 (2018-7-24) 
+##   GDINA version 2.1.20 (2018-8-24) 
 ## ===============================================
 ## Data
 ## -----------------------------------------------
@@ -222,7 +224,7 @@ est</code></pre></div>
 ##   Max abs change in item success prob. = 0.0001 
 ##   Max abs change in mixing proportions = 0.0000 
 ##   Change in -2 log-likelihood          = 0.0002 
-## Time used             = 0.1148 secs</code></pre>
+## Time used             = 0.1339 secs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary information</span>
 <span class="kw">summary</span>(est)</code></pre></div>
 <pre><code>## 
@@ -231,7 +233,11 @@ est</code></pre></div>
 ## Loglik = -6171.76 
 ## AIC    = 12397.51  | penalty   = 54 
 ## BIC    = 12530.02  | penalty   = 186.51 
-## # par  = 27 
+## 
+## No. of parameters  = 27 
+##   No. of estimated item parameters =  20 
+##   No. of fixed item parameters =  0 
+##   No. of distribution parameters =  7 
 ## 
 ## Attribute Prevalence
 ## 
@@ -249,8 +255,9 @@ est</code></pre></div>
 <pre><code>## [1] 12343.51</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/npar.html">npar</a></span>(est) <span class="co"># number of parameters</span></code></pre></div>
 <pre><code>## No. of total parameters = 27 
-## No. of item parameters = 20 
-## No. of population parameters = 7</code></pre>
+## No. of population parameters = 7 
+## No. of free item parameters = 20 
+## No. of fixed item parameters = 0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nobs</span>(est) <span class="co"># number of observations</span></code></pre></div>
 <pre><code>## [1] 1000</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># discrimination indices</span>
@@ -660,13 +667,13 @@ est</code></pre></div>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] GDINA_2.1.16
+## [1] GDINA_2.1.20
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] commonmark_1.5       digest_0.6.15        htmltools_0.3.6     
+##  [1] commonmark_1.5       digest_0.6.16        htmltools_0.3.6     
 ##  [4] R6_2.2.2             scales_1.0.0         Rsolnp_1.16         
 ##  [7] assertthat_0.2.0     rprojroot_1.3-2      grid_3.5.1          
-## [10] fs_1.2.5             stringr_1.3.1        knitr_1.20          
+## [10] fs_1.2.6             stringr_1.3.1        knitr_1.20          
 ## [13] numDeriv_2016.8-1    munsell_0.5.0        desc_1.2.0          
 ## [16] shinydashboard_0.7.0 pillar_1.3.0         tibble_1.4.2        
 ## [19] compiler_3.5.1       httpuv_1.4.5         mime_0.5            
@@ -675,7 +682,7 @@ est</code></pre></div>
 ## [28] rstudioapi_0.7       ggplot2_3.0.0        MASS_7.3-50         
 ## [31] plyr_1.8.4           stringi_1.2.4        magrittr_1.5        
 ## [34] rmarkdown_1.10       evaluate_0.11        gtable_0.2.0        
-## [37] rlang_0.2.1          colorspace_1.3-2     promises_1.0.1      
+## [37] rlang_0.2.2          colorspace_1.3-2     promises_1.0.1      
 ## [40] yaml_2.2.0           tools_3.5.1          alabama_2015.3-1    
 ## [43] parallel_3.5.1       truncnorm_1.0-8      nloptr_1.0.4        
 ## [46] xtable_1.8-2         lazyeval_0.2.1       crayon_1.3.4        

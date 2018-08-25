@@ -63,7 +63,7 @@ test (Ma, Terzi, Lee, &amp;amp; de la Torre, 2017). It can only detect DIF for t
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.16</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.20</span>
       </span>
     </div>
 
@@ -99,6 +99,9 @@ test (Ma, Terzi, Lee, &amp;amp; de la Torre, 2017). It can only detect DIF for t
     </li>
     <li>
       <a href="../articles/OnlineExercises/GDINA_example.html">GDINA Estimation</a>
+    </li>
+    <li>
+      <a href="../articles/OnlineExercises/HOGDINA_example.html">Higher-order GDINA Estimation</a>
     </li>
     <li>
       <a href="../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
@@ -148,8 +151,8 @@ test (Ma, Terzi, Lee, &amp; de la Torre, 2017). It can only detect DIF for two g
     
     </div>
 
-    <pre class="usage"><span class='fu'>dif</span>(<span class='no'>dat</span>, <span class='no'>Q</span>, <span class='no'>group</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"wald"</span>, <span class='kw'>p.adjust.methods</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>,
-  <span class='kw'>LR.type</span> <span class='kw'>=</span> <span class='st'>"free.all"</span>, <span class='kw'>LR.approx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>difitem</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
+    <pre class="usage"><span class='fu'>dif</span>(<span class='no'>dat</span>, <span class='no'>Q</span>, <span class='no'>group</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"wald"</span>, <span class='kw'>anchor.items</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>dif.items</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>p.adjust.methods</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>, <span class='kw'>approx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for dif</span>
@@ -177,6 +180,15 @@ length must be equal to the number of individuals.</p></td>
 Wald test method, and <code>"LR"</code> for likelihood ratio test (Ma, Terzi, Lee,&amp; de la Torre, 2017).</p></td>
     </tr>
     <tr>
+      <th>anchor.items</th>
+      <td><p>which items are used as anchors? Default is <code>"none"</code>, which means none of the items are used as anchors.
+For LR method, it can also be an integer vector giving the item numbers for anchors or <code>"all"</code>, which means all items are treated as anchor items.</p></td>
+    </tr>
+    <tr>
+      <th>dif.items</th>
+      <td><p>Items for the DIF detection. By default, all items will be examined.</p></td>
+    </tr>
+    <tr>
       <th>p.adjust.methods</th>
       <td><p>adjusted p-values for multiple hypothesis tests. This is conducted using <code>p.adjust</code> function in <span class="pkg">stats</span>,
 and therefore all adjustment methods supported by <code>p.adjust</code> can be used, including <code>"holm"</code>,
@@ -184,18 +196,8 @@ and therefore all adjustment methods supported by <code>p.adjust</code> can be u
 for more details. <code>"bonferroni"</code> is the default.</p></td>
     </tr>
     <tr>
-      <th>LR.type</th>
-      <td><p>Type of likelihood ratio test for DIF detection. It can be <code>'free.all'</code> or
-<code>'free.one'</code>. For <code>'free.all'</code>, there are no anchor items, and for <code>'free.one'</code>,
-all items except the studied item are treated as anchor items (i.e., they have the same item parameters between groups). See Ma, Terzi, Lee, and de la Torre (2017).</p></td>
-    </tr>
-    <tr>
-      <th>LR.approx</th>
+      <th>approx</th>
       <td><p>Whether an approximated LR test is implemented? If TRUE, parameters of items except the studied one will not be re-estimated.</p></td>
-    </tr>
-    <tr>
-      <th>difitem</th>
-      <td><p>Items for the DIF detection. By default, all items will be examined.</p></td>
     </tr>
     <tr>
       <th>SE.type</th>

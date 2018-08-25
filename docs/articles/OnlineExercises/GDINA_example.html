@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.16</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.20</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
       <a href="../../articles/OnlineExercises/GDINA_example.html">GDINA Estimation</a>
     </li>
     <li>
+      <a href="../../articles/OnlineExercises/HOGDINA_example.html">Higher-order GDINA Estimation</a>
+    </li>
+    <li>
       <a href="../../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
     </li>
     <li>
@@ -101,9 +104,9 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>GDINA Estimation</h1>
-                        <h4 class="author">Wenchao</h4>
+                        <h4 class="author">Abdullah Asilkalkan</h4>
             
-            <h4 class="date">August 13, 2018</h4>
+            <h4 class="date">2018-08-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/GDINA_example.Rmd"><code>vignettes/OnlineExercises/GDINA_example.Rmd</code></a></small>
       <div class="hidden name"><code>GDINA_example.Rmd</code></div>
@@ -112,11 +115,19 @@
 
     
     
+<div id="introduction" class="section level3">
+<h3 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h3>
+<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.1.20) to estimate the G-DINA model.</p>
+</div>
+<div id="model-estimation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#model-estimation" class="anchor"></a>Model Estimation</h3>
+<p>The following code estimates the G-DINA model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GDINA)</code></pre></div>
-<pre><code>## ==============================================
-## GDINA Package for Cognitive Diagnosis Modeling
-##         Version 2.1.16 (2018-7-24)
-## ==============================================</code></pre>
+<pre><code>## GDINA Package [Version 2.1.20; 2018-8-24]
+## For examples and more information, 
+## see https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># A simulated data in GDINA package</span>
 dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat
 Q &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simQ
@@ -169,6 +180,11 @@ Iter = 42  Max. abs. change = 0.00013  Deviance  = 11836.424
 Iter = 43  Max. abs. change = 0.00012  Deviance  = 11836.424                                                                                  
 Iter = 44  Max. abs. change = 0.00011  Deviance  = 11836.423                                                                                  
 Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.423</code></pre>
+</div>
+<div id="summary-information" class="section level3">
+<h3 class="hasAnchor">
+<a href="#summary-information" class="anchor"></a>Summary Information</h3>
+<p>The following code extracts the summary information from GDINA estimates.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#####################################
 <span class="co">#</span>
 <span class="co">#      Summary Information</span>
@@ -179,7 +195,7 @@ est</code></pre></div>
 <pre><code>## Call:
 ## GDINA(dat = dat, Q = Q, model = "GDINA")
 ## 
-##   GDINA version 2.1.16 (2018-7-24) 
+##   GDINA version 2.1.20 (2018-8-24) 
 ## ===============================================
 ## Data
 ## -----------------------------------------------
@@ -199,7 +215,7 @@ est</code></pre></div>
 ##   Max abs change in item success prob. = 0.0001 
 ##   Max abs change in mixing proportions = 0.0000 
 ##   Change in -2 log-likelihood          = 0.0004 
-## Time used             = 0.07814 secs</code></pre>
+## Time used             = 0.09919 secs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary information</span>
 <span class="kw">summary</span>(est)</code></pre></div>
 <pre><code>## 
@@ -208,7 +224,11 @@ est</code></pre></div>
 ## Loglik = -5918.21 
 ## AIC    = 11926.42  | penalty   = 90 
 ## BIC    = 12147.27  | penalty   = 310.85 
-## # par  = 45 
+## 
+## No. of parameters  = 45 
+##   No. of estimated item parameters =  38 
+##   No. of fixed item parameters =  0 
+##   No. of distribution parameters =  7 
 ## 
 ## Attribute Prevalence
 ## 
@@ -226,10 +246,12 @@ est</code></pre></div>
 <pre><code>## [1] 11836.42</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/npar.html">npar</a></span>(est) <span class="co"># number of parameters</span></code></pre></div>
 <pre><code>## No. of total parameters = 45 
-## No. of item parameters = 38 
-## No. of population parameters = 7</code></pre>
+## No. of population parameters = 7 
+## No. of free item parameters = 38 
+## No. of fixed item parameters = 0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nobs</span>(est) <span class="co"># number of observations</span></code></pre></div>
 <pre><code>## [1] 1000</code></pre>
+<p>You can use <em>extract</em> with argument <em>discrim</em> to extract discrimination indices. The first column gives <span class="math inline">\(P(1)-P(0)\)</span> and the second column gives the GDINA discrimination index.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># discrimination indices</span>
 <span class="kw"><a href="../../reference/extract.html">extract</a></span>(est, <span class="st">"discrim"</span>)</code></pre></div>
 <pre><code>##         P(1)-P(0)        GDI
@@ -243,12 +265,17 @@ est</code></pre></div>
 ## Item 8  0.7893286 0.09124453
 ## Item 9  0.7062429 0.06232943
 ## Item 10 0.7253567 0.05496962</code></pre>
+</div>
+<div id="model-parameters" class="section level3">
+<h3 class="hasAnchor">
+<a href="#model-parameters" class="anchor"></a>Model Parameters</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#####################################
 <span class="co">#</span>
 <span class="co">#      structural parameters</span>
 <span class="co"># </span>
-#####################################
-<span class="kw">coef</span>(est) <span class="co"># item probabilities of success for each reduced latent class</span></code></pre></div>
+#####################################</code></pre></div>
+<p>The following code gives the item probalities of each reduced latent classes. As shown below, the probability of answering item 1 correctly for individuals who do not master the required attribute is 0.2052, and the probability of answering item 1 correctly for individuals who master the required attribute is 0.8986:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(est) <span class="co"># item probabilities of success for each reduced latent class</span></code></pre></div>
 <pre><code>## $`Item 1`
 ##   P(0)   P(1) 
 ## 0.2052 0.8986 
@@ -288,6 +315,7 @@ est</code></pre></div>
 ## $`Item 10`
 ## P(000) P(100) P(010) P(001) P(110) P(101) P(011) P(111) 
 ## 0.1757 0.1326 0.2846 0.3823 0.4928 0.4997 0.6734 0.9011</code></pre>
+<p>The following code gives the item probalities of each reduced latent classes with standard errors.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(est, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># item probabilities of success &amp; standard errors</span></code></pre></div>
 <pre><code>## $`Item 1`
 ##        P(0)   P(1)
@@ -338,6 +366,7 @@ est</code></pre></div>
 ##      P(000) P(100) P(010) P(001) P(110) P(101) P(011) P(111)
 ## Est. 0.1757 0.1326 0.2846 0.3823 0.4928 0.4997 0.6734 0.9011
 ## S.E. 0.0449 0.0570 0.0563 0.0554 0.0567 0.0517 0.0479 0.0391</code></pre>
+<p>The following code gives delta parameters.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>) <span class="co"># delta parameters</span></code></pre></div>
 <pre><code>## $`Item 1`
 ##     d0     d1 
@@ -378,6 +407,7 @@ est</code></pre></div>
 ## $`Item 10`
 ##      d0      d1      d2      d3     d12     d13     d23    d123 
 ##  0.1757 -0.0431  0.1089  0.2066  0.2513  0.1604  0.1822 -0.1409</code></pre>
+<p>The following code gives delta parameters with standard errors.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># delta parameters</span></code></pre></div>
 <pre><code>## $`Item 1`
 ##          d0     d1
@@ -428,6 +458,7 @@ est</code></pre></div>
 ##          d0      d1     d2     d3    d12    d13    d23    d123
 ## Est. 0.1757 -0.0431 0.1089 0.2066 0.2513 0.1604 0.1822 -0.1409
 ## S.E. 0.0449  0.0765 0.0759 0.0767 0.1215 0.1176 0.1117  0.1676</code></pre>
+<p>The following code gives <span class="math inline">\(P(0)\)</span> and 1-<span class="math inline">\(P(0)\)</span>, which is guessing and slipping parameters.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>) <span class="co"># guessing and slip parameters</span></code></pre></div>
 <pre><code>##         guessing   slip
 ## Item 1    0.2052 0.1014
@@ -440,6 +471,7 @@ est</code></pre></div>
 ## Item 8    0.1107 0.1000
 ## Item 9    0.0995 0.1943
 ## Item 10   0.1757 0.0989</code></pre>
+<p>The following code gives guessing and slipping parameters with standard errors.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># guessing and slip parameters &amp; standard errors</span></code></pre></div>
 <pre><code>##         guessing   slip SE[guessing] SE[slip]
 ## Item 1    0.2052 0.1014       0.0258   0.0224
@@ -452,12 +484,14 @@ est</code></pre></div>
 ## Item 8    0.1107 0.1000       0.0262   0.0349
 ## Item 9    0.0995 0.1943       0.0294   0.0288
 ## Item 10   0.1757 0.0989       0.0449   0.0391</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimated proportions of latent classes</span>
-<span class="kw">coef</span>(est,<span class="st">"lambda"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimated proportions of latent classes</span></code></pre></div>
+<p>The following code gives the proportions of each latent classes. As you can see, the estimated proportion of individuals in the population who do not master any attribute (i.e., 000) is 0.1268:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(est,<span class="st">"lambda"</span>)</code></pre></div>
 <pre><code>## p(000) p(100) p(010) p(001) p(110) p(101) p(011) p(111) 
 ## 0.1268 0.1054 0.1149 0.1201 0.1313 0.1452 0.1409 0.1155</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># success probabilities for each latent class</span>
-<span class="kw">coef</span>(est,<span class="st">"LCprob"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># success probabilities for each latent class</span></code></pre></div>
+<p>The following code gives item success probabilities for all latent classes,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(est,<span class="st">"LCprob"</span>)</code></pre></div>
 <pre><code>##            000    100    010    001    110    101    011    111
 ## Item 1  0.2052 0.8986 0.2052 0.2052 0.8986 0.8986 0.2052 0.8986
 ## Item 2  0.1391 0.1391 0.7796 0.1391 0.7796 0.1391 0.7796 0.7796
@@ -473,8 +507,9 @@ est</code></pre></div>
 <span class="co">#</span>
 <span class="co">#      person parameters</span>
 <span class="co"># </span>
-#####################################
-<span class="kw">head</span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est)) <span class="co"># EAP estimates of attribute profiles</span></code></pre></div>
+#####################################</code></pre></div>
+<p>The following code returns EAP estimates of attribute patterns (for the first six individuals). As you can see, the EAP estimate of attribute profile for the first individual is (1, 0, 1):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est)) <span class="co"># EAP estimates of attribute profiles</span></code></pre></div>
 <pre><code>##      A1 A2 A3
 ## [1,]  1  0  1
 ## [2,]  1  1  1
@@ -482,6 +517,7 @@ est</code></pre></div>
 ## [4,]  1  1  1
 ## [5,]  0  0  1
 ## [6,]  1  0  0</code></pre>
+<p>By specifying <em>what</em> argument, the following code gives MAP estimates of attribute patterns (for the first six individuals).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MAP"</span>)) <span class="co"># MAP estimates of attribute profiles</span></code></pre></div>
 <pre><code>##   A1 A2 A3 multimodes
 ## 1  1  0  1      FALSE
@@ -490,6 +526,7 @@ est</code></pre></div>
 ## 4  1  1  1      FALSE
 ## 5  0  0  1      FALSE
 ## 6  0  0  0      FALSE</code></pre>
+<p>The following code extracts MLE estimates of attribute patterns (for the first six individuals).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MLE"</span>)) <span class="co"># MLE estimates of attribute profiles</span></code></pre></div>
 <pre><code>##   A1 A2 A3 multimodes
 ## 1  1  0  1      FALSE
@@ -498,20 +535,31 @@ est</code></pre></div>
 ## 4  1  1  1      FALSE
 ## 5  0  0  1      FALSE
 ## 6  0  0  0      FALSE</code></pre>
+</div>
+<div id="some-plots" class="section level3">
+<h3 class="hasAnchor">
+<a href="#some-plots" class="anchor"></a>Some Plots</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#####################################
 <span class="co">#</span>
 <span class="co">#           Plots</span>
 <span class="co"># </span>
 #####################################
 
-<span class="co">#plot item response functions for item 10</span>
-<span class="kw">plot</span>(est, <span class="dt">item =</span> <span class="dv">10</span>)</code></pre></div>
-<p><img src="GDINA_example_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
+<span class="co">#plot item response functions for item 10</span></code></pre></div>
+<p>The following code gives item response functions of item 10.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(est, <span class="dt">item =</span> <span class="dv">10</span>)</code></pre></div>
+<p><img src="GDINA_example_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
+<p>The following code gives item response functions of item 10 with error bars.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(est, <span class="dt">item =</span> <span class="dv">10</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># with error bars</span></code></pre></div>
-<p><img src="GDINA_example_files/figure-html/unnamed-chunk-1-2.png" width="700"></p>
+<p><img src="GDINA_example_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
+<p>The following code plots mastery probabilities of three attributes for individuals 1,20 and 50.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#plot mastery probability for individuals 1, 20 and 50</span>
 <span class="kw">plot</span>(est, <span class="dt">what =</span> <span class="st">"mp"</span>, <span class="dt">person =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dv">50</span>))</code></pre></div>
-<p><img src="GDINA_example_files/figure-html/unnamed-chunk-1-3.png" width="700"></p>
+<p><img src="GDINA_example_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+</div>
+<div id="advanced-topics" class="section level3">
+<h3 class="hasAnchor">
+<a href="#advanced-topics" class="anchor"></a>Advanced Topics</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#####################################
 <span class="co">#</span>
 <span class="co">#      Advanced elements</span>
@@ -637,13 +685,13 @@ est</code></pre></div>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] GDINA_2.1.16
+## [1] GDINA_2.1.20
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] commonmark_1.5       digest_0.6.15        htmltools_0.3.6     
+##  [1] commonmark_1.5       digest_0.6.16        htmltools_0.3.6     
 ##  [4] R6_2.2.2             scales_1.0.0         Rsolnp_1.16         
 ##  [7] assertthat_0.2.0     rprojroot_1.3-2      grid_3.5.1          
-## [10] fs_1.2.5             stringr_1.3.1        knitr_1.20          
+## [10] fs_1.2.6             stringr_1.3.1        knitr_1.20          
 ## [13] numDeriv_2016.8-1    munsell_0.5.0        desc_1.2.0          
 ## [16] shinydashboard_0.7.0 pillar_1.3.0         tibble_1.4.2        
 ## [19] compiler_3.5.1       httpuv_1.4.5         mime_0.5            
@@ -652,11 +700,12 @@ est</code></pre></div>
 ## [28] rstudioapi_0.7       ggplot2_3.0.0        MASS_7.3-50         
 ## [31] plyr_1.8.4           stringi_1.2.4        magrittr_1.5        
 ## [34] rmarkdown_1.10       evaluate_0.11        gtable_0.2.0        
-## [37] rlang_0.2.1          colorspace_1.3-2     promises_1.0.1      
+## [37] rlang_0.2.2          colorspace_1.3-2     promises_1.0.1      
 ## [40] yaml_2.2.0           tools_3.5.1          alabama_2015.3-1    
 ## [43] parallel_3.5.1       truncnorm_1.0-8      nloptr_1.0.4        
 ## [46] xtable_1.8-2         lazyeval_0.2.1       crayon_1.3.4        
 ## [49] backports_1.1.2      memoise_1.1.0        Rcpp_0.12.18</code></pre>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

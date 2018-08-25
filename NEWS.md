@@ -1,4 +1,4 @@
-# GDINA 2.1.18
+# GDINA 2.1.20
 * Changed - set anchor attributes for multiple group higher-order CDMs
 * Changed - change arguments for `dif` function
 * Changed - print estimated mixing proportions in R GUI

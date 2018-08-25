@@ -1,6 +1,6 @@
 ---
-title: "GDINA Estimation"
-author: "Abdullah Asilkalkan"
+title: "Higher-order GDINA Estimation"
+author: "Wenchao"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -11,11 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Introduction
 
-This tutorial is created using R [markdown](https://rmarkdown.rstudio.com/) and [knitr](https://yihui.name/knitr/). It illustrates how to use the GDINA R pacakge (version `r packageVersion("GDINA")`) to estimate the G-DINA model.
+This tutorial is created using R [markdown](https://rmarkdown.rstudio.com/) and [knitr](https://yihui.name/knitr/). It illustrates how to use the GDINA R pacakge (version `r packageVersion("GDINA")`) to estimate the higher-order G-DINA model.
 
 ### Model Estimation
 
-The following code estimates the G-DINA model.
+The following code estimates the higher-order G-DINA model.
 ```{r}
 library(GDINA)
 
@@ -24,12 +24,12 @@ dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
 
 # Estimating GDINA model
-est <- GDINA(dat = dat, Q = Q, model = "GDINA")
+est <- GDINA(dat = dat, Q = Q, model = "GDINA", att.dist = "higher.order", higher.order = list(model = "2PL"))
 ```
 
 ### Summary Information
 
-The following code extracts the summary information from GDINA estimates.
+The following code extracts the summary information from higher-order GDINA estimates.
 ```{r}
 #####################################
 #
@@ -92,7 +92,7 @@ coef(est, what = "gs", withSE = TRUE) # guessing and slip parameters & standard 
 
 # Estimated proportions of latent classes
 ```
-The following code gives the proportions of each latent classes. As you can see, the estimated proportion of individuals in the population who do not master any attribute (i.e., 000) is `r coef(est,"lambda")[1]`:
+The following code gives the slope and intercept parameters for attributes. As you can see, the estimated slope and intercept for the first attribute are `r coef(est,"lambda")[1,1]` and `r coef(est,"lambda")[1,2]`, respectively:
 ```{r}
 coef(est,"lambda")
 # success probabilities for each latent class

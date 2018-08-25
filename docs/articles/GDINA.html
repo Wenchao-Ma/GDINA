@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.16</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.20</span>
       </span>
     </div>
 
@@ -65,6 +65,9 @@
     </li>
     <li>
       <a href="../articles/OnlineExercises/GDINA_example.html">GDINA Estimation</a>
+    </li>
+    <li>
+      <a href="../articles/OnlineExercises/HOGDINA_example.html">Higher-order GDINA Estimation</a>
     </li>
     <li>
       <a href="../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
@@ -103,7 +106,7 @@
       <h1>GDINA-vignettes</h1>
                         <h4 class="author">Wenchao Ma</h4>
             
-            <h4 class="date">2018-08-15</h4>
+            <h4 class="date">2018-08-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/GDINA.Rmd"><code>vignettes/GDINA.Rmd</code></a></small>
       <div class="hidden name"><code>GDINA.Rmd</code></div>
@@ -112,11 +115,12 @@
 
     
     
-<div id="below-are-key-functions-you-may-need-for-various-cdm-analyses" class="section level2">
+<div id="overview" class="section level2">
 <h2 class="hasAnchor">
-<a href="#below-are-key-functions-you-may-need-for-various-cdm-analyses" class="anchor"></a>Below are key functions you may need for various CDM analyses:</h2>
+<a href="#overview" class="anchor"></a>Overview</h2>
 <ul>
 <li>To estimate various CDMs, use <strong>GDINA</strong> function</li>
+<li>To extract item and person parameters from GDINA estimates, use <strong>coef</strong> and <strong>personparm</strong> functions, respectively</li>
 <li>To evaluate absolute model fit, use <strong>modelfit</strong> or <strong>itemfit</strong> functions</li>
 <li>To evaluate relative model fit, use <strong>AIC</strong>, <strong>BIC</strong> or <strong>deviance</strong> functions</li>
 <li>To validate Q-matrix, use <strong>Qval</strong> function</li>
@@ -126,17 +130,18 @@
 </ul>
 <p>Visit <a href="https://wenchao-ma.github.io/GDINA/reference/index.html">here</a> for online reference</p>
 </div>
-<div id="examples-for-cdm-analysis" class="section level2">
+<div id="examples" class="section level2">
 <h2 class="hasAnchor">
-<a href="#examples-for-cdm-analysis" class="anchor"></a>Examples for CDM analysis:</h2>
+<a href="#examples" class="anchor"></a>Examples</h2>
 <ul>
 <li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html">G-DINA model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html">LCDM model estimation</a></li>
 <li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINA_example.html">DINA model estimation</a></li>
 <li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINO_example.html">DINO model estimation</a></li>
 <li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/ACDM_example.html">ACDM model estimation</a></li>
 <li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LLM_example.html">LLM model estimation</a></li>
 <li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/RRUM_example.html">RRUM model estimation</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html">LCDM model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.html">Higher-order GDINA model estimation</a></li>
 </ul>
 </div>
   </div>
@@ -146,8 +151,8 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#below-are-key-functions-you-may-need-for-various-cdm-analyses">Below are key functions you may need for various CDM analyses:</a></li>
-      <li><a href="#examples-for-cdm-analysis">Examples for CDM analysis:</a></li>
+<li><a href="#overview">Overview</a></li>
+      <li><a href="#examples">Examples</a></li>
       </ul>
 </div>
       </div>
