@@ -194,9 +194,9 @@ shinyServer(function(input, output) {
         cat("\nSRMSR = ", round(z$SRMSR,4),"\n\n")
       }
 
-      p <- extract.itemfit(x,"p")
-      r <- extract.itemfit(x,"r")
-      logOR <- extract.itemfit(x,"logOR")
+      p <- extract(x,"p")
+      r <- extract(x,"r")
+      logOR <- extract(x,"logOR")
       testlevel.itemfit <- data.frame(p=c(mean(p$pstat[is.finite(p$pstat)],na.rm = TRUE),
                                           max(p$pstat[is.finite(p$pstat)],na.rm = TRUE),
                                           max(p$zstat[is.finite(p$zstat)],na.rm = TRUE),

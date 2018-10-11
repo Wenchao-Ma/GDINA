@@ -16,7 +16,7 @@ startGDINA <- function() {
     stop("shiny and shinydashboard needed for startGDINA. Please install them.",
          call. = FALSE)
   }
-  cat("Please wait while loading...")
+  cat("Please wait while loading...\n")
   shiny::runApp(appDir = system.file("shiny", package="GDINA"),
                 launch.browser = TRUE)
 
