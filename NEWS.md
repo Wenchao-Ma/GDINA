@@ -1,9 +1,11 @@
-# GDINA 2.1.20
+# GDINA 2.1.24
 * Changed - set anchor attributes for multiple group higher-order CDMs
 * Changed - change arguments for `dif` function
 * Changed - print estimated mixing proportions in R GUI
+* Changed - GUI has been improved
 * Fixed   - calculation of the number of parameters when parameters of some items are fixed
 * Fixed   - mesa plot with best q-vectors when some q-vectors have the same PVAF
+* Fixed   - bug when calculating standard error using complete information based on multiple group models
 
 # GDINA 2.1.15
 * Changed - arguments for `plot` function

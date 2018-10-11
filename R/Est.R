@@ -109,12 +109,9 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
     J <- ncol(dat)
 
-    M <- c("UDF", "GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA")
+    M <- c("logGDINA","logitGDINA","UDF", "GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA")
 
     model <- model.transform(model, nrow(Q))
-
-  # polytomous responses -> dichotomous responses
-  # copy Q and data
 
     if (any(model == 6)) {
       #MSDINA
@@ -130,7 +127,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
     Qcm <- Q
 
-  model.names <- M[model + 2]
+  model.names <- M[model + 4]
   names(model.names) <- item.names
 
   inputcheck(
@@ -152,7 +149,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     maxitr = control$maxitr
   )
 
-  if(att.str&(any(model<0)|any(model>2)))stop("Attribute structure is only applicable for DINA, DINO and G-DINA models",call. = FALSE)
+  if(att.str&(any(model<0)|any(model>2)))stop("Attribute structure can only be imposed for the DINA, DINO and G-DINA models.",call. = FALSE)
 
   if (sequential) {
     Q <- Q[,-c(1, 2)]
@@ -198,6 +195,8 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
       DesignMatrices[[j]] <- designmatrix(Kj[j],model[j])
     }else if(model[j]==6){
       DesignMatrices[[j]] <- designmatrix(model = model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
+    }else if(model[j]==-2||model[j]==-3){
+      DesignMatrices[[j]] <- designM(Kj[j],0)
     }
     if(mono.constraint[[j]]){
       ConstrType[j] <- 3
@@ -213,7 +212,10 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
   if(is.null(linkfunc)){
     linkfunc <- rep(1,J)
-    for(j in seq_len(J)) if(model[j]==4) linkfunc[j] <- 2 else if(model[j]==5) linkfunc[j] <- 3
+    for(j in seq_len(J)){
+      if(model[j] == 4 || model[j] == -2) linkfunc[j] <- 2 else
+        if(model[j] == 5 || model[j] == -3) linkfunc[j] <- 3
+    }
   }else if (length(linkfunc) == 1){
     linkfunc <- which(tolower(linkfunc)==c("identity","logit","log"))
     linkfunc <- rep(linkfunc, J)
@@ -224,8 +226,6 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     linkfunc[which(tolower(tmp)=="logit")] <- 2
     linkfunc[which(tolower(tmp)=="log")] <- 3
   }
-
-
 
 
   lambda <- vector("list",no.mg)
@@ -349,6 +349,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   initial.parm <- item.parm
 
 
+
   ##############################
   #
   # variable declarations
@@ -413,6 +414,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     lambda <- struc.parm$lambda
     logprior <- struc.parm$logprior
 
+    # logprior <- estep$logprior
 
 
     parm1 <- list(ip = c(item.parm),
@@ -435,10 +437,10 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
     if(verbose==1L) {
       cat('\rIter =',itr,' Max. abs. change =',formatC(maxchg,digits = 5, format = "f"),
-          ' Deviance  =',formatC(-2 * estep$LL,digits = 3, format = "f"),'                                                                                 ')
+          ' Deviance  =',formatC(-2 * estep$LL,digits = 2, format = "f"),'                                                                                 ')
     }else if (verbose==2L) {
       cat('Iter =',itr,' Max. abs. change =',formatC(maxchg,digits = 5, format = "f"),
-          ' Deviance  =',formatC(-2 * estep$LL,digits = 3, format = "f"),'                                                                                \n')
+          ' Deviance  =',formatC(-2 * estep$LL,digits = 2, format = "f"),'                                                                                \n')
     }
 
     if(maxchg < control$conv.crit) break
@@ -524,8 +526,10 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     }
     LC.Prob <- p
   }
+
+  LC.labels <- apply(AlphaPattern,1,paste0,collapse = "")
   names(item.prob) <- names(initial.parm) <- rownames(LC.Prob) <- names(delta) <- rownames(item.parm) <- item.names
-  colnames(LC.Prob) <- colnames(pf) <- colnames(postP) <- apply(attributepattern(Q = Q),1,paste0,collapse = "")
+  colnames(LC.Prob) <- colnames(pf) <- colnames(postP) <- LC.labels
 
   if(!is.null(group)) rownames(postP) <- paste("Group",gr.label)
 
@@ -541,7 +545,8 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
        testfit = list(Deviance=neg2LL,npar = npar,item.npar = free.item.npar, AIC=2 * npar + neg2LL, BIC=neg2LL + npar * log(N)),
        technicals = list(logposterior.i = estep$logpost, loglikelihood.i = estep$loglik, free.item.npar = free.item.npar,
                          total.item.npar = total.item.npar, stru.npar = stru.npar, total.npar = npar,
-                         expectedCorrect = estep$Rg, expectedTotal = estep$Ng,initial.parm = initial.parm),
+                         expectedCorrect = estep$Rg, expectedTotal = estep$Ng,initial.parm = initial.parm,
+                         LC.labels = LC.labels),
        options = list(dat = originalData, Q = originalQ, Qm = Q, Qcm = Qcm, model = model,
                       itr = itr, dif.LL = dif.parm$neg2LL,dif.p=dif.parm$ip,dif.prior=dif.parm$prior,
                       att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, latent.var = latent.var,

@@ -171,6 +171,7 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
 logprior <- matrix(0,nrow(AlphaPattern),length(HOgr))
 for(g in HOgr){
   logprior[,g] <- logP_AlphaPattern(AlphaPattern, Aq[,g], WAq[,g], lambda[[g]][,1], lambda[[g]][,2])
+
 }
   return(list(logprior=logprior,lambda=lambda,higher.order=higher.order,npar=npar))
 }

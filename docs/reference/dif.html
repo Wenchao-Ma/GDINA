@@ -63,7 +63,7 @@ test (Ma, Terzi, Lee, &amp;amp; de la Torre, 2017). It can only detect DIF for t
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.20</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.24</span>
       </span>
     </div>
 
@@ -89,15 +89,6 @@ test (Ma, Terzi, Lee, &amp;amp; de la Torre, 2017). It can only detect DIF for t
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/OnlineExercises/ACDM_example.html">ACDM Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/DINA_example.html">DINA Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/DINO_example.html">DINO Estimation</a>
-    </li>
-    <li>
       <a href="../articles/OnlineExercises/GDINA_example.html">GDINA Estimation</a>
     </li>
     <li>
@@ -105,12 +96,6 @@ test (Ma, Terzi, Lee, &amp;amp; de la Torre, 2017). It can only detect DIF for t
     </li>
     <li>
       <a href="../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/LLM_example.html">LLM Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/RRUM_example.html">RRUM Estimation</a>
     </li>
   </ul>
 </li>
@@ -151,9 +136,9 @@ test (Ma, Terzi, Lee, &amp; de la Torre, 2017). It can only detect DIF for two g
     
     </div>
 
-    <pre class="usage"><span class='fu'>dif</span>(<span class='no'>dat</span>, <span class='no'>Q</span>, <span class='no'>group</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"wald"</span>, <span class='kw'>anchor.items</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
-  <span class='kw'>dif.items</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>p.adjust.methods</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>, <span class='kw'>approx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>dif</span>(<span class='no'>dat</span>, <span class='no'>Q</span>, <span class='no'>group</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"GDINA"</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"wald"</span>,
+  <span class='kw'>anchor.items</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dif.items</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
+  <span class='kw'>p.adjust.methods</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>, <span class='kw'>approx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for dif</span>
 <span class='fu'>summary</span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
@@ -175,18 +160,22 @@ test (Ma, Terzi, Lee, &amp; de la Torre, 2017). It can only detect DIF for two g
 length must be equal to the number of individuals.</p></td>
     </tr>
     <tr>
+      <th>model</th>
+      <td><p>model for each item.</p></td>
+    </tr>
+    <tr>
       <th>method</th>
       <td><p>DIF detection method; It can be <code>"wald"</code> for Hou, de la Torre, and Nandakumar's (2014)
 Wald test method, and <code>"LR"</code> for likelihood ratio test (Ma, Terzi, Lee,&amp; de la Torre, 2017).</p></td>
     </tr>
     <tr>
       <th>anchor.items</th>
-      <td><p>which items are used as anchors? Default is <code>"none"</code>, which means none of the items are used as anchors.
+      <td><p>which items will be used as anchors? Default is <code>NULL</code>, which means none of the items are used as anchors.
 For LR method, it can also be an integer vector giving the item numbers for anchors or <code>"all"</code>, which means all items are treated as anchor items.</p></td>
     </tr>
     <tr>
       <th>dif.items</th>
-      <td><p>Items for the DIF detection. By default, all items will be examined.</p></td>
+      <td><p>which items are subject to DIF detection? Default is <code>"all"</code>. It can also be an integer vector giving the item numbers.</p></td>
     </tr>
     <tr>
       <th>p.adjust.methods</th>

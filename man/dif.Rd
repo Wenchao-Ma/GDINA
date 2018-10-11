@@ -5,9 +5,9 @@
 \alias{summary.dif}
 \title{Differential item functioning for cognitive diagnosis models}
 \usage{
-dif(dat, Q, group, method = "wald", anchor.items = "none",
-  dif.items = "all", p.adjust.methods = "bonferroni", approx = FALSE,
-  SE.type = 2, ...)
+dif(dat, Q, group, model = "GDINA", method = "wald",
+  anchor.items = NULL, dif.items = "all",
+  p.adjust.methods = "bonferroni", approx = FALSE, SE.type = 2, ...)
 
 \method{summary}{dif}(object, ...)
 }
@@ -19,13 +19,15 @@ dif(dat, Q, group, method = "wald", anchor.items = "none",
 \item{group}{a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its
 length must be equal to the number of individuals.}
 
+\item{model}{model for each item.}
+
 \item{method}{DIF detection method; It can be \code{"wald"} for Hou, de la Torre, and Nandakumar's (2014)
 Wald test method, and \code{"LR"} for likelihood ratio test (Ma, Terzi, Lee,& de la Torre, 2017).}
 
-\item{anchor.items}{which items are used as anchors? Default is \code{"none"}, which means none of the items are used as anchors.
+\item{anchor.items}{which items will be used as anchors? Default is \code{NULL}, which means none of the items are used as anchors.
 For LR method, it can also be an integer vector giving the item numbers for anchors or \code{"all"}, which means all items are treated as anchor items.}
 
-\item{dif.items}{Items for the DIF detection. By default, all items will be examined.}
+\item{dif.items}{which items are subject to DIF detection? Default is \code{"all"}. It can also be an integer vector giving the item numbers.}
 
 \item{p.adjust.methods}{adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
 and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},

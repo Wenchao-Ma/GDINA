@@ -7,6 +7,7 @@
 #'
 #' @param dat item responses from two groups; missing data need to be coded as \code{NA}
 #' @param Q Q-matrix specifying the association between items and attributes
+#' @param model model for each item.
 #' @param group a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its
 #'    length must be equal to the number of individuals.
 #' @param method DIF detection method; It can be \code{"wald"} for Hou, de la Torre, and Nandakumar's (2014)
@@ -15,9 +16,9 @@
 #'  and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 #'  \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
 #'  for more details. \code{"bonferroni"} is the default.
-#' @param anchor.items which items are used as anchors? Default is \code{"none"}, which means none of the items are used as anchors.
+#' @param anchor.items which items will be used as anchors? Default is \code{NULL}, which means none of the items are used as anchors.
 #'  For LR method, it can also be an integer vector giving the item numbers for anchors or \code{"all"}, which means all items are treated as anchor items.
-#' @param dif.items Items for the DIF detection. By default, all items will be examined.
+#' @param dif.items which items are subject to DIF detection? Default is \code{"all"}. It can also be an integer vector giving the item numbers.
 #' @param approx Whether an approximated LR test is implemented? If TRUE, parameters of items except the studied one will not be re-estimated.
 #' @param SE.type Type of standard error estimation methods for the Wald test.
 #' @param ... arguments passed to GDINA function for model calibration
@@ -58,158 +59,287 @@
 #'
 
 
-dif <- function(dat, Q, group, method = "wald", anchor.items = "none", dif.items = "all", p.adjust.methods = "bonferroni", approx = FALSE,
+dif <- function(dat, Q, group, model = "GDINA", method = "wald", anchor.items = NULL, dif.items = "all", p.adjust.methods = "bonferroni", approx = FALSE,
                 SE.type = 2, ...){
 
   if (!is.matrix(dat))
     dat <- as.matrix(dat)
-  # default.p.args <- list(initial.anchor.items = "none", alpha.level = .05, maxit = 10, verbose = FALSE)
-  # purification.args <- modifyList(default.p.args,purification.args)
-  rownames(dat) <- colnames(dat) <- NULL
-  est <- NULL
+  if (!is.matrix(Q))
+    Q <- as.matrix(Q)
+
   if (nrow(dat) != length(group))
-    stop("The length of group variable must be equal to the number of individuals.",
-         call. = FALSE)
-  if (length(unique(group)) != 2)
+    stop("The length of group variable must be equal to the number of individuals.", call. = FALSE)
+
+  gr.label <- unique(group)
+
+  if (length(gr.label) != 2)
     stop("Only two group DIF can be examined.", call. = FALSE)
-  gr <- group
-  gr.label <- unique(gr)
+
   J <- nrow(Q)
-  if (length(dif.items) == 1 && dif.items == "all") {
-    dif.items <- 1:J
-  } else{
-    if (min(dif.items) <= 0 |
-        max(dif.items) > J)
-      stop("dif.items needs to be correctly specified.", call. = FALSE)
-    dif.items <- dif.items
-  }
-  purification.args <- dots("purification.args",list(initial.anchor.items = "none", alpha.level = .05, maxit = 10, verbose = FALSE),...)
+
+  ### Anchor items
+  if (length(anchor.items) == 1 && tolower(anchor.items) == "all")
+    anchor.items <- seq_len(J)
+
+
+
+  purification.args <- dots("purification.args",list(on = FALSE, alpha.level = .05, maxit = 10, verbose = FALSE),...)
+
   log.purification <- NULL
-  # est: unique item parameters for each group on each item
-  est <- GDINA::GDINA(dat = bdiagMatrix(list(dat[which(gr==gr.label[1]),],dat[which(gr==gr.label[2]),]),NA),
-                      Q = rbind(Q,Q), group = gr,verbose = 0, ...)
 
   if(tolower(method)=="wald"){
 
-    est1 <- GDINA::GDINA(dat = dat[which(gr==gr.label[1]),], Q = Q,
-                         catprob.parm = est$catprob.parm[1:J],
-                         att.prior = est$posterior.prob[1,],att.dist = "fixed",verbose = 0,control=list(maxitr = 0))
-    est2 <- GDINA::GDINA(dat = dat[which(gr==gr.label[2]),], Q = Q,
-                         catprob.parm = est$catprob.parm[(J+1):(2*J)],
-                         att.prior = est$posterior.prob[2,],att.dist = "fixed",verbose = 0,control=list(maxitr = 0))
+    if(purification.args$on){
 
-    output <- matrix(0,length(dif.items),3)
+      anchor.items <- NULL
+      dif.items <- seq_len(J)
+
+      x <- purif.WaldDIF(dat = dat,Q = Q, group = group, model = model, SE.type = SE.type,
+                         alpha.level = purification.args$alpha.level, maxit = purification.args$maxit, progress = purification.args$verbose, ...)
+      output <- x$output
+      log.purification <- x$log
+      output <- as.data.frame(output)
+      colnames(output) <- c("Wald stat.","df","p.value")
+      rownames(output) <- paste("Item",seq_len(J))
+
+      }else{
 
 
-      dcov1 <- extract(est1,"delta.cov",SE.type=SE.type)
-      dcov2 <- extract(est2,"delta.cov",SE.type=SE.type)
-      for (j in 1:length(dif.items)){
-        x <- c(extract(est1,"delta.parm")[[dif.items[j]]],
-               extract(est2,"delta.parm")[[dif.items[j]]])
-        R <- cbind(diag(length(x)/2),-1*diag(length(x)/2))
-        vcov <- bdiagMatrix(list(dcov1$cov[dcov1$index$loc[dcov1$index$item==dif.items[j]],
-                                    dcov1$index$loc[dcov1$index$item==dif.items[j]]],
-                           dcov2$cov[dcov2$index$loc[dcov2$index$item==dif.items[j]],
-                                    dcov2$index$loc[dcov2$index$item==dif.items[j]]]))
-        output[j,1] <- t(R%*%x)%*%MASS::ginv(R%*%vcov%*%t(R))%*%(R%*%x)
-        output[j,2] <- nrow(R)
-        output[j,3] <- pchisq(output[j,1],nrow(R),lower.tail = FALSE)
+      ### DIF items => a numeric vector
+      if (length(dif.items) == 1 && tolower(dif.items) == "all") {
+        dif.items <- seq_len(J)
+      } else if(any(!is.numeric(dif.items))){
+        stop("dif.items needs to be correctly specified.", call. = FALSE)
+      }else if (min(dif.items) <= 0 || max(dif.items) > J){
+        stop("dif.items needs to be correctly specified.", call. = FALSE)
       }
 
 
-    output <- data.frame(output)
-    colnames(output) <- c("Wald stat.","df","p.value")
-    rownames(output) <- extract(est,"item.names")[dif.items]
-    # output <- Wp
+      if(all(1:J %in% anchor.items))
+          stop("At least one item needs to be non-anchor items when Wald test is used.",call. = FALSE)
+
+      if(any(dif.items %in% anchor.items))
+          stop("Elements in dif.items and anchor.items must differ.",call. = FALSE)
+
+      nonstudied.items <- NULL
+
+      if(!identical(sort(union(anchor.items,dif.items)),seq_len(J)))
+        nonstudied.items <- setdiff(seq_len(J),union(anchor.items,dif.items))
+
+      output <- WaldDIF(dat = dat,Q = Q, group = group, anchor.items = anchor.items, dif.items = dif.items, nonstudied.items = nonstudied.items,
+                        model = model, SE.type = SE.type, ...)
+
+      output <- as.data.frame(output)
+      colnames(output) <- c("Wald stat.","df","p.value")
+      rownames(output) <- paste("Item",dif.items)
+      }
+
+
+
   }else if(method=="LR"){
 
-    if(length(anchor.items)==1 && tolower(anchor.items) == "auto") {
-      if(length(purification.args$initial.anchor.items)==1 && tolower(purification.args$initial.anchor.items)=="none"){
-        anchoritems.loc <- 0
-      }else if(length(purification.args$initial.anchor.items)==1 && tolower(purification.args$initial.anchor.items)=="all"){
-        anchoritems.loc <- seq_len(J)
-      }else{
-        anchoritems.loc <- purification.args$initial.anchor.items
-      }
+    if(purification.args$on) {
+
+      anchor.items <- NULL
+      dif.items <- seq_len(J)
+
       output <- NULL
       it <- 0
 
       while(it<purification.args$maxit){
-        output <- LRDIF(dat,Q,gr,anchor.items = anchoritems.loc,LR.approx = approx,...)
+        output <- LRDIF(dat = dat,Q = Q, group = group, model = model, anchor.items = anchor.items, dif.items = dif.items, LR.approx = approx,...)
         it <- it + 1
         log.purification[[it]] <- output
         if(purification.args$verbose){
-          cat("Iter = ", it,"Anchor items = Items ",anchoritems.loc,"\n")
+          cat("Iter = ", it,"Anchor items = Items ",anchor.items,"\n")
+          # rownames(output) <- paste("Item",seq_len(J))
           print(output)
         }
         new.anchoritems.loc <- which(output$p.value > purification.args$alpha.level)
         if(length(new.anchoritems.loc)==0)
-          new.anchoritems.loc <- 0
-        if(identical(anchoritems.loc,new.anchoritems.loc))
+          new.anchoritems.loc <- NULL
+        if(identical(anchor.items,new.anchoritems.loc))
           break
 
-        anchoritems.loc <- new.anchoritems.loc
+        anchor.items <- new.anchoritems.loc
       }
+      # rownames(output) <- paste("Item",seq_len(J))
     }else{
-      output <- LRDIF(dat,Q,gr,anchor.items = anchor.items,LR.approx = approx,...)
+
+      output <- LRDIF(dat = dat,Q = Q, group = group, model = model, anchor.items = anchor.items, dif.items = dif.items, LR.approx = approx,...)
+
     }
 
-    rownames(output) <- extract(est,"item.names")[dif.items]
+    # rownames(output) <- extract(est,"item.names")[dif.items]
     # output <- lr.out
   }
   output$'adj.pvalue' <- stats::p.adjust(output$'p.value', method = p.adjust.methods)
-output <- list(test=output,group=gr,p.adjust.methods=p.adjust.methods,TGest = est,log.purification = log.purification)
+output <- list(test=output,group=group,p.adjust.methods=p.adjust.methods,log.purification = log.purification)
 class(output) <- "dif"
 invisible(output)
 
 }
 
+  WaldDIF <-
+    function(dat, Q, group, model, anchor.items, dif.items, nonstudied.items = NULL, SE.type = 2, ...) {
 
 
-LRDIF <- function(dat, Q, group, anchor.items = "none", dif.items = "all", LR.approx = FALSE,...){
+      if(length(model)==1)
+        model <- rep(model, ncol(dat))
+
+      m <- model[c(dif.items, dif.items, anchor.items, nonstudied.items, nonstudied.items)]
+      JD <- 2 * length(dif.items)
+      JA <- length(anchor.items)
+      JN <- 2 * length(nonstudied.items)
+      J <- JD + JA + JN
+
+      Data <- matrix(0, nrow(dat), J)
+      QQ <- matrix(0, J, ncol(Q))
+
+      gr.label <- unique(group)
+
+
+      Data[, seq_len(JD)] <- GDINA::bdiagMatrix(list(dat[which(group == gr.label[1]), dif.items],
+                                                     dat[which(group == gr.label[2]), dif.items]), NA)
+      QQ[seq_len(JD), ] <- Q[rep(dif.items, 2), ]
+
+
+      if (!is.null(anchor.items)) {
+        Data[, (JD + 1):(JD + JA)] <- dat[, anchor.items]
+        QQ[(JD + 1):(JD + JA), ] <- Q[anchor.items, ]
+      }
+
+      if (!is.null(nonstudied.items)) {
+        Data[, (JD + JA + 1):J] <- GDINA::bdiagMatrix(list(dat[which(group == gr.label[1]), nonstudied.items],
+                                                           dat[which(group == gr.label[2]), nonstudied.items]), NA)
+        QQ[(JD + JA + 1):J, ] <- Q[rep(nonstudied.items, 2), ]
+      }
+
+      est <- GDINA::GDINA(dat = Data, Q = QQ, group = group, verbose = 0,model = m, ...)
+
+      output <- matrix(0, JD / 2, 3)
+
+      item.parm <- extract(est, "catprob.parm")
+      dcov <- extract(est, "delta.cov", SE.type = SE.type)
+      for (j in seq_len(JD / 2)) {
+        x <- c(extract(est, "delta.parm")[[j]],
+               extract(est, "delta.parm")[[j + JD / 2]])
+        R <- cbind(diag(length(x) / 2), -1 * diag(length(x) / 2))
+        vcov <-
+          bdiagMatrix(list(dcov$cov[dcov$index$loc[dcov$index$item == j],
+                                    dcov$index$loc[dcov$index$item == j]],
+                           dcov$cov[dcov$index$loc[dcov$index$item == j + JD / 2],
+                                    dcov$index$loc[dcov$index$item == j + JD / 2]]))
+        output[j, 1] <-
+          t(R %*% x) %*% MASS::ginv(R %*% vcov %*% t(R)) %*% (R %*% x)
+        output[j, 2] <- nrow(R)
+        output[j, 3] <- pchisq(output[j, 1], nrow(R), lower.tail = FALSE)
+      }
+
+output
+
+    }
+
+
+  purif.WaldDIF <-
+    function(dat, Q, group, model, SE.type = 2, alpha.level = 0.05, maxit = 10, progress = FALSE, ...) {
+
+      anchor.items <- NULL
+      it <- 0
+      J <- ncol(dat)
+      dif.items <- seq_len(J)
+      log.purification <- list()
+      while(it < maxit){
+
+        if(is.null(anchor.items)){
+          output <- WaldDIF(dat = dat,Q = Q, group = group, model=model, SE.type = SE.type, anchor.items = anchor.items,dif.items = dif.items, ...)
+        }else{
+          output <- matrix(0, J, 3)
+          nonanchor <- setdiff(seq_len(J),anchor.items)
+          output[nonanchor,] <- WaldDIF(dat = dat, Q = Q, group = group, model=model, SE.type = SE.type, anchor.items = anchor.items,dif.items = nonanchor, ...)
+
+          l.anchor <- length(anchor.items)
+
+          if(l.anchor==1){ # single anchor item
+            output[anchor.items,] <- log.purification[[1]][anchor.items,]
+          }else{
+            for(j in seq_len(l.anchor)){
+              output[anchor.items[j],] <- WaldDIF(dat = dat, Q = Q, group = group, model=model, SE.type = SE.type,
+                                                     anchor.items = anchor.items[-j],dif.items = anchor.items[j],nonstudied.items = nonanchor,...)
+              # print(output)
+            }
+          }
+
+
+        }
+
+        it <- it + 1
+        log.purification[[it]] <- output
+        if(progress){
+          if(is.null(anchor.items)){
+            cat("Iter = ", it,"No anchor items\n")
+            print(output)
+          }else{
+            cat("Iter = ", it,"Anchor items = Items ",anchor.items,"\n")
+            print(output)
+          }
+       }
+        new.anchoritems.loc <- which(output[,3] > alpha.level)
+        if(length(new.anchoritems.loc)==0)
+          new.anchoritems.loc <- NULL
+        if(identical(anchor.items,new.anchoritems.loc))
+          break
+
+        anchor.items <- new.anchoritems.loc
+      }
+
+  list(output = output, log = log.purification)
+
+}
+
+LRDIF <- function(dat, Q, group, model, anchor.items, dif.items, LR.approx = FALSE,...){
 
   J <- ncol(dat)
   JJ <- seq_len(J)
 
   est <- NULL
 
-  gr <- group
-  gr.label <- unique(gr)
+  if(length(model)==1) model <- rep(model, J)
   J <- nrow(Q)
-  if (length(dif.items) == 1){
-    if(tolower(dif.items) == "all") {
-      dif.items <- JJ
-    } else if (min(dif.items) <= 0 |
-          max(dif.items) > J){
-      stop("difitem needs to be correctly specified.", call. = FALSE)
-    }
-  }
 
-  if(length(anchor.items)>1 && length(setdiff(JJ, anchor.items))==0) anchor.items <- "all"
+  if (length(dif.items) == 1 && tolower(dif.items) == "all")
+      dif.items <- JJ
+
+  JD <- length(dif.items)
+  gr.label <- unique(group)
+  G1 <- which(group == gr.label[1])
+  G2 <- which(group == gr.label[2])
 
   maxit <- 2000
-  output <- data.frame(neg2LL=rep(NA,length(dif.items)),
-                       LRstat=rep(NA,length(dif.items)),
-                       df=rep(NA,length(dif.items)),
-                       'p.value'=rep(NA,length(dif.items)))
+  output <- data.frame(neg2LL=rep(NA,JD),
+                       LRstat=rep(NA,JD),
+                       df=rep(NA,JD),
+                       'p.value'=rep(NA,JD))
+  rownames(output) <- paste("Item",dif.items)
 
-
-  if(length(anchor.items)==1 && tolower(anchor.items) == "all") {
+  if(identical(JJ,sort(anchor.items))) {
     # dif item has dif pars; all other items have same pars for two gr
     if(LR.approx)
       maxit <- c(rep(0,J-1),2000,2000)
 
     #est: all items have the same pars across groups
-    est <- GDINA::GDINA(dat, Q, group = gr,verbose = 0,...)
+    est <- GDINA::GDINA(dat, Q, group = group, model = model, verbose = 0,...)
     item.parm <- extract(est,"catprob.parm")
-    for (j in seq_len(length(dif.items))){
+    for (j in seq_len(JD)){
 
       locj <- setdiff(JJ,dif.items[j]) #item no. except the studied one
+
       estj <- GDINA::GDINA(dat = cbind(dat[,locj],
-                                       bdiagMatrix(list(dat[gr==gr.label[1],dif.items[j]],
-                                                  dat[gr==gr.label[2],dif.items[j]]),NA)),
+                                       bdiagMatrix(list(dat[G1,dif.items[j]],
+                                                        dat[G2,dif.items[j]]),NA)),
+                           model = model[c(locj,dif.items[j],dif.items[j])],
                            Q = Q[c(locj,dif.items[j],dif.items[j]),],
-                           group = gr,control=list(maxitr = maxit),verbose = 0,
+                           group = group,control=list(maxitr = maxit),verbose = 0,
                            catprob.parm = item.parm[c(locj,dif.items[j],dif.items[j])],
                            att.prior =  t(extract(est,"posterior.prob")),...)
       output$LRstat[j] <-  deviance(est) - deviance(estj)
@@ -217,11 +347,11 @@ LRDIF <- function(dat, Q, group, anchor.items = "none", dif.items = "all", LR.ap
       output$neg2LL[j] <- deviance(estj)
       output$'p.value'[j] <- pchisq(output$LRstat[j],output$df[j],lower.tail = FALSE)
     }
-  }else if(length(anchor.items)==1 && (tolower(anchor.items) == "none" || anchor.items == 0)){#dif item has the same par; all other items have dif pars
+  }else if(is.null(anchor.items)){#dif item has the same par; all other items have dif pars
     # est: unique item parameters for each group on each item
-    est <- GDINA::GDINA(dat = bdiagMatrix(list(dat[which(gr==gr.label[1]),],
-                                               dat[which(gr==gr.label[2]),]),NA),
-                        Q = rbind(Q,Q), group = gr,verbose = 0, ...)
+    est <- GDINA::GDINA(dat = bdiagMatrix(list(dat[G1,],
+                                               dat[G2,]),NA),
+                        model = rep(model, 2), Q = rbind(Q,Q), group = group,verbose = 0, ...)
     item.parm <- extract(est,"catprob.parm")
     if(LR.approx)
       maxit <- c(rep(0,2*J-2),2000)
@@ -229,11 +359,13 @@ LRDIF <- function(dat, Q, group, anchor.items = "none", dif.items = "all", LR.ap
 
     for (j in seq_len(length(dif.items))){
       locj <- setdiff(JJ,dif.items[j]) #item no. except the studied one
-      estj <- GDINA::GDINA(dat = cbind(bdiagMatrix(list(dat[gr==gr.label[1],locj],
-                                                  dat[gr==gr.label[2],locj]),NA),
+
+      estj <- GDINA::GDINA(dat = cbind(bdiagMatrix(list(dat[G1,locj],
+                                                        dat[G2,locj]),NA),
                                        dat[,dif.items[j]]),
                            Q = Q[c(locj,locj,dif.items[j]),],
-                           group = gr,control=list(maxitr = maxit),verbose = 0,
+                           model = model[c(locj,locj,dif.items[j])],
+                           group = group,control=list(maxitr = maxit),verbose = 0,
                            catprob.parm = item.parm[c(locj,(locj+J),dif.items[j])],
                            att.prior = t(extract(est,"posterior.prob")),...)
       output$LRstat[j] <- deviance(estj) - deviance(est)
@@ -247,11 +379,12 @@ LRDIF <- function(dat, Q, group, anchor.items = "none", dif.items = "all", LR.ap
     variant.items <- setdiff(JJ, anchor.items)
     # est: anchor items + non-anchor for g1 + non-anchor for g2
     est <- GDINA::GDINA(dat = cbind(dat[,anchor.items],
-                                    bdiagMatrix(list(dat[which(gr==gr.label[1]),variant.items],
-                                                     dat[which(gr==gr.label[2]),variant.items]),
+                                    bdiagMatrix(list(dat[G1,variant.items],
+                                                     dat[G2,variant.items]),
                                                 NA)),
+                        model = model[c(anchor.items,variant.items,variant.items)],
                         Q = Q[c(anchor.items,variant.items,variant.items),],
-                        group = gr,verbose = 0,...)
+                        group = group, verbose = 0,...)
     item.parm <- extract(est,"catprob.parm")
     item.set <- c(anchor.items,variant.items,variant.items)
 
@@ -263,19 +396,40 @@ LRDIF <- function(dat, Q, group, anchor.items = "none", dif.items = "all", LR.ap
           maxit <- c(rep(0,length(item.set)-1),rep(2000,2))
 
         locj <- which(dif.items[j]==item.set)
-        updated.anchor.items <- anchor.items[-locj]
-        estj <- GDINA::GDINA(dat = cbind(dat[,updated.anchor.items],
-                                        bdiagMatrix(list(dat[which(gr==gr.label[1]),variant.items],
-                                                         dat[which(gr==gr.label[2]),variant.items]),
-                                                    NA),
-                                        bdiagMatrix(list(dat[which(gr==gr.label[1]),dif.items[j]],
-                                                         dat[which(gr==gr.label[2]),dif.items[j]]),
-                                                    NA)),
-                            Q = Q[c(updated.anchor.items,variant.items,variant.items,
-                                    dif.items[j],dif.items[j]),],
-                            group = gr,verbose = 0, control=list(maxitr = maxit),
-                            catprob.parm = item.parm[c(seq_len(length(item.parm))[-locj],locj,locj)],
-                            att.prior = t(extract(est,"posterior.prob")),...)
+        if(length(anchor.items)==1){
+          estj <- GDINA::GDINA(dat = cbind(bdiagMatrix(list(dat[G1,variant.items],
+                                                            dat[G2,variant.items]),
+                                                       NA),
+                                           bdiagMatrix(list(dat[G1,dif.items[j]],
+                                                            dat[G2,dif.items[j]]),
+                                                       NA)),
+                               model = model[c(variant.items,variant.items,
+                                               dif.items[j],dif.items[j])],
+                               Q = Q[c(variant.items,variant.items,
+                                       dif.items[j],dif.items[j]),],
+                              group = group, verbose = 0,
+                              control=list(maxitr = maxit),
+                              catprob.parm = item.parm[c(seq_len(length(item.parm))[-locj],locj,locj)],
+                              att.prior = t(extract(est,"posterior.prob")),...)
+        }else{
+          updated.anchor.items <- anchor.items[-locj]
+
+          estj <- GDINA::GDINA(dat = cbind(dat[,updated.anchor.items],
+                                           bdiagMatrix(list(dat[G1,variant.items],
+                                                            dat[G2,variant.items]),
+                                                       NA),
+                                           bdiagMatrix(list(dat[G1,dif.items[j]],
+                                                            dat[G2,dif.items[j]]),
+                                                       NA)),
+                               model = model[c(updated.anchor.items,variant.items,variant.items,
+                                               dif.items[j],dif.items[j])],
+                               Q = Q[c(updated.anchor.items,variant.items,variant.items,
+                                       dif.items[j],dif.items[j]),],
+                               group = group,verbose = 0, control=list(maxitr = maxit),
+                               catprob.parm = item.parm[c(seq_len(length(item.parm))[-locj],locj,locj)],
+                               att.prior = t(extract(est,"posterior.prob")),...)
+        }
+
         output$LRstat[j] <- deviance(est) - deviance(estj)
         output$df[j] <- npar(estj)$`No. of total item parameters` - npar(est)$`No. of total item parameters`
         output$neg2LL[j] <- deviance(estj)
@@ -291,12 +445,13 @@ LRDIF <- function(dat, Q, group, anchor.items = "none", dif.items = "all", LR.ap
           locj <- which(variant.items!=dif.items[j])
 
           estj <- GDINA::GDINA(dat = cbind(dat[,anchor.items],
-                                           bdiagMatrix(list(dat[which(gr==gr.label[1]),variant.items[locj]],
-                                                            dat[which(gr==gr.label[2]),variant.items[locj]]),
+                                           bdiagMatrix(list(dat[G1,variant.items[locj]],
+                                                            dat[G2,variant.items[locj]]),
                                                        NA),
                                            dat[,dif.items[j]]),
+                               model = model[c(anchor.items,variant.items[locj],variant.items[locj],dif.items[j])],
                                Q = Q[c(anchor.items,variant.items[locj],variant.items[locj],dif.items[j]),],
-                               group = gr,verbose = 0, control=list(maxitr = maxit),
+                               group = group,verbose = 0, control=list(maxitr = maxit),
                                catprob.parm = item.parm[c(which(item.set!=dif.items[j]),which(item.set==dif.items[j])[1])],
                                att.prior = t(extract(est,"posterior.prob")),...)
           output$LRstat[j] <- deviance(estj) - deviance(est)
@@ -306,8 +461,9 @@ LRDIF <- function(dat, Q, group, anchor.items = "none", dif.items = "all", LR.ap
         }else{ # only one variant item
 
           estj <- GDINA::GDINA(dat = dat[,c(anchor.items,variant.items)],
+                               model = model[c(anchor.items,variant.items)],
                                Q = Q[c(anchor.items,variant.items),],
-                               group = gr,verbose = 0, control=list(maxitr = maxit),
+                               group = group,verbose = 0, control=list(maxitr = maxit),
                                catprob.parm = item.parm[c(which(item.set!=dif.items[j]),which(item.set==dif.items[j])[1])],
                                att.prior = t(extract(est,"posterior.prob")),...)
           output$LRstat[j] <- deviance(estj) - deviance(est)

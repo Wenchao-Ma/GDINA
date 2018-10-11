@@ -2,7 +2,7 @@
 #'
 #' Calculate various model-data fit statistics
 #'
-#' Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016) and for sequential G-DINA model with graded responses (Ma, under review).
+#' Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016) and for sequential G-DINA model with graded responses (Ma, under review).
 #' It also calculates SRMSR and RMSEA2.
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
@@ -16,6 +16,8 @@
 #' Ma, W. (under review). Evaluating model data fit using limited information statistics for the sequential G-DINA model.
 #'
 #' Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. \emph{Measurement, 11}, 71-101.
+#'
+#' Hansen, M., Cai, L.,  Monroe, S., & Li, Z. (2016). Limited-information goodness-of-fit testing of diagnostic classification item response models. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 225--252.
 #'
 #' Liu, Y., Tian, W., & Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. \emph{Journal of Educational and Behavioral Statistics, 41}, 3-26.
 #' @examples
@@ -60,7 +62,7 @@ modelfit <- function(GDINA.obj,CI = 0.90,...)
   K <- extract(GDINA.obj, "natt")
   L <- 2^K
   Kj <- extract(GDINA.obj, "Kj")
-  nparJ <- npar(GDINA.obj)$`No. of item parameters`
+  nparJ <- npar(GDINA.obj)$`No. of total item parameters`
   models <- extract(GDINA.obj, "models")
   post <- c(extract(GDINA.obj, "posterior.prob"))
   pj <- extract(GDINA.obj, "LCprob.parm") # P(Xi=s|alpha) S x L without category 0

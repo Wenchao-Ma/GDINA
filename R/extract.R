@@ -287,6 +287,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 itemprob.history = object$diagnos$itemprob.matrix,
                 Kj = {rowSums(extract(object,"Q"))},
                 latent.var = object$options$latent.var,
+                LC.labels = object$technicals$LC.labels,
                 LCprob.parm = object$LC.prob,
                 LCpf.parm = {
                   LCpf <- patt <- eta(as.matrix(extract(object,"Q")))

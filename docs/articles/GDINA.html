@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.20</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.24</span>
       </span>
     </div>
 
@@ -55,15 +55,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/OnlineExercises/ACDM_example.html">ACDM Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/DINA_example.html">DINA Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/DINO_example.html">DINO Estimation</a>
-    </li>
-    <li>
       <a href="../articles/OnlineExercises/GDINA_example.html">GDINA Estimation</a>
     </li>
     <li>
@@ -71,12 +62,6 @@
     </li>
     <li>
       <a href="../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/LLM_example.html">LLM Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/RRUM_example.html">RRUM Estimation</a>
     </li>
   </ul>
 </li>
@@ -106,7 +91,7 @@
       <h1>GDINA-vignettes</h1>
                         <h4 class="author">Wenchao Ma</h4>
             
-            <h4 class="date">2018-08-24</h4>
+            <h4 class="date">2018-10-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/GDINA.Rmd"><code>vignettes/GDINA.Rmd</code></a></small>
       <div class="hidden name"><code>GDINA.Rmd</code></div>
@@ -119,30 +104,30 @@
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
 <ul>
-<li>To estimate various CDMs, use <strong>GDINA</strong> function</li>
-<li>To extract item and person parameters from GDINA estimates, use <strong>coef</strong> and <strong>personparm</strong> functions, respectively</li>
-<li>To evaluate absolute model fit, use <strong>modelfit</strong> or <strong>itemfit</strong> functions</li>
-<li>To evaluate relative model fit, use <strong>AIC</strong>, <strong>BIC</strong> or <strong>deviance</strong> functions</li>
-<li>To validate Q-matrix, use <strong>Qval</strong> function</li>
-<li>To detect differential item functioning, use <strong>dif</strong> function</li>
-<li>To run graphical user interface, use <strong>startGDINA</strong> function</li>
-<li>To simulate data from various CDMs, use <strong>simGDINA</strong> function</li>
+<li>To estimate various CDMs, use <strong>GDINA()</strong> function</li>
+<li>To extract item and person parameters from GDINA estimates, use <strong>coef()</strong> and <strong>personparm()</strong> functions, respectively</li>
+<li>To evaluate absolute model fit, use <strong>modelfit()</strong> or <strong>itemfit()</strong> functions</li>
+<li>To evaluate relative model fit, use <strong>AIC()</strong>, <strong>BIC()</strong> or <strong>deviance()</strong> functions</li>
+<li>To validate Q-matrix, use <strong>Qval()</strong> function</li>
+<li>To detect differential item functioning, use <strong>dif()</strong> function</li>
+<li>To run graphical user interface, use <strong>startGDINA()</strong> function</li>
+<li>To simulate data from various CDMs, use <strong>simGDINA()</strong> function</li>
 </ul>
+<p>Visit <a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html">here</a> for a series of CDM data analyses</p>
 <p>Visit <a href="https://wenchao-ma.github.io/GDINA/reference/index.html">here</a> for online reference</p>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <ul>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html">Model estimation and model diagnostics</a></li>
 <li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html">G-DINA model estimation</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html">LCDM model estimation</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINA_example.html">DINA model estimation</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINO_example.html">DINO model estimation</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/ACDM_example.html">ACDM model estimation</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LLM_example.html">LLM model estimation</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/RRUM_example.html">RRUM model estimation</a></li>
+<li>
+<a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html">LCDM model estimation</a> <!-- * [DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINA_example.html)  --> <!-- * [DINO model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINO_example.html)  --> <!-- * [ACDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/ACDM_example.html)  --> <!-- * [LLM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LLM_example.html)  --> <!-- * [RRUM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/RRUM_example.html)  -->
+</li>
 <li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.html">Higher-order GDINA model estimation</a></li>
 </ul>
+<p>If you would like to contribute an example to this website, please send me your .Rmd file.</p>
 </div>
   </div>
 

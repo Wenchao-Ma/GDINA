@@ -17,6 +17,7 @@ startGDINA <- function() {
          call. = FALSE)
   }
   cat("Please wait while loading...")
-  shiny::runApp(appDir = system.file("shiny", package="GDINA"))
+  shiny::runApp(appDir = system.file("shiny", package="GDINA"),
+                launch.browser = TRUE)
 
 }

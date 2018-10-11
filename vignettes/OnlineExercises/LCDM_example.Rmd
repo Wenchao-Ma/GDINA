@@ -17,11 +17,8 @@ library(GDINA)
 dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
 
-#find design matrix for LCDM for each item => must be a list
-D <- lapply(rowSums(Q),designmatrix,model="GDINA")
-
 # Fit LCDM model - see Example 13a in GDINA help page also
-est <- GDINA(dat = dat, Q = Q, model = "UDF", design.matrix = D, linkfunc = "logit")
+est <- GDINA(dat = dat, Q = Q, model = "logitGDINA")
 
 #####################################
 #

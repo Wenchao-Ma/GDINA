@@ -159,7 +159,9 @@
 #'    of attributes are needed (see Chen, & de la Torre, 2013).  See \code{Examples}.
 #' @param model A vector for each item or nonzero category, or a scalar which will be used for all
 #'    items or nonzero categories to specify the CDMs fitted. The possible options
-#'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"} and \code{"UDF"}.
+#'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"} and \code{"UDF"}. Note that
+#'    model can also be \code{"logitGDINA"} and \code{"logGDINA"}, indicating the saturated G-DINA model in logit and log link functions. They are
+#'    equivalent to the identity link saturated G-DINA model. The logit G-DINA model is identical to the log-linear CDM.
 #'    When \code{"UDF"}, indicating user defined function, is specified for any item, arguments \code{design.matrix} and \code{linkfunc} need to be defined.
 #' @param sequential logical; \code{TRUE} if the sequential model is fitted for polytomous responses.
 #' @param group a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its

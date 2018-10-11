@@ -32,10 +32,10 @@ designmatrix <- function(Kj, model = "GDINA", Qj = NULL) {
     stopifnot(is.nonNegativeInteger(Kj))
   }
 
-  if (is.character(model)) {
-    stopifnot(toupper(model) %in% c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA"))
+  if (all(is.character(model))) {
+    stopifnot(toupper(model) %in% c("LOGGDINA","LOGITGDINA","GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA"))
     m <- which(c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA") == toupper(model))
-  } else if (is.numeric(model)) {
+  } else if (all(is.numeric(model))) {
     if (!is.nonNegativeInteger(model) | model > 7) {
       stop('model must be "GDINA", "DINA","DINO","ACDM","LLM", "RRUM" or "MSDINA".',
            call. = FALSE)

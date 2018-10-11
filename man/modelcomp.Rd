@@ -142,6 +142,8 @@ Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selec
 
 Ma, W. (2017). \emph{A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-Matrix Validation,and Model Comparison. Unpublished doctoral dissertation.} New Brunswick, NJ: Rutgers University.
 
+Ma, W. & de la Torre, J. (2018). Category-level model selection for the sequential G-DINA model. \emph{Journal of Educational and Behavorial Statistics}.
+
 Sorrel, M. A., Abad, F. J., Olea, J., de la Torre, J., & Barrada, J. R. (2017). Inferential Item-Fit Evaluation in Cognitive Diagnosis Modeling. \emph{Applied Psychological Measurement, 41,} 614-631.
 
 Sorrel, M. A., de la Torre, J., Abad, F. J., & Olea, J. (2017). Two-Step Likelihood Ratio Test for Item-Level Model Comparison in Cognitive Diagnosis Models. \emph{Methodology, 13}, 39-47.

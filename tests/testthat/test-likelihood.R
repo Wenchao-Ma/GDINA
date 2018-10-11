@@ -19,7 +19,7 @@ test_that("checking likelihood calculation for dichotomous model", {
 
   est <- GDINA(dat,Q,catprob.parm = itempar,control=list(maxitr = 0))
 
-  expect_equivalent(extract(est,"loglikelihood.i"), loglik_i)
+  expect_equivalent(as.matrix(extract(est,"loglikelihood.i")), loglik_i)
 
 })
 
@@ -85,7 +85,7 @@ test_that("checking likelihood calculation for multiple-group dichotomous model"
 
   est <- GDINA(dat,Q,catprob.parm = itempar,control=list(maxitr = 0), att.prior = prior, att.dist = "fixed",group = gr)
 
-  expect_equivalent(indlogPost(est), logpost.i)
+  expect_equivalent(as.matrix(indlogPost(est)), logpost.i)
 
 })
 
@@ -210,7 +210,7 @@ test_that("checking likelihood for POLYTOMOUS data", {
 
 est <- GDINA(dat,Qc,sequential = T,catprob.parm = itempar,control=list(maxitr = 0))
 
-  expect_equal(indlogLik(est),loglik_i)
+expect_equivalent(as.matrix(indlogLik(est)),loglik_i)
 
 })
 
@@ -240,7 +240,7 @@ test_that("checking likelihood calculation with missing data", {
   LL <- sum(log(rowSums(mprior*exp(loglik_i))))
   est <- GDINA(dat,Q,catprob.parm = itempar,att.prior  = prior,att.dist="fixed",control=list(maxitr = 0))
 
-  expect_equal(loglik_i,indlogLik(est))
+  expect_equivalent(loglik_i,as.matrix(indlogLik(est)))
 
 })
 
@@ -273,7 +273,7 @@ test_that("checking posterior calculation with missing data", {
   LL <- sum(log(rowSums(mprior*exp(loglik_i))))
   est <- GDINA(dat,Q,catprob.parm = itempar,att.prior  = prior,att.dist="fixed",control=list(maxitr = 0))
 
-  expect_equal(logpost.i,indlogPost(est))
+  expect_equivalent(logpost.i,as.matrix(indlogPost(est)))
 
 })
 

@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.20</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.24</span>
       </span>
     </div>
 
@@ -55,15 +55,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/OnlineExercises/ACDM_example.html">ACDM Estimation</a>
-    </li>
-    <li>
-      <a href="../../articles/OnlineExercises/DINA_example.html">DINA Estimation</a>
-    </li>
-    <li>
-      <a href="../../articles/OnlineExercises/DINO_example.html">DINO Estimation</a>
-    </li>
-    <li>
       <a href="../../articles/OnlineExercises/GDINA_example.html">GDINA Estimation</a>
     </li>
     <li>
@@ -71,12 +62,6 @@
     </li>
     <li>
       <a href="../../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
-    </li>
-    <li>
-      <a href="../../articles/OnlineExercises/LLM_example.html">LLM Estimation</a>
-    </li>
-    <li>
-      <a href="../../articles/OnlineExercises/RRUM_example.html">RRUM Estimation</a>
     </li>
   </ul>
 </li>
@@ -106,7 +91,7 @@
       <h1>GDINA Estimation</h1>
                         <h4 class="author">Abdullah Asilkalkan</h4>
             
-            <h4 class="date">2018-08-24</h4>
+            <h4 class="date">2018-10-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/GDINA_example.Rmd"><code>vignettes/OnlineExercises/GDINA_example.Rmd</code></a></small>
       <div class="hidden name"><code>GDINA_example.Rmd</code></div>
@@ -118,14 +103,14 @@
 <div id="introduction" class="section level3">
 <h3 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h3>
-<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.1.20) to estimate the G-DINA model.</p>
+<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.1.24) to estimate the G-DINA model.</p>
 </div>
 <div id="model-estimation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#model-estimation" class="anchor"></a>Model Estimation</h3>
 <p>The following code estimates the G-DINA model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GDINA)</code></pre></div>
-<pre><code>## GDINA Package [Version 2.1.20; 2018-8-24]
+<pre><code>## GDINA Package [Version 2.1.24; 2018-10-11]
 ## For examples and more information, 
 ## see https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># A simulated data in GDINA package</span>
@@ -135,51 +120,51 @@ Q &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simQ
 <span class="co"># Estimating GDINA model</span>
 est &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/GDINA.html">GDINA</a></span>(<span class="dt">dat =</span> dat, <span class="dt">Q =</span> Q, <span class="dt">model =</span> <span class="st">"GDINA"</span>)</code></pre></div>
 <pre><code>## 
-Iter = 1  Max. abs. change = 0.40691  Deviance  = 12821.161                                                                                  
-Iter = 2  Max. abs. change = 0.05266  Deviance  = 11947.639                                                                                  
-Iter = 3  Max. abs. change = 0.02836  Deviance  = 11890.214                                                                                  
-Iter = 4  Max. abs. change = 0.01736  Deviance  = 11866.225                                                                                  
-Iter = 5  Max. abs. change = 0.01173  Deviance  = 11854.666                                                                                  
-Iter = 6  Max. abs. change = 0.00886  Deviance  = 11848.420                                                                                  
-Iter = 7  Max. abs. change = 0.00763  Deviance  = 11844.675                                                                                  
-Iter = 8  Max. abs. change = 0.00643  Deviance  = 11842.262                                                                                  
-Iter = 9  Max. abs. change = 0.00557  Deviance  = 11840.635                                                                                  
-Iter = 10  Max. abs. change = 0.00503  Deviance  = 11839.509                                                                                  
-Iter = 11  Max. abs. change = 0.00449  Deviance  = 11838.712                                                                                  
-Iter = 12  Max. abs. change = 0.00398  Deviance  = 11838.141                                                                                  
-Iter = 13  Max. abs. change = 0.00351  Deviance  = 11837.725                                                                                  
-Iter = 14  Max. abs. change = 0.00308  Deviance  = 11837.419                                                                                  
-Iter = 15  Max. abs. change = 0.00270  Deviance  = 11837.191                                                                                  
-Iter = 16  Max. abs. change = 0.00237  Deviance  = 11837.020                                                                                  
-Iter = 17  Max. abs. change = 0.00208  Deviance  = 11836.891                                                                                  
-Iter = 18  Max. abs. change = 0.00183  Deviance  = 11836.792                                                                                  
-Iter = 19  Max. abs. change = 0.00161  Deviance  = 11836.715                                                                                  
-Iter = 20  Max. abs. change = 0.00142  Deviance  = 11836.656                                                                                  
-Iter = 21  Max. abs. change = 0.00125  Deviance  = 11836.609                                                                                  
-Iter = 22  Max. abs. change = 0.00110  Deviance  = 11836.572                                                                                  
-Iter = 23  Max. abs. change = 0.00098  Deviance  = 11836.543                                                                                  
-Iter = 24  Max. abs. change = 0.00087  Deviance  = 11836.520                                                                                  
-Iter = 25  Max. abs. change = 0.00077  Deviance  = 11836.502                                                                                  
-Iter = 26  Max. abs. change = 0.00069  Deviance  = 11836.487                                                                                  
-Iter = 27  Max. abs. change = 0.00061  Deviance  = 11836.475                                                                                  
-Iter = 28  Max. abs. change = 0.00055  Deviance  = 11836.465                                                                                  
-Iter = 29  Max. abs. change = 0.00049  Deviance  = 11836.457                                                                                  
-Iter = 30  Max. abs. change = 0.00044  Deviance  = 11836.451                                                                                  
-Iter = 31  Max. abs. change = 0.00039  Deviance  = 11836.446                                                                                  
-Iter = 32  Max. abs. change = 0.00035  Deviance  = 11836.441                                                                                  
-Iter = 33  Max. abs. change = 0.00032  Deviance  = 11836.438                                                                                  
-Iter = 34  Max. abs. change = 0.00029  Deviance  = 11836.435                                                                                  
-Iter = 35  Max. abs. change = 0.00026  Deviance  = 11836.433                                                                                  
-Iter = 36  Max. abs. change = 0.00023  Deviance  = 11836.431                                                                                  
-Iter = 37  Max. abs. change = 0.00021  Deviance  = 11836.429                                                                                  
-Iter = 38  Max. abs. change = 0.00019  Deviance  = 11836.428                                                                                  
-Iter = 39  Max. abs. change = 0.00017  Deviance  = 11836.427                                                                                  
-Iter = 40  Max. abs. change = 0.00016  Deviance  = 11836.426                                                                                  
-Iter = 41  Max. abs. change = 0.00014  Deviance  = 11836.425                                                                                  
-Iter = 42  Max. abs. change = 0.00013  Deviance  = 11836.424                                                                                  
-Iter = 43  Max. abs. change = 0.00012  Deviance  = 11836.424                                                                                  
-Iter = 44  Max. abs. change = 0.00011  Deviance  = 11836.423                                                                                  
-Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.423</code></pre>
+Iter = 1  Max. abs. change = 0.40691  Deviance  = 12821.16                                                                                  
+Iter = 2  Max. abs. change = 0.05266  Deviance  = 11947.64                                                                                  
+Iter = 3  Max. abs. change = 0.02836  Deviance  = 11890.21                                                                                  
+Iter = 4  Max. abs. change = 0.01736  Deviance  = 11866.22                                                                                  
+Iter = 5  Max. abs. change = 0.01173  Deviance  = 11854.67                                                                                  
+Iter = 6  Max. abs. change = 0.00886  Deviance  = 11848.42                                                                                  
+Iter = 7  Max. abs. change = 0.00763  Deviance  = 11844.68                                                                                  
+Iter = 8  Max. abs. change = 0.00643  Deviance  = 11842.26                                                                                  
+Iter = 9  Max. abs. change = 0.00557  Deviance  = 11840.64                                                                                  
+Iter = 10  Max. abs. change = 0.00503  Deviance  = 11839.51                                                                                  
+Iter = 11  Max. abs. change = 0.00449  Deviance  = 11838.71                                                                                  
+Iter = 12  Max. abs. change = 0.00398  Deviance  = 11838.14                                                                                  
+Iter = 13  Max. abs. change = 0.00351  Deviance  = 11837.72                                                                                  
+Iter = 14  Max. abs. change = 0.00308  Deviance  = 11837.42                                                                                  
+Iter = 15  Max. abs. change = 0.00270  Deviance  = 11837.19                                                                                  
+Iter = 16  Max. abs. change = 0.00237  Deviance  = 11837.02                                                                                  
+Iter = 17  Max. abs. change = 0.00208  Deviance  = 11836.89                                                                                  
+Iter = 18  Max. abs. change = 0.00183  Deviance  = 11836.79                                                                                  
+Iter = 19  Max. abs. change = 0.00161  Deviance  = 11836.72                                                                                  
+Iter = 20  Max. abs. change = 0.00142  Deviance  = 11836.66                                                                                  
+Iter = 21  Max. abs. change = 0.00125  Deviance  = 11836.61                                                                                  
+Iter = 22  Max. abs. change = 0.00110  Deviance  = 11836.57                                                                                  
+Iter = 23  Max. abs. change = 0.00098  Deviance  = 11836.54                                                                                  
+Iter = 24  Max. abs. change = 0.00087  Deviance  = 11836.52                                                                                  
+Iter = 25  Max. abs. change = 0.00077  Deviance  = 11836.50                                                                                  
+Iter = 26  Max. abs. change = 0.00069  Deviance  = 11836.49                                                                                  
+Iter = 27  Max. abs. change = 0.00061  Deviance  = 11836.47                                                                                  
+Iter = 28  Max. abs. change = 0.00055  Deviance  = 11836.47                                                                                  
+Iter = 29  Max. abs. change = 0.00049  Deviance  = 11836.46                                                                                  
+Iter = 30  Max. abs. change = 0.00044  Deviance  = 11836.45                                                                                  
+Iter = 31  Max. abs. change = 0.00039  Deviance  = 11836.45                                                                                  
+Iter = 32  Max. abs. change = 0.00035  Deviance  = 11836.44                                                                                  
+Iter = 33  Max. abs. change = 0.00032  Deviance  = 11836.44                                                                                  
+Iter = 34  Max. abs. change = 0.00029  Deviance  = 11836.44                                                                                  
+Iter = 35  Max. abs. change = 0.00026  Deviance  = 11836.43                                                                                  
+Iter = 36  Max. abs. change = 0.00023  Deviance  = 11836.43                                                                                  
+Iter = 37  Max. abs. change = 0.00021  Deviance  = 11836.43                                                                                  
+Iter = 38  Max. abs. change = 0.00019  Deviance  = 11836.43                                                                                  
+Iter = 39  Max. abs. change = 0.00017  Deviance  = 11836.43                                                                                  
+Iter = 40  Max. abs. change = 0.00016  Deviance  = 11836.43                                                                                  
+Iter = 41  Max. abs. change = 0.00014  Deviance  = 11836.43                                                                                  
+Iter = 42  Max. abs. change = 0.00013  Deviance  = 11836.42                                                                                  
+Iter = 43  Max. abs. change = 0.00012  Deviance  = 11836.42                                                                                  
+Iter = 44  Max. abs. change = 0.00011  Deviance  = 11836.42                                                                                  
+Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 </div>
 <div id="summary-information" class="section level3">
 <h3 class="hasAnchor">
@@ -195,7 +180,7 @@ est</code></pre></div>
 <pre><code>## Call:
 ## GDINA(dat = dat, Q = Q, model = "GDINA")
 ## 
-##   GDINA version 2.1.20 (2018-8-24) 
+##   GDINA version 2.1.24 (2018-10-11) 
 ## ===============================================
 ## Data
 ## -----------------------------------------------
@@ -215,7 +200,7 @@ est</code></pre></div>
 ##   Max abs change in item success prob. = 0.0001 
 ##   Max abs change in mixing proportions = 0.0000 
 ##   Change in -2 log-likelihood          = 0.0004 
-## Time used             = 0.09919 secs</code></pre>
+## Time used             = 0.06999 secs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary information</span>
 <span class="kw">summary</span>(est)</code></pre></div>
 <pre><code>## 
@@ -567,14 +552,14 @@ est</code></pre></div>
 #####################################
 
 <span class="kw">head</span>(<span class="kw"><a href="../../reference/indlogLik.html">indlogLik</a></span>(est)) <span class="co"># individual log-likelihood</span></code></pre></div>
-<pre><code>##            [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
+<pre><code>##             000        100        010        001        110        101
 ## [1,] -15.108780  -8.336519 -13.759121  -9.046286  -7.458953  -3.508211
 ## [2,] -19.066682 -12.294420 -14.950767 -13.177555  -8.650599  -7.639480
 ## [3,] -15.608150 -10.694877 -11.529638 -10.837671 -10.460689  -9.061469
 ## [4,] -17.901173 -10.796473 -15.804861 -11.202255 -10.397619  -6.142558
 ## [5,]  -8.584137  -9.816582 -13.093769  -3.587529 -14.211994  -6.864976
 ## [6,]  -6.356676  -7.258905  -9.138395  -9.267932  -6.554173 -11.407240
-##            [,7]       [,8]
+##             011        111
 ## [1,] -10.010643  -5.751538
 ## [2,]  -7.209424  -2.950319
 ## [3,]  -5.427149  -8.084197
@@ -582,14 +567,14 @@ est</code></pre></div>
 ## [5,] -10.990620 -14.742772
 ## [6,] -14.363668 -13.823401</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="../../reference/indlogPost.html">indlogPost</a></span>(est)) <span class="co"># individual log-posterior</span></code></pre></div>
-<pre><code>##             [,1]      [,2]       [,3]         [,4]        [,5]       [,6]
+<pre><code>##              000       100        010          001         110        101
 ## [1,] -11.8422008 -5.254964 -10.590807  -5.83405663  -4.1578241 -0.1064772
 ## [2,] -16.0548514 -9.467614 -12.037202 -10.22007449  -5.6042195 -4.4924951
 ## [3,] -10.3817971 -5.653549  -6.401550  -5.66566755  -5.1997868 -3.6999613
 ## [4,] -13.2039637 -6.284289 -11.205917  -6.55939618  -5.6658616 -1.3101943
 ## [5,]  -4.9960740 -6.413543  -9.603971  -0.05381585 -10.5893821 -3.1417586
 ## [6,]  -0.8340671 -1.921320  -3.714052  -3.79967324  -0.9970151 -5.7494767
-##             [,7]         [,8]
+##              011          111
 ## [1,] -6.63885140  -2.57867661
 ## [2,] -4.09238208  -0.03220729
 ## [3,] -0.09558416  -2.95156165
@@ -669,7 +654,7 @@ est</code></pre></div>
 ##  [7] "identity" "identity" "identity" "identity"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
 <pre><code>## R version 3.5.1 (2018-07-02)
-## Platform: i386-w64-mingw32/i386 (32-bit)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 17134)
 ## 
 ## Matrix products: default
@@ -685,26 +670,26 @@ est</code></pre></div>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] GDINA_2.1.20
+## [1] GDINA_2.1.24
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] commonmark_1.5       digest_0.6.16        htmltools_0.3.6     
-##  [4] R6_2.2.2             scales_1.0.0         Rsolnp_1.16         
-##  [7] assertthat_0.2.0     rprojroot_1.3-2      grid_3.5.1          
-## [10] fs_1.2.6             stringr_1.3.1        knitr_1.20          
-## [13] numDeriv_2016.8-1    munsell_0.5.0        desc_1.2.0          
-## [16] shinydashboard_0.7.0 pillar_1.3.0         tibble_1.4.2        
-## [19] compiler_3.5.1       httpuv_1.4.5         mime_0.5            
-## [22] xml2_1.2.0           labeling_0.3         pkgdown_1.1.0       
-## [25] roxygen2_6.1.0       later_0.7.3          shiny_1.1.0         
-## [28] rstudioapi_0.7       ggplot2_3.0.0        MASS_7.3-50         
-## [31] plyr_1.8.4           stringi_1.2.4        magrittr_1.5        
-## [34] rmarkdown_1.10       evaluate_0.11        gtable_0.2.0        
-## [37] rlang_0.2.2          colorspace_1.3-2     promises_1.0.1      
-## [40] yaml_2.2.0           tools_3.5.1          alabama_2015.3-1    
-## [43] parallel_3.5.1       truncnorm_1.0-8      nloptr_1.0.4        
-## [46] xtable_1.8-2         lazyeval_0.2.1       crayon_1.3.4        
-## [49] backports_1.1.2      memoise_1.1.0        Rcpp_0.12.18</code></pre>
+##  [1] Rcpp_0.12.18         nloptr_1.0.4         pillar_1.3.0        
+##  [4] plyr_1.8.4           compiler_3.5.1       later_0.7.3         
+##  [7] tools_3.5.1          digest_0.6.17        tibble_1.4.2        
+## [10] evaluate_0.11        memoise_1.1.0        gtable_0.2.0        
+## [13] rlang_0.2.2          shiny_1.1.0          rstudioapi_0.7      
+## [16] commonmark_1.5       yaml_2.2.0           parallel_3.5.1      
+## [19] pkgdown_1.1.0        stringr_1.3.1        roxygen2_6.1.0.9000 
+## [22] xml2_1.2.0           knitr_1.20           desc_1.2.0          
+## [25] fs_1.2.6             rprojroot_1.3-2      shinydashboard_0.7.0
+## [28] grid_3.5.1           R6_2.2.2             rmarkdown_1.10      
+## [31] Rsolnp_1.16          alabama_2015.3-1     ggplot2_3.0.0       
+## [34] magrittr_1.5         backports_1.1.2      scales_1.0.0        
+## [37] promises_1.0.1       htmltools_0.3.6      MASS_7.3-50         
+## [40] assertthat_0.2.0     colorspace_1.3-2     mime_0.5            
+## [43] xtable_1.8-2         httpuv_1.4.5         numDeriv_2016.8-1   
+## [46] labeling_0.3         stringi_1.2.4        lazyeval_0.2.1      
+## [49] munsell_0.5.0        truncnorm_1.0-8      crayon_1.3.4</code></pre>
 </div>
   </div>
 

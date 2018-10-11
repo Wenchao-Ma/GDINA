@@ -85,7 +85,7 @@ use startGDINA." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.20</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.24</span>
       </span>
     </div>
 
@@ -111,15 +111,6 @@ use startGDINA." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/OnlineExercises/ACDM_example.html">ACDM Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/DINA_example.html">DINA Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/DINO_example.html">DINO Estimation</a>
-    </li>
-    <li>
       <a href="../articles/OnlineExercises/GDINA_example.html">GDINA Estimation</a>
     </li>
     <li>
@@ -127,12 +118,6 @@ use startGDINA." />
     </li>
     <li>
       <a href="../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/LLM_example.html">LLM Estimation</a>
-    </li>
-    <li>
-      <a href="../articles/OnlineExercises/RRUM_example.html">RRUM Estimation</a>
     </li>
   </ul>
 </li>
@@ -267,7 +252,9 @@ For binary attributes, 1 denotes the attributes are measured by the items and 0 
       <th>model</th>
       <td><p>A vector for each item or nonzero category, or a scalar which will be used for all
 items or nonzero categories to specify the CDMs fitted. The possible options
-include <code>"GDINA"</code>,<code>"DINA"</code>,<code>"DINO"</code>,<code>"ACDM"</code>,<code>"LLM"</code>, <code>"RRUM"</code>, <code>"MSDINA"</code> and <code>"UDF"</code>.
+include <code>"GDINA"</code>,<code>"DINA"</code>,<code>"DINO"</code>,<code>"ACDM"</code>,<code>"LLM"</code>, <code>"RRUM"</code>, <code>"MSDINA"</code> and <code>"UDF"</code>. Note that
+model can also be <code>"logitGDINA"</code> and <code>"logGDINA"</code>, indicating the saturated G-DINA model in logit and log link functions. They are
+equivalent to the identity link saturated G-DINA model. The logit G-DINA model is identical to the log-linear CDM.
 When <code>"UDF"</code>, indicating user defined function, is specified for any item, arguments <code>design.matrix</code> and <code>linkfunc</code> need to be defined.</p></td>
     </tr>
     <tr>

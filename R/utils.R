@@ -69,36 +69,28 @@ inputcheck.sim <- function(N, Q, gs.parm=NULL, sequential,model = "GDINA", type 
   }
 
 model.transform <- function(model,J){
-  if(length(model)!=1&&length(model)!=J) stop("model must be a scalar or a vector with the same length as the test.", call. = FALSE)
-  M <- c("UDF","GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM","MSDINA")
-  if (is.character(model))
+  if(length(model)==1){
+    model <- rep(model, J)
+  }else if(length(model)!=J){
+    stop("model must be a scalar or a vector with the same length as the test.", call. = FALSE)
+  }
+
+  M <- c("LOGGDINA","LOGITGDINA","UDF","GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM","MSDINA")
+  if (all(is.character(model)))
   {
     model <- toupper(model)
     if (!all(model %in% M))
-    {
-      return(warning(
-        "The model for each item can only be \"UDF\",\"GDINA\",\"DINA\",\"DINO\",\"ACDM\",\"LLM\", \"RRUM\", or \"MSDINA\"."
-      ))
-    }
-    model <- match(model, M) - 2
+     stop("The model for each item can only be \"UDF\",\"GDINA\",\"logitGDINA\",\"logGDINA\",\"DINA\",\"DINO\",\"ACDM\",\"LLM\", \"RRUM\", or \"MSDINA\".")
 
-  } else if (is.numeric(model))
+    model <- match(model, M) - 4 # GDINA is 0
+
+  } else if (all(is.numeric(model)))
   {
-    if (!all(model %in% -1:6))
-    {
-      return(warning(
-        "The model for each item can only be \"UDF\",\"GDINA\",\"DINA\",\"DINO\",\"ACDM\",\"LLM\", \"RRUM\", or \"MSDINA\"."
-      ))
-    }
+    if (!all(model %in% -3:6))
+      stop("The model for each item can only be \"UDF\",\"GDINA\",\"logitGDINA\",\"logGDINA\",\"DINA\",\"DINO\",\"ACDM\",\"LLM\", \"RRUM\", or \"MSDINA\".")
   }
 
-  if (length(model) == 1)
-  {
-    model <- model * rep(1, J)
-  } else if (length(model) != J)
-  {
-    return(warning("the length of model must be 1 or the same as the test length."))
-  }
+
   return(model)
 }
 

@@ -353,7 +353,7 @@ GNLOptim_call <- function(par,solver,modelj,correction,auglag_args,nloptr_args,s
           solver <- "ClosedForm"
         }else if(modelj>=3){
           solver <- c("BFGS","slsqp","auglag","solnp")
-        }else if(modelj==-1){
+        }else if(modelj==-1||modelj==-2||modelj==-3){
           solver <- c("slsqp","auglag","solnp")
         }
       }else{

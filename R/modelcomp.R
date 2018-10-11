@@ -52,6 +52,8 @@
 #'
 #' Ma, W. (2017). \emph{A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-Matrix Validation,and Model Comparison. Unpublished doctoral dissertation.} New Brunswick, NJ: Rutgers University.
 #'
+#' Ma, W. & de la Torre, J. (2018). Category-level model selection for the sequential G-DINA model. \emph{Journal of Educational and Behavorial Statistics}.
+#'
 #' Sorrel, M. A., Abad, F. J., Olea, J., de la Torre, J., & Barrada, J. R. (2017). Inferential Item-Fit Evaluation in Cognitive Diagnosis Modeling. \emph{Applied Psychological Measurement, 41,} 614-631.
 #'
 #' Sorrel, M. A., de la Torre, J., Abad, F. J., & Olea, J. (2017). Two-Step Likelihood Ratio Test for Item-Level Model Comparison in Cognitive Diagnosis Models. \emph{Methodology, 13}, 39-47.
@@ -254,10 +256,10 @@ modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.met
         neg2LL[i,mm] <- deviance(tmp.est)
         MCstat[i,mm] <- deviance(tmp.est) - deviance(GDINA.obj)
         if(MCstat[i,mm]<=0){
-          MCstat[i,mm] <- .Machine$double.eps
+          # MCstat[i,mm] <- .Machine$double.eps
           warning("LR statistic is negative.",call. = FALSE)
         }
-        df[i,mm] <- npar(GDINA.obj)$`No. of item parameters` - npar(tmp.est)$`No. of item parameters`
+        df[i,mm] <- npar(GDINA.obj)$`No. of total item parameters` - npar(tmp.est)$`No. of total item parameters`
         pvalues[i,mm] <- pchisq(MCstat[i,mm],df[i,mm],lower.tail = F)
       }
     }

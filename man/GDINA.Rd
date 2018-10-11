@@ -69,7 +69,9 @@ For binary attributes, 1 denotes the attributes are measured by the items and 0 
 
 \item{model}{A vector for each item or nonzero category, or a scalar which will be used for all
 items or nonzero categories to specify the CDMs fitted. The possible options
-include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"} and \code{"UDF"}.
+include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"} and \code{"UDF"}. Note that
+model can also be \code{"logitGDINA"} and \code{"logGDINA"}, indicating the saturated G-DINA model in logit and log link functions. They are
+equivalent to the identity link saturated G-DINA model. The logit G-DINA model is identical to the log-linear CDM.
 When \code{"UDF"}, indicating user defined function, is specified for any item, arguments \code{design.matrix} and \code{linkfunc} need to be defined.}
 
 \item{sequential}{logical; \code{TRUE} if the sequential model is fitted for polytomous responses.}

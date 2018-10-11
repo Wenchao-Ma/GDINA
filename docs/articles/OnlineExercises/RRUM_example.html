@@ -58,6 +58,9 @@
       <a href="../../articles/OnlineExercises/ACDM_example.html">ACDM Estimation</a>
     </li>
     <li>
+      <a href="../../articles/OnlineExercises/CDMAnalysis_example.html">Model Estimation and Model Diagnostics</a>
+    </li>
+    <li>
       <a href="../../articles/OnlineExercises/DINA_example.html">DINA Estimation</a>
     </li>
     <li>
@@ -106,7 +109,7 @@
       <h1>RRUM Estimation</h1>
                         <h4 class="author">Wenchao</h4>
             
-            <h4 class="date">2018-08-24</h4>
+            <h4 class="date">2018-08-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/RRUM_example.Rmd"><code>vignettes/OnlineExercises/RRUM_example.Rmd</code></a></small>
       <div class="hidden name"><code>RRUM_example.Rmd</code></div>
@@ -203,7 +206,7 @@ est</code></pre></div>
 ##   Max abs change in item success prob. = 0.0001 
 ##   Max abs change in mixing proportions = 0.0001 
 ##   Change in -2 log-likelihood          = 0.0005 
-## Time used             = 0.2975 secs</code></pre>
+## Time used             = 0.2988 secs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary information</span>
 <span class="kw">summary</span>(est)</code></pre></div>
 <pre><code>## 
@@ -242,16 +245,16 @@ est</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># discrimination indices</span>
 <span class="kw"><a href="../../reference/extract.html">extract</a></span>(est, <span class="st">"discrim"</span>)</code></pre></div>
 <pre><code>##         P(1)-P(0)        GDI
-## Item 1  0.6883213 0.11810022
+## Item 1  0.6883212 0.11810019
 ## Item 2  0.6623545 0.10947108
-## Item 3  0.8423048 0.17725591
-## Item 4  0.7542905 0.08394568
+## Item 3  0.8423049 0.17725594
+## Item 4  0.7542905 0.08394566
 ## Item 5  0.7578322 0.08891113
 ## Item 6  0.4605824 0.02752823
-## Item 7  0.6341268 0.05802273
+## Item 7  0.6341270 0.05802276
 ## Item 8  0.7726035 0.08913683
 ## Item 9  0.6616308 0.05808101
-## Item 10 0.7348266 0.05184494</code></pre>
+## Item 10 0.7348265 0.05184492</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#####################################
 <span class="co">#</span>
 <span class="co">#      structural parameters</span>
@@ -529,34 +532,34 @@ est</code></pre></div>
 
 <span class="kw">head</span>(<span class="kw"><a href="../../reference/indlogLik.html">indlogLik</a></span>(est)) <span class="co"># individual log-likelihood</span></code></pre></div>
 <pre><code>##            [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
-## [1,] -13.329385  -8.354178 -12.863360  -8.814366  -7.888154  -3.839159
-## [2,] -18.966730 -13.991523 -13.320167 -12.699109  -8.344960  -7.723902
-## [3,] -14.754884 -12.399981 -10.415495  -9.846188  -9.547585  -9.109987
-## [4,] -16.976031 -12.346153 -14.464959 -10.541900  -9.928526  -6.042694
-## [5,]  -7.814539  -8.671248 -10.572170  -4.336699 -14.606286  -5.324079
-## [6,]  -7.436434  -5.461029  -7.889029 -10.215919  -7.604038 -10.566399
+## [1,] -13.329384  -8.354177 -12.863359  -8.814365  -7.888153  -3.839159
+## [2,] -18.966728 -13.991522 -13.320165 -12.699108  -8.344959  -7.723902
+## [3,] -14.754884 -12.399980 -10.415494  -9.846187  -9.547585  -9.109986
+## [4,] -16.976029 -12.346152 -14.464958 -10.541900  -9.928525  -6.042693
+## [5,]  -7.814539  -8.671247 -10.572170  -4.336700 -14.606286  -5.324079
+## [6,]  -7.436433  -5.461030  -7.889029 -10.215920  -7.604038 -10.566401
 ##            [,7]       [,8]
 ## [1,] -10.583376  -5.608169
-## [2,]  -8.038824  -3.063617
-## [3,]  -6.007548  -7.616268
-## [4,]  -8.531579  -4.983743
-## [5,]  -9.830115 -14.852829
-## [6,] -12.903549 -14.944443</code></pre>
+## [2,]  -8.038823  -3.063617
+## [3,]  -6.007548  -7.616267
+## [4,]  -8.531578  -4.983742
+## [5,]  -9.830116 -14.852829
+## [6,] -12.903550 -14.944445</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="../../reference/indlogPost.html">indlogPost</a></span>(est)) <span class="co"># individual log-posterior</span></code></pre></div>
-<pre><code>##            [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
-## [1,]  -9.885961  -5.011679  -9.376288 -5.4176945  -4.229443 -0.1703851
-## [2,] -16.050188 -11.175906 -10.359976 -9.8293193  -5.213131 -4.5820099
-## [3,]  -9.097674  -6.843694  -4.714635 -4.2357296  -3.675087 -3.2274256
-## [4,] -12.469224  -7.940271  -9.914504 -6.0818458  -5.206431 -1.3105365
-## [5,]  -3.863285  -4.820918  -6.577268 -0.4321977 -10.439745 -1.1474748
-## [6,]  -2.235349  -0.360869  -2.644296 -5.0615863  -2.187666 -5.1399640
+<pre><code>##            [,1]        [,2]       [,3]      [,4]       [,5]       [,6]
+## [1,]  -9.885960  -5.0116781  -9.376287 -5.417695  -4.229442 -0.1703851
+## [2,] -16.050187 -11.1759047 -10.359975 -9.829319  -5.213130 -4.5820098
+## [3,]  -9.097673  -6.8436943  -4.714635 -4.235729  -3.675088 -3.2274256
+## [4,] -12.469223  -7.9402698  -9.914503 -6.081846  -5.206431 -1.3105366
+## [5,]  -3.863285  -4.8209173  -6.577267 -0.432198 -10.439744 -1.1474743
+## [6,]  -2.235348  -0.3608691  -2.644295 -5.061587  -2.187666 -5.1399661
 ##            [,7]         [,8]
-## [1,] -7.0764074  -2.04005120
-## [2,] -5.0587369  -0.02238071
-## [3,] -0.2867923  -1.83436257
-## [4,] -3.9612267  -0.35224142
-## [5,] -5.8153162 -10.77688032
-## [6,] -7.6389193  -9.61866309</code></pre>
+## [1,] -7.0764076  -2.04005139
+## [2,] -5.0587370  -0.02238072
+## [3,] -0.2867923  -1.83436259
+## [4,] -3.9612269  -0.35224140
+## [5,] -5.8153166 -10.77687997
+## [6,] -7.6389204  -9.61866549</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est,<span class="st">"designmatrix"</span>) <span class="co">#design matrix</span></code></pre></div>
 <pre><code>## [[1]]
 ##      [,1] [,2]
@@ -629,7 +632,7 @@ est</code></pre></div>
 <pre><code>##  [1] "log" "log" "log" "log" "log" "log" "log" "log" "log" "log"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
 <pre><code>## R version 3.5.1 (2018-07-02)
-## Platform: i386-w64-mingw32/i386 (32-bit)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 17134)
 ## 
 ## Matrix products: default
@@ -648,23 +651,23 @@ est</code></pre></div>
 ## [1] GDINA_2.1.20
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] commonmark_1.5       digest_0.6.16        htmltools_0.3.6     
-##  [4] R6_2.2.2             scales_1.0.0         Rsolnp_1.16         
-##  [7] assertthat_0.2.0     rprojroot_1.3-2      grid_3.5.1          
-## [10] fs_1.2.6             stringr_1.3.1        knitr_1.20          
-## [13] numDeriv_2016.8-1    munsell_0.5.0        desc_1.2.0          
-## [16] shinydashboard_0.7.0 pillar_1.3.0         tibble_1.4.2        
-## [19] compiler_3.5.1       httpuv_1.4.5         mime_0.5            
-## [22] xml2_1.2.0           labeling_0.3         pkgdown_1.1.0       
-## [25] roxygen2_6.1.0       later_0.7.3          shiny_1.1.0         
-## [28] rstudioapi_0.7       ggplot2_3.0.0        MASS_7.3-50         
-## [31] plyr_1.8.4           stringi_1.2.4        magrittr_1.5        
-## [34] rmarkdown_1.10       evaluate_0.11        gtable_0.2.0        
-## [37] rlang_0.2.2          colorspace_1.3-2     promises_1.0.1      
-## [40] yaml_2.2.0           tools_3.5.1          alabama_2015.3-1    
-## [43] parallel_3.5.1       truncnorm_1.0-8      nloptr_1.0.4        
-## [46] xtable_1.8-2         lazyeval_0.2.1       crayon_1.3.4        
-## [49] backports_1.1.2      memoise_1.1.0        Rcpp_0.12.18</code></pre>
+##  [1] Rcpp_0.12.18         nloptr_1.0.4         pillar_1.3.0        
+##  [4] plyr_1.8.4           compiler_3.5.1       later_0.7.3         
+##  [7] tools_3.5.1          digest_0.6.16        tibble_1.4.2        
+## [10] evaluate_0.11        memoise_1.1.0        gtable_0.2.0        
+## [13] rlang_0.2.2          shiny_1.1.0          rstudioapi_0.7      
+## [16] commonmark_1.5       yaml_2.2.0           parallel_3.5.1      
+## [19] pkgdown_1.1.0        stringr_1.3.1        roxygen2_6.1.0      
+## [22] xml2_1.2.0           knitr_1.20           desc_1.2.0          
+## [25] fs_1.2.6             rprojroot_1.3-2      shinydashboard_0.7.0
+## [28] grid_3.5.1           R6_2.2.2             rmarkdown_1.10      
+## [31] Rsolnp_1.16          alabama_2015.3-1     ggplot2_3.0.0       
+## [34] magrittr_1.5         backports_1.1.2      scales_1.0.0        
+## [37] promises_1.0.1       htmltools_0.3.6      MASS_7.3-50         
+## [40] assertthat_0.2.0     colorspace_1.3-2     mime_0.5            
+## [43] xtable_1.8-2         httpuv_1.4.5         numDeriv_2016.8-1   
+## [46] labeling_0.3         stringi_1.2.4        lazyeval_0.2.1      
+## [49] munsell_0.5.0        truncnorm_1.0-8      crayon_1.3.4</code></pre>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

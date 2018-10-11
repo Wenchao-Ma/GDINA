@@ -105,7 +105,20 @@ score_p <- function(object){
   }
   names(score) <- extract(object,"item.names")
   lik <- exp(indlogLik(object))
-  score$structural <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]
+
+  if(extract(object,"ngroup")>1){
+
+    for(g in sort(unique(extract(object,"group")))){
+      tmp <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob")[g,])*t(lik)))[,-1]
+      l <- length(score)+1
+      print(l)
+      score[[l]] <- tmp
+      score[[l]][which(extract(object,"group")!=g),] <- 0
+      names(score)[l] <- paste0("G",g)
+    }
+  }else{
+    score[[length(score)+1]] <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]
+  }
   return(score)
 }
 
@@ -148,7 +161,21 @@ score_d <- function(object){
   }
   names(score) <- extract(object,"item.names")
   lik <- exp(indlogLik(object))
-  score$structural <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]
+
+  if(extract(object,"ngroup")>1){
+
+    for(g in sort(unique(extract(object,"group")))){
+      tmp <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob")[g,])*t(lik)))[,-1]
+      l <- length(score)+1
+      # print(l)
+      score[[l]] <- tmp
+      score[[l]][which(extract(object,"group")!=g),] <- 0
+      names(score)[l] <- paste0("G",g)
+    }
+  }else{
+    score[[length(score)+1]] <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]
+  }
+
   return(score)
 }
 
@@ -158,16 +185,19 @@ OPG_d <- function(object,SE.type){
   Qc <- extract(object,"Qc")
   J <- extract(object,"nitem")
   NC <- nrow(Q)
+  NG <- extract(object,"ngroup")
   scorejh <- score_d(object) # a list of score function for delta with elements for each category
-  np <- sapply(scorejh,ncol)[-length(scorejh)]
+  IP.loc <- length(scorejh) - NG
+
+  np <- sapply(scorejh,ncol)[seq_len(IP.loc)] # the last element is for mixing proportions
 # print(np)
   if(SE.type == 1){
     scorej <- vector("list",J)
-    scorejh <- scorejh[-length(scorejh)]
+    scorejh <- scorejh[seq_len(IP.loc)]
     for(j in 1:J)  scorej[[j]] <- do.call(cbind,scorejh[which(Qc[,1]==j)])
     vars <- bdiag(lapply(scorej,inverse_crossprod))
   }else if(SE.type == 2){
-    scorejh <- scorejh[-length(scorejh)]
+    scorejh <- scorejh[seq_len(IP.loc)]
     vars <- inverse_crossprod(do.call(cbind,scorejh))
   }else if(SE.type==3){
     vars <- inverse_crossprod(do.call(cbind,scorejh))
@@ -194,6 +224,7 @@ OPG_p <- function(object,SE.type){
   J <- extract(object,"nitem")
   NC <- nrow(Q)
   Kj <- rowSums(Q)
+  NG <- extract(object,"ngroup")
   linkfunc <- extract(object,"linkfunc")
   des <- extract(object,"designmatrix")
   m <- extract(object,"models_numeric")
@@ -204,15 +235,16 @@ OPG_p <- function(object,SE.type){
 
     scorejh <- score_p(object) # a list with elements for each category
     np <- sapply(scorejh,ncol)
+    IP.loc <- length(scorejh) - NG
     np <- np[-length(np)]
 
     if(SE.type == 1){
-      scorejh <- scorejh[-length(scorejh)]
+      scorejh <- scorejh[seq_len(IP.loc)]
       scorej <- vector("list",J)
       for(j in 1:J)  scorej[[j]] <- do.call(cbind,scorejh[which(Qc[,1]==j)])
       vars <- bdiag(lapply(scorej,inverse_crossprod))
     }else if(SE.type == 2){
-      scorejh <- scorejh[-length(scorejh)]
+      scorejh <- scorejh[seq_len(IP.loc)]
       vars <- inverse_crossprod(do.call(cbind,scorejh))
     }else if(SE.type==3){
       vars <- inverse_crossprod(do.call(cbind,scorejh))
@@ -231,7 +263,7 @@ OPG_p <- function(object,SE.type){
     }
     g <- bdiag(grad)
     np <- sapply(grad,nrow)
-      vars <- g %*% OPG_d(object,SE.type)$cov %*% t(g)
+    vars <- g %*% OPG_d(object,SE.type)$cov %*% t(g)
     }
 
 
@@ -256,7 +288,8 @@ OPG_p <- function(object,SE.type){
     }
   }
     }else{
-    for(h in 1:NC) {se[[h]] <- se.vector[covIndex$loc[which(covIndex$cat==h)]]}
+    for(h in 1:NC)
+      se[[h]] <- se.vector[covIndex$loc[which(covIndex$cat==h)]]
   }
   return(list(cov=vars,se=se,ind=covIndex))
 }

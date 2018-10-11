@@ -5,6 +5,11 @@ GDINA Package for Cognitive Diagnosis Modelling
 
 [![Project Status: Active ? The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Build Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travis-ci.org/Wenchao-Ma/GDINA) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA) [![](https://cranlogs.r-pkg.org/badges/GDINA?color=brightgreen)](https://cran.r-project.org/package=GDINA) [![](http://cranlogs.r-pkg.org/badges/grand-total/GDINA?color=green)](https://cran.r-project.org/package=GDINA) [![rpackages.io rank](https://www.rpackages.io/badge/GDINA.svg)](https://www.rpackages.io/package/GDINA)
 
+How to cite the package:
+------------------------
+
+Ma, W. & de la Torre, J. (2018). GDINA: The generalized DINA model framework.R package version 2.1. Retrived from <https://CRAN.R-project.org/package=GDINA>
+
 Features of the package
 -----------------------
 
