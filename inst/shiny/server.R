@@ -300,10 +300,8 @@ makeIRFplot <- function(){
   if (input$goButton == 0)
     return()
 
-  if (input$item.plot>extract(est.result(),"ncat"))
-    return(NULL)
-
-  plot(est.result(),item = input$item.plot, withSE = input$IRFplotse)
+  if (input$item.plot<=extract(est.result(),"ncat"))
+    plot(est.result(),item = input$item.plot, withSE = input$IRFplotse)
 }
 
 output$plot <- shiny::renderPlot({
@@ -383,16 +381,15 @@ output$downloadmpplot <- shiny::downloadHandler(
 #########################
 
 makeiPostProbplot <- function(){
-  x <- exp(indlogPost(est.result()))
-  lc.names <- colnames(x)
-  person <- input$ippid
-  if (person>extract(est.result(),"nobs"))
+  x <- exp(indlogPost(est.result()))[input$ippid,]
+  lc.names <- attr(x,"names")
+  if (input$ippid>extract(est.result(),"nobs"))
     return(NULL)
-  xx <- data.frame(LC = lc.names,prob = c(x[person,]))
-  nc <- min(input$inlc,nrow(xx))
+  nc <- min(input$inlc,length(x))
+  xx <- data.frame(LC = lc.names,prob = c(x))
   if(input$ippplc=="default"){
     y <- xx[seq_len(nc),]
-    y <- y[complete.cases(y),]
+    # y <- y[complete.cases(y),]
     if(input$ippAdir){
       print(ggplot2::ggplot(data=y, ggplot2::aes(x=LC, y=prob)) +
               ggplot2::geom_bar(stat="identity")+
@@ -403,8 +400,8 @@ makeiPostProbplot <- function(){
               ggplot2::ylab("Posterior probability")+ggplot2::xlab("Latent Class"))
     }
   }else if(input$ippplc=="decreasing"){
-    y <- xx[order(-c(x[person,]))[seq_len(nc)],]
-    y <- y[complete.cases(y),]
+    y <- xx[order(-c(x))[seq_len(nc)],]
+
     if(input$ippAdir){
       print(ggplot2::ggplot(data=y, ggplot2::aes(x=reorder(LC,-prob), y=prob)) +
               ggplot2::geom_bar(stat="identity")+
@@ -415,8 +412,8 @@ makeiPostProbplot <- function(){
               ggplot2::ylab("Posterior probability")+ggplot2::xlab("Latent Class"))
     }
   }else if(input$ippplc=="increasing"){
-    y <- xx[order(c(x[person,]))[seq_len(nc)],]
-    y <- y[complete.cases(y),]
+    y <- xx[order(c(x))[seq_len(nc)],]
+
     if(input$ippAdir){
       print(ggplot2::ggplot(data=y, ggplot2::aes(x=reorder(LC,prob), y=prob)) +
               ggplot2::geom_bar(stat="identity")+
