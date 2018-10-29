@@ -4,7 +4,7 @@ citEntry(entry = "Manual",
   title        = "{GDINA: The generalized DINA model framework}",
   author       = as.person("Ma, W. and de la Torre, J."),
   year         = "2018",
-  note         = "R package version 2.1",
+  note         = "R package version 2.2",
   url          = "https://CRAN.R-project.org/package=GDINA",
 
   textVersion  =

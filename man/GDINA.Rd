@@ -886,11 +886,14 @@ coef(est)
 dat <- sim30GDINA$simdat
 Q <- sim30GDINA$simQ
 
-#find design matrix for each item => must be a list
+# LCDM
+lcdm <- GDINA(dat = dat, Q = Q, model = "logitGDINA", control=list(conv.type="neg2LL"))
+
+#Another way is to find design matrix for each item first => must be a list
 D <- lapply(rowSums(Q),designmatrix,model="GDINA")
 # for comparison, use change in -2LL as convergence criterion
 # LCDM
-lcdm <- GDINA(dat = dat, Q = Q, model = "UDF", design.matrix = D,
+lcdm2 <- GDINA(dat = dat, Q = Q, model = "UDF", design.matrix = D,
 linkfunc = "logit", control=list(conv.type="neg2LL"),solver="slsqp")
 
 # identity link GDINA
@@ -898,7 +901,7 @@ iGDINA <- GDINA(dat = dat, Q = Q, model = "GDINA",
 control=list(conv.type="neg2LL"),solver="slsqp")
 
 # compare two models => identical
-anova(lcdm,iGDINA)
+anova(lcdm,lcdm2,iGDINA)
 
 ####################################
 #           Example 13b.           #
