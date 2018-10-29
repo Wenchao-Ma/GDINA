@@ -4,7 +4,7 @@
 \alias{designmatrix}
 \title{Generate design matrix}
 \usage{
-designmatrix(Kj, model = "GDINA", Qj = NULL)
+designmatrix(Kj = NULL, model = "GDINA", Qj = NULL)
 }
 \arguments{
 \item{Kj}{Required except for the MS-DINA model; The number of attributes required for item j}

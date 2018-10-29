@@ -4,6 +4,10 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                 linkfunc,higher.order, solver,auglag_args,nloptr_args,
                 DesignMatrices,ConstrPairs,control){
 
+
+  # "LOGGDINA","LOGITGDINA","UDF", "GDINA", "DINA","DINO","ACDM","LLM", "RRUM" or "MSDINA"
+  #   -3           -2         -1      0        1      2      3      4      5          6
+
   myAuglag_args <-
     list(control.outer = list(
       trace = FALSE,
@@ -112,7 +116,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     M <- c("logGDINA","logitGDINA","UDF", "GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA")
 
     model <- model.transform(model, nrow(Q))
-
+# print(model)
     if (any(model == 6)) {
       #MSDINA
       msQ <- unrestrQ(Q[which(model == 6), ])
@@ -120,8 +124,11 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
         Q[which(Q[, 1] == j &
                   Q[, 2] == 1), ] <- msQ[which(msQ[, 1] == j & msQ[, 2] == 1), ]
         loc <- which(Q[, 1] == j & Q[, 2] != 1)
-        Q <- Q[-loc, ]
-        model <- model[-loc]
+        if(length(loc)>0){
+          Q <- Q[-loc, ]
+          model <- model[-loc]
+        }
+
       }
     }
 
@@ -129,7 +136,7 @@ Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
   model.names <- M[model + 4]
   names(model.names) <- item.names
-
+  # print(Q)
   inputcheck(
     dat = dat,
     Q = Q,

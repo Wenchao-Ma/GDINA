@@ -67,12 +67,24 @@ print.CA <-
 #' @export
 print.modelcomp <- function(x, ...)
 {
-  cat("\n",x$method,"statistics for items requiring two or more attributes:\n")
-  ret <- extract.modelcomp(x,"stats")
-  print(ret[,colSums(is.na(ret))==0],drop=FALSE)
-  cat("\np-values for items requiring two or more attributes:\n")
-  p <- extract.modelcomp(x,"pvalues")
-  print(p[,colSums(is.na(p))==0])
+  cat("\nItem-level model selection:\n\n")
+  if(toupper(x$method)=="LR"& x$LR.args$LR.approx){
+      m <- "Two-step approximated LR"
+    }else{
+    m <- x$method
+  }
+  cat("test statistic:",m,"\n")
+  if (x$decision.args$rule=="simpler"){
+    y <- paste0("simpler model + largest",ifelse(x$decision.args$adjusted," adjusted "," "), "p value rule")
+  }else if(x$decision.args$rule=="largestp"){
+    y <- paste0("largest" ,ifelse(x$decision.args$adjusted," adjusted "," "), "p value rule")
+  }
+  cat("Decision rule:",y,"at",x$decision.args$alpha.level,"alpha level.\n")
+  cat("Adjusted p values were based on",x$p.adjust.methods,"correction.\n\n")
+  ret <- extract(x,"selected.model")
+  ret[is.na(ret)] <- ""
+  print(ret)
+
 }
 
 #' @export

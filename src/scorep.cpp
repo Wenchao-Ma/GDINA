@@ -27,9 +27,9 @@ mX.elem( arma::find_nonfinite(mX) ).zeros(); //missing - 0;
 
   for (int j=0;j<J;++j){//for each item
     uqloc = arma::unique(parloc.row(j));
-    if (model(j)==0){ //G-DINA
+    if (model(j)==0||model(j)==-3||model(j)==-2){ //G-DINA
       Lj=uqloc.n_elem;
-    }else if (model(j)>=3){ //A-CDM
+    }else if (model(j)==3){ //A-CDM
       Lj=uqloc.n_elem;
     }else{//DINA or DINO
       Lj=2;

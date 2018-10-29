@@ -35,11 +35,19 @@ shinyServer(function(input, output) {
     inFile2 <- input$file2
     Q <- read.csv(inFile2$datapath, header = input$header2,
                     sep = input$sep2, quote = input$quote)
+    hom <- NULL
     if(input$attdis==0){
       HOdist <- "saturated"
     }else if(input$attdis==1){
       HOdist <- "higher.order"
+      hom <- "Rasch"
     }else if(input$attdis==2){
+      HOdist <- "higher.order"
+      hom <- "1PL"
+    }else if(input$attdis==3){
+      HOdist <- "higher.order"
+      hom <- "2PL"
+    }else if(input$attdis==4){
       HOdist <- "fixed"
     }
 
@@ -53,7 +61,7 @@ shinyServer(function(input, output) {
 
       est <- GDINA::GDINA(dat = dat, Q = Q, model = m,
                           verbose = 0,att.dist = HOdist,
-                          higher.order = list(model = input$hom),
+                          higher.order = list(model = hom),
                           sequential = input$seq,
                           mono.constraint = input$mono)
 
@@ -186,7 +194,7 @@ shinyServer(function(input, output) {
   itf <- shiny::reactive({
     fitcheck <- function(object){
       x <- itemfit(object)
-      if(all(extract(object,"models_numeric")>=0)&&all(extract(object,"models_numeric")<=5)){
+      if(all(extract(object,"models_numeric")>=0)&&all(extract(object,"models_numeric")<=5)&&input$attdis==0){
         z <- modelfit(object)
 
         cat("\nM2=",z$M2,"( df=",z$M2.df,")","p-value=",round(z$M2.pvalue,4))
@@ -266,7 +274,7 @@ shinyServer(function(input, output) {
 
   q <- shiny::reactive({
     if (input$qvalcheck == 0)  return()
-    GDINA::Qval(est.result(),eps = input$PVAFcutoff)
+    GDINA::Qval(est.result(),method = input$qv.method,eps = input$PVAFcutoff)
   })
   output$sugQ <- shiny::renderPrint({
     if (input$qvalcheck == 0)  return()
@@ -287,7 +295,14 @@ shinyServer(function(input, output) {
     if (input$modelsel == 0)  return()
     extract(m(),what = "pvalues")
   })
-
+  output$ws <- shiny::renderPrint({
+    if (input$modelsel == 0)  return()
+    extract(m(),what = "stats")
+  })
+  output$ss <- shiny::renderPrint({
+    if (input$modelsel == 0)  return()
+    print(m())
+  })
 
 
   #########################

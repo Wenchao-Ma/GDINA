@@ -71,8 +71,8 @@ Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args =
 
   if(extract(GDINA.obj,"ngroup")>1) stop("Only available for single-group models.",call. = FALSE)
 
-  if(any(extract(GDINA.obj,"models_numeric")<0)||any(extract(GDINA.obj,"models_numeric")>5))
-    stop("Models must be GDINA, DINA, DINO, ACDM, LLM or RRUM",call. = FALSE)
+  # if(any(extract(GDINA.obj,"models_numeric")<0)||any(extract(GDINA.obj,"models_numeric")>5))
+  #   stop("Models must be GDINA, DINA, DINO, ACDM, LLM or RRUM",call. = FALSE)
 
   if (max(extract(GDINA.obj, "Q")) > 1)
     stop("Q-validation can only be used for dichotomous attribute G-DINA model.",
@@ -189,6 +189,9 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
         }else if(SE.type==3){
           v <- inverse_crossprod(do.call(cbind,sco))
         }
+        # print(j)
+        # print(dim(v))
+        # print(index)
         Varj <- v[index$Column[which(index$Cat==j)],index$Column[which(index$Cat==j)]]
         # print(Varj)
         Cparj <- itemparj[[j]]

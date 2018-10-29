@@ -34,8 +34,8 @@
 
 <meta property="og:description" content="This function evaluates whether the saturated G-DINA model can be replaced by reduced
 CDMs without significant loss in model data fit for each item using the Wald test, likelihood ratio (LR) test or Lagrange multiplier (LM) test.
-For Wald test, see de la Torre and Lee (2013), and Ma, Iaconangelo and de la Torre (2016) for details.
-For LR test and a two-step LR approximation procedure, see Sorrel, de la Torre, Abad, and Olea (2017) and Ma (2017).
+For Wald test, see de la Torre (2011), de la Torre and Lee (2013), Ma, Iaconangelo and de la Torre (2016) and Ma &amp;amp; de la Torre (2018) for details.
+For LR test and a two-step LR approximation procedure, see Sorrel, de la Torre, Abad, and Olea (2017), Ma (2017) and Ma &amp;amp; de la Torre (2018).
 For LM test, which is only applicable for DINA, DINO and ACDM, see Sorrel, Abad, Olea, de la Torre, and Barrada (2017).
 This function also calculates the dissimilarity
 between the reduced models and the G-DINA model, which can be viewed as a measure of effect size (Ma, Iaconangelo &amp;amp; de la Torre, 2016)." />
@@ -67,7 +67,7 @@ between the reduced models and the G-DINA model, which can be viewed as a measur
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.24</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.2.0</span>
       </span>
     </div>
 
@@ -136,8 +136,8 @@ between the reduced models and the G-DINA model, which can be viewed as a measur
     
     <p>This function evaluates whether the saturated G-DINA model can be replaced by reduced
 CDMs without significant loss in model data fit for each item using the Wald test, likelihood ratio (LR) test or Lagrange multiplier (LM) test.
-For Wald test, see de la Torre and Lee (2013), and Ma, Iaconangelo and de la Torre (2016) for details.
-For LR test and a two-step LR approximation procedure, see Sorrel, de la Torre, Abad, and Olea (2017) and Ma (2017).
+For Wald test, see de la Torre (2011), de la Torre and Lee (2013), Ma, Iaconangelo and de la Torre (2016) and Ma &amp; de la Torre (2018) for details.
+For LR test and a two-step LR approximation procedure, see Sorrel, de la Torre, Abad, and Olea (2017), Ma (2017) and Ma &amp; de la Torre (2018).
 For LM test, which is only applicable for DINA, DINO and ACDM, see Sorrel, Abad, Olea, de la Torre, and Barrada (2017).
 This function also calculates the dissimilarity
 between the reduced models and the G-DINA model, which can be viewed as a measure of effect size (Ma, Iaconangelo &amp; de la Torre, 2016).</p>
@@ -146,13 +146,15 @@ between the reduced models and the G-DINA model, which can be viewed as a measur
 
     <pre class="usage"><span class='fu'>modelcomp</span>(<span class='kw'>GDINA.obj</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Wald"</span>, <span class='kw'>items</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
   <span class='kw'>p.adjust.methods</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>, <span class='kw'>models</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"DINA"</span>, <span class='st'>"DINO"</span>, <span class='st'>"ACDM"</span>,
-  <span class='st'>"LLM"</span>, <span class='st'>"RRUM"</span>), <span class='kw'>DS</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>Wald.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>varcov</span> <span class='kw'>=</span>
-  <span class='kw'>NULL</span>), <span class='kw'>LR.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>LR.approx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>), <span class='kw'>LM.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>reducedMDINA</span>
-  <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reducedMDINO</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reducedMACDM</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>))
+  <span class='st'>"LLM"</span>, <span class='st'>"RRUM"</span>), <span class='kw'>decision.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>rule</span> <span class='kw'>=</span> <span class='st'>"simpler"</span>, <span class='kw'>alpha.level</span> <span class='kw'>=</span>
+  <span class='fl'>0.05</span>, <span class='kw'>adjusted</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>), <span class='kw'>DS</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>Wald.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>varcov</span> <span class='kw'>=</span> <span class='kw'>NULL</span>), <span class='kw'>LR.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>LR.approx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
+  <span class='kw'>LM.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>reducedMDINA</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reducedMDINO</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reducedMACDM</span> <span class='kw'>=</span>
+  <span class='kw'>NULL</span>, <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>))
 
 <span class='co'># S3 method for modelcomp</span>
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>object</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"stats"</span>, <span class='st'>"pvalues"</span>,
-  <span class='st'>"adj.pvalues"</span>, <span class='st'>"df"</span>, <span class='st'>"DS"</span>, <span class='st'>"models"</span>), <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>...</span>)
+  <span class='st'>"adj.pvalues"</span>, <span class='st'>"df"</span>, <span class='st'>"DS"</span>, <span class='st'>"selected.model"</span>), <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for modelcomp</span>
 <span class='fu'>summary</span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
@@ -183,6 +185,13 @@ for more details. <code>"bonferroni"</code> is the default.</p></td>
       <th>models</th>
       <td><p>a vector specifying which reduced CDMs are possible reduced CDMs for each
 item. The default is "DINA","DINO","ACDM","LLM",and "RRUM".</p></td>
+    </tr>
+    <tr>
+      <th>decision.args</th>
+      <td><p>a list of options for determining the most appropriate models including (1) <code>rule</code> can be
+either <code>"simpler"</code> or <code>"largestp"</code>. See details;
+(2) <code>alpha.level</code> for the nominal level of decision; and (3) <code>adjusted</code> can be either <code>TRUE</code> or <code>FALSE</code>
+indicating whether the decision is based on p value (<code>adjusted = FALSE</code>) or adjusted p values.</p></td>
     </tr>
     <tr>
       <th>DS</th>
@@ -240,6 +249,24 @@ extracted using <code>extract</code> method include</p><dl class='dl-horizontal'
 </dl>
 
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>After the test statistics for each reduced CDM were calculated for each item, the
+reduced models with p values less than the pre-specified alpha level were rejected.
+If all reduced models were rejected for an item, the G-DINA model was used as the best model;
+if at least one reduced model was retained, two diferent rules can be implemented for selecting
+the best model specified in argument <code>decision.args</code>:</p>
+<p>(1) when <code>rule="simpler"</code>, which is the default,</p>
+<p>If (a) the DINA or DINO model
+ was one of the retained models, then the DINA or DINO model with the larger p
+ value was selected as the best model; but if (b) both DINA and DINO were rejected, the reduced
+ model with the largest p value was selected as the best model for this item. Note that
+ when the p-values of several reduced models were greater than 0.05, the DINA and DINO models were
+ preferred over the A-CDM, LLM, and R-RUM because of their simplicity. This procedure is originally
+ proposed by Ma, Iaconangelo, and de la Torre (2016).</p>
+<p>(2) When <code>rule="largestp"</code>:</p>
+<p>The reduced model with the largest p-values is selected as the most appropriate model.</p>
+    
     <h2 class="hasAnchor" id="methods-by-generic-"><a class="anchor" href="#methods-by-generic-"></a>Methods (by generic)</h2>
 
     <ul>
@@ -283,7 +310,8 @@ saturated and reduced models in cognitive diagnosis. <em>Journal of Educational 
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>w</span>,<span class='st'>"stats"</span>)
 <span class='co'>#p values</span>
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>w</span>,<span class='st'>"pvalues"</span>)
-
+<span class='co'># selected models</span>
+<span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>w</span>,<span class='st'>"selected.model"</span>)
 <span class='co'>##########################</span>
 <span class='co'>#</span>
 <span class='co'># LR and Two-step LR test</span>
@@ -317,6 +345,8 @@ saturated and reduced models in cognitive diagnosis. <em>Journal of Educational 
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
 
       <li><a href="#methods-by-generic-">Methods (by generic)</a></li>
 

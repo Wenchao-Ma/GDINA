@@ -8,12 +8,14 @@
 \usage{
 modelcomp(GDINA.obj = NULL, method = "Wald", items = "all",
   p.adjust.methods = "bonferroni", models = c("DINA", "DINO", "ACDM",
-  "LLM", "RRUM"), DS = FALSE, Wald.args = list(SE.type = 2, varcov =
-  NULL), LR.args = list(LR.approx = FALSE), LM.args = list(reducedMDINA
-  = NULL, reducedMDINO = NULL, reducedMACDM = NULL, SE.type = 2))
+  "LLM", "RRUM"), decision.args = list(rule = "simpler", alpha.level =
+  0.05, adjusted = FALSE), DS = FALSE, Wald.args = list(SE.type = 2,
+  varcov = NULL), LR.args = list(LR.approx = FALSE),
+  LM.args = list(reducedMDINA = NULL, reducedMDINO = NULL, reducedMACDM =
+  NULL, SE.type = 2))
 
 \method{extract}{modelcomp}(object, what = c("stats", "pvalues",
-  "adj.pvalues", "df", "DS", "models"), digits = 4, ...)
+  "adj.pvalues", "df", "DS", "selected.model"), digits = 4, ...)
 
 \method{summary}{modelcomp}(object, ...)
 }
@@ -31,6 +33,11 @@ for more details. \code{"bonferroni"} is the default.}
 
 \item{models}{a vector specifying which reduced CDMs are possible reduced CDMs for each
 item. The default is "DINA","DINO","ACDM","LLM",and "RRUM".}
+
+\item{decision.args}{a list of options for determining the most appropriate models including (1) \code{rule} can be
+either \code{"simpler"} or \code{"largestp"}. See details;
+(2) \code{alpha.level} for the nominal level of decision; and (3) \code{adjusted} can be either \code{TRUE} or \code{FALSE}
+indicating whether the decision is based on p value (\code{adjusted = FALSE}) or adjusted p values.}
 
 \item{DS}{whether dissimilarity index should be calculated? \code{FALSE} is the default.}
 
@@ -72,11 +79,32 @@ extracted using \code{extract} method include
 \description{
 This function evaluates whether the saturated G-DINA model can be replaced by reduced
 CDMs without significant loss in model data fit for each item using the Wald test, likelihood ratio (LR) test or Lagrange multiplier (LM) test.
-For Wald test, see de la Torre and Lee (2013), and Ma, Iaconangelo and de la Torre (2016) for details.
-For LR test and a two-step LR approximation procedure, see Sorrel, de la Torre, Abad, and Olea (2017) and Ma (2017).
+For Wald test, see de la Torre (2011), de la Torre and Lee (2013), Ma, Iaconangelo and de la Torre (2016) and Ma & de la Torre (2018) for details.
+For LR test and a two-step LR approximation procedure, see Sorrel, de la Torre, Abad, and Olea (2017), Ma (2017) and Ma & de la Torre (2018).
 For LM test, which is only applicable for DINA, DINO and ACDM, see Sorrel, Abad, Olea, de la Torre, and Barrada (2017).
 This function also calculates the dissimilarity
 between the reduced models and the G-DINA model, which can be viewed as a measure of effect size (Ma, Iaconangelo & de la Torre, 2016).
+}
+\details{
+After the test statistics for each reduced CDM were calculated for each item, the
+reduced models with p values less than the pre-specified alpha level were rejected.
+If all reduced models were rejected for an item, the G-DINA model was used as the best model;
+if at least one reduced model was retained, two diferent rules can be implemented for selecting
+the best model specified in argument \code{decision.args}:
+
+(1) when \code{rule="simpler"}, which is the default,
+
+If (a) the DINA or DINO model
+ was one of the retained models, then the DINA or DINO model with the larger p
+ value was selected as the best model; but if (b) both DINA and DINO were rejected, the reduced
+ model with the largest p value was selected as the best model for this item. Note that
+ when the p-values of several reduced models were greater than 0.05, the DINA and DINO models were
+ preferred over the A-CDM, LLM, and R-RUM because of their simplicity. This procedure is originally
+ proposed by Ma, Iaconangelo, and de la Torre (2016).
+
+(2) When \code{rule="largestp"}:
+
+The reduced model with the largest p-values is selected as the most appropriate model.
 }
 \section{Methods (by generic)}{
 \itemize{
@@ -105,7 +133,8 @@ w
 extract(w,"stats")
 #p values
 extract(w,"pvalues")
-
+# selected models
+extract(w,"selected.model")
 ##########################
 #
 # LR and Two-step LR test

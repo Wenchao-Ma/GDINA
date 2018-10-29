@@ -27,13 +27,13 @@ knitr::opts_chunk$set(
 * To run graphical user interface, use **startGDINA()** function
 * To simulate data from various CDMs, use **simGDINA()** function
 
-Visit [here](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html) for a series of CDM data analyses
+<!-- Visit [here](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html) for a series of CDM data analyses -->
 
 Visit [here](https://wenchao-ma.github.io/GDINA/reference/index.html) for online reference
 
 ## Examples
 
-* [Model estimation and model diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html)
+<!-- * [Model estimation and model diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html) -->
 * [G-DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html) 
 * [LCDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html) 
 <!-- * [DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINA_example.html)  -->

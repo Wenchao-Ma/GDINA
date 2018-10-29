@@ -2,11 +2,31 @@
 #'
 #' This function evaluates whether the saturated G-DINA model can be replaced by reduced
 #' CDMs without significant loss in model data fit for each item using the Wald test, likelihood ratio (LR) test or Lagrange multiplier (LM) test.
-#' For Wald test, see de la Torre and Lee (2013), and Ma, Iaconangelo and de la Torre (2016) for details.
-#' For LR test and a two-step LR approximation procedure, see Sorrel, de la Torre, Abad, and Olea (2017) and Ma (2017).
+#' For Wald test, see de la Torre (2011), de la Torre and Lee (2013), Ma, Iaconangelo and de la Torre (2016) and Ma & de la Torre (2018) for details.
+#' For LR test and a two-step LR approximation procedure, see Sorrel, de la Torre, Abad, and Olea (2017), Ma (2017) and Ma & de la Torre (2018).
 #' For LM test, which is only applicable for DINA, DINO and ACDM, see Sorrel, Abad, Olea, de la Torre, and Barrada (2017).
 #' This function also calculates the dissimilarity
 #' between the reduced models and the G-DINA model, which can be viewed as a measure of effect size (Ma, Iaconangelo & de la Torre, 2016).
+#'
+#' After the test statistics for each reduced CDM were calculated for each item, the
+#' reduced models with p values less than the pre-specified alpha level were rejected.
+#' If all reduced models were rejected for an item, the G-DINA model was used as the best model;
+#' if at least one reduced model was retained, two diferent rules can be implemented for selecting
+#' the best model specified in argument \code{decision.args}:
+#'
+#' (1) when \code{rule="simpler"}, which is the default,
+#'
+#'  If (a) the DINA or DINO model
+#'  was one of the retained models, then the DINA or DINO model with the larger p
+#'  value was selected as the best model; but if (b) both DINA and DINO were rejected, the reduced
+#'  model with the largest p value was selected as the best model for this item. Note that
+#'  when the p-values of several reduced models were greater than 0.05, the DINA and DINO models were
+#'  preferred over the A-CDM, LLM, and R-RUM because of their simplicity. This procedure is originally
+#'  proposed by Ma, Iaconangelo, and de la Torre (2016).
+#'
+#'  (2) When \code{rule="largestp"}:
+#'
+#'  The reduced model with the largest p-values is selected as the most appropriate model.
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
 #' @param method method for item level model comparison; can be \code{wald}, \code{LR} or \code{LM}.
@@ -14,6 +34,10 @@
 #' @param models a vector specifying which reduced CDMs are possible reduced CDMs for each
 #'   item. The default is "DINA","DINO","ACDM","LLM",and "RRUM".
 #' @param DS whether dissimilarity index should be calculated? \code{FALSE} is the default.
+#' @param decision.args a list of options for determining the most appropriate models including (1) \code{rule} can be
+#'   either \code{"simpler"} or \code{"largestp"}. See details;
+#'   (2) \code{alpha.level} for the nominal level of decision; and (3) \code{adjusted} can be either \code{TRUE} or \code{FALSE}
+#'   indicating whether the decision is based on p value (\code{adjusted = FALSE}) or adjusted p values.
 #' @param Wald.args a list of options for Wald test including (1) \code{SE.type} giving the type of
 #'   covariance matrix for the Wald test; by default, it uses outer product of gradient based on incomplete information matrix;
 #'   (2) \code{varcov} for user specified variance-covariance matrix. If supplied, it must
@@ -80,7 +104,8 @@
 #' extract(w,"stats")
 #' #p values
 #' extract(w,"pvalues")
-#'
+#' # selected models
+#' extract(w,"selected.model")
 #' ##########################
 #' #
 #' # LR and Two-step LR test
@@ -110,11 +135,13 @@
 ## @import MASS
 #' @export
 modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.methods = "bonferroni",
-                      models=c("DINA","DINO","ACDM","LLM","RRUM"),DS = FALSE,
+                      models=c("DINA","DINO","ACDM","LLM","RRUM"),
+                      decision.args = list(rule = "simpler", alpha.level = 0.05, adjusted = FALSE), DS = FALSE,
                       Wald.args = list(SE.type = 2,varcov = NULL),
                       LR.args = list(LR.approx = FALSE),
-                      LM.args = list(reducedMDINA = NULL, reducedMDINO = NULL, reducedMACDM  = NULL,SE.type = 2)){
+                      LM.args = list(reducedMDINA = NULL, reducedMDINO = NULL, reducedMACDM  = NULL, SE.type = 2)){
   if(is.null(GDINA.obj)&method!="LM") stop("GDINA.obj must be provided unless LM test is requested.",call. = FALSE)
+
   if(method=="LM"){
     if(is.null(LM.args$reducedMDINA)&&is.null(LM.args$reducedMDINO)&&is.null(LM.args$reducedMACDM)){
     stop("LM.args must be specified when LM method is selected.",call. = FALSE)
@@ -144,14 +171,25 @@ modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.met
 
   }else{
     if(!class(GDINA.obj)=="GDINA") stop("GDINA.obj must be a GDINA estimate.",call. = FALSE)
-    if (any(extract(GDINA.obj,"models")!="GDINA")) stop ("Implementing the Wald and LR tests for item-level model comparison requires all items to be fitted by the G-DINA model.",call. = FALSE)
+    if (!all(toupper(extract(GDINA.obj,"models"))%in%c("GDINA","LOGGDINA","LOGITGDINA"))) stop ("Implementing the Wald and LR tests for item-level model comparison requires all items to be fitted by the G-DINA model.",call. = FALSE)
     if(extract(GDINA.obj,"att.str"))stop("Item-level model comparison is not available for structured attributes.",call. = FALSE)
     Q <- 1*(extract(GDINA.obj,"Q")>0.5)
     item.names <- extract(GDINA.obj,"item.names")
-    }
+  }
+
+  my.decision.args = list(rule = "simpler", alpha.level = 0.05, adjusted = FALSE)
+  my.Wald.args = list(SE.type = 2,varcov = NULL)
+  my.LR.args = list(LR.approx = FALSE)
+  my.LM.args = list(reducedMDINA = NULL, reducedMDINO = NULL, reducedMACDM  = NULL, SE.type = 2)
+
+  decision.args <- utils::modifyList(my.decision.args,decision.args)
+  Wald.args <- utils::modifyList(my.Wald.args,Wald.args)
+  LR.args <- utils::modifyList(my.LR.args,LR.args)
+  LM.args <- utils::modifyList(my.LM.args,LM.args)
+
   allModels <- c("DINA","DINO","ACDM","LLM","RRUM")
   model_num <- pmatch(toupper(models),allModels)
-
+  J <- length(item.names)
   Kjs <- rowSums(Q)
   Ks <- cumsum(2^Kjs)
 
@@ -364,10 +402,71 @@ Kj <- Kjs[j]
   adj.pvalues[!is.na(pvalues)] <- stats::p.adjust(pvalues[!is.na(pvalues)], method = p.adjust.methods)
 
 
+  ## selected CDMs
+  # print(pvalues)
+
+  if (decision.args$adjusted == TRUE){
+    ps <- adj.pvalues
+  }else{
+    ps <- pvalues
+  }
+
+  if (tolower(decision.args$rule) == "simpler") {
+
+    if(any(toupper(models)%in%c("DINA","DINO"))){
+      if(any(toupper(models)%in%c("LLM","RRUM","ACDM"))){
+        #some DINO and DINA; some acdm
+        m = apply(ps, 1, function(x) {
+          if (max(x[1:2], na.rm = TRUE) > decision.args$alpha.level) {
+            which.max.randomtie(x[1:2])
+          } else if (max(x[3:5], na.rm = TRUE) > decision.args$alpha.level) {
+            which.max.randomtie(x[3:5]) + 2
+          } else{
+            return(0)
+          }
+        })
+      }else{
+        #no acdm
+        m <- apply(ps,1,which.max.randomtie)
+        m[apply(ps,1,max,na.rm=TRUE)<decision.args$alpha.level] <- 0
+      }
+    }else{
+      # no dina and dino
+      m <- apply(ps,1,which.max.randomtie)
+      m[apply(ps,1,max,na.rm=TRUE)<decision.args$alpha.level] <- 0
+    }
+  } else if(tolower(decision.args$rule) == "largestp"){
+    m = apply(ps, 1, function(x) {
+      if (max(x, na.rm = T) > decision.args$alpha.level) {
+        which.max.randomtie(x)
+      } else{
+        return(0)
+      }
+    })
+  }
+# print(m)
+
+  if (decision.args$adjusted == TRUE){
+    p.na <- cbind(NA,pvalues)
+    adj.na <- cbind(NA,ps)
+  }else{
+    p.na <- cbind(NA,ps)
+    adj.na <- cbind(NA,adj.pvalues)
+    }
+m.adj <- adj.na[matrix(c(seq_len(nrow(ps)),m+1),ncol = 2)]
+m.p <- p.na[matrix(c(seq_len(nrow(pvalues)),m+1),ncol = 2)]
+  ret  <-  data.frame(models = rep("GDINA",J), pvalues = rep(NA,J), adj.pvalues = rep(NA,J),stringsAsFactors = FALSE)
+  ret$models[items] <- c("GDINA","DINA","DINO","ACDM","LLM","RRUM")[m+1]
+  ret$pvalues[items] <- round(m.p,4)
+  ret$adj.pvalues[items] <- round(m.adj,4)
+  row.names(ret) <- item.names
+
+
   colnames(MCstat) <- colnames(df) <- colnames(pvalues) <- colnames(adj.pvalues) <- allModels
   rownames(MCstat) <- rownames(df) <- rownames(pvalues) <- rownames(adj.pvalues) <- item.names[items]
   out <- list(stats=MCstat,pvalues=pvalues,adj.pvalues = adj.pvalues,df=df,DS=ds.f,models = models,method=method,
-              DS = DS, Wald.args = Wald.args, LR.args = LR.args,neg2LL = neg2LL)
+              DS = DS, Wald.args = Wald.args, LR.args = LR.args,neg2LL = neg2LL, decision.args = decision.args,
+              selected.model=ret,p.adjust.methods = p.adjust.methods)
   class(out) <- "modelcomp"
   return(out)
 

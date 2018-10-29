@@ -17,15 +17,20 @@
 #'@aliases extract.modelcomp
 #'@export
 extract.modelcomp <- function(object,
-                              what=c("stats","pvalues","adj.pvalues","df","DS","models"), digits = 4,...){
-  what <- match.arg(what)
+                              what=c("stats","pvalues","adj.pvalues","df","DS","selected.model"), digits = 4,...){
+  # what <- match.arg(what)
   out <- switch(what,
                 stats = round(object$stats,digits),
                 pvalues = round(object$pvalues,digits),
                 adj.pvalues = round(object$adj.pvalues,digits),
                 df = object$df,
                 DS = {if(is.null(object$DS)) NULL else round(object$DS,digits)},
-                models = object$models)
+                models = object$models,
+                decision.args = object$decision.args,
+                selected.model = object$selected.model,
+                Wald.args = object$Wald.args,
+                LR.args = object$LR.args,
+                neg2LL = object$neg2LL)
   return(out)
 }
 

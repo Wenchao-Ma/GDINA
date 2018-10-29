@@ -27,43 +27,34 @@
 #'
 #'
 #'
-designmatrix <- function(Kj, model = "GDINA", Qj = NULL) {
-  if(toupper(model)!="MSDINA"&&model!=6){
-    stopifnot(is.nonNegativeInteger(Kj))
-  }
+designmatrix <- function(Kj = NULL, model = "GDINA", Qj = NULL) {
 
-  if (all(is.character(model))) {
-    stopifnot(toupper(model) %in% c("LOGGDINA","LOGITGDINA","GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA"))
-    m <- which(c("GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA") == toupper(model))
-  } else if (all(is.numeric(model))) {
-    if (!is.nonNegativeInteger(model) | model > 7) {
-      stop('model must be "GDINA", "DINA","DINO","ACDM","LLM", "RRUM" or "MSDINA".',
-           call. = FALSE)
-    } else{
-      m <- model + 1
-    }
-  } else{
-    stop("model is not correctly specified.", call. = FALSE)
-  }
-  if (m == 7) {
+  m <- model.transform(model,J = 1)
+  if(m < 0) # log GDINA, logit GDINA => GDINA
+    m <- 0
+  if (m == 6) {
     # MSDINA
     # Kj is not necessary
-    if (is.null(Qj) ||
-        nrow(Qj) < 2 ||
-        max(Qj) > 1)
+    if (is.null(Qj) || max(Qj) > 1){
       stop("Qj is not correctly specified for the MS-DINA model.", call. = F)
-    Qj <- as.matrix(Qj)
-    if (any(colSums(Qj) == 0))
-      Qj <- Qj[, -which(colSums(Qj) == 0)]
-    Ks <- rowSums(Qj)
-    Kj <- sum(apply(Qj, 2, max))
-    patt <- attributepattern(Kj)
+    }else if(nrow(Qj)==1){
+      m <- 1
+      Kj <- sum(Qj)
+    }else{
+      Qj <- as.matrix(Qj)
+      if (any(colSums(Qj) == 0))
+        Qj <- Qj[, -which(colSums(Qj) == 0)]
+      Ks <- rowSums(Qj)
+      Kj <- sum(apply(Qj, 2, max))
+      patt <- attributepattern(Kj)
 
-    D <-
-      matrix(c(rep(1, nrow(patt)), colSums(Qj %*% t(patt) == Ks) > 0), ncol = 2)
+      D <- matrix(c(rep(1, nrow(patt)), colSums(Qj %*% t(patt) == Ks) > 0), ncol = 2)
+    }
 
-  } else{
-    D <- designM(Kj, m - 1)
+  }
+
+  if(m!=6){
+    D <- designM(Kj, m)
   }
   return(D)
 

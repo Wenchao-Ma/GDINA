@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.1.24</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">2.2.0</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@
       <h1>GDINA Estimation</h1>
                         <h4 class="author">Abdullah Asilkalkan</h4>
             
-            <h4 class="date">2018-10-11</h4>
+            <h4 class="date">2018-10-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/GDINA_example.Rmd"><code>vignettes/OnlineExercises/GDINA_example.Rmd</code></a></small>
       <div class="hidden name"><code>GDINA_example.Rmd</code></div>
@@ -103,14 +103,14 @@
 <div id="introduction" class="section level3">
 <h3 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h3>
-<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.1.24) to estimate the G-DINA model.</p>
+<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.2.0) to estimate the G-DINA model.</p>
 </div>
 <div id="model-estimation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#model-estimation" class="anchor"></a>Model Estimation</h3>
 <p>The following code estimates the G-DINA model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GDINA)</code></pre></div>
-<pre><code>## GDINA Package [Version 2.1.24; 2018-10-11]
+<pre><code>## GDINA Package [Version 2.2.0; 2018-10-28]
 ## For examples and more information, 
 ## see https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># A simulated data in GDINA package</span>
@@ -180,7 +180,7 @@ est</code></pre></div>
 <pre><code>## Call:
 ## GDINA(dat = dat, Q = Q, model = "GDINA")
 ## 
-##   GDINA version 2.1.24 (2018-10-11) 
+##   GDINA version 2.2.0 (2018-10-28) 
 ## ===============================================
 ## Data
 ## -----------------------------------------------
@@ -200,7 +200,7 @@ est</code></pre></div>
 ##   Max abs change in item success prob. = 0.0001 
 ##   Max abs change in mixing proportions = 0.0000 
 ##   Change in -2 log-likelihood          = 0.0004 
-## Time used             = 0.06999 secs</code></pre>
+## Time used             = 0.1134 secs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary information</span>
 <span class="kw">summary</span>(est)</code></pre></div>
 <pre><code>## 
@@ -670,24 +670,24 @@ est</code></pre></div>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] GDINA_2.1.24
+## [1] GDINA_2.2.0
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.18         nloptr_1.0.4         pillar_1.3.0        
-##  [4] plyr_1.8.4           compiler_3.5.1       later_0.7.3         
-##  [7] tools_3.5.1          digest_0.6.17        tibble_1.4.2        
-## [10] evaluate_0.11        memoise_1.1.0        gtable_0.2.0        
-## [13] rlang_0.2.2          shiny_1.1.0          rstudioapi_0.7      
-## [16] commonmark_1.5       yaml_2.2.0           parallel_3.5.1      
+##  [1] Rcpp_0.12.19         nloptr_1.2.1         pillar_1.3.0        
+##  [4] plyr_1.8.4           compiler_3.5.1       later_0.7.5         
+##  [7] tools_3.5.1          digest_0.6.18        tibble_1.4.2        
+## [10] evaluate_0.12        memoise_1.1.0        gtable_0.2.0        
+## [13] rlang_0.3.0.1        shiny_1.1.0          rstudioapi_0.8      
+## [16] commonmark_1.6       yaml_2.2.0           parallel_3.5.1      
 ## [19] pkgdown_1.1.0        stringr_1.3.1        roxygen2_6.1.0.9000 
 ## [22] xml2_1.2.0           knitr_1.20           desc_1.2.0          
-## [25] fs_1.2.6             rprojroot_1.3-2      shinydashboard_0.7.0
-## [28] grid_3.5.1           R6_2.2.2             rmarkdown_1.10      
-## [31] Rsolnp_1.16          alabama_2015.3-1     ggplot2_3.0.0       
+## [25] fs_1.2.6             rprojroot_1.3-2      shinydashboard_0.7.1
+## [28] grid_3.5.1           R6_2.3.0             rmarkdown_1.10      
+## [31] Rsolnp_1.16          alabama_2015.3-1     ggplot2_3.1.0       
 ## [34] magrittr_1.5         backports_1.1.2      scales_1.0.0        
 ## [37] promises_1.0.1       htmltools_0.3.6      MASS_7.3-50         
-## [40] assertthat_0.2.0     colorspace_1.3-2     mime_0.5            
-## [43] xtable_1.8-2         httpuv_1.4.5         numDeriv_2016.8-1   
+## [40] assertthat_0.2.0     colorspace_1.3-2     mime_0.6            
+## [43] xtable_1.8-3         httpuv_1.4.5         numDeriv_2016.8-1   
 ## [46] labeling_0.3         stringi_1.2.4        lazyeval_0.2.1      
 ## [49] munsell_0.5.0        truncnorm_1.0-8      crayon_1.3.4</code></pre>
 </div>
