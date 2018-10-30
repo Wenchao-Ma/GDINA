@@ -9,13 +9,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 ## Overview
 
 * To estimate various CDMs, use **GDINA()** function
@@ -27,20 +20,12 @@ knitr::opts_chunk$set(
 * To run graphical user interface, use **startGDINA()** function
 * To simulate data from various CDMs, use **simGDINA()** function
 
-<!-- Visit [here](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html) for a series of CDM data analyses -->
-
 Visit [here](https://wenchao-ma.github.io/GDINA/reference/index.html) for online reference
 
 ## Examples
 
-<!-- * [Model estimation and model diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html) -->
 * [G-DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html) 
 * [LCDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html) 
-<!-- * [DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINA_example.html)  -->
-<!-- * [DINO model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/DINO_example.html)  -->
-<!-- * [ACDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/ACDM_example.html)  -->
-<!-- * [LLM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LLM_example.html)  -->
-<!-- * [RRUM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/RRUM_example.html)  -->
 * [Higher-order GDINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.html)  
 
 If you would like to contribute an example to this website, please send me your .Rmd file.
