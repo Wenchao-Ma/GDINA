@@ -1098,11 +1098,14 @@ Also see <code>gdina</code> in <span class="pkg">CDM</span> package for the G-DI
 <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='no'>sim30GDINA</span>$<span class='no'>simdat</span>
 <span class='no'>Q</span> <span class='kw'>&lt;-</span> <span class='no'>sim30GDINA</span>$<span class='no'>simQ</span>
 
-<span class='co'>#find design matrix for each item =&gt; must be a list</span>
+<span class='co'># LCDM</span>
+<span class='no'>lcdm</span> <span class='kw'>&lt;-</span> <span class='fu'>GDINA</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>Q</span> <span class='kw'>=</span> <span class='no'>Q</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"logitGDINA"</span>, <span class='kw'>control</span><span class='kw'>=</span><span class='fu'>list</span>(<span class='kw'>conv.type</span><span class='kw'>=</span><span class='st'>"neg2LL"</span>))
+
+<span class='co'>#Another way is to find design matrix for each item first =&gt; must be a list</span>
 <span class='no'>D</span> <span class='kw'>&lt;-</span> <span class='fu'>lapply</span>(<span class='fu'>rowSums</span>(<span class='no'>Q</span>),<span class='no'>designmatrix</span>,<span class='kw'>model</span><span class='kw'>=</span><span class='st'>"GDINA"</span>)
 <span class='co'># for comparison, use change in -2LL as convergence criterion</span>
 <span class='co'># LCDM</span>
-<span class='no'>lcdm</span> <span class='kw'>&lt;-</span> <span class='fu'>GDINA</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>Q</span> <span class='kw'>=</span> <span class='no'>Q</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"UDF"</span>, <span class='kw'>design.matrix</span> <span class='kw'>=</span> <span class='no'>D</span>,
+<span class='no'>lcdm2</span> <span class='kw'>&lt;-</span> <span class='fu'>GDINA</span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>Q</span> <span class='kw'>=</span> <span class='no'>Q</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"UDF"</span>, <span class='kw'>design.matrix</span> <span class='kw'>=</span> <span class='no'>D</span>,
 <span class='kw'>linkfunc</span> <span class='kw'>=</span> <span class='st'>"logit"</span>, <span class='kw'>control</span><span class='kw'>=</span><span class='fu'>list</span>(<span class='kw'>conv.type</span><span class='kw'>=</span><span class='st'>"neg2LL"</span>),<span class='kw'>solver</span><span class='kw'>=</span><span class='st'>"slsqp"</span>)
 
 <span class='co'># identity link GDINA</span>
@@ -1110,7 +1113,7 @@ Also see <code>gdina</code> in <span class="pkg">CDM</span> package for the G-DI
 <span class='kw'>control</span><span class='kw'>=</span><span class='fu'>list</span>(<span class='kw'>conv.type</span><span class='kw'>=</span><span class='st'>"neg2LL"</span>),<span class='kw'>solver</span><span class='kw'>=</span><span class='st'>"slsqp"</span>)
 
 <span class='co'># compare two models =&gt; identical</span>
-<span class='fu'>anova</span>(<span class='no'>lcdm</span>,<span class='no'>iGDINA</span>)
+<span class='fu'>anova</span>(<span class='no'>lcdm</span>,<span class='no'>lcdm2</span>,<span class='no'>iGDINA</span>)
 
 <span class='co'>####################################</span>
 <span class='co'>#           Example 13b.           #</span>

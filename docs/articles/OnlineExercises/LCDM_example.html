@@ -91,7 +91,7 @@
       <h1>LCDM Estimation</h1>
                         <h4 class="author">Wenchao</h4>
             
-            <h4 class="date">2018-10-28</h4>
+            <h4 class="date">2018-11-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/LCDM_example.Rmd"><code>vignettes/OnlineExercises/LCDM_example.Rmd</code></a></small>
       <div class="hidden name"><code>LCDM_example.Rmd</code></div>
@@ -101,9 +101,8 @@
     
     
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GDINA)</code></pre></div>
-<pre><code>## GDINA Package [Version 2.2.0; 2018-10-28]
-## For examples and more information, 
-## see https://wenchao-ma.github.io/GDINA</code></pre>
+<pre><code>## GDINA Package [Version 2.2.0; 2018-10-30]
+## More information: https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># A simulated data in GDINA package</span>
 dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat
 Q &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simQ
@@ -168,7 +167,7 @@ est</code></pre></div>
 <pre><code>## Call:
 ## GDINA(dat = dat, Q = Q, model = "logitGDINA")
 ## 
-##   GDINA version 2.2.0 (2018-10-28) 
+##   GDINA version 2.2.0 (2018-10-30) 
 ## ===============================================
 ## Data
 ## -----------------------------------------------
@@ -188,7 +187,7 @@ est</code></pre></div>
 ##   Max abs change in item success prob. = 0.0001 
 ##   Max abs change in mixing proportions = 0.0000 
 ##   Change in -2 log-likelihood          = 0.0004 
-## Time used             = 1.233 secs</code></pre>
+## Time used             = 0.9902 secs</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary information</span>
 <span class="kw">summary</span>(est)</code></pre></div>
 <pre><code>## 
@@ -628,7 +627,7 @@ est</code></pre></div>
 ##  [4] plyr_1.8.4           compiler_3.5.1       later_0.7.5         
 ##  [7] tools_3.5.1          digest_0.6.18        tibble_1.4.2        
 ## [10] evaluate_0.12        memoise_1.1.0        gtable_0.2.0        
-## [13] rlang_0.3.0.1        shiny_1.1.0          rstudioapi_0.8      
+## [13] rlang_0.3.0.1        shiny_1.2.0          rstudioapi_0.8      
 ## [16] commonmark_1.6       yaml_2.2.0           parallel_3.5.1      
 ## [19] pkgdown_1.1.0        stringr_1.3.1        roxygen2_6.1.0.9000 
 ## [22] xml2_1.2.0           knitr_1.20           desc_1.2.0          
