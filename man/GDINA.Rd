@@ -20,7 +20,7 @@
 GDINA(dat, Q, model = "GDINA", sequential = FALSE,
   att.dist = "saturated", mono.constraint = FALSE, group = NULL,
   linkfunc = NULL, design.matrix = NULL, latent.var = "att",
-  att.prior = NULL, att.str = FALSE, verbose = 1,
+  att.prior = NULL, att.str = NULL, verbose = 1,
   higher.order = list(), loglinear = 2, catprob.parm = NULL,
   control = list(), item.names = NULL, solver = NULL,
   nloptr.args = list(), auglag.args = list(), solnp.args = list(),
@@ -110,8 +110,8 @@ The sum of all elements does not have to be equal to 1; however, it will be norm
 before calibration.
 The label for each latent class can be obtained by calling \code{attributepattern(K)}. See \code{examples} for more info.}
 
-\item{att.str}{logical; are attributes structured? If yes, \code{att.prior} must be specified where impossible latent classes have prior weights 0.
-If attributes are structured, only the DINA, DINO or G-DINA model can be specified in \code{model} argument.}
+\item{att.str}{Specify attribute structures. \code{NULL}, by default, means there is no structure. Attribute structure needs be specified as a list -
+which will be internally handled by \code{att.structure} function. See examples. It can also be a matrix giving all permissible attribute profiles.}
 
 \item{verbose}{How to print calibration information
 after each EM iteration? Can be 0, 1 or 2, indicating to print no information,
@@ -578,7 +578,7 @@ coef(mod33,"lambda") # mastery probability for each attribute
 ####################################
 #          Example 4.              #
 #        Model estimations         #
-# With user-specified att structure#
+#    With fixed att structure      #
 ####################################
 
 # --- User-specified attribute priors ----#
@@ -592,51 +592,12 @@ prior <- c(0.1,0.1,0.1,0.1,0.15,0.15,0.15,0.15)
 dat <- sim10GDINA$simdat
 Q <- sim10GDINA$simQ
 modp1 <- GDINA(dat = dat, Q = Q, att.prior = prior, att.dist = "fixed")
-# See the posterior weights
-extract(modp1,what = "posterior.prob")
-extract(modp1,what = "att.prior")
-# ----Linear structure of attributes -----#
-# Assuming A1 -> A2 -> A3
-  Q <- matrix(c(1,0,0,
-                1,0,0,
-                1,1,0,
-                1,1,0,
-                1,1,1,
-                1,1,1,
-                1,0,0,
-                1,0,0,
-                1,1,0,
-                1,1,0,
-                1,1,1,
-                1,1,1),ncol=3,byrow=TRUE)
- # item parameters for DINA model (guessing and slip)
- gs <- matrix(rep(0.1,24),ncol=2)
- N <- 5000
- # attribute simulation
- att <- rbind(matrix(0,nrow=500,ncol=3),
-              matrix(rep(c(1,0,0),1000),ncol=3,byrow=TRUE),
-              matrix(rep(c(1,1,0),1000),ncol=3,byrow=TRUE),
-              matrix(rep(c(1,1,1),2500),ncol=3,byrow=TRUE))
- # data simulation
- simD <- simGDINA(N,Q,gs.parm = gs, model = "DINA",attribute = att)
- dat <- simD$dat
- # setting structure: A1 -> A2 -> A3
- # note: latent classes with prior 0 are assumed impossible
- prior <- c(0.1,0.2,0,0,0.2,0,0,0.5)
- out <- GDINA(dat, Q, att.prior = prior,att.str = TRUE, att.dist = "fixed", model = "DINA")
- # check posterior dist.
- extract(out,what = "posterior.prob")
- extract(out,what = "att.prior")
-
- out2 <- GDINA(dat, Q, att.prior = prior,att.str = TRUE, att.dist = "saturated",model = "DINA")
- # check posterior dist.
- extract(out2,what = "posterior.prob")
- extract(out2,what = "att.prior")
+extract(modp1, what = "att.prior")
 
 ####################################
-#          Example 5.              #
-#        Model estimations         #
-# With user-specified att structure#
+#          Example 5a.             #
+#             G-DINA               #
+# with hierarchical att structure  #
 ####################################
 
 # --- User-specified attribute structure ----#
@@ -648,7 +609,7 @@ diverg <- list(c(1,2),
                c(1,4),
                c(4,5))
 struc <- att.structure(diverg,K)
-
+set.seed(123)
 # data simulation
 N <- 1000
 true.lc <- sample(c(1:2^K),N,replace=TRUE,prob=struc$att.prob)
@@ -656,62 +617,78 @@ table(true.lc) #check the sample
 true.att <- attributepattern(K)[true.lc,]
  gs <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
  # data simulation
- simD <- simGDINA(N,Q,gs.parm = gs, model = "DINA",attribute = true.att)
+ simD <- simGDINA(N,Q,gs.parm = gs, model = "GDINA",attribute = true.att)
  dat <- extract(simD,"dat")
 
-modp1 <- GDINA(dat = dat, Q = Q, att.prior = struc$att.prob,
-               att.str = TRUE, att.dist = "saturated")
+modp1 <- GDINA(dat = dat, Q = Q, att.str = diverg, att.dist = "saturated")
 modp1
-# prior dist.
-extract(modp1,what = "att.prior")
-# Posterior weights were slightly different
-extract(modp1,what = "posterior.prob")
-modp2 <- GDINA(dat = dat, Q = Q, att.prior = struc$att.prob,
-               att.str = TRUE, att.dist = "fixed")
-modp2
-extract(modp2,what = "att.prior")
-extract(modp2,what = "posterior.prob")
+coef(modp1,"lambda")
 
+####################################
+#          Example 5b.             #
+#   Reduced model (e.g.,ACDM)      #
+# with hierarchical att structure  #
+####################################
+
+# --- User-specified attribute structure ----#
+Q <- sim30GDINA$simQ
+K <- ncol(Q)
+# linear structure A1->A2->A3->A4->A5
+linear <- list(c(1,2),
+               c(2,3),
+               c(3,4),
+               c(4,5))
+struc <- att.structure(linear,K)
+set.seed(123)
+# data simulation
+N <- 1000
+true.lc <- sample(c(1:2^K),N,replace=TRUE,prob=struc$att.prob)
+table(true.lc) #check the sample
+true.att <- attributepattern(K)[true.lc,]
+ gs <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
+ # data simulation
+ simD <- simGDINA(N,Q,gs.parm = gs, model = "ACDM",attribute = true.att)
+ dat <- extract(simD,"dat")
+
+modp1 <- GDINA(dat = dat, Q = Q, model = "ACDM",
+               att.str = linear, att.dist = "saturated")
+coef(modp1)
+coef(modp1,"lambda")
 
 ####################################
 #           Example 6.             #
-#        Model estimations         #
-# With user-specified initial pars #
+# Fix item and structure parameters#
+# Estimate person attribute profile#
 ####################################
 
  # check initials to see the format for initial item parameters
  initials <- sim10GDINA$simItempar
+ prior <- c(0.1,0.1,0.1,0.1,0.15,0.15,0.15,0.15)
  dat <- sim10GDINA$simdat
  Q <- sim10GDINA$simQ
- mod.ini <- GDINA(dat,Q,catprob.parm = initials)
- extract(mod.ini,"initial.catprob")
+ mod.ini <- GDINA(dat,Q,catprob.parm = initials,att.prior = prior,
+                  att.dist = "fixed",control=list(maxitr = 0))
+ personparm(mod.ini)
+ # compare item parameters
+ Map(rbind, initials,coef(mod.ini))
 
 ####################################
 #           Example 7.             #
-#        Model estimation          #
-#          Without M-step          #
+#   Fix parameters for some items  #
+# Estimate person attribute profile#
 ####################################
 
- # -----------Fix User-specified item parameters
- # Item parameters are not estimated
- # Only person attributes are estimated
- # attribute prior distribution matters if interested in the marginalized likelihood
- dat <- frac20$dat
- Q <- frac20$Q
- # estimation- only 20 iterations for illustration purposes
- mod.initial <- GDINA(dat,Q,control = list(maxitr=20))
- par <- coef(mod.initial,digits=8)
- weights <- extract(mod.initial,"posterior.prob",digits=8) #posterior weights
- # use the weights as the priors
- mod.fix <- GDINA(dat,Q,catprob.parm = par,
-                  att.prior=c(weights),control = list(maxitr = 0)) # re-estimation
- anova(mod.initial,mod.fix) # very similar - good approximation most of time
- # prior used for the likelihood calculation for the last step
- priors <- extract(mod.initial,"att.prior")
- # use the priors as the priors
- mod.fix2 <- GDINA(dat,Q,catprob.parm = par,
-                   att.prior=priors, control = list(maxitr=0)) # re-estimation
- anova(mod.initial,mod.fix2) # identical results
+ # check initials to see the format for initial item parameters
+ initials <- sim10GDINA$simItempar
+ prior <- c(0.1,0.1,0.1,0.1,0.15,0.15,0.15,0.15)
+ dat <- sim10GDINA$simdat
+ Q <- sim10GDINA$simQ
+ # fix parameters of the first 5 items; do not fix mixing proportion parameters
+ mod.ini <- GDINA(dat,Q,catprob.parm = initials,
+                  att.dist = "saturated",control=list(maxitr = c(rep(0,5),rep(2000,5))))
+ personparm(mod.ini)
+ # compare item parameters
+ Map(rbind, initials,coef(mod.ini))
 
 ####################################
 #           Example 8.             #
@@ -782,14 +759,11 @@ sim2 <- simGDINA(N2,Q,gs.parm = gs2,model = "DINO",att.dist = "higher.order",
                  higher.order.parm = list(theta = rnorm(N2),
                  lambda = data.frame(a=rep(1,K),b=seq(-2,2,length.out=K))))
 
-# combine data
-# see ?bdiagMatrix
-dat <- bdiagMatrix(list(extract(sim1,"dat"),extract(sim2,"dat")),fill=NA)
-Q <- rbind(Q,Q)
+# combine data - all items have the same item parameters
+dat <- rbind(extract(sim1,"dat"),extract(sim2,"dat"))
 gr <- rep(c(1,2),c(3000,3000))
 # Fit G-DINA model
-mg.est <- GDINA(dat = dat,Q = Q,group = gr,att.dist="higher.order",
-higher.order=list(model = "1PL",Prior=TRUE))
+mg.est <- GDINA(dat = dat,Q = Q,group = gr)
 summary(mg.est)
 extract(mg.est,"posterior.prob")
 coef(mg.est,"lambda")
@@ -817,16 +791,20 @@ sim2 <- simGDINA(N2,Q,gs.parm = gs2,model = "DINO",att.dist = "higher.order",
                  higher.order.parm = list(theta = rnorm(N2,1,1),
                  lambda = data.frame(a=rep(1,K),b=seq(-2,2,length.out=K))))
 
-# combine data
+# combine data - different groups have distinct item parameters
 # see ?bdiagMatrix
 dat <- bdiagMatrix(list(extract(sim1,"dat"),extract(sim2,"dat")),fill=NA)
 Q <- rbind(Q,Q)
 gr <- rep(c(1,2),c(3000,3000))
+mg.est <- GDINA(dat = dat,Q = Q,group = gr)
 # Fit G-DINA model
 mg.est <- GDINA(dat = dat,Q = Q,group = gr,att.dist="higher.order",
-higher.order=list(model = "Rasch",Prior=FALSE,Type = "SameLambda"))
+higher.order=list(model = "Rasch"))
 summary(mg.est)
 coef(mg.est,"lambda")
+personparm(mg.est)
+personparm(mg.est,"HO")
+extract(mg.est,"posterior.prob")
 
 
 ####################################
@@ -900,7 +878,7 @@ linkfunc = "logit", control=list(conv.type="neg2LL"),solver="slsqp")
 iGDINA <- GDINA(dat = dat, Q = Q, model = "GDINA",
 control=list(conv.type="neg2LL"),solver="slsqp")
 
-# compare two models => identical
+# compare all three models => identical
 anova(lcdm,lcdm2,iGDINA)
 
 ####################################

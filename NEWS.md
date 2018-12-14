@@ -1,3 +1,10 @@
+# GDINA 2.2.3
+* Added   - Attribute Hierarchical structure for A-CDM, LLM and RRUM
+* Added   - Estimating generalized multiple strategy CDMs using `GMSCDM`
+* Changed - `att.str` argument of the `GDINA` function has been updated
+* Changed - several examples in `GDINA` function
+* Fixed   - The number of parameters is not correct when attribute strcture exists
+
 # GDINA 2.2.0
 * Changed - set anchor attributes for multiple group higher-order CDMs
 * Changed - change arguments for `dif` function

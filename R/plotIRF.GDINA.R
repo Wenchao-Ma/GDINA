@@ -26,7 +26,7 @@
 #' # plot mastery probabilities for individuals 4 and 10
 #' plot(mod1, what = "mp", person = c(4,10))
 #' plot(mod1, what = "mp", person = c(4,10,15),
-#' satt.names = c("addition","subtraction","multiplication"))
+#' att.names = c("addition","subtraction","multiplication"))
 #'}
 
 #' @export
@@ -235,7 +235,7 @@ plot.itemfit <- function(x,type="all",adjusted=TRUE,...){
 #' item <- c(1,2,10)
 #' plot(out,item=item,data.label=FALSE,type="all")
 #' plot(out,item=10,type="best",eps=0.95)
-#' plot(out,item=10,type="all",no.qvector=5)
+#' plot(out,item=10,type="all",no.qvector=6)
 #'}
 #'
 #' @references

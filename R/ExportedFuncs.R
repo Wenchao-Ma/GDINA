@@ -40,6 +40,174 @@ attributepattern <-  function(K,Q){
 }
 
 
+
+#' Generate hierarchical attribute structures
+#'
+#' This function can be used to generate hierarchical attributes structures, and
+#' to provide prior joint attribute distribution with hierarchical structures.
+#'
+#' @param hierarchy.list a list specifying the hierarchical structure between attributes. Each
+#'     element in this list specifies a DIRECT prerequisite relation between two or more attributes.
+#'     See \code{example} for more information.
+#' @param K the number of attributes involved in the assessment
+#' @param Q Q-matrix
+#' @param att.prob How are the probabilities for latent classes simulated? It can be \code{"random"} or \code{"uniform"}.
+#'
+#' @return att.str reduced latent classes under the specified hierarchical structure
+#' @return impossible.latentclass impossible latent classes under the specified hierarchical structure
+#' @return att.prob probabilities for all latent classes; 0 for impossible latent classes
+#'
+#' @seealso \code{\link{GDINA}}, \code{\link{autoGDINA}}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' #################
+#' #
+#' # Leighton et al. (2004, p.210)
+#' #
+#' ##################
+#' # linear structure A1->A2->A3->A4->A5->A6
+#' K <- 6
+#' linear=list(c(1,2),c(2,3),c(3,4),c(4,5),c(5,6))
+#' att.structure(linear,K)
+#'
+#' # convergent structure A1->A2->A3->A5->A6;A1->A2->A4->A5->A6
+#' K <- 6
+#' converg <- list(c(1,2),c(2,3),c(2,4),
+#'                c(3,4,5), #this is how to show that either A3 or A4 is a prerequisite to A5
+#'                c(5,6))
+#'att.structure(converg,K)
+#'
+#' # convergent structure [the difference between this one and the previous one is that
+#' #                       A3 and A4 are both needed in order to master A5]
+#' K <- 6
+#' converg2 <- list(c(1,2),c(2,3),c(2,4),
+#'                c(3,5), #this is how to specify that both A3 and A4 are needed for A5
+#'                c(4,5), #this is how to specify that both A3 and A4 are needed for A5
+#'                c(5,6))
+#'att.structure(converg2,K)
+#'
+#' # divergent structure A1->A2->A3;A1->A4->A5;A1->A4->A6
+#' diverg <- list(c(1,2),
+#'                c(2,3),
+#'                c(1,4),
+#'                c(4,5),
+#'                c(4,6))
+#'att.structure(diverg,K)
+#'
+#' # unstructured A1->A2;A1->A3;A1->A4;A1->A5;A1->A6
+#' unstru <- list(c(1,2),c(1,3),c(1,4),c(1,5),c(1,6))
+#' att.structure(unstru,K)
+#'
+#' ## See Example 4 and 5 in GDINA function
+#'}
+att.structure <- function(hierarchy.list=NULL,K,Q,att.prob="uniform"){
+  patt <- attributepattern(K=K,Q=Q)
+  if (!is.null(hierarchy.list)){
+
+    impos.id <- lapply(hierarchy.list,function(x){
+      k <- length(x)
+      if(max(x)>K) stop("Maximum element of hierarchy list cannot be greater than K.",call. = FALSE)
+      which(rowSums(patt[,x[1:(k-1)],drop=FALSE])<patt[,x[k]])
+
+    })
+
+
+    if (is.list(impos.id)) {
+      impos.id <- unique(c(unlist(impos.id)))
+    }else{
+      impos.id <- unique(c(impos.id))
+    }
+    pos.id <- setdiff(seq(1,nrow(patt)),impos.id)
+    red.patt <- patt[-impos.id,]
+  }else{
+    red.patt <- patt
+    pos.id <- seq(1,nrow(patt))
+    impos.id <- NULL
+  }
+  prior <- rep(0,nrow(patt))
+  if(tolower(att.prob)=="uniform"){
+    prior[pos.id] <- 1/length(pos.id)
+  }else if(tolower(att.prob)=="random"){
+    prior[pos.id] <- runif(length(pos.id))
+    prior <- prior/sum(prior)
+  }
+  names(prior) <- apply(patt,1,function(x){paste(x,collapse = "")})
+
+  if(!is.null(impos.id)){
+    permissible.att.prob <- prior[-impos.id]
+  }else{
+    permissible.att.prob <- prior
+  }
+  return(list(att.str=red.patt,impermissible.latentclass=sort(impos.id),att.prob=prior,permissible.att.prob=permissible.att.prob))
+}
+
+
+
+#' Generate design matrix
+#'
+#' This function generates the design matrix for an item
+#'
+#' @param Kj Required except for the MS-DINA model; The number of attributes required for item j
+#' @param model the model associated with the design matrix; It can be "GDINA","DINA","DINO", "ACDM" or "MSDINA".
+#'        The default is "GDINA". Note that models "LLM" and "RRUM" have the same design matrix as the ACDM.
+#' @param Qj the Q-matrix for item j; This is required for "MSDINA" model; The number of rows is equal to the number
+#'        of strategies and the number of columns is equal to the number of attributes.
+#'
+#' @return a design matrix (Mj). See de la Torre (2011) for details.
+#' @references
+#'
+#' de la Torre, J. (2011). The generalized DINA model framework. \emph{Psychometrika, 76}, 179-199.
+#'
+#'
+#' @examples
+#' \dontrun{
+#' designmatrix(Kj = 2, model = "GDINA")
+#' designmatrix(Kj = 3, model = "DINA")
+#' msQj <- matrix(c(1,0,0,1,
+#'                  1,1,0,0),nrow=2,byrow=TRUE)
+#' designmatrix(model = "MSDINA",Qj = msQj)
+#' }
+#'
+#' @export
+#'
+#'
+#'
+designmatrix <- function(Kj = NULL, model = "GDINA", Qj = NULL) {
+
+  cr <- model2rule.j(model)
+  if (cr == 4) {
+    # MSDINA
+    # Kj is not necessary
+    if (is.null(Qj) || max(Qj) > 1){
+      stop("Qj is not correctly specified for the MS-DINA model.", call. = F)
+    }else if(nrow(Qj)==1){
+      m <- 1
+      Kj <- sum(Qj)
+    }else{
+      Qj <- as.matrix(Qj)
+      if (any(colSums(Qj) == 0))
+        Qj <- Qj[, -which(colSums(Qj) == 0)]
+      Ks <- rowSums(Qj)
+      Kj <- sum(apply(Qj, 2, max))
+      patt <- attributepattern(Kj)
+
+      D <- matrix(c(rep(1, nrow(patt)), colSums(Qj %*% t(patt) == Ks) > 0), ncol = 2)
+    }
+
+  }else if(cr!=-1){
+    D <- designM(Kj, cr)
+  }else{
+    stop("design matrix cannot be calculated.",call. = FALSE)
+  }
+  return(D)
+
+}
+
+
+
 #' Transformation between latent classes and latent groups
 #'
 #' This function gives the equivalent latent classes which have the same category success
@@ -51,6 +219,7 @@ attributepattern <-  function(K,Q){
 #'    is measured by item \eqn{j}, and 0 means item \eqn{j} does not
 #'    measure attribute \eqn{k}.
 #' @param sequential logical; whether the Q-matrix is a Qc-matrix for sequential models?
+#' @param att.str attribute structure. See \code{GDINA} for details.
 #' @return An item or category by latent class matrix. In the G-DINA model,
 #'    if item j measures \eqn{Kj} attributes, \eqn{2^K} latent classes can
 #'    be combined into \eqn{2^{Kj}} latent groups. This matrix gives
@@ -66,12 +235,26 @@ attributepattern <-  function(K,Q){
 #' LC2LG(Q = q)
 #'
 
-LC2LG <-  function(Q,sequential = FALSE){
+LC2LG <-  function(Q,sequential = FALSE,att.str=NULL){
   if(sequential) Q <- Q[,-c(1:2)]
-  out <- eta(Q)
-  colnames(out) <- apply(attributepattern(ncol(Q)),1,function(x)paste0(x,collapse = ""))
-  rownames(out) <- rownames(Q)
-  out
+  K <- ncol(Q)
+  if(is.null(att.str)){ # no structure
+    AlphaPattern <- as.matrix(att.structure(hierarchy.list = att.str,K = K,Q = Q,att.prob="uniform")$`att.str`)
+    parloc <- eta(Q)  #J x L
+
+  }else if(is.matrix(att.str)){
+    AlphaPattern <- att.str
+    parloc <- eta(Q, AlphaPattern)  #J x L
+
+  }else{
+    AlphaPattern <- as.matrix(att.structure(hierarchy.list = att.str,K = K,Q = Q,att.prob="uniform")$`att.str`)
+    parloc <- eta(Q, AlphaPattern)  #J x L
+
+  }
+
+  colnames(parloc) <- apply(AlphaPattern,1,function(x)paste0(x,collapse = ""))
+  rownames(parloc) <- rownames(Q)
+  parloc
 }
 
 
@@ -357,3 +540,5 @@ internal_uP <- function(...){
   stopifnot(length(args)>0)
   uP(args$eta, args$catprob.parm)
 }
+
+

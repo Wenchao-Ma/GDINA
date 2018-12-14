@@ -6,31 +6,6 @@
 
 using namespace Rcpp;
 
-// aggregateCol
-arma::mat aggregateCol(arma::mat& mX, arma::vec ind);
-RcppExport SEXP _GDINA_aggregateCol(SEXP mXSEXP, SEXP indSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type ind(indSEXP);
-    rcpp_result_gen = Rcpp::wrap(aggregateCol(mX, ind));
-    return rcpp_result_gen;
-END_RCPP
-}
-// fitstats
-Rcpp::List fitstats(arma::mat mX, arma::mat LCprob, arma::uvec attgroup);
-RcppExport SEXP _GDINA_fitstats(SEXP mXSEXP, SEXP LCprobSEXP, SEXP attgroupSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type LCprob(LCprobSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type attgroup(attgroupSEXP);
-    rcpp_result_gen = Rcpp::wrap(fitstats(mX, LCprob, attgroup));
-    return rcpp_result_gen;
-END_RCPP
-}
 // uP
 arma::mat uP(const arma::mat& mloc, const arma::mat& mpar);
 RcppExport SEXP _GDINA_uP(SEXP mlocSEXP, SEXP mparSEXP) {
@@ -44,7 +19,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // ObsLogLik
-double ObsLogLik(const arma::mat& mpar, const arma::mat& mX, arma::mat vlogPrior, arma::vec vgroup, arma::mat mloc, arma::vec weights);
+double ObsLogLik(const arma::mat& mpar, const arma::mat& mX, arma::mat vlogPrior, arma::vec vgroup, arma::mat& mloc, arma::vec weights);
 RcppExport SEXP _GDINA_ObsLogLik(SEXP mparSEXP, SEXP mXSEXP, SEXP vlogPriorSEXP, SEXP vgroupSEXP, SEXP mlocSEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -53,7 +28,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type mX(mXSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type vlogPrior(vlogPriorSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type vgroup(vgroupSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mloc(mlocSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mloc(mlocSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type weights(weightsSEXP);
     rcpp_result_gen = Rcpp::wrap(ObsLogLik(mpar, mX, vlogPrior, vgroup, mloc, weights));
     return rcpp_result_gen;
@@ -103,6 +78,28 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type vC(vCSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type vlogPrior(vlogPriorSEXP);
     rcpp_result_gen = Rcpp::wrap(Lik_DTM(mP, mX, vC, vlogPrior));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fast_GDINA_EM
+Rcpp::List fast_GDINA_EM(arma::mat mloc, arma::mat& mpar, arma::mat& mX, arma::vec vlogPrior, arma::vec model_numeric, arma::uvec maxitr, arma::vec lP, arma::vec uP, arma::vec smallNcorrection, arma::vec vbeta, bool prior, double crit);
+RcppExport SEXP _GDINA_fast_GDINA_EM(SEXP mlocSEXP, SEXP mparSEXP, SEXP mXSEXP, SEXP vlogPriorSEXP, SEXP model_numericSEXP, SEXP maxitrSEXP, SEXP lPSEXP, SEXP uPSEXP, SEXP smallNcorrectionSEXP, SEXP vbetaSEXP, SEXP priorSEXP, SEXP critSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type mloc(mlocSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mpar(mparSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type vlogPrior(vlogPriorSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type model_numeric(model_numericSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type maxitr(maxitrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lP(lPSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type uP(uPSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type smallNcorrection(smallNcorrectionSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type vbeta(vbetaSEXP);
+    Rcpp::traits::input_parameter< bool >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< double >::type crit(critSEXP);
+    rcpp_result_gen = Rcpp::wrap(fast_GDINA_EM(mloc, mpar, mX, vlogPrior, model_numeric, maxitr, lP, uP, smallNcorrection, vbeta, prior, crit));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -336,21 +333,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// scorefun
-Rcpp::List scorefun(arma::mat mX, arma::mat mlogPost, arma::mat itmpar, arma::mat parloc, arma::vec model);
-RcppExport SEXP _GDINA_scorefun(SEXP mXSEXP, SEXP mlogPostSEXP, SEXP itmparSEXP, SEXP parlocSEXP, SEXP modelSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mlogPost(mlogPostSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type itmpar(itmparSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type parloc(parlocSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type model(modelSEXP);
-    rcpp_result_gen = Rcpp::wrap(scorefun(mX, mlogPost, itmpar, parloc, model));
-    return rcpp_result_gen;
-END_RCPP
-}
 // SE
 Rcpp::List SE(arma::mat mX, arma::mat mlogPost, arma::mat itmpar, arma::mat parloc, arma::vec model, arma::mat mIndmiss, int SE_type);
 RcppExport SEXP _GDINA_SE(SEXP mXSEXP, SEXP mlogPostSEXP, SEXP itmparSEXP, SEXP parlocSEXP, SEXP modelSEXP, SEXP mIndmissSEXP, SEXP SE_typeSEXP) {
@@ -365,6 +347,46 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type mIndmiss(mIndmissSEXP);
     Rcpp::traits::input_parameter< int >::type SE_type(SE_typeSEXP);
     rcpp_result_gen = Rcpp::wrap(SE(mX, mlogPost, itmpar, parloc, model, mIndmiss, SE_type));
+    return rcpp_result_gen;
+END_RCPP
+}
+// aggregateCol
+arma::mat aggregateCol(arma::mat& mX, arma::vec ind);
+RcppExport SEXP _GDINA_aggregateCol(SEXP mXSEXP, SEXP indSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type ind(indSEXP);
+    rcpp_result_gen = Rcpp::wrap(aggregateCol(mX, ind));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fitstats
+Rcpp::List fitstats(arma::mat mX, arma::mat LCprob, arma::uvec attgroup);
+RcppExport SEXP _GDINA_fitstats(SEXP mXSEXP, SEXP LCprobSEXP, SEXP attgroupSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type LCprob(LCprobSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type attgroup(attgroupSEXP);
+    rcpp_result_gen = Rcpp::wrap(fitstats(mX, LCprob, attgroup));
+    return rcpp_result_gen;
+END_RCPP
+}
+// scorefun
+Rcpp::List scorefun(arma::mat mX, arma::mat mlogPost, arma::mat itmpar, arma::mat parloc, arma::vec model);
+RcppExport SEXP _GDINA_scorefun(SEXP mXSEXP, SEXP mlogPostSEXP, SEXP itmparSEXP, SEXP parlocSEXP, SEXP modelSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type mlogPost(mlogPostSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type itmpar(itmparSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type parloc(parlocSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type model(modelSEXP);
+    rcpp_result_gen = Rcpp::wrap(scorefun(mX, mlogPost, itmpar, parloc, model));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -402,6 +424,41 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat& >::type m(mSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type v(vSEXP);
     rcpp_result_gen = Rcpp::wrap(rowProd(m, v));
+    return rcpp_result_gen;
+END_RCPP
+}
+// whichrow_AinB
+arma::uvec whichrow_AinB(arma::umat A, arma::umat B);
+RcppExport SEXP _GDINA_whichrow_AinB(SEXP ASEXP, SEXP BSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::umat >::type A(ASEXP);
+    Rcpp::traits::input_parameter< arma::umat >::type B(BSEXP);
+    rcpp_result_gen = Rcpp::wrap(whichrow_AinB(A, B));
+    return rcpp_result_gen;
+END_RCPP
+}
+// whichcol_AinB
+arma::urowvec whichcol_AinB(arma::umat A, arma::umat B);
+RcppExport SEXP _GDINA_whichcol_AinB(SEXP ASEXP, SEXP BSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::umat >::type A(ASEXP);
+    Rcpp::traits::input_parameter< arma::umat >::type B(BSEXP);
+    rcpp_result_gen = Rcpp::wrap(whichcol_AinB(A, B));
+    return rcpp_result_gen;
+END_RCPP
+}
+// unique_rows
+arma::umat unique_rows(arma::umat A);
+RcppExport SEXP _GDINA_unique_rows(SEXP ASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::umat >::type A(ASEXP);
+    rcpp_result_gen = Rcpp::wrap(unique_rows(A));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -523,12 +580,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // logP_AlphaPattern
-arma::vec logP_AlphaPattern(arma::mat AlphaPattern, arma::vec theta, arma::vec f_theta, arma::vec a, arma::vec b);
+arma::vec logP_AlphaPattern(arma::mat& AlphaPattern, arma::vec theta, arma::vec f_theta, arma::vec a, arma::vec b);
 RcppExport SEXP _GDINA_logP_AlphaPattern(SEXP AlphaPatternSEXP, SEXP thetaSEXP, SEXP f_thetaSEXP, SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type AlphaPattern(AlphaPatternSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type AlphaPattern(AlphaPatternSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type f_theta(f_thetaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type a(aSEXP);
@@ -538,12 +595,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // HoIRTlogLik
-double HoIRTlogLik(arma::mat AlphaPattern, arma::vec ns, arma::vec theta, arma::vec f_theta, arma::vec a, arma::vec b);
+double HoIRTlogLik(arma::mat& AlphaPattern, arma::vec ns, arma::vec theta, arma::vec f_theta, arma::vec a, arma::vec b);
 RcppExport SEXP _GDINA_HoIRTlogLik(SEXP AlphaPatternSEXP, SEXP nsSEXP, SEXP thetaSEXP, SEXP f_thetaSEXP, SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type AlphaPattern(AlphaPatternSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type AlphaPattern(AlphaPatternSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type ns(nsSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type f_theta(f_thetaSEXP);
@@ -586,14 +643,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // designM
-arma::umat designM(const int Kj, const int model);
-RcppExport SEXP _GDINA_designM(SEXP KjSEXP, SEXP modelSEXP) {
+arma::umat designM(const int Kj, const int rule, Rcpp::Nullable<Rcpp::IntegerMatrix> AlphaPattern);
+RcppExport SEXP _GDINA_designM(SEXP KjSEXP, SEXP ruleSEXP, SEXP AlphaPatternSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int >::type Kj(KjSEXP);
-    Rcpp::traits::input_parameter< const int >::type model(modelSEXP);
-    rcpp_result_gen = Rcpp::wrap(designM(Kj, model));
+    Rcpp::traits::input_parameter< const int >::type rule(ruleSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerMatrix> >::type AlphaPattern(AlphaPatternSEXP);
+    rcpp_result_gen = Rcpp::wrap(designM(Kj, rule, AlphaPattern));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -610,13 +668,26 @@ BEGIN_RCPP
 END_RCPP
 }
 // eta
-arma::umat eta(arma::umat& Q);
-RcppExport SEXP _GDINA_eta(SEXP QSEXP) {
+arma::umat eta(arma::umat& Q, Rcpp::Nullable<Rcpp::IntegerMatrix> AlphaPattern);
+RcppExport SEXP _GDINA_eta(SEXP QSEXP, SEXP AlphaPatternSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::umat& >::type Q(QSEXP);
-    rcpp_result_gen = Rcpp::wrap(eta(Q));
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerMatrix> >::type AlphaPattern(AlphaPatternSEXP);
+    rcpp_result_gen = Rcpp::wrap(eta(Q, AlphaPattern));
+    return rcpp_result_gen;
+END_RCPP
+}
+// item_latent_group
+Rcpp::List item_latent_group(arma::umat& Q, Rcpp::Nullable<Rcpp::IntegerMatrix> AlphaPattern);
+RcppExport SEXP _GDINA_item_latent_group(SEXP QSEXP, SEXP AlphaPatternSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::umat& >::type Q(QSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerMatrix> >::type AlphaPattern(AlphaPatternSEXP);
+    rcpp_result_gen = Rcpp::wrap(item_latent_group(Q, AlphaPattern));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -635,13 +706,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_GDINA_aggregateCol", (DL_FUNC) &_GDINA_aggregateCol, 2},
-    {"_GDINA_fitstats", (DL_FUNC) &_GDINA_fitstats, 3},
     {"_GDINA_uP", (DL_FUNC) &_GDINA_uP, 2},
     {"_GDINA_ObsLogLik", (DL_FUNC) &_GDINA_ObsLogLik, 6},
     {"_GDINA_LikNR", (DL_FUNC) &_GDINA_LikNR, 7},
     {"_GDINA_LikNR_LC", (DL_FUNC) &_GDINA_LikNR_LC, 6},
     {"_GDINA_Lik_DTM", (DL_FUNC) &_GDINA_Lik_DTM, 4},
+    {"_GDINA_fast_GDINA_EM", (DL_FUNC) &_GDINA_fast_GDINA_EM, 12},
     {"_GDINA_LouisC", (DL_FUNC) &_GDINA_LouisC, 7},
     {"_GDINA_Mord", (DL_FUNC) &_GDINA_Mord, 3},
     {"_GDINA_Calc_Pj", (DL_FUNC) &_GDINA_Calc_Pj, 5},
@@ -655,11 +725,16 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GDINA_Mstep_ineq_jac", (DL_FUNC) &_GDINA_Mstep_ineq_jac, 11},
     {"_GDINA_NgRg", (DL_FUNC) &_GDINA_NgRg, 4},
     {"_GDINA_Rljs_DTM", (DL_FUNC) &_GDINA_Rljs_DTM, 3},
-    {"_GDINA_scorefun", (DL_FUNC) &_GDINA_scorefun, 5},
     {"_GDINA_SE", (DL_FUNC) &_GDINA_SE, 7},
+    {"_GDINA_aggregateCol", (DL_FUNC) &_GDINA_aggregateCol, 2},
+    {"_GDINA_fitstats", (DL_FUNC) &_GDINA_fitstats, 3},
+    {"_GDINA_scorefun", (DL_FUNC) &_GDINA_scorefun, 5},
     {"_GDINA_sequP", (DL_FUNC) &_GDINA_sequP, 3},
     {"_GDINA_combnCpp", (DL_FUNC) &_GDINA_combnCpp, 2},
     {"_GDINA_rowProd", (DL_FUNC) &_GDINA_rowProd, 2},
+    {"_GDINA_whichrow_AinB", (DL_FUNC) &_GDINA_whichrow_AinB, 2},
+    {"_GDINA_whichcol_AinB", (DL_FUNC) &_GDINA_whichcol_AinB, 2},
+    {"_GDINA_unique_rows", (DL_FUNC) &_GDINA_unique_rows, 1},
     {"_GDINA_alpha2", (DL_FUNC) &_GDINA_alpha2, 1},
     {"_GDINA_alphap", (DL_FUNC) &_GDINA_alphap, 1},
     {"_GDINA_ColNormalize", (DL_FUNC) &_GDINA_ColNormalize, 1},
@@ -673,9 +748,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GDINA_HoIRTlogLik", (DL_FUNC) &_GDINA_HoIRTlogLik, 6},
     {"_GDINA_HoIRTlogLik3", (DL_FUNC) &_GDINA_HoIRTlogLik3, 6},
     {"_GDINA_incomplogL", (DL_FUNC) &_GDINA_incomplogL, 6},
-    {"_GDINA_designM", (DL_FUNC) &_GDINA_designM, 2},
+    {"_GDINA_designM", (DL_FUNC) &_GDINA_designM, 3},
     {"_GDINA_matchMatrix", (DL_FUNC) &_GDINA_matchMatrix, 2},
-    {"_GDINA_eta", (DL_FUNC) &_GDINA_eta, 1},
+    {"_GDINA_eta", (DL_FUNC) &_GDINA_eta, 2},
+    {"_GDINA_item_latent_group", (DL_FUNC) &_GDINA_item_latent_group, 2},
     {"_GDINA_varsigma", (DL_FUNC) &_GDINA_varsigma, 3},
     {NULL, NULL, 0}
 };

@@ -25,9 +25,9 @@ inputcheck <- function(dat, Q, model, sequential,att.dist,latent.var,
   if (!is.matrix(Q) & !is.data.frame(Q)) stop("Q-matrix must be a matrix or data frame.",call. = FALSE)
   if (any(rowSums(Q)<1)) stop("Some items do not require any attributes.",call. = FALSE)
   if (any(colSums(Q)<1)) stop("Some attributes are not required by any items.",call. = FALSE)
-  if (!sequential&&ncol(dat)!=nrow(Q))stop("The number of columns in data must be equal to the number of rows in Q-matrix.",call. = FALSE)
+  if (ncol(dat)!=nrow(Q))stop("The number of columns in data does not match with the number of rows in Q-matrix.",call. = FALSE)
   if (!verbose%in%c(0,1,2)) stop("verbose must be 0, 1, or 2.",call. = FALSE)
-  if (!is.logical(att.str)) stop("att.str must be TRUE or FALSE.",call. = FALSE)
+  # if (!is.logical(att.str)) stop("att.str must be TRUE or FALSE.",call. = FALSE)
   if (!all(sapply(mono.constraint,is.logical))) stop("mono.constraint must be TRUE or FALSE.",call. = FALSE)
   if (!length(mono.constraint)%in%c(1,nrow(Q))) stop("Length of mono.constraint must be equal to 1 or the number of categories.",call. = FALSE)
   if (!is.positiveInteger(nstarts)) {nstarts <- 1; warning("nstarts must be a positive integer.")}
@@ -36,17 +36,20 @@ if (!is.null(catprob.parm)){
   if (length(catprob.parm)!=nrow(Q)) stop("The length of catprob.parm is not correct.",call. = FALSE)
 
 }
+  if(all(model==6)&&min(table(Q[,1]))==1) stop("You sure all models are MSDINA model?",call. = FALSE)
+  if (max(dat, na.rm = TRUE) > 1 & !sequential)
+    stop("Maximum response is greater than 1 - set sequential = TRUE to fit a sequential model.", call. = FALSE)
   if(tolower(latent.var)!="att"){
-    if(any(model>2)) stop("Only Bug DINA, DINO and G-DINA models are available.",call. = FALSE)
-    if(mono.constraint) stop("Monotonic constraint is not allowed for the bug DINA, DINO and G-DINA models.",call. = FALSE)
+    if(!all(model%in%c(0,1,2))) stop("Only Bug DINA, DINO and G-DINA models are available.",call. = FALSE)
+    if(any(mono.constraint))
+      stop("Monotonic constraint is not allowed for the bug DINA, DINO and G-DINA models.",call. = FALSE)
   }
-  if (att.str) {
+  if (!is.null(att.str)) {
     if (max(Q)>1) stop("Attribute structure cannot be specified if attributes are polytomous.",call. = FALSE)
     if(any(att.dist=="higher.order")) stop("Higher-order structure is not allowed if att.str = TRUE.",call.=FALSE)
     if(any(att.dist=="independent")) stop("Independent structure is not allowed if att.str = TRUE.",call.=FALSE)
     if(any(att.dist=="loglinear")) stop("Loglinear structure is not allowed if att.str = TRUE.",call.=FALSE)
-    if(any(model<0|model>2))stop("Only DINA, DINO and G-DINA is allowed for structured attributes.",call. = FALSE)
-  }
+    }
 
 
   if(any(lower.p>=upper.p)) stop("lower.p must be less than upper.p.",call. = FALSE)
@@ -162,17 +165,18 @@ calc_delta <- function(item.parm,DesignMatrices,linkfunc){
 }
 
 format_delta <- function(delta,model,Kj,item.names = NULL,digits=4){
-  #delta <- vector("list",nrow(itmpar))
+  if(!is.numeric(model))
+    model <- match(model, c("lOGGDINA","LOGITGDINA","UDF", "GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA")) - 4
   for (j in 1:length(delta)){
-    if (model[j]==0){
+    if (model[j]%in%c(-3,-2,0)){
       if(Kj[j]==1){
         names(delta[[j]]) <- c("d0","d1")
       }else{
         names(delta[[j]]) <- c("d0",paste("d",unlist(lapply(apply(alpha2(Kj[j]),1,function(x)which(x==1))[-1],function(x) paste(x,collapse = ""))),sep = ""))
       }
-    }else if (model[j]==1|model[j]==2|model[j]==6){
+    }else if (model[j]%in%c(1,2,6)){
       names(delta[[j]]) <- c("d0","d1")
-    }else if (model[j]>2){
+    }else if (model[j]%in%c(3:5)){
       names(delta[[j]]) <- paste("d",0:Kj[j],sep = "")
     }
     delta[[j]] <- round(delta[[j]],digits)
@@ -189,6 +193,9 @@ gs2p <- function(Q,
                  mono.constraint,
                  item.names=NULL,
                  digits = 8){
+
+  if(!is.numeric(model))
+    model <- match(toupper(model), c("LOGGDINA","LOGITGDINA","UDF", "GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA")) - 4
   J <- nrow(Q)
   K <- ncol(Q)
   Kj <-rowSums(Q>0)  # The number of attributes for each item
@@ -200,7 +207,7 @@ gs2p <- function(Q,
   delta.param <- itemprob.param <- vector("list", J)
   #calculate delta parameters in list format
   for (j in 1:J) {
-    if (model[j] == 1 | model[j] == 2) {
+    if (model[j]%in%c(1,2)) {
       delta.param[[j]] <- c(gs[j, 1], 1 - gs[j, 2] - gs[j, 1])
     } else if (model[j] == 3) {
       p0 <- gs[j, 1]
@@ -280,16 +287,16 @@ gs2p <- function(Q,
           ps <- c(p0,runif(2 ^ Kj[j] - 2, 0, 1),p1)
         }
       }
-      delta.param[[j]] <- c(solve(designM(Kj[j],model[j])) %*% ps)
+      delta.param[[j]] <- c(solve(designmatrix(Kj[j],model[j])) %*% ps)
     }
   }
 
 
 
   for (j in 1:J) {
-    Mj <- designM(Kj[j], model[j])
+    Mj <- designmatrix(Kj[j], model[j])
 
-    if (model[j] <= 3) {
+    if (model[j] <= 3&&model[j]>=0) {
       itemprob.matrix[j, 1:nrow(Mj)] <-
         itemprob.param[[j]] <- round(c(Mj %*% delta.param[[j]]), digits)
     } else if (model[j] == 4) {
@@ -583,7 +590,7 @@ seq_coding <- function(dat,Qc){
     out <- cbind(out,tmp)
     }
     }
-  return(data.frame(out,row.names = NULL))
+  return(as.matrix(out))
 }
 
 
@@ -672,8 +679,13 @@ designmatrix.bug <- function(Kj,model=1){
   return(tmp)
 }
 
-partial_order2 <- function(Kjj){
-  alp <- attributepattern(Kjj)
+partial_order2 <- function(Kjj,AlphaPattern=NULL){
+  if(is.null(AlphaPattern)){
+    alp <- attributepattern(Kjj)
+  }else{
+    alp <- AlphaPattern
+  }
+
   alp <- cbind(c(1:nrow(alp)),rowSums(alp),alp)
   out <- NULL
 
@@ -979,4 +991,302 @@ invparmtrans <- function(vparj,mIndj){
     v <- tmp*t(mIndj)
   }
   return(v)
+}
+
+model2numeric <- function(model,J=1){
+  if(is.numeric(model)){
+    if(J!=1&&length(model)!=J)
+      model <- rep(model, J)
+  }else{
+  M <- c("lOGGDINA","LOGITGDINA","UDF", "GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA")
+  if(J!=1&&length(model)!=J)
+    model <- rep(model, J)
+  model <- match(toupper(model), M) - 4
+  }
+  model
+}
+
+model2character <- function(model,J=1){
+  if(is.character(model)){
+    if(J!=1&&length(model)!=J)
+      model <- rep(model, J)
+  }else{
+    M <- c("LOGGDINA","LOGITGDINA","UDF", "GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA")
+    if(J!=1&&length(model)!=J)
+      model <- rep(model, J)
+    model <- M[model + 4]
+  }
+  model
+}
+
+linkf.numeric <- function(linkfunc, model.vector){
+
+
+  J <- length(model.vector)
+  # identitiy link -> 1
+  # logit link -> 2
+  # log link -> 3
+
+  if(is.null(linkfunc)){
+
+    linkfunc <- model2linkfunc(model.vector)
+
+
+  }else if (length(linkfunc) == 1){
+    linkfunc <- which(tolower(linkfunc)==c("identity","logit","log"))
+    linkfunc <- rep(linkfunc, J)
+  } else {
+    if (length(linkfunc) != J) stop("Length of linkfunc is not correct.", call. = FALSE)
+    tmp <- linkfunc
+    linkfunc <- rep(1,J)
+    linkfunc[which(tolower(tmp)=="logit")] <- 2
+    linkfunc[which(tolower(tmp)=="log")] <- 3
+  }
+  linkfunc
+}
+
+model2rule.j <- function(model.j){
+
+  if(is.character(model.j)){
+    switch(toupper(model.j),
+           LOGGDINA = 0,
+           LOGITGDINA = 0,
+           GDINA = 0,
+           DINA = 1,
+           DINO = 2,
+           LLM = 3,
+           ACDM = 3,
+           RRUM = 3,
+           MSDINA = 4,
+           UDF = -1)
+  }else if(is.numeric(model.j)){
+    if(model.j%in%c(0,-3,-2)){
+      cr <- 0
+    }else if(model.j%in%c(4,5)){
+      cr <- 3
+    }else if(model.j==6){
+      cr <- 4
+    }else{
+      cr <- model.j
+    }
+
+  }
+
+  # 0 -> saturated model; 1 ->DINA; 2 ->DINO; 3 ->additive model; 4 ->MS-DINA; -1-> UDF
+}
+model2rule <- function(model.vector){
+  sapply(model.vector,model2rule.j)
+  # 0 -> saturated model; 1 ->DINA; 2 ->DINO; 3 ->additive model; 4 ->MS-DINA; -1-> UDF
+}
+
+model2linkfunc.j <- function(model.j){
+  if(is.character(model.j)){
+    lf <- switch(toupper(model.j),
+           LOGGDINA = 3,
+           LOGITGDINA = 2,
+           GDINA = 1,
+           DINA = 1,
+           DINO = 1,
+           LLM = 2,
+           ACDM = 1,
+           RRUM = 3,
+           MSDINA = 1)
+  }else if(is.numeric(model.j)){
+    if(model.j%in%c(0:3,6)){
+      lf <- 1
+    }else if(model.j%in%c(4,-2)){
+      lf <- 2
+    }else if(model.j%in%c(5,-3)){
+      lf <- 3
+    }
+  }
+lf
+  # 0 -> saturated model; 1 ->DINA; 2 ->DINO; 3 ->additive model; 4 ->MS-DINA; -1-> UDF
+}
+model2linkfunc <- function(model.vector){
+  sapply(model.vector,model2linkfunc.j)
+  # 0 -> saturated model; 1 ->DINA; 2 ->DINO; 3 ->additive model; 4 ->MS-DINA; -1-> UDF
+}
+
+initials <- function(Q,nstarts=1,DesignMatrices,latent.var="att",att.str=NULL){
+  J <- length(DesignMatrices)
+  ret <- list()
+  if(tolower(latent.var)=="att"){
+    if(nstarts==1){
+      par <- list()
+      for(j in seq_len(J)){
+        g <- runif(1,0.05,0.25)
+        p <- runif(1,0.75,0.95)
+        d <- c(g,(p-g)/(ncol(DesignMatrices[[j]])-1))
+        par[[j]] <- c(DesignMatrices[[j]] %*%d)
+      }
+      ret <- l2m(par)
+    }else if(nstarts==3&is.null(att.str)){
+      ret <- list(rep(NA,nstarts))
+      for(i in seq_len(nstarts)){
+        ret[[i]] <- gs2p(Q=Q,gs=matrix(runif(nrow(Q)*2,0.05,0.25),ncol = 2),
+                         model = rep(i,nrow(Q)),type = "equal",
+                         mono.constraint = rep(TRUE,nrow(Q)))$itemprob.matrix
+      }
+
+    }else{
+      for(i in 1:nstarts){
+        par <- list()
+        for(j in seq_len(J)){
+          g <- runif(1,0.01,0.45)
+          p <- runif(1,0.65,0.99)
+          dd <- runif(ncol(DesignMatrices[[j]])-1)
+          d <- c(g,(p-g)*dd/sum(dd))
+          par[[j]] <- c(DesignMatrices[[j]] %*% d)
+        }
+        ret[[i]] <- l2m(par)
+      }
+
+    }
+  }else if(tolower(latent.var)=="bugs"){
+    if(nstarts==1){
+      ip <- gs2p(Q=Q,gs=matrix(runif(nrow(Q)*2,0.05,0.25),ncol = 2),
+                 model = rep(3,nrow(Q)),type = "equal",
+                 mono.constraint = TRUE)$itemprob.parm
+      ip <- lapply(ip,function(x)1-x)
+      if(is.list(ip)){
+        ret <- l2m(ip)
+      }else if(is.matrix(ip)){
+        ret <- t(ip)
+      }
+
+    }else{
+      par <- list(rep(NA,nstarts))
+      for(i in 1:nstarts){
+        ip <- gs2p(Q=Q,gs=matrix(runif(nrow(Q)*2,0.05,0.25),ncol = 2),
+                   model = rep(3,nrow(Q)),type = "random",
+                   mono.constraint = TRUE)$itemprob.parm
+        ip <- lapply(ip,function(x)1-x)
+        if(is.list(ip)){
+          ret[[i]] <- l2m(ip)
+        }else if(is.matrix(ip)){
+          ret[[i]] <- t(ip)
+        }
+
+      }
+
+    }
+  }
+  return (ret)
+}
+
+
+
+##############
+# GMS CDMs
+#
+##############
+which.max.randomtie <- function(x,na.rm=TRUE){
+  loc <- which(x==max(x,na.rm = na.rm))
+  if(length(loc)>1){
+    loc <- sample(loc,1)
+  }
+  return(loc)
+}
+p2p <- function(v,r){
+  sum(v^(r+1))/sum(v^r)
+}
+d2p <- function(d,des,msQ,model,r){
+  L <- 2^(ncol(msQ)-2)
+  item.no <- msQ[,1]
+  str.no <- msQ[,2]
+  J <- length(d)
+  S <- length(des)
+  plc <- matrix(0,J,L)
+  for (j in 1:J){
+    jrows <- which(item.no==j)
+    pj <- matrix(0,L,length(jrows))
+    for(s in str.no[jrows]){
+      rowloc <- which(item.no==j&str.no==s)
+      if(model<=3){
+        pj[,s] <- c(des[[rowloc]]%*%d[[j]])
+      }else if(model==4){
+        pj[,s] <- plogis(c(des[[rowloc]]%*%d[[j]]))
+      }else if(model==5){
+        pj[,s] <- exp(c(des[[rowloc]]%*%d[[j]]))
+      }
+
+    }
+    plc[j,] <- rowSums(pj^(r+1))/rowSums(pj^r)
+  }
+  plc
+}
+dj2pj <- function(j,dj,des,msQ,model,r){
+  L <- 2^(ncol(msQ)-2)
+  item.no <- msQ[,1]
+  str.no <- msQ[,2]
+  jrows <- which(item.no==j)
+  pj <- matrix(0,L,length(jrows))
+  for(s in str.no[jrows]){
+
+    rowloc <- which(item.no==j&str.no==s)
+    if(model<=3){
+      pj[,s] <- c(des[[rowloc]]%*%dj)
+    }else if(model==4){
+      pj[,s] <- plogis(c(des[[rowloc]]%*%dj))
+    }else if(model==5){
+      pj[,s] <- exp(c(des[[rowloc]]%*%dj))
+    }
+
+  }
+  rowSums(pj^(r+1))/rowSums(pj^r)
+
+}
+# calculate strategy prevalence for item j
+sp <- function(j,dj,des,msQ,model,r){
+  L <- 2^(ncol(msQ)-2)
+  item.no <- msQ[,1]
+  str.no <- msQ[,2]
+  jrows <- which(item.no==j)
+  pj <- matrix(0,L,length(jrows))
+  for(s in str.no[jrows]){
+
+    rowloc <- which(item.no==j&str.no==s)
+    if(model<=3){
+      pj[,s] <- c(des[[rowloc]]%*%dj)
+    }else if(model==4){
+      pj[,s] <- plogis(c(des[[rowloc]]%*%dj))
+    }else if(model==5){
+      pj[,s] <- exp(c(des[[rowloc]]%*%dj))
+    }
+
+  }
+
+  list(sIRF=pj,pjmc=pj^(r)/rowSums(pj^r))
+}
+
+objf <- function(dj,j,des,msQ,Nj,Rj,model,r){
+  pj <- dj2pj(j,dj,des,msQ,model,r)
+  pj[pj<.Machine$double.eps] <- .Machine$double.eps
+  pj[pj>1-.Machine$double.eps] <- 1-.Machine$double.eps
+  -1*sum(Rj*log(pj)+(Nj-Rj)*log(1-pj))
+}
+inf <- function(dj,j,des,msQ,Nj,Rj,model,r){
+  desj <- do.call(rbind,des[which(msQ[,1]==j)])
+
+  if(model<=3){
+    p <- c(desj%*%dj)
+  }else if(model==4){
+    p <- plogis(c(desj%*%dj))
+  }else if(model==5){
+    p <- exp(c(desj%*%dj))
+  }
+  c(p,1-p) - 1e-6
+}
+inf3 <- function(dj,j,des,msQ,Nj,Rj,model,r){
+  desj <- do.call(rbind,des[which(msQ[,1]==j)])
+
+  if(model<=3){
+    p <- c(desj%*%dj)
+  }else if(model==4){
+    p <- plogis(c(desj%*%dj))
+  }else if(model==5){
+    p <- exp(c(desj%*%dj))
+  }
+  c(1e-6 - p, p - (1 - 1e-6))
 }

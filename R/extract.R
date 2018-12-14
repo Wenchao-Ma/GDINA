@@ -177,6 +177,7 @@ extract <- function (object, what, ...) {
 extract.GDINA <- function(object,what,SE.type = 2,...){
   out <- switch(what,
                 AIC = object$testfit$AIC,
+                attributepattern = object$attributepattern,
                 att.dist = object$options$att.dist,
                 att.prior = object$options$att.prior,
                 att.str=object$options$att.str,
@@ -324,7 +325,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 prevalence = {
                   Q <- extract(object,"Q")
                   preva <- vector("list",extract(object,"ngroup"))
-                  pattern <- attributepattern(Q = Q)
+                  pattern <- extract(object,"attributepattern")
                   for(g in 1:extract(object,"ngroup")) {
                     for (i in c(0:max(Q))) {
                       preva[[g]] <-
@@ -359,6 +360,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                     paste0("A", 1:ncol(object$options$Q))
                   out
                 }},
+                reduced.LG = object$technicals$reduced.LG,
                 originalQ = object$options$Q,
                 start.time = object$extra$start.time,
                 time = object$extra$timeused,

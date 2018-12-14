@@ -194,14 +194,15 @@ print.autoGDINA <-
     }
 
     if(x$options$Qvalid){
-      cat(" - Q-matrix validation is based on eps = ",x$options$eps,"\n\n")
+      m <- toupper(x$Qval.obj$method)
+      cat(" - Q-matrix validation is based on the",m,"method [ eps =",x$options$eps,"]\n\n")
     }else{
       #cat("\n - Q-matrix validation is disabled\n\n")
     }
     if(x$options$modelselection){
-      cat(" - Model selection is based on the selection rule of",x$options$modelselectionrule,"\n")
+      cat(" - Model selection is based on the",toupper(auto$Wald.obj$method),"method using the",x$options$modelselectionrule,"rule\n")
       cat(" - Reduced models include",x$options$reducedCDM,"\n")
-    cat(" - The alpha level for the Wald test is",x$options$alpha.level,"\n")
+    cat(" - The alpha level is",x$options$alpha.level,"\n")
     }else{
       #cat(" - Model selection is disabled\n")
     }
@@ -253,20 +254,21 @@ print.anova.GDINA <- function(x,...){
 
 #'@export
 print.summary.autoGDINA <- function(x,...){
-  cat("\nAutomatic GDINA Analysis\n\n")
-  cat("Model Data fit\n")
+  cat("\nAutomatic G-DINA Analysis\n\n")
+  cat("Relative model-data fit:\n\n")
   print(x$fit)
+  cat("\nNote: To evaluate absolute model-data fit, please use modelfit() and itemfit() functions.")
 
   if(!is.null(x$Qval)){
     cat("\n")
-    # cat("\nSuggested Q-matrix:\n\n")
     print(x$Qval)
   }
   if(!is.null(x$finalmodel)){
-    cat("\nSelected Models:\n\n")
-    print(extract(x$finalmodel,"models"))
+    cat("\nModels for final calibration:\n\n")
+    xx <- extract(x$finalmodel,"models")
+    names(xx) <- extract(x$finalmodel,"item.names")
+    print(xx)
   }
-
 }
 
 

@@ -1,6 +1,6 @@
 #' Item fit statistics
 #'
-#' Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013)
+#' Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013) and draw heatmap plot for item pairs
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
 #' @param person.sim Simulate expected responses from the posterior or based on EAP, MAP and MLE estimates.

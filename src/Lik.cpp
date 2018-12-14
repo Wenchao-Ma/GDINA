@@ -3,6 +3,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 //using namespace Rcpp;
+//using namespace arma;
 
 // [[Rcpp::export]]
 
@@ -31,7 +32,7 @@ double ObsLogLik(const arma::mat & mpar,
                   const arma::mat & mX,
                   arma::mat vlogPrior,
                   arma::vec  vgroup,
-                  arma::mat  mloc,
+                  arma::mat & mloc,
                   arma::vec weights){
 
 
@@ -68,6 +69,8 @@ double ObsLogLik(const arma::mat & mpar,
   double LL = arma::accu(log(arma::sum(exp(mlogPost),1))%weights);
   return LL;
 }
+
+
 
 
 
@@ -331,3 +334,4 @@ Rcpp::List Lik_DTM(arma::mat & mP, //S0 x L
                             Rcpp::Named("LL") = LL);
 
 }
+

@@ -10,9 +10,7 @@ coef.GDINA <-
 
     if(!class(object)=="GDINA") stop("object must be a GDINA estimate.",call. = FALSE)
     what <- match.arg(what)
-    if(extract(object,"att.str")){
-      if(tolower(what)=="delta")stop("Delta parameters are not availabel for models with structured attributes.",call. = FALSE)
-    }
+
     if(tolower(what)=="catprob"){
       if(withSE){
         out <- mapply(rbind,extract(object,what = "catprob.parm"),
@@ -80,12 +78,13 @@ coef.GDINA <-
       if(withSE) message("Standard errors are not available for RRUM parameters.")
     }else if(tolower(what)=="lambda"){
       if(extract(object,"ngroup")==1){
-        out <- round(extract(object,"struc.parm")[[1]],digits)
+        out <- round(extract(object,"struc.parm"),digits)
         if(extract(object,"att.dist")=="higher.order"){
           rownames(out) <- paste0("A",seq_len(extract(object,"natt")))
           colnames(out) <- c("slope","intercept")
         }else if(extract(object,"att.dist")=="saturated"){
-          lab <- paste0("p(",apply(attributepattern(Q=extract(object,"Q")),1,paste0,collapse=""),")")
+          lab <- paste0("p(",apply(extract(object,"attributepattern"),1,paste0,collapse=""),")")
+          out <- c(out)
           names(out) <- lab
         }else if(extract(object,"att.dist")=="independent"){
           names(out) <- paste0("P(A",seq_len(extract(object,"natt")),")")

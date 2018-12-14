@@ -51,7 +51,7 @@ an object of class \code{itemfit} consisting of several elements that can be ext
 }
 }
 \description{
-Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013)
+Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013) and draw heatmap plot for item pairs
 }
 \section{Methods (by generic)}{
 \itemize{

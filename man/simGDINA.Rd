@@ -444,7 +444,7 @@ extract(simseq,what = "dat")
 
 # simulated attributes
 extract(simseq,what = "attribute")
-}
+
 
 ####################################################
 #                   Example 13
@@ -490,7 +490,7 @@ extract(sim,what = "dat")
 
 # simulated attributes
 extract(sim,what = "attribute")
-
+}
 
 
 }

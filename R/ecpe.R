@@ -33,7 +33,7 @@
 #'
 #' est.gdina2 <- GDINA(ecpe$dat,ecpe$Q,model = "GDINA",
 #'                    control = list(conv.crit = 1e-6),
-#'                    att.prior = ast$att.prob,att.str = TRUE)
+#'                    att.str = list(c(3,2),c(2,1)))
 #' # see Table 7 in Templin & Bradshaw, 2014
 #' summary(est.gdina2)
 #'}

@@ -1,20 +1,22 @@
 
-Mstep <- function(delta,item.parm,J,Kj,itr,Rg,Ng,model,ConstrType,linkfunc,
+Mstep <- function(delta,item.parm,J,Kj,Lj,itr,Rg,Ng,model,ConstrType,linkfunc,
                   correction,lower.p,upper.p,algorithm,ConstrMatrix,solver, item.prior,
                   DesignMatrices,MstepMessage, est.bin,auglag_args,nloptr_args,solnp_args){
-
-opts <- list()
+  # print(solver)
+  if(!is.numeric(model))
+    model <- match(model, c("LOGGDINA","LOGITGDINA","UDF", "GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM", "MSDINA")) - 4
+  opts <- list()
   for(j in which(est.bin)){ #for each item
 
     optims <- GNLOptim_call(par = delta[[j]],solver=solver[j],modelj=model[j],correction=correction,
              auglag_args=auglag_args,nloptr_args=nloptr_args,solnp_args = solnp_args,item.prior=item.prior,
-             Nj=Ng[j,1:2^Kj[j]],Rj=Rg[j,1:2^Kj[j]],designMj=DesignMatrices[[j]],
+             Nj=Ng[j,1:Lj[j]],Rj=Rg[j,1:Lj[j]],designMj=DesignMatrices[[j]],
              uPj=upper.p[j],lPj=lower.p[j],MstepMessage=MstepMessage,itr=itr,j=j,
              ConstrMatrix=ConstrMatrix[[j]],linkfunc=linkfunc[j],eps=1e-16,ConstrType=ConstrType[j])
     if(is.null(optims)) stop(paste("M-step fails for item",j,"at iteration",itr),call. = FALSE)
 
      delta[[j]] <- c(optims$delta)
-     item.parm[j,1:(2^Kj[j])] <- optims$phat
+     item.parm[j,seq_len(length(optims$phat))] <- optims$phat
     opts[[j]] <- optims
   }
 

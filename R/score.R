@@ -129,6 +129,7 @@ score_d <- function(object){
   N <- extract(object,"nobs")
   Kj <- rowSums(Q>0)
   pj <- extract(object,"catprob.parm")
+  att <- extract(object,"attributepattern")
   linkfunc <- extract(object,"linkfunc")
   des <- extract(object,"designmatrix")
   if(extract(object,"sequential")){
@@ -141,7 +142,7 @@ score_d <- function(object){
   scof <- scorefun(mX=as.matrix(dat),
                    mlogPost=as.matrix(extract(object,"logposterior.i")),
                    itmpar=as.matrix(extract(object,"catprob.matrix")),
-                   parloc=eta(as.matrix(Q)),
+                   parloc=eta(as.matrix(Q),att),
                    model=rep(0,NC))
 
   scorep <- scof$score

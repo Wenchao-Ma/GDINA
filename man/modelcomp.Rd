@@ -141,7 +141,7 @@ extract(w,"selected.model")
 #
 ##########################
 
-lr <- modelcomp(fit,models = c("DINA","DINO"),method = "LR")
+lr <- modelcomp(fit,method = "LR")
 lr
 TwostepLR <- modelcomp(fit,items =c(6:10),method = "LR",LR.args = list(LR.approx = TRUE))
 TwostepLR

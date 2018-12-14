@@ -434,7 +434,7 @@
 #'
 #'# simulated attributes
 #'extract(simseq,what = "attribute")
-#'}
+#'
 #'
 #'####################################################
 #'#                   Example 13
@@ -480,7 +480,7 @@
 #'
 #'# simulated attributes
 #'extract(sim,what = "attribute")
-#'
+#'}
 #'
 #'
 simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NULL,
@@ -493,6 +493,7 @@ simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NUL
                      att.prior = NULL, digits=4)
   {
   simGDINAcall <- match.call()
+
   mygs.args <- list(type = "random",mono.constraint = TRUE)
   gs.args <- modifyList(mygs.args, gs.args)
   inputcheck.sim(N=N, Q=Q, sequential=sequential, gs.parm=gs.parm, model = model, type = gs.args$type,
@@ -500,12 +501,15 @@ simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NUL
 
 
   originalQ <- Q
-  model <- model.transform(model,nrow(Q))
-  f2c <- ifelse(any(model==6)||sequential,TRUE,FALSE) #whether originalQ has additional first 2 columns
 
-  if (any(model == 6)) {
+  model <- model2numeric(model,nrow(Q))
+
+  # model <- model.transform(model,nrow(Q))
+  # f2c <- ifelse(any(model=="MSDINA")||sequential,TRUE,FALSE) #whether originalQ has additional first 2 columns
+
+  if (any(model==6)) {
     #MSDINA
-    msQ <- unrestrQ(Q[which(model == 6), ])
+    msQ <- unrestrQ(Q[which(model==6), ])
     for (j in unique(msQ[, 1])) {
       Q[which(Q[, 1] == j &
                 Q[, 2] == 1), ] <- msQ[which(msQ[, 1] == j & msQ[, 2] == 1), ]
@@ -514,6 +518,8 @@ simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NUL
       model <- model[-loc]
     }
   }
+  # rule: 0 -> saturated model; 1 ->DINA; 2 ->DINO; 3 ->additive model; 4 ->MS-DINA; -1 -> UDF
+  rule <- model2rule(model)
 
 
 
@@ -531,11 +537,8 @@ simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NUL
   pattern <- attributepattern(Q = Q)
   pattern.t <- t(pattern)
 
-  # if(any(model==6)){
-  #   stop("The MSDINA model cannot be simulated directly - please set model = UDF instead.",call. = FALSE)
-  # }
   L <- nrow(pattern)  # the number of latent groups
-  Kj <- apply(Q,1,function(x){sum(x>0)})  # The number of attributes for each item
+  Kj <- rowSums(Q>0)  # The number of attributes for each item
   Kjmax <- max(Kj) # the maximum attributes required for each item
   catprob.matrix <- matrix(NA,J,2^Kjmax)
   par.loc <- eta(as.matrix(Q))
@@ -562,41 +565,31 @@ if (!is.null(gs.parm)) {
   delta.args <- modifyList(myd.args, delta.args)
   catprob.parm <- vector("list",J)
 
-  if(is.null(delta.args$linkfunc)){
-    linkfunc <- rep(1,J)
-    for(j in seq_len(J)) if(model[j]==4) linkfunc[j] <- 2 else if(model[j]==5) linkfunc[j] <- 3
-  }else if (length(delta.args$linkfunc) == 1){
-    linkfunc <- which(tolower(delta.args$linkfunc)==c("identity","logit","log"))
-    linkfunc <- rep(linkfunc, J)
-  } else {
-    if (length(delta.args$linkfunc) != J) stop("linkfunc must have length of 1 or J.", call. = FALSE)
-    tmp <- delta.args$linkfunc
-    linkfunc <- rep(1,J)
-    linkfunc[which(tolower(tmp)=="logit")] <- 2
-    linkfunc[which(tolower(tmp)=="log")] <- 3
-  }
+  # identitiy link -> 1
+  # logit link -> 2
+  # log link -> 3
+  LF.numeric <- linkf.numeric(linkfunc = delta.args$linkfunc, model.vector = model)
 
 
   if(is.null(delta.args$design.matrix)){
     if(any(model==-1)) stop("design.matrix must be provided for user-defined models.",call. = FALSE)
     design.matrix <-  vector("list",J)
+    for(j in seq_len(J)) {
+      if(model[j]==6){
+        design.matrix[[j]] <- designmatrix(Kj = NULL, model = model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
+      }else {
+        design.matrix[[j]] <- designmatrix(Kj[j],model[j])
+      }
+    }
+
   }else if(length(delta.args$design.matrix)!=J){
     stop("length of design matrix is not correctly specified.",call. = FALSE)
   }
-  for(j in seq_len(J)) {
-    if(model[j]>=0&model[j]<=5){
-      design.matrix[[j]] <- designmatrix(Kj[j],model[j])
-    }else if(model[j]==6){
-      design.matrix[[j]] <- designmatrix(Kj = 999, model = model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
-    }
-  }
-
 
     for (j in 1:J){
-
       catprob.matrix[j,1:nrow(design.matrix[[j]])] <-
         catprob.parm[[j]] <-
-        round(c(Calc_Pj(par = delta.parm[[j]],designMj = design.matrix[[j]], linkfunc = linkfunc[j])),digits)
+        round(c(Calc_Pj(par = delta.parm[[j]],designMj = design.matrix[[j]], linkfunc = LF.numeric[j])),digits)
       if(any(catprob.parm[[j]]<0)||any(catprob.parm[[j]]>1)) stop("Calculated success probabilities from delta parameters cross the boundaries.",call. = FALSE)
 
       names(catprob.parm[[j]]) <- paste("P(",apply(attributepattern(Kj[j]),1,paste,collapse = ""),")",sep = "")

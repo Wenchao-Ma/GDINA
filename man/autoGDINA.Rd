@@ -121,7 +121,18 @@ out1
 summary(out1)
 AIC(out1$CDM.obj)
 
+# simulated responses
+Q <- sim30GDINA$simQ
+dat <- sim30GDINA$simdat
 
+#misspecified Q
+misQ <- Q
+misQ[1,] <- c(1,1,0,1,0)
+auto <- autoGDINA(dat,misQ,Qvalid = TRUE, Qvalid.args = list(method = "wald"),
+                  modelselectionrule="simpler")
+auto
+summary(auto)
+AIC(auto$CDM.obj)
 
 #using the other selection rule
 out11 <- autoGDINA(dat,misQ,modelselectionrule="simpler",

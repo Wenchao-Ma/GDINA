@@ -1,4 +1,55 @@
+SG.HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
+{
+  Aq <- c(higher.order$QuadNodes)
+  WAq <- c(higher.order$QuadWghts)
+  Rl <- c(Rl)
+  if(is.null(lambda))
+    lambda = higher.order$lambda
 
+  K <- log2(nrow(AlphaPattern))
+  NR <- list()
+  NR <- expectedNR(AlphaPattern, Rl, Aq, WAq, lambda[,1], lambda[,2])
+    n <- NR$n
+    r <- NR$r
+
+  npar <- 0
+
+      d <- a <- vector("numeric",K)
+      for(k in seq_len(K)){
+        d[k] <- rootFinder(f = Lfj_intercept, interval = higher.order$InterceptRange,
+                           aj = lambda[k,1],theta = Aq,r = r[,k], n = n,
+                           prior = higher.order$Prior, mu = higher.order$InterceptPrior[1],
+                           sigma = higher.order$InterceptPrior[2])
+        npar <- npar + 1
+      }
+      if(higher.order$model=="1PL"){
+        a <- rootFinder(f = Lfj_commonslope, interval = higher.order$SlopeRange,
+                        d = lambda[,2],theta = Aq,r = r, n = n,
+                        prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
+                        sigma = higher.order$SlopePrior[2])
+        npar <- npar + 1
+      }else if(higher.order$model=="2PL"){
+        for(k in seq_len(K)) {
+          a[k] <- rootFinder(f = Lfj_slope, interval = higher.order$SlopeRange,
+                             dj = lambda[k,2],theta = Aq,r = r[,k], n = n,
+                             prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
+                             sigma = higher.order$SlopePrior[2])
+          npar <- npar + 1
+        }
+      }else if(higher.order$model=="Rasch"){
+        a <- 1
+      }else{
+        stop("Higher-order model is not correctly specified.",call. = FALSE)
+      }
+      lambda[,1] <- a
+      lambda[,2] <- d
+
+
+    logprior <- logP_AlphaPattern(AlphaPattern, Aq, WAq, lambda[,1], lambda[,2])
+
+
+  return(list(logprior=logprior,lambda=lambda,higher.order=higher.order,npar=npar))
+}
 
 HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
 {

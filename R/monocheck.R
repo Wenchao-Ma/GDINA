@@ -34,7 +34,7 @@ monocheck <- function(object,strict = FALSE){
   item.names <- extract(object,"item.names")
   mono <- logical(length(ip))
   for(j in 1:length(ip)){
-    po <- partial_order2(Kj[j])
+    po <- partial_order2(Kj[j],extract(object,"reduced.LG")[[j]])
     if(strict){
       if(any(ip[[j]][po[,1]]-ip[[j]][po[,2]]<=0)) mono[j] <- TRUE
     }else{

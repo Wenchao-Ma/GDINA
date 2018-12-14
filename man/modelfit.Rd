@@ -38,5 +38,5 @@ Hansen, M., Cai, L.,  Monroe, S., & Li, Z. (2016). Limited-information goodness-
 Liu, Y., Tian, W., & Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. \emph{Journal of Educational and Behavioral Statistics, 41}, 3-26.
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
 }

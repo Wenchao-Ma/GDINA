@@ -31,6 +31,8 @@ bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=123
 
   if (exists(".Random.seed", .GlobalEnv)) oldseed <- .GlobalEnv$.Random.seed else  oldseed <- NULL
 
+  if(!is.null(extract(GDINA.obj,"att.str")))
+    stop("bootSE is not available for models with attribute structures.",call. = FALSE)
   set.seed(randomseed)
 
   Y <- extract(GDINA.obj,"dat")
@@ -40,7 +42,7 @@ bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=123
   K <- ncol(Q)
   no.mg <- extract(GDINA.obj,"ngroup")
   stopifnot(no.mg==1)
-  out.list <- vector("list",bootsample)
+  lambda <- delta <- itemprob <- vector("list",bootsample)
   # By default
 
   GDINA.options <- formals(GDINA)
@@ -49,48 +51,41 @@ bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=123
   tmp <- as.list(GDINA.obj$extra$call)[-c(1:3)]
   GDINA.options[names(GDINA.options)%in%names(tmp)] <- tmp
   GDINA.options$verbose <- 0
-
+  att <- extract(GDINA.obj,"attributepattern")
     for (r in 1:bootsample){
+
       if(tolower(type)=="parametric"){
+
         simdat <- simGDINA(N, Q, catprob.parm = GDINA.obj$catprob.parm,
-                           attribute = attributepattern(Q = Q)[sample(1:2^K,N,replace = TRUE,prob = GDINA.obj$posterior.prob),])$dat
+                           attribute = att[sample(seq_len(nrow(att)),N,replace = TRUE,prob = GDINA.obj$posterior.prob),])$dat
 
       }else if(tolower(type)=="nonparametric"){
         simdat <- Y[sample(1:N,N,replace = TRUE),]
       }
 
       boot.out <- do.call(GDINA,c(list(dat = simdat,Q = Q),GDINA.options))
-      out.list[[r]] <- list(itemprob = boot.out$catprob.parm,delta = boot.out$delta.parm,
-                            jointAtt = boot.out$struc.parm)
+      lambda[[r]] <- c(boot.out$struc.parm)
+      itemprob[[r]]<- boot.out$catprob.parm
+      delta[[r]]<- boot.out$delta.parm
     }
 
 
-  ip <- out.list[[1]]$itemprob
-  d <- out.list[[1]]$delta
-  for(r in 2:(bootsample)){
-    ip <- Map(rbind,ip,out.list[[r]]$itemprob)
-    d <- Map(rbind,d,out.list[[r]]$delta)
-  }
-  se.ip <- lapply(ip,function(x)apply(x,2,sd))
-  se.d <- lapply(d,function(x)apply(x,2,sd))
-  se.jointAtt <- list()
-  for(g in 1:no.mg){
-    tmp <- c(out.list[[1]]$jointAtt[[g]])
-    for(r in 2:(bootsample)){
-      tmp <- rbind(tmp,c(out.list[[r]]$jointAtt[[g]]))
-    }
-    se.tmp <- apply(tmp,2,sd)
-    if(extract(GDINA.obj,"att.dist")[g]=="higher.order"){
-      se.jointAtt[[g]] <- matrix(se.tmp,ncol = 2)
+
+  se.ip <- lapply(do.call(Map,c(f="rbind",itemprob)),function(x)apply(x,2,sd))
+  se.d <- lapply(do.call(Map,c(f="rbind",delta)),function(x)apply(x,2,sd))
+  se.lambda <- apply(do.call(rbind,lambda),2,sd)
+
+    if(extract(GDINA.obj,"att.dist")=="higher.order"){
+      se.jointAtt <- matrix(se.lambda,ncol = 2)
     }else{
-      se.jointAtt[[g]] <- se.tmp
+      se.jointAtt <- se.lambda
     }
-  }
+
 
 
 
   if (!is.null(oldseed)) .GlobalEnv$.Random.seed <- oldseed  else  rm(".Random.seed", envir = .GlobalEnv)
 
-  return(list(itemparm.se=se.ip,delta.se=se.d,lambda.se=se.jointAtt,boot.est=out.list))
+  return(list(itemparm.se=se.ip,delta.se=se.d,lambda.se=se.jointAtt,boot.est=list(lambda=lambda,itemprob=itemprob,delta=delta)))
 }
 

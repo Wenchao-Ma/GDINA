@@ -40,7 +40,7 @@ plot(mod1, what = "IRF", item = 10,withSE = TRUE)
 # plot mastery probabilities for individuals 4 and 10
 plot(mod1, what = "mp", person = c(4,10))
 plot(mod1, what = "mp", person = c(4,10,15),
-satt.names = c("addition","subtraction","multiplication"))
+att.names = c("addition","subtraction","multiplication"))
 }
 }
 \seealso{

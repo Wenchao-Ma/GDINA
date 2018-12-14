@@ -9,7 +9,7 @@
 #' @param CI numeric value from 0 to 1 indicating the range of the confidence interval for RMSEA. Default returns the 90\% interval.
 #' @param ... arguments passed to the function
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
 #' @export
 #' @references
 #'
@@ -39,14 +39,15 @@ modelfit <- function(GDINA.obj,CI = 0.90,...)
   if(extract(GDINA.obj, "ngroup")!=1) {
     stop("modelfit is only applicable to single group analysis.", call. = FALSE)
   }
-  if(extract(GDINA.obj,"att.str"))stop("model-fit evaluation is not available for structured attributes.",call. = FALSE)
+  if(!is.null(extract(GDINA.obj,"att.str")))
+    stop("model-fit evaluation is not available for structured attributes.",call. = FALSE)
   if (any(extract(GDINA.obj, "models_numeric") < 0) ||
       any(extract(GDINA.obj, "models_numeric") > 6))
     stop("modelfit is only applicable to GDINA, DINA, DINO, ACDM, LLM and RRUM.",
          call. = FALSE)
-  if (extract(GDINA.obj, "att.dist") %in% c("higher.order","independent","fixed")){
+  if (extract(GDINA.obj, "att.dist") %in% c("higher.order","independent","fixed"))
     stop(paste("modelfit is not available for ",extract(GDINA.obj, "att.dist"),"joint attribute distribution."),call. = FALSE)
-  }
+
   delta <- extract(GDINA.obj, "delta.parm")
   Q <- extract(GDINA.obj, "Q")
   if (max(Q) > 1) {

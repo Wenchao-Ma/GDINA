@@ -80,7 +80,7 @@ personparm.GDINA <- function(object,
   K <- extract(object,what = "natt")
   # Q-matrix
   Q <- extract(object,what = "Q")
-  pattern <- attributepattern(Q=Q)
+  pattern <- extract(object,"attributepattern")
   out <- NULL
       # dichotomous attributes
       switch(what,
@@ -152,15 +152,17 @@ HO={
   K <- extract(object,what = "natt")
   Q <- extract(object,what = "Q")
   N <- extract(object,"nobs")
-  pattern <- attributepattern(K)
+  pattern <- extract(object,"attributepattern")
   Lx <- exp(extract(object,what = "logposterior.i"))
-  g <- extract(object,"gr")
 
-  post <- list()
-  for(gg in 1:extract(object,"ngroup")){
-    post[[gg]] = PostTheta(AlphaPattern = pattern, theta = quad, f_theta = w, a=extract(object,what = "struc.parm")[[gg]][,1],
-                           b=extract(object,what = "struc.parm")[[gg]][,2]) # 2^K x nnodes P(theta_q|AlphaPattern)
-  }
+  if(extract(object,what = "ngroup")>1){
+    g <- extract(object,"gr")
+
+    post <- list()
+    for(gg in 1:extract(object,"ngroup")){
+      post[[gg]] = PostTheta(AlphaPattern = pattern, theta = quad, f_theta = w, a=extract(object,what = "struc.parm")[[gg]][,1],
+                             b=extract(object,what = "struc.parm")[[gg]][,2]) # 2^K x nnodes P(theta_q|AlphaPattern)
+    }
 
     theta <- se <- rep(0,N)
 
@@ -169,6 +171,17 @@ HO={
       theta[i] <- sum(quad[,g[i]]*ptheta_i)
       se[i] <- sqrt(sum((quad[,g[i]]-theta[i])^2*ptheta_i))
     }
+  }else{
+    post = PostTheta(AlphaPattern = pattern, theta = quad, f_theta = w, a=extract(object,what = "struc.parm")[,1],
+                             b=extract(object,what = "struc.parm")[,2]) # 2^K x nnodes P(theta_q|AlphaPattern)
+    theta <- se <- rep(0,N)
+    for(i in 1:N){
+      ptheta_i <- colSums(post*Lx[i,]) #vector of length nnodes
+      theta[i] <- sum(c(quad)*ptheta_i)
+      se[i] <- sqrt(sum((c(quad)-theta[i])^2*ptheta_i))
+    }
+  }
+
     out <- round(data.frame(theta=theta,se=se),digits)
     colnames(out) <- c("EAP","SE")
 

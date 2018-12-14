@@ -4,7 +4,7 @@
 \alias{LC2LG}
 \title{Transformation between latent classes and latent groups}
 \usage{
-LC2LG(Q, sequential = FALSE)
+LC2LG(Q, sequential = FALSE, att.str = NULL)
 }
 \arguments{
 \item{Q}{A required \eqn{J \times K} binary Q-matrix. J represents test
@@ -14,6 +14,8 @@ is measured by item \eqn{j}, and 0 means item \eqn{j} does not
 measure attribute \eqn{k}.}
 
 \item{sequential}{logical; whether the Q-matrix is a Qc-matrix for sequential models?}
+
+\item{att.str}{attribute structure. See \code{GDINA} for details.}
 }
 \value{
 An item or category by latent class matrix. In the G-DINA model,

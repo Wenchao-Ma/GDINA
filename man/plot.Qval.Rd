@@ -45,7 +45,7 @@ out <- Qval(mod1,eps = 0.9)
 item <- c(1,2,10)
 plot(out,item=item,data.label=FALSE,type="all")
 plot(out,item=10,type="best",eps=0.95)
-plot(out,item=10,type="all",no.qvector=5)
+plot(out,item=10,type="all",no.qvector=6)
 }
 
 }

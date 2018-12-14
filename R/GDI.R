@@ -1,10 +1,10 @@
 #' Q-matrix validation
 #'
-#' Q-matrix validation for the G-DINA model based on PVAF (de la Torre & Chiu, 2016) or stepwise Wald test (Ma, 2017).
+#' Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016), stepwise Wald test (Ma & de la Torre, 2019) or mesa plot (de la Torre & Ma, 2016).
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
 #' @param eps cutoff value for PVAF. 0.95 is the default.
-#' @param method which Q-matrix validation method is used?
+#' @param method which Q-matrix validation method is used? Can be either \code{"PVAF"} or \code{"wald"}.
 #' @param wald.args a list of arguments for the stepwise Wald test method.
 #' \describe{
 #' \item{SE.type}{Type of covariance matrix for the Wald test}
@@ -31,7 +31,12 @@
 #' @references
 #' de la Torre, J. & Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
 #'
+#' de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A general framework approach and its implementation in R. A Short Course at the Fourth Conference on Statistical Methods in Psychometrics, Columbia University, New York.
+#'
 #' Ma, W. (2017). A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-matrix Validation, and Model Comparison. Unpublished doctoral dissertation. Rutgers, The State University of New Jersey.
+#'
+#' Ma, W. & de la Torre, J. (2019). An Empirical Q-Matrix Validation Method for the Sequential G-DINA Model. \emph{British Journal of Mathematical and Statistical Psychology}
+#'
 #'
 #' @seealso \code{\link{GDINA}}
 #' @export
@@ -41,19 +46,33 @@
 #' Q <- sim10GDINA$simQ
 #' Q[10,] <- c(0,1,0)
 #' mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
-#' out <- Qval(mod1,eps = 0.95)
-#' out
+#' pvaf <- Qval(mod1,method = "PVAF",eps = 0.95)
+#' pvaf
 #' #If many entries are modified, you may want to check
 #' #the PVAF plot using the function plotPVAF or
 #' #to change eps. eps = 0.9 or 0.8 seems another two
 #' #reasonable choices.
-#' extract(out,what = "PVAF")
+#' extract(pvaf,what = "PVAF")
 #' #See also:
-#' extract(out,what = "varsigma")
-#' extract(out,what = "sug.Q")
+#' extract(pvaf,what = "varsigma")
+#' extract(pvaf,what = "sug.Q")
 #'
 #' # Draw a mesa plot
-#' plot(out,item=10,type="best",no.qvector=5)
+#' plot(pvaf,item=10,type="best",no.qvector=5)
+#'
+#' stepwise <- Qval(mod1,method = "wald")
+#' stepwise
+#' #If many entries are modified, you may want to check
+#' #the PVAF plot using the function plotPVAF or
+#' #to change eps. eps = 0.9 or 0.8 seems another two
+#' #reasonable choices.
+#' extract(stepwise,what = "PVAF")
+#' #See also:
+#' extract(stepwise,what = "varsigma")
+#' extract(stepwise,what = "sug.Q")
+#'
+#' # Draw a mesa plot
+#' plot(stepwise,item=10,type="best",no.qvector=5)
 #'}
 
 Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args = list()){
@@ -62,7 +81,7 @@ Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args =
     stop("GDINA.obj must be a GDINA object from GDINA function.", call. = FALSE)
 
 
-  if (extract(GDINA.obj, "att.str"))
+  if (!is.null(extract(GDINA.obj, "att.str")))
     stop("Q-matrix validation is not available if attributes are structured.",
          call. = FALSE)
 

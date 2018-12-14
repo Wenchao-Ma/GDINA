@@ -112,7 +112,7 @@
 #' #
 #' ##########################
 #'
-#' lr <- modelcomp(fit,models = c("DINA","DINO"),method = "LR")
+#' lr <- modelcomp(fit,method = "LR")
 #' lr
 #' TwostepLR <- modelcomp(fit,items =c(6:10),method = "LR",LR.args = list(LR.approx = TRUE))
 #' TwostepLR
@@ -170,9 +170,12 @@ modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.met
 
 
   }else{
-    if(!class(GDINA.obj)=="GDINA") stop("GDINA.obj must be a GDINA estimate.",call. = FALSE)
-    if (!all(toupper(extract(GDINA.obj,"models"))%in%c("GDINA","LOGGDINA","LOGITGDINA"))) stop ("Implementing the Wald and LR tests for item-level model comparison requires all items to be fitted by the G-DINA model.",call. = FALSE)
-    if(extract(GDINA.obj,"att.str"))stop("Item-level model comparison is not available for structured attributes.",call. = FALSE)
+    if(!class(GDINA.obj)=="GDINA")
+      stop("GDINA.obj must be a GDINA estimate.",call. = FALSE)
+    if (!all(toupper(extract(GDINA.obj,"models"))%in%c("GDINA","LOGGDINA","LOGITGDINA")))
+      stop ("Implementing the Wald and LR tests for item-level model comparison requires all items to be fitted by the G-DINA model.",call. = FALSE)
+    if(!is.null(extract(GDINA.obj,"att.str")))
+      stop("Item-level model comparison is not available for structured attributes.",call. = FALSE)
     Q <- 1*(extract(GDINA.obj,"Q")>0.5)
     item.names <- extract(GDINA.obj,"item.names")
   }

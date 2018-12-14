@@ -80,7 +80,7 @@ test_that("checking GDINA extract calculation", {
   expect_equal(extract(est,"AIC"),9503.704, tolerance = .02)
   expect_equal(extract(est,"att.dist"),"saturated")
   expect_equal(extract(est,"att.prior"),c(0.2708239,0.2998923,0.1588651,0.2704186), tolerance = .02)
-  expect_equal(extract(est,"att.str"),FALSE)
+  expect_equal(extract(est,"att.str"),NULL)
   expect_equal(extract(est,"BIC"),9636.213, tolerance = .02)
   expect_equal(extract(est,"dif.p"),9.103323e-05, tolerance = .02)
   expect_equal(extract(est,"dif.prior"),3.174468e-05, tolerance = .02)
