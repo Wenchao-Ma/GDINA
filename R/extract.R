@@ -186,10 +186,11 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 catprob.matrix = object$catprob.matrix,
                 catprob.parm = object$catprob.parm,
                 catprob.se = {
-                  if(SE.type==3&any(extract(object,"att.dist")=="higher.order"))stop("standard error cannot be calculated.",call. = FALSE)
+                  if(SE.type==3&any(extract(object,"att.dist")=="higher.order"))
+                    stop("standard error cannot be calculated.",call. = FALSE)
                   Kj <- extract(object, "Kj")
                   se <- OPG_p(object, SE.type = SE.type, ...)$se
-                  for (j in 1:length(se)) names(se[[j]]) <- paste0("SE[P(", apply(attributepattern(Kj[j]), 1, paste0, collapse = ""), ")]")
+                  for (j in 1:length(se)) names(se[[j]]) <- paste0("SE[P(", apply(extract(object,"reduced.LG")[[j]], 1, paste0, collapse = ""), ")]")
                   names(se) <- object$options$item.names
                   se
                 },
@@ -220,6 +221,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                   colnames(Discrim) <- c("P(1)-P(0)", "GDI")
                   Discrim
                 },
+                eta = object$technicals$eta,
                 end.time = object$extra$end.time,
                 expectedCorrect = object$technicals$expectedCorrect,
                 expectedTotal = object$technicals$expectedTotal,

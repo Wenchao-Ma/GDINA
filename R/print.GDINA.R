@@ -200,7 +200,7 @@ print.autoGDINA <-
       #cat("\n - Q-matrix validation is disabled\n\n")
     }
     if(x$options$modelselection){
-      cat(" - Model selection is based on the",toupper(auto$Wald.obj$method),"method using the",x$options$modelselectionrule,"rule\n")
+      cat(" - Model selection is based on the",toupper(x$Wald.obj$method),"method using the",x$options$modelselectionrule,"rule\n")
       cat(" - Reduced models include",x$options$reducedCDM,"\n")
     cat(" - The alpha level is",x$options$alpha.level,"\n")
     }else{

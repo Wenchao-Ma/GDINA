@@ -85,8 +85,8 @@ Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args =
     stop("Q-matrix validation is not available if attributes are structured.",
          call. = FALSE)
 
-  if (eps > 1 || eps <= 0)
-    stop("eps must be greater than 0 and less than 1.", call. = FALSE)
+  if (eps > 1 || eps < 0)
+    stop("eps must be between 0 and 1.", call. = FALSE)
 
   if(extract(GDINA.obj,"ngroup")>1) stop("Only available for single-group models.",call. = FALSE)
 
@@ -102,6 +102,8 @@ Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args =
   if(toupper(method)=="PVAF"){
     ret <- Qval_PVAF(GDINA.obj,eps = eps, digits = digits)
   }else if (toupper(method)=="WALD"){
+    if(any(extract(GDINA.obj,"models")!="GDINA"))
+      stop("Saturated G-DINA model needs to be fitted to all items.",call. = FALSE)
     args.default <- list(GDINA.obj = GDINA.obj, SE.type = 2,
                          alpha.level = 0.05, GDI = 2, PVAF = eps,
                          verbose = FALSE, stepwise = TRUE,digits=digits)

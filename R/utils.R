@@ -172,7 +172,9 @@ format_delta <- function(delta,model,Kj,item.names = NULL,digits=4){
       if(Kj[j]==1){
         names(delta[[j]]) <- c("d0","d1")
       }else{
-        names(delta[[j]]) <- c("d0",paste("d",unlist(lapply(apply(alpha2(Kj[j]),1,function(x)which(x==1))[-1],function(x) paste(x,collapse = ""))),sep = ""))
+        name <- c("d0",paste("d",unlist(lapply(apply(alpha2(Kj[j]),1,function(x)which(x==1))[-1],function(x) paste(x,collapse = ""))),sep = ""))
+        if(length(name)==length(delta[[j]]))
+            names(delta[[j]]) <- name
       }
     }else if (model[j]%in%c(1,2,6)){
       names(delta[[j]]) <- c("d0","d1")

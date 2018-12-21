@@ -95,7 +95,7 @@ score_p <- function(object){
   scof <- scorefun(mX=as.matrix(dat),
                    mlogPost=as.matrix(extract(object,"logposterior.i")),
                    itmpar=pj,
-                   parloc=eta(as.matrix(Q)),
+                   parloc=extract(object,"eta"),
                    model=model)
   scorep <- scof$score
   ind <- scof$index + 1 # col 1: location; col 2: category
@@ -142,7 +142,7 @@ score_d <- function(object){
   scof <- scorefun(mX=as.matrix(dat),
                    mlogPost=as.matrix(extract(object,"logposterior.i")),
                    itmpar=as.matrix(extract(object,"catprob.matrix")),
-                   parloc=eta(as.matrix(Q),att),
+                   parloc=extract(object,"eta"),
                    model=rep(0,NC))
 
   scorep <- scof$score

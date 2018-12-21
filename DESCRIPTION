@@ -1,9 +1,9 @@
 Package: GDINA
 Type: Package
 Title: The Generalized DINA Model Framework
-Version: 2.2.3
-Date: 2018-12-14
-Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre", "cph"),email = "wenchao.ma@ua.edu",comment = c(ORCID = "0000-0002-6763-0707")),person(given = "Jimmy", family = "de la Torre", role = c("aut", "cph")), person(given="Miguel",family = "Sorrel",role = "ctb"))
+Version: 2.2.5
+Date: 2018-12-21
+Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre", "cph"),email = "wenchao.ma@ua.edu"),person(given = "Jimmy", family = "de la Torre", role = c("aut", "cph")), person(given="Miguel",family = "Sorrel",role = "ctb"))
 Description: A set of psychometric tools for cognitive diagnosis modeling for both dichotomous and polytomous responses. Various cognitive diagnosis models can be estimated, include the generalized deterministic inputs, noisy and gate (G-DINA) model by de la Torre (2011) <DOI:10.1007/s11336-011-9207-7>, the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.12070>, and many other models they subsume. Joint attribute distribution can be independent, saturated, higher-order, loglinear smoothed or structured. Q-matrix validation, item and model fit statistics, model comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided.
 License: GPL-3
 LazyData: TRUE
