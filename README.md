@@ -3,12 +3,12 @@
 GDINA Package for Cognitive Diagnosis Modelling
 ===============================================
 
-[![Project Status: Active ? The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Build Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travis-ci.org/Wenchao-Ma/GDINA) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA) [![](https://cranlogs.r-pkg.org/badges/GDINA?color=brightgreen)](https://cran.r-project.org/package=GDINA) [![](http://cranlogs.r-pkg.org/badges/grand-total/GDINA?color=green)](https://cran.r-project.org/package=GDINA) [![rpackages.io rank](https://www.rpackages.io/badge/GDINA.svg)](https://www.rpackages.io/package/GDINA)
+[![Project Status: Active ? The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Build Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travis-ci.org/Wenchao-Ma/GDINA) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA) [![](https://cranlogs.r-pkg.org/badges/GDINA?color=brightgreen)](https://cran.r-project.org/package=GDINA) [![](http://cranlogs.r-pkg.org/badges/grand-total/GDINA?color=green)](https://cran.r-project.org/package=GDINA)
 
 How to cite the package
 -----------------------
 
-Ma, W. & de la Torre, J. (2018). GDINA: The generalized DINA model framework. R package version 2.2. Retrived from <https://CRAN.R-project.org/package=GDINA>
+Ma, W. & de la Torre, J. (2018). GDINA: The generalized DINA model framework. R package version 2.3. Retrived from <https://CRAN.R-project.org/package=GDINA>
 
 Visit the package website <https://wenchao-ma.github.io/GDINA> for examples and tutorials.
 
@@ -19,6 +19,7 @@ Features of the package
 -   Estimating models within the G-DINA model framework using user-specified design matrix and link functions
 -   Estimating Bugs-DINA, DINO and G-DINA models for dichotomous responses
 -   Estimating sequential G-DINA model for ordinal and nominal responses
+-   Estimating the generalized multiple-strategy cognitive diagnosis models (experimental)
 -   Estimating the diagnostic tree model (experimental)
 -   Modelling independent, saturated, higher-order, loglinear smoothed, and structured joint attribute distribution
 -   Accommodating multiple-group model analysis
