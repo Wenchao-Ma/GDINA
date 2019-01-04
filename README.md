@@ -34,7 +34,11 @@ Features of the package
 Installation
 ------------
 
-You can install the development version of GDINA from github with:
+To install this package from source:
+
+1.  Windows users may need to install the [Rtools](https://CRAN.R-project.org/bin/windows/Rtools/) and include the checkbox option of installing Rtools to their path for easier command line usage. Mac users will have to download the necessary tools from the [Xcode](https://itunes.apple.com/ca/app/xcode/id497799835?mt=12) and its related command line tools (found within Xcode's Preference Pane under Downloads/Components); most Linux distributions should already have up to date compilers (or if not they can be updated easily).
+
+2.  Install the `devtools` package (if necessary), and install the package from the Github source code.
 
 ``` r
 # install.packages("devtools")
@@ -46,7 +50,7 @@ The stable version of GDINA should be installed from R CRAN at [here](https://CR
 Upcoming Training Sessions
 --------------------------
 
--   TBA
+-   Cognitive Diagnosis Modeling: A General Framework Approach and Its Implementation in R - A NCME training session on April 4, 2019 - see [here](https://www.ncme.org/meetings/annualmeeting)
 
 Past Training Sessions
 ----------------------

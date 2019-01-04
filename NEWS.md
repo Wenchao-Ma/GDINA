@@ -1,4 +1,4 @@
-# GDINA 2.2.3
+# GDINA 2.3.0
 * Added   - Attribute Hierarchical structure for A-CDM, LLM and RRUM
 * Added   - Estimating generalized multiple strategy CDMs using `GMSCDM`
 * Changed - `att.str` argument of the `GDINA` function has been updated

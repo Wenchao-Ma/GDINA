@@ -29,7 +29,12 @@
 #' }
 bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=12345){
 
-  if (exists(".Random.seed", .GlobalEnv)) oldseed <- .GlobalEnv$.Random.seed else  oldseed <- NULL
+  if (exists(".Random.seed", .GlobalEnv)){
+    oldseed <- .GlobalEnv$.Random.seed
+    on.exit(.GlobalEnv$.Random.seed <- oldseed)
+  }else{
+    on.exit(rm(".Random.seed", envir = .GlobalEnv))
+  }
 
   if(!is.null(extract(GDINA.obj,"att.str")))
     stop("bootSE is not available for models with attribute structures.",call. = FALSE)
@@ -82,10 +87,6 @@ bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=123
     }
 
 
-
-
-  if (!is.null(oldseed)) .GlobalEnv$.Random.seed <- oldseed  else  rm(".Random.seed", envir = .GlobalEnv)
-
-  return(list(itemparm.se=se.ip,delta.se=se.d,lambda.se=se.jointAtt,boot.est=list(lambda=lambda,itemprob=itemprob,delta=delta)))
+return(list(itemparm.se=se.ip,delta.se=se.d,lambda.se=se.jointAtt,boot.est=list(lambda=lambda,itemprob=itemprob,delta=delta)))
 }
 

@@ -269,9 +269,9 @@ Rcpp::List fast_GDINA_EM(arma::mat  mloc,
     }
     itr++;
     maxchange_itr = std::max(maxchange_itr,arma::as_scalar(arma::max(arma::abs(arma::exp(vlogPrior)-arma::exp(vlogPrior0)))));
-    std::printf("\nIter =%4d",itr);
-    std::printf("  Max. abs. change = %.5f",maxchange_itr);
-    std::printf("  Deviance = %.2f",-2 * arma::accu(log(arma::sum(mPost,1))));
+    // std::printf("\nIter =%4d",itr);
+    // std::printf("  Max. abs. change = %.5f",maxchange_itr);
+    // std::printf("  Deviance = %.2f",-2 * arma::accu(log(arma::sum(mPost,1))));
     if(maxchange_itr < crit) break;
 
   }

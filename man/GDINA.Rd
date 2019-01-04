@@ -825,7 +825,7 @@ c(0.9,0.1,0.1,0.1),
 c(0.9,0.1,0.1,0.1),
 c(0.9,0.1,0.1,0.1),
 c(0.9,0.1,0.1,0.1,0.1,0.1,0.1,0.1))
-sim <- simGDINA(N=1000,Q=Q,catprob.parm = ip)
+sim <- simGDINA(N=1000,Q=Q,catprob.parm = ip,model = "DINO")
 dat <- extract(sim,"dat")
 # use latent.var to specify a bug model
 est <- GDINA(dat=dat,Q=Q,latent.var="bugs",model="DINO")
@@ -849,7 +849,7 @@ c(0.9,0.9,0.9,0.1),
 c(0.9,0.9,0.9,0.1),
 c(0.9,0.9,0.9,0.1),
 c(0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.1))
-sim <- simGDINA(N=1000,Q=Q,catprob.parm = ip)
+sim <- simGDINA(N=1000,Q=Q,catprob.parm = ip,model="DINA")
 dat <- extract(sim,"dat")
 # use latent.var to specify a bug model
 est <- GDINA(dat=dat,Q=Q,latent.var="bugs",model="DINA")
@@ -992,6 +992,8 @@ Xu, X., & von Davier, M. (2008). Fitting the structured general diagnostic model
 See \code{\link{autoGDINA}} for Q-matrix validation, item-level model comparison and model calibration
 in one run; See \code{\link{modelfit}} and \code{\link{itemfit}} for model and item fit analysis, \code{\link{Qval}} for Q-matrix validation,
 \code{\link{modelcomp}} for item level model comparison and \code{\link{simGDINA}} for data simulation.
+\code{\link{GMSCDM}} for a series of multiple strategy CDMs for dichotomous data,
+and \code{\link{DTM}} for diagnostic tree model for multiple strategies in polytomous response data
 Also see \code{gdina} in \pkg{CDM} package for the G-DINA model estimation.
 }
 \author{

@@ -1,7 +1,9 @@
 .onAttach <- function(libname, pkgname){
   packageStartupMessage(StartWelcomeMessage())
 }
-
+# .onUnload <- function (libpath) {
+#   library.dynam.unload("mypackage", libpath)
+# }
 
 StartWelcomeMessage <- function(){
 

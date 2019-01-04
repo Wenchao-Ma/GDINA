@@ -41,7 +41,10 @@
 #'
 #' Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
 #'
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
 #'
+#' @seealso \code{\link{GDINA}} for MS-DINA model and single strategy CDMs,
+#' and \code{\link{GMSCDM}} for generalized multiple strategies CDMs for dichotomous response data
 #' @export
 DTM <- function(dat, Qc, delta = NULL, Tmatrix = NULL, conv.crit = 0.001, conv.type = "pr",maxitr = 1000){
 

@@ -35,8 +35,8 @@ a higher-order IRT model (de la Torre, & Douglas, 2004), a loglinear model (Xu &
 a saturated model or a hierarchical structures (e.g., linear, divergent). Monotonicity constraints for item/category success
 probabilities can also be specified.
 
-In addition, to handle multiple strategies in ordinal response data, diagnostic treee model (Ma, 2018) can also
-be estimated using \code{\link{DTM}} function. Note that this function is experimental, and is expected to be further extended
+In addition, to handle multiple strategies, generalized multiple-strategy CDMs for dichotomous response (Ma & Guo, 2019) can be fitted using \code{\link{GMSCDM}} function and
+diagnostic tree model (Ma, 2018) can also be estimated using \code{\link{DTM}} function for polytomous responses. Note that these functions are experimental, and are expected to be further extended
 in the future.
 
 Q-matrix validation (de la Torre, & Chiu, 2016; de la Torre & Ma, 2016; Ma & de la Torre, 2019; see \code{\link{Qval}}),

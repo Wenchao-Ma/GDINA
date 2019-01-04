@@ -1,6 +1,7 @@
 #' Q-matrix validation
 #'
 #' Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016), stepwise Wald test (Ma & de la Torre, 2019) or mesa plot (de la Torre & Ma, 2016).
+#' All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method. You should always check the mesa plots for further examination.
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
 #' @param eps cutoff value for PVAF. 0.95 is the default.
