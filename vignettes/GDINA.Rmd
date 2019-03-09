@@ -17,7 +17,7 @@ for dichotomous and polytomous responses.
 For more details, see [here](https://wenchao-ma.github.io/GDINA/index.html)
 
 
-## How do we start to use this package?
+## How to use this package?
 
 * To estimate various CDMs, use **GDINA()** function
 * To extract item and person parameters from GDINA estimates, use **coef()** and **personparm()** functions, respectively
@@ -28,7 +28,7 @@ For more details, see [here](https://wenchao-ma.github.io/GDINA/index.html)
 * To run graphical user interface, use **startGDINA()** function
 * To simulate data from various CDMs, use **simGDINA()** function
 
-Visit [here](https://wenchao-ma.github.io/GDINA/reference/index.html) for online reference
+Visit [here](https://wenchao-ma.github.io/GDINA/reference/index.html) for an online reference
 
 ## A quick example
 
