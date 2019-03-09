@@ -22,6 +22,7 @@ inputcheck <- function(dat, Q, model, sequential,att.dist,latent.var,
   if(!is.logical(sequential)) stop("sequential must be logical.",call. = FALSE)
   if (!all(is.nonNegativeInteger(Q))) stop("Q matrix can only contain 0 and positive integers.",call. = FALSE)
   if (!is.matrix(dat) & !is.data.frame(dat)) stop("Data must be a matrix or data frame.",call. = FALSE)
+  if(any(apply(dat,2,function(x) length(unique(x)))==1)) stop("Some items have only one response category and cannot be estimated.",call. = FALSE)
   if (!is.matrix(Q) & !is.data.frame(Q)) stop("Q-matrix must be a matrix or data frame.",call. = FALSE)
   if (any(rowSums(Q)<1)) stop("Some items do not require any attributes.",call. = FALSE)
   if (any(colSums(Q)<1)) stop("Some attributes are not required by any items.",call. = FALSE)
@@ -31,11 +32,11 @@ inputcheck <- function(dat, Q, model, sequential,att.dist,latent.var,
   if (!all(sapply(mono.constraint,is.logical))) stop("mono.constraint must be TRUE or FALSE.",call. = FALSE)
   if (!length(mono.constraint)%in%c(1,nrow(Q))) stop("Length of mono.constraint must be equal to 1 or the number of categories.",call. = FALSE)
   if (!is.positiveInteger(nstarts)) {nstarts <- 1; warning("nstarts must be a positive integer.")}
-if (!is.null(catprob.parm)){
-  if (!is.list(catprob.parm)) stop("catprob.parm must be a list.",call. = FALSE)
-  if (length(catprob.parm)!=nrow(Q)) stop("The length of catprob.parm is not correct.",call. = FALSE)
+  if (!is.null(catprob.parm)){
+    if (!is.list(catprob.parm)) stop("catprob.parm must be a list.",call. = FALSE)
+    if (length(catprob.parm)!=nrow(Q)) stop("The length of catprob.parm is not correct.",call. = FALSE)
 
-}
+  }
   if(all(model==6)&&min(table(Q[,1]))==1) stop("You sure all models are MSDINA model?",call. = FALSE)
   if (max(dat, na.rm = TRUE) > 1 & !sequential)
     stop("Maximum response is greater than 1 - set sequential = TRUE to fit a sequential model.", call. = FALSE)

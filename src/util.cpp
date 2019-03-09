@@ -410,6 +410,7 @@ arma::umat eta(arma::umat & Q, Rcpp::Nullable<Rcpp::IntegerMatrix> AlphaPattern 
   int J = Q.n_rows;
   int maxQ = Q.max();
   arma::uvec maxcolQ = arma::trans(arma::max(Q,0));
+  maxcolQ.elem(arma::find(maxcolQ==0)).ones();
   arma::umat patt;
   int L;
   arma::umat parloc;

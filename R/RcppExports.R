@@ -85,8 +85,8 @@ aggregateCol <- function(mX, ind) {
     .Call('_GDINA_aggregateCol', PACKAGE = 'GDINA', mX, ind)
 }
 
-fitstats <- function(mX, LCprob, attgroup) {
-    .Call('_GDINA_fitstats', PACKAGE = 'GDINA', mX, LCprob, attgroup)
+fitstats <- function(mX, Xfit, cor = TRUE) {
+    .Call('_GDINA_fitstats', PACKAGE = 'GDINA', mX, Xfit, cor)
 }
 
 scorefun <- function(mX, mlogPost, itmpar, parloc, model) {

@@ -6,10 +6,10 @@
 
 // [[Rcpp::export]]
 
-Rcpp::List LouisC(arma::mat mX,
+Rcpp::List LouisC(arma::mat & mX,
                   arma::vec np,
-                    arma::mat mlogPost,
-                    arma::mat itemparmLC,
+                    arma::mat & mlogPost,
+                    arma::mat & itemparmLC,
                     arma::mat parloc, //J x L
                     arma::vec weight,
                     int SEtype){

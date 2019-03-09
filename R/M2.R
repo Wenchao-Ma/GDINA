@@ -13,7 +13,7 @@
 #' @export
 #' @references
 #'
-#' Ma, W. (under review). Evaluating model data fit using limited information statistics for the sequential G-DINA model.
+#' Ma, W. (In press). Evaluating model data fit using limited information statistics for the sequential G-DINA model.\emph{Applied Psychological Measurement.}
 #'
 #' Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. \emph{Measurement, 11}, 71-101.
 #'

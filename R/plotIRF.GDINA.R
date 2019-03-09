@@ -73,14 +73,14 @@ plot.GDINA <-
                   geom_bar(stat = "identity", position = "dodge") +
                   geom_errorbar(aes(ymax=upper,ymin=lower), position = "dodge", width = 0.15) +
                   ylim(0,1)+
-                  labs(x = "Latent groups", y = "Probability of success",
+                  labs(x = "Latent group", y = "Probability of success",
                        title = paste(tit,"for", extract(x,"item.names")[j])))
         }else{
           dat <- data.frame(lc = lc,p = tmp.obj)
           print(ggplot2::ggplot(data = dat, aes(x = lc, y = p)) +
                   geom_bar(stat = "identity", position = "dodge") +
                   ylim(0,1)+
-                  labs(x = "Latent groups", y = "Probability of success",
+                  labs(x = "Latent group", y = "Probability of success",
                        title = paste(tit,"for", extract(x,"item.names")[j])))
         }
 
@@ -101,16 +101,16 @@ plot.GDINA <-
         print(ggplot2::ggplot(data = dat, ggplot2::aes_string(x = "att", y = "mp")) +
                 geom_bar(stat = "identity", position = "dodge",ggplot2::aes_string(fill = "person")) +
                 ylim(0,1)+
-                labs(x = "Attributes", y = "Mastery probabilities",
-                     title = paste("Mastery probabilities")))
+                labs(x = "Attribute", y = "Mastery probability",
+                     title = paste("Mastery probability")))
       }else{
         dff <- c(df[person,])
         dat <- data.frame(att = att.names,mp = dff,person = factor(rep(person,ncol(df))))
         print(ggplot2::ggplot(data = dat, ggplot2::aes_string(x = "att", y = "mp")) +
                 geom_bar(stat = "identity", position = "dodge") +
                 ylim(0,1)+
-                labs(x = "Attributes", y = "Mastery probabilities",
-                     title = paste("Mastery probabilities for individual",person)))
+                labs(x = "Attribute", y = "Mastery probability",
+                     title = paste("Mastery probability for individual",person)))
       }
 
     }
@@ -154,7 +154,7 @@ plot.itemfit <- function(x,type="all",adjusted=TRUE,...){
                                                high="gray",
                                                limits=c(0,0.05))+
               theme_bw() +
-              labs(x = "Items", y = "Items",
+              labs(x = "Item", y = "Item",
                    title = "Heatmap plot for unadjusted p-values of log odds ratio"))
     }else{
       print(ggplot2::ggplot(extract.itemfit(x,"logOR"),
@@ -165,7 +165,7 @@ plot.itemfit <- function(x,type="all",adjusted=TRUE,...){
                                                high="gray",
                                                limits=c(0,0.05))+
               theme_bw() +
-              labs(x = "Items", y = "Items",
+              labs(x = "Item", y = "Item",
                    title = "Heatmap plot for adjusted p-values of log odds ratio"))
 
     }
@@ -194,7 +194,7 @@ plot.itemfit <- function(x,type="all",adjusted=TRUE,...){
                                                  high="gray",
                                                  limits=c(0,0.05))+
                 theme_bw() +
-                labs(x = "Items", y = "Items",
+                labs(x = "Item", y = "Item",
                      title = "Heatmap plot for unadjusted p-values of transformed correlation"))
 
 
@@ -264,7 +264,7 @@ plot.Qval <-
 
         locy <- no.qvector-(L-which(order(fullPVAF[,y],decreasing = F)==locy0))
         ordered.PVAF.j <- sort(fullPVAF[,y],decreasing = FALSE)
-        graphics::plot(ordered.PVAF.j[(L-no.qvector+1):L],xaxt="n",type="o",ylab = "PVAF",xlab="q-vectors",
+        graphics::plot(ordered.PVAF.j[(L-no.qvector+1):L],xaxt="n",type="o",ylab = "PVAF",xlab="q-vector",
                        main = paste("Mesa Plot for Item",y),ylim = c(0,1),...)
         axis(1,at=c(1:no.qvector),labels = names(ordered.PVAF.j[(L-no.qvector+1):L]))
         if (locy>0){
@@ -290,7 +290,7 @@ plot.Qval <-
       for(j in item){
         bestlocj <- bestloc[,j]
         if (auto.ylim) ylim = c(max(0,round(min(bestPVAF[,j])-0.1,1)),1) else ylim=c(0,1)
-        graphics::plot(bestPVAF[,j],xaxt="n",type="o",ylab = "PVAF",xlab="q-vectors",
+        graphics::plot(bestPVAF[,j],xaxt="n",type="o",ylab = "PVAF",xlab="q-vector",
                        main = paste("Mesa Plot for Item",j),ylim = ylim,...)
         graphics::axis(1,at=c(1:nrow(bestPVAF)),labels = label.bestPVAF[bestlocj])
         if (!is.null(eps)&&eps>0&&eps<1) abline(h=eps,lty=3);text(1.5,eps+0.03,paste("eps =",eps))

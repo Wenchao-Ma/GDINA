@@ -7,8 +7,8 @@
 \title{Item fit statistics}
 \usage{
 itemfit(GDINA.obj, person.sim = "post",
-  p.adjust.methods = "bonferroni", digits = 4, N.resampling = NULL,
-  randomseed = 123456)
+  p.adjust.methods = "bonferroni", cor.use = "pairwise.complete.obs",
+  digits = 4, N.resampling = NULL, randomseed = 123456)
 
 \method{extract}{itemfit}(object, what, ...)
 
@@ -25,9 +25,11 @@ and therefore all adjustment methods supported by \code{p.adjust} can be used, i
 \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
 for more details. \code{"bonferroni"} is the default.}
 
+\item{cor.use}{how to deal with missing values when calculating correlations? This argument will be passed to \code{use} when calling \code{stats::cor}.}
+
 \item{digits}{How many decimal places in each number? The default is 4.}
 
-\item{N.resampling}{the sample size of resampling. By default, it is maximum of 1e+5 or ten times of current sample size.}
+\item{N.resampling}{the sample size of resampling. By default, it is the maximum of 1e+5 and ten times of current sample size.}
 
 \item{randomseed}{random seed; This is used to make sure the results are replicable. The default random seed is 123456.}
 

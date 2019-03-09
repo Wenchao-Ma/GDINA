@@ -9,8 +9,9 @@
 #'  and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 #'  \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
 #'  for more details. \code{"bonferroni"} is the default.
-#' @param N.resampling the sample size of resampling. By default, it is maximum of 1e+5 or ten times of current sample size.
+#' @param N.resampling the sample size of resampling. By default, it is the maximum of 1e+5 and ten times of current sample size.
 #' @param randomseed random seed; This is used to make sure the results are replicable. The default random seed is 123456.
+#' @param cor.use how to deal with missing values when calculating correlations? This argument will be passed to \code{use} when calling \code{stats::cor}.
 #' @param digits How many decimal places in each number? The default is 4.
 #' @return an object of class \code{itemfit} consisting of several elements that can be extracted using
 #'  method \code{extract}. Components that can be extracted include:
@@ -62,6 +63,7 @@
 
 
 itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni",
+                    cor.use = "pairwise.complete.obs",
                     digits = 4,N.resampling = NULL,randomseed=123456){
 
 
@@ -115,22 +117,15 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni
 
 
 
+  Yfit <- Pr[att_group, ] > matrix(runif(length(att_group) * J), ncol = J)
 
-
-    if(any(is.na(dat))){
-
-     fitstat <- list()
-
-    Yfit <- Pr[att_group, ] > matrix(runif(length(att_group) * J), ncol = J)
-    fitstat$r <- cor(dat, use = "pairwise.complete.obs")
-     fitstat$rfit <- cor(Yfit)
-    fitstat$l <- crossprod.na(dat,dat)*crossprod.na(1-dat,1-dat)/(crossprod.na(1-dat,dat)*crossprod.na(dat,1-dat))
-    fitstat$lfit <- crossprod.na(Yfit,Yfit)*crossprod.na(1-Yfit,1-Yfit)/(crossprod.na(1-Yfit,Yfit)*crossprod.na(Yfit,1-Yfit))
-    fitstat$sefit <- Rep*(1/crossprod.na(Yfit,Yfit) + 1/crossprod.na(1-Yfit,1-Yfit) + 1/crossprod.na(1-Yfit,Yfit)+1/crossprod.na(Yfit,1-Yfit))
-    fitstat$pfit <- colMeans(Yfit)
-   }else{
-     fitstat <- fitstats(dat,as.matrix(Pr),att_group)
-   }
+  if(any(is.na(dat))){
+    fitstat <- fitstats(dat,Yfit,FALSE)
+    fitstat$r <- cor(dat, use = cor.use)
+    fitstat$rfit <- cor(Yfit, use = cor.use)
+  }else{
+     fitstat <- fitstats(dat,Yfit,TRUE)
+  }
 
   itempair <- NULL
   for (i in 1:(J - 1)) {
@@ -232,3 +227,6 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni
 
   return(output)
 }
+
+
+

@@ -104,15 +104,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // LouisC
-Rcpp::List LouisC(arma::mat mX, arma::vec np, arma::mat mlogPost, arma::mat itemparmLC, arma::mat parloc, arma::vec weight, int SEtype);
+Rcpp::List LouisC(arma::mat& mX, arma::vec np, arma::mat& mlogPost, arma::mat& itemparmLC, arma::mat parloc, arma::vec weight, int SEtype);
 RcppExport SEXP _GDINA_LouisC(SEXP mXSEXP, SEXP npSEXP, SEXP mlogPostSEXP, SEXP itemparmLCSEXP, SEXP parlocSEXP, SEXP weightSEXP, SEXP SEtypeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type np(npSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type mlogPost(mlogPostSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type itemparmLC(itemparmLCSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mlogPost(mlogPostSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type itemparmLC(itemparmLCSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type parloc(parlocSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< int >::type SEtype(SEtypeSEXP);
@@ -363,15 +363,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // fitstats
-Rcpp::List fitstats(arma::mat mX, arma::mat LCprob, arma::uvec attgroup);
-RcppExport SEXP _GDINA_fitstats(SEXP mXSEXP, SEXP LCprobSEXP, SEXP attgroupSEXP) {
+Rcpp::List fitstats(arma::mat& mX, arma::mat& Xfit, bool cor);
+RcppExport SEXP _GDINA_fitstats(SEXP mXSEXP, SEXP XfitSEXP, SEXP corSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type mX(mXSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type LCprob(LCprobSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type attgroup(attgroupSEXP);
-    rcpp_result_gen = Rcpp::wrap(fitstats(mX, LCprob, attgroup));
+    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Xfit(XfitSEXP);
+    Rcpp::traits::input_parameter< bool >::type cor(corSEXP);
+    rcpp_result_gen = Rcpp::wrap(fitstats(mX, Xfit, cor));
     return rcpp_result_gen;
 END_RCPP
 }

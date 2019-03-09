@@ -19,7 +19,7 @@ Qval(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4,
 
 \item{method}{which Q-matrix validation method is used? Can be either \code{"PVAF"} or \code{"wald"}.}
 
-\item{eps}{cutoff value for PVAF. 0.95 is the default.}
+\item{eps}{cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicated cutoff from Najera, P., Sorrel, M., and Abad, P. (2019).}
 
 \item{digits}{How many decimal places in each number? The default is 4.}
 
@@ -108,6 +108,8 @@ de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A genera
 Ma, W. (2017). A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-matrix Validation, and Model Comparison. Unpublished doctoral dissertation. Rutgers, The State University of New Jersey.
 
 Ma, W. & de la Torre, J. (2019). An Empirical Q-Matrix Validation Method for the Sequential G-DINA Model. \emph{British Journal of Mathematical and Statistical Psychology}
+
+Najera, P., Sorrel, M., & Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. \emph{Applied Psychological Measurement}.
 }
 \seealso{
 \code{\link{GDINA}}

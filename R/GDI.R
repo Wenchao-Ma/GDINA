@@ -4,7 +4,7 @@
 #' All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method. You should always check the mesa plots for further examination.
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
-#' @param eps cutoff value for PVAF. 0.95 is the default.
+#' @param eps cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicated cutoff from Najera, P., Sorrel, M., and Abad, P. (2019).
 #' @param method which Q-matrix validation method is used? Can be either \code{"PVAF"} or \code{"wald"}.
 #' @param wald.args a list of arguments for the stepwise Wald test method.
 #' \describe{
@@ -38,6 +38,7 @@
 #'
 #' Ma, W. & de la Torre, J. (2019). An Empirical Q-Matrix Validation Method for the Sequential G-DINA Model. \emph{British Journal of Mathematical and Statistical Psychology}
 #'
+#' Najera, P., Sorrel, M., & Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. \emph{Applied Psychological Measurement}.
 #'
 #' @seealso \code{\link{GDINA}}
 #' @export
@@ -86,6 +87,14 @@ Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args =
     stop("Q-matrix validation is not available if attributes are structured.",
          call. = FALSE)
 
+  if(eps == -1){
+    gs <- coef(GDINA.obj, what = "gs") # item parameters
+    eps <- plogis(-0.4045140782147791 +
+                       4.8404850955032684E-4*extract(GDINA.obj,"nobs") +
+                       2.8667570118638275*(1-sum(colMeans(gs))) +
+                       -0.003315555999671906*extract(GDINA.obj,"nitem"))
+  }
+
   if (eps > 1 || eps < 0)
     stop("eps must be between 0 and 1.", call. = FALSE)
 
@@ -99,8 +108,11 @@ Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args =
          call. = FALSE)
 
 
+
   updated.wald.args <- NULL
   if(toupper(method)=="PVAF"){
+    # if(any(extract(GDINA.obj,"models")!="GDINA"))
+    #   warning("Saturated G-DINA model may be used to calibrate all items for better performance.",call. = FALSE)
     ret <- Qval_PVAF(GDINA.obj,eps = eps, digits = digits)
   }else if (toupper(method)=="WALD"){
     if(any(extract(GDINA.obj,"models")!="GDINA"))
@@ -284,7 +296,7 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
     Q[j,] <- 0
     Q[j,currentset] <- 1
 
-
+j <- j+1
   }
 
   if(seqent){

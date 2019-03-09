@@ -1,15 +1,23 @@
 ---
-title: "GDINA-vignettes"
+title: "A quick reference to GDINA R package"
 author: "Wenchao Ma"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{GDINA-vignettes}
+  %\VignetteIndexEntry{A quick reference to GDINA R package}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\VignetteEncoding[utf8]{inputenc}
 ---
 
-## Overview
+## What can this package do?
+
+This package provides a framework for conducting a variety of cognitively diagnostic analyses
+for dichotomous and polytomous responses.
+
+For more details, see [here](https://wenchao-ma.github.io/GDINA/index.html)
+
+
+## How do we start to use this package?
 
 * To estimate various CDMs, use **GDINA()** function
 * To extract item and person parameters from GDINA estimates, use **coef()** and **personparm()** functions, respectively
@@ -22,7 +30,73 @@ vignette: >
 
 Visit [here](https://wenchao-ma.github.io/GDINA/reference/index.html) for online reference
 
-## Examples
+## A quick example
+
+Below is an illustration showing some analyses that you could do using the package. You can copy the code, paste and run it in R console.
+
+1. Load the package and assume we have the following item response matrix and Q-matrix:
+```{r,eval=FALSE}
+library(GDINA)
+dat <- sim10GDINA$simdat
+Q <- matrix(c(1,0,0,
+              0,1,0,
+              0,0,1,
+              1,0,1,
+              0,1,1,
+              1,1,0,
+              0,0,1,
+              1,0,0,
+              1,1,1,
+              1,0,1),byrow = T,ncol = 3)
+```
+
+2. Estimate the G-DINA model:
+```{r,eval=FALSE}
+est <- GDINA(dat = dat, Q = Q, model = "GDINA")
+```
+
+
+3. Conduct the Q-matrix validation. By default, it implements de la Torre and Chiu's (2016) algorithm using a fixed cutoff. This is fast but sometimes suggests too many modifications.
+```{r,eval=FALSE}
+Qv <- Qval(est)
+Qv
+```
+To avoid using fixed cutoffs and also take uncertainty in item parameter estimation into account, you may consider the stepwise method:
+```{r,eval=FALSE}
+Qv2 <- Qval(est,method = "Wald")
+Qv2
+```
+
+To further examine the q-vectors that are suggested to be modified, you can draw mesa plots:
+
+```{r,eval=FALSE}
+plot(Qv, item = 9)
+```
+
+4. Perform item-level model selection to see if the saturated G-DINA model can be simplified:
+```{r,eval=FALSE}
+mc <- modelcomp(est)
+mc
+```
+
+5. Assess model-data fit at test and item levels:
+```{r,eval=FALSE}
+# test level absolute fit
+mft <- modelfit(est)
+mft
+# item level absolute fit
+ift <- itemfit(est)
+ift
+summary(ift)
+plot(ift)
+```
+
+6. Calculate classification accuracy
+```{r,eval=FALSE}
+CA(est)
+```
+
+## More Examples
 
 * [G-DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html) 
 * [LCDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html) 

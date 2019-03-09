@@ -196,9 +196,12 @@ shinyServer(function(input, output) {
       x <- itemfit(object)
       if(all(extract(object,"models_numeric")>=0)&&all(extract(object,"models_numeric")<=5)&&input$attdis==0){
         z <- modelfit(object)
+        if(!is.null(z$M2)){
+          cat("\nM2=",z$M2,"( df=",z$M2.df,")","p-value=",round(z$M2.pvalue,4))
 
-        cat("\nM2=",z$M2,"( df=",z$M2.df,")","p-value=",round(z$M2.pvalue,4))
-        cat("\nRMSEA = ", round(z$RMSEA,4)," with ",z$CI*100,"% CI: [",round(z$RMSEA.CI[1],4),",",round(z$RMSEA.CI[2],4),"]")
+          cat("\nRMSEA = ", round(z$RMSEA,4)," with ",z$CI*100,"% CI: [",round(z$RMSEA.CI[1],4),",",round(z$RMSEA.CI[2],4),"]")
+        }
+
         cat("\nSRMSR = ", round(z$SRMSR,4),"\n\n")
       }
 
@@ -355,16 +358,16 @@ makeMpplot <- function(){
     x <- ggplot2::ggplot(data = dat, ggplot2::aes_string(x = "att", y = "mp")) +
       ggplot2::geom_bar(stat = "identity", position = "dodge",ggplot2::aes_string(fill = "person")) +
       ggplot2::ylim(0,1)+
-      ggplot2::labs(x = "Attributes", y = "Mastery probabilities",
-                 title = paste("Mastery probabilities"))
+      ggplot2::labs(x = "Attribute", y = "Mastery probability",
+                 title = paste("Mastery probability"))
   }else{
     dff <- c(df[person,])
     dat <- data.frame(att = att.names,mp = dff,person = factor(rep(person,ncol(df))))
     x <- ggplot2::ggplot(data = dat, ggplot2::aes_string(x = "att", y = "mp")) +
       ggplot2::geom_bar(stat = "identity", position = "dodge") +
       ggplot2::ylim(0,1)+
-      ggplot2::labs(x = "Attributes", y = "Mastery probabilities",
-                    title = paste("Mastery probabilities for individual",person))
+      ggplot2::labs(x = "Attribute", y = "Mastery probability",
+                    title = paste("Mastery probability for individual",person))
   }
   if(input$HPlot){
     print(x + ggplot2::coord_flip())
@@ -629,7 +632,7 @@ makeHeatplot <- function(){
                                          high="gray",
                                          limits=c(0,0.05))+
         ggplot2::theme_bw() +
-        ggplot2::labs(x = "Items", y = "Items",
+        ggplot2::labs(x = "Item", y = "Item",
                       title = paste("Heatmap plot for adjusted p-values of ",input$heatmap.type))
     }else{
       p <- ggplot2::ggplot(df, ggplot2::aes(x=factor(item.pair.2),
@@ -639,7 +642,7 @@ makeHeatplot <- function(){
                                          high="gray",
                                          limits=c(0,0.05))+
         ggplot2::theme_bw() +
-        ggplot2::labs(x = "Items", y = "Items",
+        ggplot2::labs(x = "Item", y = "Item",
              title = paste("Heatmap plot for unadjusted p-values of ",input$heatmap.type))
     }
 

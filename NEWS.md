@@ -1,4 +1,9 @@
-# GDINA 2.3.0
+# GDINA 2.4.0
+* Added   - Predicted cutoff based on the data for Q-matrix validation  
+* Changed - add .5 for elements 0 when calculating log odds statistic for item fit
+* Fixed   - model fit cannot be printed in GUI when M2 cannot be calculated
+
+# GDINA 2.3.2
 * Added   - Attribute Hierarchical structure for A-CDM, LLM and RRUM
 * Added   - Estimating generalized multiple strategy CDMs using `GMSCDM`
 * Changed - `att.str` argument of the `GDINA` function has been updated

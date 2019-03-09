@@ -49,7 +49,7 @@ body <- shinydashboard::dashboardBody(
                               )),
             shiny::fluidRow(
               shinydashboard::box(
-              title = "Upload response matrix", width = 6, solidHeader = TRUE, status = "primary",
+              title = "Import response matrix", width = 6, solidHeader = TRUE, status = "primary",
             shiny::fileInput('file1', NULL,
                       accept = c('text/csv','text/comma-separated-values',
                                  'text/tab-separated-values', 'text/plain',
@@ -62,7 +62,7 @@ body <- shinydashboard::dashboardBody(
                          '\t',inline = TRUE)
             ),
             shinydashboard::box(
-              title = "Upload Q-matrix", width = 6, solidHeader = TRUE, status = "primary",
+              title = "Import Q-matrix", width = 6, solidHeader = TRUE, status = "primary",
               shiny::fileInput('file2', NULL,
                         accept = c('text/csv','text/comma-separated-values',
                                    'text/tab-separated-values','text/plain',
