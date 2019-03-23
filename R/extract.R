@@ -195,6 +195,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                   se
                 },
                 dat = object$options$dat, #raw data
+                del.ind = object$technicals$del.ind,
                 delta.cov = {var <- OPG_d(object, SE.type = SE.type);list(cov = var$cov, index = var$ind)},
                 delta.parm = {format_delta(object$delta.parm,model = object$options$model,
                                            Kj = rowSums(extract(object,"Q")),

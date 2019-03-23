@@ -19,7 +19,7 @@ Qval(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4,
 
 \item{method}{which Q-matrix validation method is used? Can be either \code{"PVAF"} or \code{"wald"}.}
 
-\item{eps}{cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicated cutoff from Najera, P., Sorrel, M., and Abad, P. (2019).}
+\item{eps}{cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicted cutoff based on Najera, P., Sorrel, M., and Abad, P. (2019).}
 
 \item{digits}{How many decimal places in each number? The default is 4.}
 
@@ -55,8 +55,9 @@ extracted using \code{extract} method include:
 }
 }
 \description{
-Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016), stepwise Wald test (Ma & de la Torre, 2019) or mesa plot (de la Torre & Ma, 2016).
-All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method. You should always check the mesa plots for further examination.
+Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016; Najera, Sorrel, & Abad, 2019), stepwise Wald test (Ma & de la Torre, 2019) or mesa plot (de la Torre & Ma, 2016).
+All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method or predicted cutoffs.
+You should always check the mesa plots for further examination.
 }
 \section{Methods (by generic)}{
 \itemize{
@@ -105,11 +106,9 @@ de la Torre, J. & Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Vali
 
 de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A general framework approach and its implementation in R. A Short Course at the Fourth Conference on Statistical Methods in Psychometrics, Columbia University, New York.
 
-Ma, W. (2017). A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-matrix Validation, and Model Comparison. Unpublished doctoral dissertation. Rutgers, The State University of New Jersey.
-
 Ma, W. & de la Torre, J. (2019). An Empirical Q-Matrix Validation Method for the Sequential G-DINA Model. \emph{British Journal of Mathematical and Statistical Psychology}
 
-Najera, P., Sorrel, M., & Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. \emph{Applied Psychological Measurement}.
+Najera, P., Sorrel, M., & Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. \emph{Educational and Psychological Measurement}.
 }
 \seealso{
 \code{\link{GDINA}}

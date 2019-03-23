@@ -1,10 +1,11 @@
 #' Q-matrix validation
 #'
-#' Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016), stepwise Wald test (Ma & de la Torre, 2019) or mesa plot (de la Torre & Ma, 2016).
-#' All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method. You should always check the mesa plots for further examination.
+#' Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016; Najera, Sorrel, & Abad, 2019), stepwise Wald test (Ma & de la Torre, 2019) or mesa plot (de la Torre & Ma, 2016).
+#' All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method or predicted cutoffs.
+#' You should always check the mesa plots for further examination.
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
-#' @param eps cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicated cutoff from Najera, P., Sorrel, M., and Abad, P. (2019).
+#' @param eps cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicted cutoff based on Najera, P., Sorrel, M., and Abad, P. (2019).
 #' @param method which Q-matrix validation method is used? Can be either \code{"PVAF"} or \code{"wald"}.
 #' @param wald.args a list of arguments for the stepwise Wald test method.
 #' \describe{
@@ -34,11 +35,9 @@
 #'
 #' de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A general framework approach and its implementation in R. A Short Course at the Fourth Conference on Statistical Methods in Psychometrics, Columbia University, New York.
 #'
-#' Ma, W. (2017). A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-matrix Validation, and Model Comparison. Unpublished doctoral dissertation. Rutgers, The State University of New Jersey.
-#'
 #' Ma, W. & de la Torre, J. (2019). An Empirical Q-Matrix Validation Method for the Sequential G-DINA Model. \emph{British Journal of Mathematical and Statistical Psychology}
 #'
-#' Najera, P., Sorrel, M., & Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. \emph{Applied Psychological Measurement}.
+#' Najera, P., Sorrel, M., & Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. \emph{Educational and Psychological Measurement}.
 #'
 #' @seealso \code{\link{GDINA}}
 #' @export
@@ -163,8 +162,8 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
   expectedR <- extract(GDINA.obj,"expectedCorrect.LC")
   expectedN <- extract(GDINA.obj,"expectedTotal.LC")
 
-  est.p <- t((expectedR)/(expectedN))
-  est.p[is.nan(est.p)] <- 0.5
+  est.p <- t((expectedR + 1e-10)/(expectedN + 2*1e-10))
+  # est.p[is.nan(est.p)] <- 0.5
   patt <- attributepattern(K)[-1,]
   loc <- LC2LG(patt) #2^K-1 x 2^K
   vsg <- varsigma(as.matrix(t(loc)),as.matrix(est.p),c(w)) # versigma
@@ -366,7 +365,7 @@ Qval_PVAF <- function(GDINA.obj,
     colSums(x * exp(extract(GDINA.obj, "logposterior.i")))
   })
   # est.p <- rc/c(w*N)
-  est.p <- rc / rn
+  est.p <- (rc + 1e-10) / (rn + 2* 1e-10)
   patt <- attributepattern(K)[-1, ]
   loc <- eta(patt) #2^K-1 x 2^K
   vsg <- varsigma(as.matrix(t(loc)), as.matrix(est.p), c(w))

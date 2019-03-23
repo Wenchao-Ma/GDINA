@@ -14,9 +14,9 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
   #
   ##################################
   Qcm <- originalQ <- Q
-  originalData <- dat
 
 
+  del.ind <- NULL
   if (any(is.na(dat))) {
     # some missings individuals with one or fewer valid response are
     # removed
@@ -31,6 +31,7 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
     }
 
   }
+  originalData <- dat
   N <- nrow(dat)
   nitems <- ncol(dat)
   ncat <- nrow(Q)
@@ -508,7 +509,7 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
        technicals = list(logposterior.i = estep$logpost, loglikelihood.i = estep$loglik, free.item.npar = free.item.npar,
                          total.item.npar = total.item.npar, stru.npar = stru.npar, total.npar = npar,
                          expectedCorrect = estep$Rg, expectedTotal = estep$Ng,initial.parm = initial.parm,
-                         LC.labels = LC.labels,reduced.LG=reduced.LG,eta = parloc),
+                         LC.labels = LC.labels,reduced.LG=reduced.LG,eta = parloc,del.ind=del.ind),
        options = list(dat = originalData, Q = originalQ, Qm = Q, Qcm = Qcm, model = model,
                       itr = itr, dif.LL = dif.parm$neg2LL,dif.p=dif.parm$ip,dif.prior=dif.parm$prior,
                       att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, latent.var = latent.var,
