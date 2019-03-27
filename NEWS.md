@@ -2,6 +2,7 @@
 * Fixed   - `print.GDINA`()` prints valid number of individuals by default now
 * Fixed   - covariance matrix cannot be calculated when some individuals are deleted
 * Fixed   - `Qval` not work when estimated number of individuals in some latent classes are 0
+* Fixed   - `extract` only gives valid data
 
 # GDINA 2.4.0
 * Added   - Predicted cutoff based on the data for Q-matrix validation  
