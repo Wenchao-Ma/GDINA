@@ -32,8 +32,9 @@
 
 <meta property="og:title" content="Q-matrix validation — Qval" />
 
-<meta property="og:description" content="Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre &amp;amp; Chiu, 2016), stepwise Wald test (Ma &amp;amp; de la Torre, 2019) or mesa plot (de la Torre &amp;amp; Ma, 2016).
-All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method. You should always check the mesa plots for further examination." />
+<meta property="og:description" content="Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre &amp;amp; Chiu, 2016; Najera, Sorrel, &amp;amp; Abad, 2019), stepwise Wald test (Ma &amp;amp; de la Torre, 2019) or mesa plot (de la Torre &amp;amp; Ma, 2016).
+All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method or predicted cutoffs.
+You should always check the mesa plots for further examination." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +65,7 @@ All these methods are suitable for dichotomous and ordinal response data. If too
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -131,8 +132,9 @@ All these methods are suitable for dichotomous and ordinal response data. If too
 
     <div class="ref-description">
     
-    <p>Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre &amp; Chiu, 2016), stepwise Wald test (Ma &amp; de la Torre, 2019) or mesa plot (de la Torre &amp; Ma, 2016).
-All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method. You should always check the mesa plots for further examination.</p>
+    <p>Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre &amp; Chiu, 2016; Najera, Sorrel, &amp; Abad, 2019), stepwise Wald test (Ma &amp; de la Torre, 2019) or mesa plot (de la Torre &amp; Ma, 2016).
+All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method or predicted cutoffs.
+You should always check the mesa plots for further examination.</p>
     
     </div>
 
@@ -159,7 +161,7 @@ All these methods are suitable for dichotomous and ordinal response data. If too
     </tr>
     <tr>
       <th>eps</th>
-      <td><p>cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicated cutoff from Najera, P., Sorrel, M., and Abad, P. (2019).</p></td>
+      <td><p>cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicted cutoff based on Najera, P., Sorrel, M., and Abad, P. (2019).</p></td>
     </tr>
     <tr>
       <th>digits</th>
@@ -217,9 +219,8 @@ extracted using <code>extract</code> method include:</p><dl class='dl-horizontal
 
     <p>de la Torre, J. &amp; Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Validation. <em>Psychometrika, 81</em>, 253-273.</p>
 <p>de la Torre, J., &amp; Ma, W. (2016, August). Cognitive diagnosis modeling: A general framework approach and its implementation in R. A Short Course at the Fourth Conference on Statistical Methods in Psychometrics, Columbia University, New York.</p>
-<p>Ma, W. (2017). A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-matrix Validation, and Model Comparison. Unpublished doctoral dissertation. Rutgers, The State University of New Jersey.</p>
 <p>Ma, W. &amp; de la Torre, J. (2019). An Empirical Q-Matrix Validation Method for the Sequential G-DINA Model. <em>British Journal of Mathematical and Statistical Psychology</em></p>
-<p>Najera, P., Sorrel, M., &amp; Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. <em>Applied Psychological Measurement</em>.</p>
+<p>Najera, P., Sorrel, M., &amp; Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. <em>Educational and Psychological Measurement</em>.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

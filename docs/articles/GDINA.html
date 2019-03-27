@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
       <h1>A quick reference to GDINA R package</h1>
                         <h4 class="author">Wenchao Ma</h4>
             
-            <h4 class="date">2019-03-09</h4>
+            <h4 class="date">2019-03-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/GDINA.Rmd"><code>vignettes/GDINA.Rmd</code></a></small>
       <div class="hidden name"><code>GDINA.Rmd</code></div>
@@ -129,52 +129,52 @@
 <ol style="list-style-type: decimal">
 <li>Load the package and assume we have the following item response matrix and Q-matrix:</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(GDINA)
-dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat
-Q &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,
-              <span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,
-              <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,
-              <span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,
-              <span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,
-              <span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,
-              <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,
-              <span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,
-              <span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,
-              <span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>),<span class="dt">byrow =</span> T,<span class="dt">ncol =</span> <span class="dv">3</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(GDINA)</a>
+<a class="sourceLine" id="cb1-2" title="2">dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat</a>
+<a class="sourceLine" id="cb1-3" title="3">Q &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb1-4" title="4">              <span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb1-5" title="5">              <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-6" title="6">              <span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-7" title="7">              <span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-8" title="8">              <span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb1-9" title="9">              <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-10" title="10">              <span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb1-11" title="11">              <span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-12" title="12">              <span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>),<span class="dt">byrow =</span> T,<span class="dt">ncol =</span> <span class="dv">3</span>)</a></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>Estimate the G-DINA model:</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">est &lt;-<span class="st"> </span><span class="kw"><a href="../reference/GDINA.html">GDINA</a></span>(<span class="dt">dat =</span> dat, <span class="dt">Q =</span> Q, <span class="dt">model =</span> <span class="st">"GDINA"</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">est &lt;-<span class="st"> </span><span class="kw"><a href="../reference/GDINA.html">GDINA</a></span>(<span class="dt">dat =</span> dat, <span class="dt">Q =</span> Q, <span class="dt">model =</span> <span class="st">"GDINA"</span>)</a></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>Conduct the Q-matrix validation. By default, it implements de la Torre and Chiu’s (2016) algorithm using a fixed cutoff. This is fast but sometimes suggests too many modifications.</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Qv &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Qval.html">Qval</a></span>(est)
-Qv</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">Qv &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Qval.html">Qval</a></span>(est)</a>
+<a class="sourceLine" id="cb3-2" title="2">Qv</a></code></pre></div>
 <p>To avoid using fixed cutoffs and also take uncertainty in item parameter estimation into account, you may consider the stepwise method:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Qv2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Qval.html">Qval</a></span>(est,<span class="dt">method =</span> <span class="st">"Wald"</span>)
-Qv2</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">Qv2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Qval.html">Qval</a></span>(est,<span class="dt">method =</span> <span class="st">"Wald"</span>)</a>
+<a class="sourceLine" id="cb4-2" title="2">Qv2</a></code></pre></div>
 <p>To further examine the q-vectors that are suggested to be modified, you can draw mesa plots:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(Qv, <span class="dt">item =</span> <span class="dv">9</span>)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(Qv, <span class="dt">item =</span> <span class="dv">9</span>)</a></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>Perform item-level model selection to see if the saturated G-DINA model can be simplified:</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mc &lt;-<span class="st"> </span><span class="kw"><a href="../reference/modelcomp.html">modelcomp</a></span>(est)
-mc</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">mc &lt;-<span class="st"> </span><span class="kw"><a href="../reference/modelcomp.html">modelcomp</a></span>(est)</a>
+<a class="sourceLine" id="cb6-2" title="2">mc</a></code></pre></div>
 <ol start="5" style="list-style-type: decimal">
 <li>Assess model-data fit at test and item levels:</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># test level absolute fit</span>
-mft &lt;-<span class="st"> </span><span class="kw"><a href="../reference/modelfit.html">modelfit</a></span>(est)
-mft
-<span class="co"># item level absolute fit</span>
-ift &lt;-<span class="st"> </span><span class="kw"><a href="../reference/itemfit.html">itemfit</a></span>(est)
-ift
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(ift)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(ift)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># test level absolute fit</span></a>
+<a class="sourceLine" id="cb7-2" title="2">mft &lt;-<span class="st"> </span><span class="kw"><a href="../reference/modelfit.html">modelfit</a></span>(est)</a>
+<a class="sourceLine" id="cb7-3" title="3">mft</a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co"># item level absolute fit</span></a>
+<a class="sourceLine" id="cb7-5" title="5">ift &lt;-<span class="st"> </span><span class="kw"><a href="../reference/itemfit.html">itemfit</a></span>(est)</a>
+<a class="sourceLine" id="cb7-6" title="6">ift</a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(ift)</a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(ift)</a></code></pre></div>
 <ol start="6" style="list-style-type: decimal">
 <li>Calculate classification accuracy</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/CA.html">CA</a></span>(est)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="../reference/CA.html">CA</a></span>(est)</a></code></pre></div>
 </div>
 <div id="more-examples" class="section level2">
 <h2 class="hasAnchor">

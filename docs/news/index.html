@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -124,9 +124,20 @@
       <small>Source: <a href='https://github.com/Wenchao-Ma/GDINA/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="gdina-2-4-0" class="section level1">
+    <div id="gdina-241" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-2-4-0" class="anchor"></a>GDINA 2.4.0<small> Unreleased </small>
+<a href="#gdina-241" class="anchor"></a>GDINA 2.4.1<small> Unreleased </small>
+</h1>
+<ul>
+<li>Fixed - <code>print.GDINA</code>()` prints valid number of individuals by default now</li>
+<li>Fixed - covariance matrix cannot be calculated when some individuals are deleted</li>
+<li>Fixed - <code>Qval</code> not work when estimated number of individuals in some latent classes are 0</li>
+<li>Fixed - <code>extract</code> only gives valid data</li>
+</ul>
+</div>
+    <div id="gdina-240" class="section level1">
+<h1 class="page-header">
+<a href="#gdina-240" class="anchor"></a>GDINA 2.4.0<small> 2019-03-11 </small>
 </h1>
 <ul>
 <li>Added - Predicted cutoff based on the data for Q-matrix validation<br>
@@ -135,9 +146,9 @@
 <li>Fixed - model fit cannot be printed in GUI when M2 cannot be calculated</li>
 </ul>
 </div>
-    <div id="gdina-2-3-2" class="section level1">
+    <div id="gdina-232" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-2-3-2" class="anchor"></a>GDINA 2.3.2<small> 2019-01-04 </small>
+<a href="#gdina-232" class="anchor"></a>GDINA 2.3.2<small> 2019-01-04 </small>
 </h1>
 <ul>
 <li>Added - Attribute Hierarchical structure for A-CDM, LLM and RRUM</li>
@@ -148,9 +159,9 @@
 <li>Fixed - The number of parameters is not correct when attribute strcture exists</li>
 </ul>
 </div>
-    <div id="gdina-2-2-0" class="section level1">
+    <div id="gdina-220" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-2-2-0" class="anchor"></a>GDINA 2.2.0<small> 2018-10-30 </small>
+<a href="#gdina-220" class="anchor"></a>GDINA 2.2.0<small> 2018-10-30 </small>
 </h1>
 <ul>
 <li>Changed - set anchor attributes for multiple group higher-order CDMs</li>
@@ -163,9 +174,9 @@
 <li>Fixed - bug when calculating standard error using complete information based on multiple group models</li>
 </ul>
 </div>
-    <div id="gdina-2-1-15" class="section level1">
+    <div id="gdina-2115" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-2-1-15" class="anchor"></a>GDINA 2.1.15<small> 2018-06-07 </small>
+<a href="#gdina-2115" class="anchor"></a>GDINA 2.1.15<small> 2018-06-07 </small>
 </h1>
 <ul>
 <li>Changed - arguments for <code>plot</code> function</li>
@@ -173,9 +184,9 @@
 <li>Changed - graphical interface</li>
 </ul>
 </div>
-    <div id="gdina-2-1-7" class="section level1">
+    <div id="gdina-217" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-2-1-7" class="anchor"></a>GDINA 2.1.7<small> 2018-05-03 </small>
+<a href="#gdina-217" class="anchor"></a>GDINA 2.1.7<small> 2018-05-03 </small>
 </h1>
 <ul>
 <li>Added - experimental functions for simulating and estimating diagnostic tree model (to be optimized)</li>
@@ -184,35 +195,35 @@
 <li>Added - Q-matrix validation using stepwise Wald test</li>
 </ul>
 </div>
-    <div id="gdina-2-0-7" class="section level1">
+    <div id="gdina-207" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-2-0-7" class="anchor"></a>GDINA 2.0.7<small> Unreleased </small>
+<a href="#gdina-207" class="anchor"></a>GDINA 2.0.7<small> Unreleased </small>
 </h1>
 <ul>
 <li>bug fixed</li>
 </ul>
 </div>
-    <div id="gdina-2-0" class="section level1">
+    <div id="gdina-20" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-2-0" class="anchor"></a>GDINA 2.0<small> 2018-03-23 </small>
+<a href="#gdina-20" class="anchor"></a>GDINA 2.0<small> 2018-03-23 </small>
 </h1>
 <ul>
 <li>This is a major update including a large number of new features. The <code>GDINA</code> function has been largely rewritten for both flexibility and speed. Users are now allowed to fit <code>MS-DINA</code> model, <code>Bugs</code> models, and define models by providing design matrix and link functions. For joint attribute distribution, in addition to saturated and higher-order models, users are now allowed to fit independent model and loglinear model. Code for joint attribute distribution modelling has been restructured as well. Other major updates include model fit evaluation using M2 statistics and other limited information measures, item-level model selection using likelihood ratio test and score test, classification accuracy evaluation indices, bootstrap standard error estimation, etc.</li>
 <li>Note that due to the major updates, some results from this version may be slightly different from those using the previous versions.</li>
 </ul>
 </div>
-    <div id="gdina-1-4-2" class="section level1">
+    <div id="gdina-142" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-1-4-2" class="anchor"></a>GDINA 1.4.2<small> 2017-04-13 </small>
+<a href="#gdina-142" class="anchor"></a>GDINA 1.4.2<small> 2017-04-13 </small>
 </h1>
 <ul>
 <li>Fixed - a bug in <code>modelcomp</code> in the version 1.4.1</li>
 <li>Changed - adjusted p values are provided for DIF detection</li>
 </ul>
 </div>
-    <div id="gdina-1-4-1" class="section level1">
+    <div id="gdina-141" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-1-4-1" class="anchor"></a>GDINA 1.4.1<small> 2017-04-10 </small>
+<a href="#gdina-141" class="anchor"></a>GDINA 1.4.1<small> 2017-04-10 </small>
 </h1>
 <ul>
 <li>Changed - update GUI interface <code>startGDINA</code> to report absolute fit statistics</li>
@@ -237,9 +248,9 @@
 <li>Added - Standard error estimation based on complete information is available</li>
 </ul>
 </div>
-    <div id="gdina-1-2-1" class="section level1">
+    <div id="gdina-121" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-1-2-1" class="anchor"></a>GDINA 1.2.1<small> 2017-02-12 </small>
+<a href="#gdina-121" class="anchor"></a>GDINA 1.2.1<small> 2017-02-12 </small>
 </h1>
 <ul>
 <li>Fixed - bugs in model estimation with user specified structures</li>
@@ -255,9 +266,9 @@
 <li>Added - extract <code>ngroup</code> using <code>extract.GDINA</code> function</li>
 </ul>
 </div>
-    <div id="gdina-1-2-0" class="section level1">
+    <div id="gdina-120" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-1-2-0" class="anchor"></a>GDINA 1.2.0<small> 2017-01-28 </small>
+<a href="#gdina-120" class="anchor"></a>GDINA 1.2.0<small> 2017-01-28 </small>
 </h1>
 <ul>
 <li>Fixed - infinite value issue during M-step optimization</li>
@@ -270,9 +281,9 @@
 <li>Changed - Non zero prior probabilities</li>
 </ul>
 </div>
-    <div id="gdina-1-0-0" class="section level1">
+    <div id="gdina-100" class="section level1">
 <h1 class="page-header">
-<a href="#gdina-1-0-0" class="anchor"></a>GDINA 1.0.0<small> 2016-12-12 </small>
+<a href="#gdina-100" class="anchor"></a>GDINA 1.0.0<small> 2016-12-12 </small>
 </h1>
 <ul>
 <li>Initial release</li>
@@ -284,18 +295,19 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#gdina-2-4-0">2.4.0</a></li>
-        <li><a href="#gdina-2-3-2">2.3.2</a></li>
-        <li><a href="#gdina-2-2-0">2.2.0</a></li>
-        <li><a href="#gdina-2-1-15">2.1.15</a></li>
-        <li><a href="#gdina-2-1-7">2.1.7</a></li>
-        <li><a href="#gdina-2-0-7">2.0.7</a></li>
-        <li><a href="#gdina-2-0">2.0</a></li>
-        <li><a href="#gdina-1-4-2">1.4.2</a></li>
-        <li><a href="#gdina-1-4-1">1.4.1</a></li>
-        <li><a href="#gdina-1-2-1">1.2.1</a></li>
-        <li><a href="#gdina-1-2-0">1.2.0</a></li>
-        <li><a href="#gdina-1-0-0">1.0.0</a></li>
+        <li><a href="#gdina-241">2.4.1</a></li>
+        <li><a href="#gdina-240">2.4.0</a></li>
+        <li><a href="#gdina-232">2.3.2</a></li>
+        <li><a href="#gdina-220">2.2.0</a></li>
+        <li><a href="#gdina-2115">2.1.15</a></li>
+        <li><a href="#gdina-217">2.1.7</a></li>
+        <li><a href="#gdina-207">2.0.7</a></li>
+        <li><a href="#gdina-20">2.0</a></li>
+        <li><a href="#gdina-142">1.4.2</a></li>
+        <li><a href="#gdina-141">1.4.1</a></li>
+        <li><a href="#gdina-121">1.2.1</a></li>
+        <li><a href="#gdina-120">1.2.0</a></li>
+        <li><a href="#gdina-100">1.0.0</a></li>
       </ul>
     </div>
   </div>
