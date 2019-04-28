@@ -9,7 +9,7 @@ ObsLogLik <- function(mpar, mX, vlogPrior, vgroup, mloc, weights) {
     .Call('_GDINA_ObsLogLik', PACKAGE = 'GDINA', mpar, mX, vlogPrior, vgroup, mloc, weights)
 }
 
-LikNR <- function(mpar, mX, vlogPrior, vgroup, mloc, weights, simplify = 1L) {
+LikNR <- function(mpar, mX, vlogPrior, vgroup, mloc, weights, simplify = TRUE) {
     .Call('_GDINA_LikNR', PACKAGE = 'GDINA', mpar, mX, vlogPrior, vgroup, mloc, weights, simplify)
 }
 

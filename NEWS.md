@@ -1,3 +1,7 @@
+# GDINA 2.4.3
+* Added   - `ICLA()` function for attribute profile estimation
+* Changed - data are grouped before single group GDINA analysis 
+
 # GDINA 2.4.1
 * Fixed   - `print.GDINA`()` prints valid number of individuals by default now
 * Fixed   - covariance matrix cannot be calculated when some individuals are deleted

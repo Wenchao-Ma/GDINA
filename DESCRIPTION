@@ -1,16 +1,16 @@
 Package: GDINA
 Type: Package
 Title: The Generalized DINA Model Framework
-Version: 2.4.1
-Date: 2019-3-22
-Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre", "cph"),email = "wenchao.ma@ua.edu"),person(given = "Jimmy", family = "de la Torre", role = c("aut", "cph")), person(given="Miguel",family = "Sorrel",role = "ctb"))
-Description: A set of psychometric tools for cognitive diagnosis modeling for both dichotomous and polytomous responses. Various cognitive diagnosis models can be estimated, include the generalized deterministic inputs, noisy and gate (G-DINA) model by de la Torre (2011) <DOI:10.1007/s11336-011-9207-7>, the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.12070>, and many other models they subsume. Joint attribute distribution can be independent, saturated, higher-order, loglinear smoothed or structured. Q-matrix validation, item and model fit statistics, model comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided.
+Version: 2.4.3
+Date: 2019-4-28
+Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre"),email = "wenchao.ma@ua.edu"),person(given = "Jimmy", family = "de la Torre", role = c("aut")), person(given="Miguel",family = "Sorrel",role = "ctb"), person(given="Zhehan",family = "Jiang",role = "ctb"))
+Description: A set of psychometric tools for cognitive diagnosis modeling based on the generalized deterministic inputs, noisy and gate (G-DINA) model by de la Torre (2011) <DOI:10.1007/s11336-011-9207-7> and its extensions, including the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.12070> for polytomous responses, and the polytomous G-DINA model by Chen and de la Torre <DOI:10.1177/0146621613479818> for polytomous attributes. Joint attribute distribution can be independent, saturated, higher-order, loglinear smoothed or structured. Q-matrix validation, item and model fit statistics, model comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided.
 License: GPL-3
 LazyData: TRUE
 Depends: R (>= 3.1.0)
 Imports: alabama, graphics, ggplot2, MASS, nloptr, numDeriv, Rcpp (>=
         0.12.1), Rsolnp, stats, shiny, shinydashboard, utils
-Suggests: CDM, Matrix, testthat, pkgdown, knitr, rmarkdown
+Suggests: CDM, Matrix, testthat, pkgdown, poLCA, stringr, knitr, rmarkdown
 LinkingTo: Rcpp, RcppArmadillo
 URL: https://github.com/Wenchao-Ma/GDINA, https://wenchao-ma.github.io/GDINA
 BugReports: https://github.com/Wenchao-Ma/GDINA/issues
@@ -25,6 +25,7 @@ Collate:
     'GDINA-package.R'
     'GMSCDM.R'
     'HO.R'
+    'ILCA.R'
     'M2.R'
     'Mstep.R'
     'Mstep_DTM.R'

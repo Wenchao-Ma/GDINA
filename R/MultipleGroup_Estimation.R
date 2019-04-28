@@ -411,7 +411,7 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                    vgroup = group,
                    mloc = as.matrix(parloc),
                    weights = rep(1,N),
-                   simplify = 1)
+                   simplify = TRUE)
 
 
 
@@ -476,7 +476,7 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                  vgroup = group,
                  mloc = as.matrix(parloc),
                  weights = rep(1,N),
-                 simplify = 0)
+                 simplify = FALSE)
 
   total.item.npar <- sum(sapply(DesignMatrices,ncol))
 

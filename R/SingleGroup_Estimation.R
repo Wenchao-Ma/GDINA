@@ -1,6 +1,6 @@
 #' @include GDINA.R
 
-SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
+SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, saturated,
                 att.str, mono.constraint, latent.var, verbose,
                 catprob.parm,loglinear,item.names,solnp_args,item.prior,
                 linkfunc,higher.order, solver,auglag_args,nloptr_args,
@@ -14,27 +14,32 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
   #
   ##################################
   Qcm <- originalQ <- Q
-
-
+  if(is.null(weight))
+    weight <- rep(1, nrow(dat))
   del.ind <- NULL
   if (any(is.na(dat))) {
     # some missings individuals with one or fewer valid response are
     # removed
     del.ind <- which(rowSums(1L - is.na(dat)) < 2L, arr.ind = TRUE)
     if (length(del.ind) > 0L) {
-      warning(
-        length(del.ind),
-        " individuals with one or fewer valid responses are removed.",
-        call. = FALSE
-      )
+      warning(length(del.ind)," individuals with one or fewer valid responses are removed.", call. = FALSE)
       dat <- dat[-del.ind,]
+      weight <- weight[-del.ind]
     }
 
   }
   originalData <- dat
+
+  dat <- unique(originalData)
+  raw2unique <- match(apply(originalData,1,paste0,collapse=""),apply(dat,1,paste0,collapse=""))
+  freq <- aggregate(weight,by = list(raw2unique),sum)$x
+
+
+
   N <- nrow(dat)
   nitems <- ncol(dat)
   ncat <- nrow(Q)
+
 
   model <- model2numeric(model, ncat)
 
@@ -50,8 +55,7 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
 
     msQ <- unrestrQ(Q[which(model == 6), ])
     for (j in unique(msQ[, 1])) {
-      Q[which(Q[, 1] == j &
-                Q[, 2] == 1), ] <- msQ[which(msQ[, 1] == j & msQ[, 2] == 1), ]
+      Q[which(Q[, 1] == j & Q[, 2] == 1), ] <- msQ[which(msQ[, 1] == j & msQ[, 2] == 1), ]
       loc <- which(Q[, 1] == j & Q[, 2] != 1)
       if(length(loc)>0){
         Q <- Q[-loc, ]
@@ -64,6 +68,7 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
 
     ncat <- nitems
   }
+
 
   ##############################################
   #
@@ -131,11 +136,12 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
       stop("upper.p must have length of 1 or number of nonzero categories", call. = FALSE)
   }
 
-  if(length(control$maxitr)==1L) {
-    control$vmaxitr <- rep(control$maxitr,ncat)
-  }else if(length(control$maxitr)!=ncat){
-    warning("Length of maxitr must be equal to 1 or the number of nonzero categories.",call. = FALSE)
-  }else{
+  if (length(control$maxitr) == 1L) {
+    control$vmaxitr <- rep(control$maxitr, ncat)
+  } else if (length(control$maxitr) != ncat) {
+    warning("Length of maxitr must be equal to 1 or the number of nonzero categories.",
+            call. = FALSE)
+  } else {
     control$vmaxitr <- control$maxitr
     control$maxitr <- max(control$maxitr)
   }
@@ -172,9 +178,9 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
   Mynloptr_args <- list(xtol_rel = 1e-4)
   nloptr_args <- modifyList(Mynloptr_args, nloptr_args)
 
-  if(is.null(solver)){
+  if (is.null(solver)) {
     solver <- rep("auto", ncat)
-  }else if (length(solver) == 1) {
+  } else if (length(solver) == 1) {
     solver <- rep(solver, ncat)
   } else {
     if (length(solver) != ncat)
@@ -216,7 +222,7 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
   #
   ##################################
   no.mg <- 1L
-  gr <- rep(1L,nrow(dat))
+  gr <- rep(1L, N)
   gr.label <- "all data"
 
   att.dist <- tolower(att.dist)
@@ -321,11 +327,11 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
       neg2LL <- vector("numeric",control$nstarts)
       for (i in seq_len(control$nstarts)) {
         neg2LL[i] <- -2*ObsLogLik(mpar = as.matrix(item.parm[[i]]),
-                                  mX = as.matrix(dat),
+                                  mX = dat,
                                   vlogPrior = as.matrix(logprior),
                                   vgroup = rep(1,N),
                                   mloc = as.matrix(parloc),
-                                  weights = rep(1,N))
+                                  weights = freq)
       }
       item.parm <- item.parm[[which.min.randomtie(neg2LL)]]
     }
@@ -378,12 +384,12 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
     {
 
       estep <- LikNR(mpar = as.matrix(item.parm),
-                     mX = as.matrix(dat),
+                     mX = dat,
                      vlogPrior = as.matrix(logprior),
                      vgroup = rep(1,N),
                      mloc = as.matrix(parloc),
-                     weights = rep(1,N),
-                     simplify = 1)
+                     weights = freq,
+                     simplify = TRUE)
 
 
 
@@ -444,12 +450,12 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
   logprior0 <- logprior # old log priors
 
   estep <- LikNR(mpar = as.matrix(item.parm),
-                 mX = as.matrix(dat),
+                 mX = dat,
                  vlogPrior = as.matrix(logprior),
                  vgroup = rep(1,N),
                  mloc = as.matrix(parloc),
-                 weights = rep(1,N),
-                 simplify = 0)
+                 weights = freq,
+                 simplify = FALSE)
 
 
   total.item.npar <- sum(sapply(DesignMatrices,ncol))
@@ -506,14 +512,15 @@ SG.Est <- function(dat, Q, model, sequential,att.dist, att.prior, saturated,
        struc.parm = lambda, model = model2character(model), LC.prob = LC.Prob,
        posterior.prob = postP, pf = pf, attributepattern = AlphaPattern,
        testfit = list(Deviance=neg2LL,npar = npar,item.npar = free.item.npar, AIC=2 * npar + neg2LL, BIC=neg2LL + npar * log(N)),
-       technicals = list(logposterior.i = estep$logpost, loglikelihood.i = estep$loglik, free.item.npar = free.item.npar,
+       technicals = list(logposterior.i = estep$logpost[raw2unique, ], loglikelihood.i = estep$loglik[raw2unique, ],
+                         free.item.npar = free.item.npar,
                          total.item.npar = total.item.npar, stru.npar = stru.npar, total.npar = npar,
                          expectedCorrect = estep$Rg, expectedTotal = estep$Ng,initial.parm = initial.parm,
                          LC.labels = LC.labels,reduced.LG=reduced.LG,eta = parloc,del.ind=del.ind),
        options = list(dat = originalData, Q = originalQ, Qm = Q, Qcm = Qcm, model = model,
                       itr = itr, dif.LL = dif.parm$neg2LL,dif.p=dif.parm$ip,dif.prior=dif.parm$prior,
                       att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, latent.var = latent.var,
-                      mono.constraint = mono.constraint, item.names = item.names,group = rep(1,N), gr = gr,
+                      mono.constraint = mono.constraint, item.names = item.names, group = rep(1,N), gr = gr,
                       att.str= att.str,  seq.dat = dat, no.group = 1, group.label = "all",
                       verbose = verbose, catprob.parm = catprob.parm,sequential = sequential,
                       nloptr_args = nloptr_args,auglag_args=auglag_args,solnp_args = solnp_args,
