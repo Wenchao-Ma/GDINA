@@ -1,4 +1,4 @@
-SG.HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
+SG.HO.est <- function(lambda, AlphaPattern, Rl, higher.order)
 {
   Aq <- c(higher.order$QuadNodes)
   WAq <- c(higher.order$QuadWghts)
@@ -6,32 +6,34 @@ SG.HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
   if(is.null(lambda))
     lambda = higher.order$lambda
 
-  K <- log2(nrow(AlphaPattern))
+  K <- ncol(AlphaPattern)
   NR <- list()
   NR <- expectedNR(AlphaPattern, Rl, Aq, WAq, lambda[,1], lambda[,2])
     n <- NR$n
-    r <- NR$r
+    r1 <- NR$r # nquad x K
+    r0 <- NR$r0 # nquad x K
 
   npar <- 0
 
       d <- a <- vector("numeric",K)
       for(k in seq_len(K)){
+
         d[k] <- rootFinder(f = Lfj_intercept, interval = higher.order$InterceptRange,
-                           aj = lambda[k,1],theta = Aq,r = r[,k], n = n,
+                           aj = lambda[k,1],theta = Aq,r1 = c(r1[,k]), r0 = c(r0[,k]), n = n,
                            prior = higher.order$Prior, mu = higher.order$InterceptPrior[1],
                            sigma = higher.order$InterceptPrior[2])
         npar <- npar + 1
       }
       if(higher.order$model=="1PL"){
         a <- rootFinder(f = Lfj_commonslope, interval = higher.order$SlopeRange,
-                        d = lambda[,2],theta = Aq,r = r, n = n,
+                        d = lambda[,2],theta = Aq,r1 = r1, r0 = r0, n = n,
                         prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
                         sigma = higher.order$SlopePrior[2])
         npar <- npar + 1
       }else if(higher.order$model=="2PL"){
         for(k in seq_len(K)) {
           a[k] <- rootFinder(f = Lfj_slope, interval = higher.order$SlopeRange,
-                             dj = lambda[k,2],theta = Aq,r = r[,k], n = n,
+                             dj = lambda[k,2],theta = Aq, r1 = c(r1[,k]), r0 = c(r0[,k]), n = n,
                              prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
                              sigma = higher.order$SlopePrior[2])
           npar <- npar + 1
@@ -60,11 +62,12 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
   }
   K <- log2(nrow(AlphaPattern))
   NR <- list()
-  n <- r <- 0
+  n <- r1 <- r0 <- 0
   for(g in HOgr){
     NR[[g]] <- expectedNR(AlphaPattern, Rl[,g], Aq[,g], WAq[,g], lambda[[g]][,1], lambda[[g]][,2])
     n <- n + NR[[g]]$n
-    r <- r + NR[[g]]$r
+    r1 <- r1 + NR[[g]]$r
+    r0 <- r0 + NR[[g]]$r0
   }
   npar <- 0
   #by default, anchor = "all"/0 => same slope + intercept across groups for all attributes; G1 - N(0,1); G+ EH
@@ -78,14 +81,14 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
       d <- a <- vector("numeric",K)
       for(k in seq_len(K)){
         d[k] <- rootFinder(f = Lfj_intercept, interval = higher.order$InterceptRange,
-                           aj = lambda[[HOgr[1]]][k,1],theta = Aq[,1],r = r[,k], n = n,
+                           aj = lambda[[HOgr[1]]][k,1],theta = Aq[,1],r1 = c(r1[,k]), r0 = c(r0[,k]), n = n,
                            prior = higher.order$Prior, mu = higher.order$InterceptPrior[1],
                            sigma = higher.order$InterceptPrior[2])
         npar <- npar + 1
       }
       if(higher.order$model=="1PL"){
         a <- rootFinder(f = Lfj_commonslope, interval = higher.order$SlopeRange,
-                        d = lambda[[HOgr[1]]][,2],theta = Aq[,1],r = r, n = n,
+                        d = lambda[[HOgr[1]]][,2],theta = Aq[,1],r1 = r1, r0 = r0, n = n,
                         prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
                         sigma = higher.order$SlopePrior[2])
         npar <- npar + 1
@@ -93,9 +96,10 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
         # print(higher.order$Prior)
         for(k in seq_len(K)) {
           a[k] <- rootFinder(f = Lfj_slope, interval = higher.order$SlopeRange,
-                                                 dj = lambda[[HOgr[1]]][k,2],theta = Aq[,1],r = r[,k], n = n,
-                                                 prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
-                                                 sigma = higher.order$SlopePrior[2])
+                             dj = lambda[[HOgr[1]]][k,2],theta = Aq[,1],
+                             r1 = c(r1[,k]), r0 = c(r0[,k]), n = n,
+                             prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
+                             sigma = higher.order$SlopePrior[2])
           npar <- npar + 1
         }
       }else if(higher.order$model=="Rasch"){
@@ -122,14 +126,16 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
       for(g in HOgr){
         for(k in seq_len(K)){
           lambda[[g]][k,2] <- rootFinder(f = Lfj_intercept, interval = higher.order$InterceptRange,
-                                         aj = lambda[[g]][k,1],theta = Aq[,g],r = NR[[g]]$r[,k], n = NR[[g]]$n,
+                                         aj = lambda[[g]][k,1],theta = Aq[,g],
+                                         r1 = NR[[g]]$r[,k], r0 = NR[[g]]$r0[,k], n = NR[[g]]$n,
                                          prior = higher.order$Prior, mu = higher.order$InterceptPrior[1],
                                          sigma = higher.order$InterceptPrior[2])
           npar <- npar + 1
         }
         if(higher.order$model=="1PL"){
           lambda[[g]][,1] <- rootFinder(f = Lfj_commonslope, interval = higher.order$SlopeRange,
-                                        d = lambda[[g]][,2],theta = Aq[,g],r = NR[[g]]$r, n = NR[[g]]$n,
+                                        d = lambda[[g]][,2],theta = Aq[,g],
+                                        r1 = NR[[g]]$r,r0 = NR[[g]]$r0, n = NR[[g]]$n,
                                         prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
                                         sigma = higher.order$SlopePrior[2])
           npar <- npar + 1
@@ -137,7 +143,8 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
 
           for(k in seq_len(K)) {
             lambda[[g]][k,1] <- rootFinder(f = Lfj_slope, interval = higher.order$SlopeRange,
-                                           dj = lambda[[g]][k,2],theta = Aq[,g],r = NR[[g]]$r[,k], n = NR[[g]]$n,
+                                           dj = lambda[[g]][k,2],theta = Aq[,g],
+                                           r1 = NR[[g]]$r[,k], r0 = NR[[g]]$r0[,k], n = NR[[g]]$n,
                                            prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
                                            sigma = higher.order$SlopePrior[2])
             npar <- npar + 1
@@ -156,18 +163,20 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
 
       for(k in seq_len(K)){
         if(k %in% anchor){
-          rr <- r[,k]
+          rr1 <- r1[,k]
+          rr0 <- r0[,k]
           nn <- n
           dk <- rootFinder(f = Lfj_intercept, interval = higher.order$InterceptRange,
-                           aj = lambda[[g]][k,1],theta = Aq[,g],r = rr, n = nn,
+                           aj = lambda[[g]][k,1],theta = Aq[,g],r1 = rr1, r0 = rr0, n = nn,
                            prior = higher.order$Prior, mu = higher.order$InterceptPrior[1],
                            sigma = higher.order$InterceptPrior[2])
           npar <- npar + 1
-          if(higher.order$model=="2PL"){
+        if(higher.order$model=="2PL"){
             ak <- rootFinder(f = Lfj_slope, interval = higher.order$SlopeRange,
-                                           dj = lambda[[g]][k,2],theta = Aq[,g], r = rr, n = nn,
-                                           prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
-                                           sigma = higher.order$SlopePrior[2])
+                             dj = lambda[[g]][k,2],theta = Aq[,g],
+                             r1 = rr1, r0 = rr0, n = nn,
+                             prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
+                             sigma = higher.order$SlopePrior[2])
             npar <- npar + 1
         }else if(higher.order$model=="Rasch"){
           ak <- 1
@@ -182,10 +191,12 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
         }else{
 
           for(g in HOgr){
-            rr <- NR[[g]]$r[,k]
+            rr1 <- NR[[g]]$r[,k]
+            rr0 <- NR[[g]]$r0[,k]
             nn <- NR[[g]]$n
             lambda[[g]][k,2] <- rootFinder(f = Lfj_intercept, interval = higher.order$InterceptRange,
-                                           aj = lambda[[g]][k,1],theta = Aq[,g],r = rr, n = nn,
+                                           aj = lambda[[g]][k,1],theta = Aq[,g],
+                                           r1 = rr1, r0 = rr0, n = nn,
                                            prior = higher.order$Prior, mu = higher.order$InterceptPrior[1],
                                            sigma = higher.order$InterceptPrior[2])
           npar <- npar + 1
@@ -195,7 +206,8 @@ HO.est <- function(lambda, AlphaPattern, HOgr, Rl, higher.order)
               rr <- NR[[g]]$r[,k]
               nn <- NR[[g]]$n
               lambda[[g]][k,1] <- rootFinder(f = Lfj_slope, interval = higher.order$SlopeRange,
-                                             dj = lambda[[g]][k,2],theta = Aq[,g], r = rr, n = nn,
+                                             dj = lambda[[g]][k,2],theta = Aq[,g],
+                                             r1 = rr1, r0 = rr0, n = nn,
                                              prior = higher.order$Prior, mu = higher.order$SlopePrior[1],
                                              sigma = higher.order$SlopePrior[2])
               npar <- npar + 1
@@ -239,35 +251,35 @@ rootFinder <- function(f,interval,...){
   ret
 }
 
-Lfj_intercept <- function(dj,aj,theta,r,n, prior = FALSE, mu, sigma){
-  P <- Pr_2PL_vec(theta = theta, a = aj, b = dj) #nnodes x 1
+Lfj_intercept <- function(dj, aj, theta, r1, r0, n, prior = FALSE, mu, sigma){
+  P <- c(Pr_2PL_vec(theta = theta, a = aj, b = dj)) #nnodes x 1
   if(prior){
-    ret <- sum(c(r)-c(n)*c(P)) + (dj - mu) / (sigma^2)
+    ret <- sum(r1 - (r1 + r0) * P) + (dj - mu) / (sigma^2)
   }else{
-    ret <- sum(c(r)-c(n)*c(P))
+    ret <- sum(r1 -(r1 + r0) * P)
   }
   ret
 }
-Lfj_slope <- function(aj,dj,theta,r,n, prior = FALSE, mu, sigma){
-  P <- Pr_2PL_vec(theta = theta, a = aj, b = dj) #nnodes x 1
+Lfj_slope <- function(aj, dj, theta, r1, r0, n, prior = FALSE, mu, sigma){
+  P <- c(Pr_2PL_vec(theta = theta, a = aj, b = dj)) #nnodes x 1
   if(prior){
-    ret <- sum(theta*(c(r)-c(n)*c(P))) - (log(aj) - mu + sigma^2) /(aj * sigma^2)
+    ret <- sum(theta*(r1 - (r1 + r0) * P)) - (log(aj) - mu + sigma^2) /(aj * sigma^2)
 
   }else{
-    ret <- sum(theta*(c(r)-c(n)*c(P)))
+    ret <- sum(theta*(r1 - (r1 + r0) * P))
   }
 
   ret
 
 }
-Lfj_commonslope <- function(a,d,theta,r,n, prior = FALSE, mu, sigma){
+Lfj_commonslope <- function(a,d,theta,r1, r0, n, prior = FALSE, mu, sigma){
   avec <- rep(a,length(d))
   P <- Pr_2PL_vec(theta = theta, a = avec, b = d) #nnodes x K
 
   if(prior){
-    ret <- sum(theta*(r-c(n)*P)) - (log(a) - mu + sigma^2) /(a * sigma^2)
+    ret <- sum(theta*(r1 - (r1 + r0) * P)) - (log(a) - mu + sigma^2) /(a * sigma^2)
   }else{
-    ret <- sum(theta*(r-c(n)*P))
+    ret <- sum(theta*(r1 - (r1 + r0) * P))
   }
   ret
 }

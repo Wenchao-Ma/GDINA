@@ -79,7 +79,7 @@ structural.parm.sg <- function(AlphaPattern,no.mg = 1,logprior,att.dist,att.str,
   }else if (att.dist=="higher.order")
   {
     if(!is.null(att.str)) stop("Only att.dist = saturated or fixed is available when attributes have structures.",call. = FALSE)
-    HO.out <- SG.HO.est(lambda=lambda,AlphaPattern = AlphaPattern, HOgr = 1, Rl = N*prior,
+    HO.out <- SG.HO.est(lambda=lambda,AlphaPattern = AlphaPattern, Rl = N*prior,
                      higher.order = higher.order)
     logprior <- HO.out$logprior
     lambda <- HO.out$lambda

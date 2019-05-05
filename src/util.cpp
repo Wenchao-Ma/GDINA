@@ -222,22 +222,35 @@ arma::mat Pr_2PL_vec(const arma::vec & theta, //N x 1
 
 // [[Rcpp::export]]
 
-arma::mat logLikPattern(arma::mat AlphaPattern, //2^K x K
-                        arma::vec theta, //quand point
-                        arma::vec a,
-                        arma::vec b){
+arma::mat logLikPattern(arma::mat & AlphaPattern, //2^K x K
+                        arma::vec & theta, //quand point
+                        arma::vec & a,
+                        arma::vec & b){
   arma::mat P = arma::trans(Pr_2PL_vec(theta,a,b)); //K x nnodes
-  arma::mat logP = AlphaPattern*arma::log(P) + (1-AlphaPattern)*arma::log(1-P);
+  arma::mat logP;
+  arma::mat mX0; //missing->0
+  arma::mat mX1; //missing->1
+  if(AlphaPattern.has_nan()){
+    mX0 = AlphaPattern;
+    mX1 = AlphaPattern;
+    arma::uvec missingloc = arma::find_nonfinite(AlphaPattern);
+    mX0.elem( missingloc ).zeros(); //missing -> 0
+    mX1.elem( missingloc ).ones(); //missing -> 1
+    logP = mX0*arma::trunc_log(P) + (1-mX1)*arma::trunc_log(1-P);
+  }else{
+    logP = AlphaPattern*arma::trunc_log(P) + (1-AlphaPattern)*arma::trunc_log(1-P);
+  }
+
   return logP; // 2^K x nnodes log P(AlphaPattern|theta_q,a,b)
 }
 
 // [[Rcpp::export]]
 
-arma::mat PostTheta(arma::mat AlphaPattern, //2^K x K
-                    arma::vec theta, //quand point
-                    arma::vec f_theta, // weights
-                    arma::vec a,
-                    arma::vec b){
+arma::mat PostTheta(arma::mat & AlphaPattern, //2^K x K
+                    arma::vec & theta, //quand point
+                    arma::vec & f_theta, // weights
+                    arma::vec & a,
+                    arma::vec & b){
 
   int N = AlphaPattern.n_rows; //2^K
   arma::mat logP = logLikPattern(AlphaPattern, theta, a, b); // 2^K x nnodes
@@ -256,29 +269,32 @@ Rcpp::List expectedNR(arma::mat AlphaPattern, //2^K x K
                       arma::vec b){
   int Q = f_theta.n_elem;
   int N = AlphaPattern.n_rows; //2^K
-  int K = log2(N);
+  int K = AlphaPattern.n_cols;
   arma::mat post = PostTheta(AlphaPattern, theta, f_theta, a,b); // 2^K x nnodes P(theta_q|AlphaPattern)
   post.each_col()%=nc;
   arma::vec n = arma::sum(post,0).t();
   arma::mat r = arma::zeros<arma::mat>(K,Q);
+  arma::mat r0 = arma::zeros<arma::mat>(K,Q);
   for(int k=0;k<K;++k){
     r.row(k) = arma::sum(post.rows(arma::find(AlphaPattern.col(k)==1)),0);
+    r0.row(k) = arma::sum(post.rows(arma::find(AlphaPattern.col(k)==0)),0);
   }
   Rcpp::List ret;
   ret["n"]=n;
   ret["r"]=r.t();
+  ret["r0"]=r0.t();
   return ret;
 }
 
 // [[Rcpp::export]]
 
 arma::vec logP_AlphaPattern(arma::mat & AlphaPattern, //2^K x K
-                            arma::vec theta, //quand point
-                            arma::vec f_theta, // weights
-                            arma::vec a,
-                            arma::vec b){
+                            arma::vec & theta, //quand point
+                            arma::vec & f_theta, // weights
+                            arma::vec & a,
+                            arma::vec & b){
   int N = AlphaPattern.n_rows;
-  arma::mat logP = logLikPattern(AlphaPattern, theta, a,b); // 2^K x nnodes
+  arma::mat logP = logLikPattern(AlphaPattern, theta, a, b); // 2^K x nnodes
   arma::vec lP = arma::log(arma::sum(arma::exp(logP + arma::ones<arma::mat>(N,1)*log(arma::trans(f_theta))),1));
   return lP; //log pi_c 2^K x 1
 }

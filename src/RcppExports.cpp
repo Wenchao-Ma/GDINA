@@ -535,30 +535,30 @@ BEGIN_RCPP
 END_RCPP
 }
 // logLikPattern
-arma::mat logLikPattern(arma::mat AlphaPattern, arma::vec theta, arma::vec a, arma::vec b);
+arma::mat logLikPattern(arma::mat& AlphaPattern, arma::vec& theta, arma::vec& a, arma::vec& b);
 RcppExport SEXP _GDINA_logLikPattern(SEXP AlphaPatternSEXP, SEXP thetaSEXP, SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type AlphaPattern(AlphaPatternSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type a(aSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type AlphaPattern(AlphaPatternSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(logLikPattern(AlphaPattern, theta, a, b));
     return rcpp_result_gen;
 END_RCPP
 }
 // PostTheta
-arma::mat PostTheta(arma::mat AlphaPattern, arma::vec theta, arma::vec f_theta, arma::vec a, arma::vec b);
+arma::mat PostTheta(arma::mat& AlphaPattern, arma::vec& theta, arma::vec& f_theta, arma::vec& a, arma::vec& b);
 RcppExport SEXP _GDINA_PostTheta(SEXP AlphaPatternSEXP, SEXP thetaSEXP, SEXP f_thetaSEXP, SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type AlphaPattern(AlphaPatternSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type f_theta(f_thetaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type a(aSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type AlphaPattern(AlphaPatternSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type f_theta(f_thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(PostTheta(AlphaPattern, theta, f_theta, a, b));
     return rcpp_result_gen;
 END_RCPP
@@ -580,16 +580,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // logP_AlphaPattern
-arma::vec logP_AlphaPattern(arma::mat& AlphaPattern, arma::vec theta, arma::vec f_theta, arma::vec a, arma::vec b);
+arma::vec logP_AlphaPattern(arma::mat& AlphaPattern, arma::vec& theta, arma::vec& f_theta, arma::vec& a, arma::vec& b);
 RcppExport SEXP _GDINA_logP_AlphaPattern(SEXP AlphaPatternSEXP, SEXP thetaSEXP, SEXP f_thetaSEXP, SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat& >::type AlphaPattern(AlphaPatternSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type f_theta(f_thetaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type a(aSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type b(bSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type f_theta(f_thetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(logP_AlphaPattern(AlphaPattern, theta, f_theta, a, b));
     return rcpp_result_gen;
 END_RCPP

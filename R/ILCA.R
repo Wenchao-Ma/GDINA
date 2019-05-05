@@ -1,4 +1,4 @@
-#' Transformation between latent classes and latent groups
+#' Iterative latent-class analysis
 #'
 #' This function implements an iterative latent class analysis (ILCA; Jiang, 2019) approach to estimating attributes for cognitive diagnosis.
 #'

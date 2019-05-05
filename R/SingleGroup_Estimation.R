@@ -409,7 +409,7 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
       struc.parm <- structural.parm.sg(AlphaPattern = AlphaPattern, logprior=estep$logprior,
                                        att.dist=att.dist,att.str=att.str, saturated = saturated,initial.logprior = initial.logprior,
                                        lower.prior = control$lower.prior,loglinear=loglinear,
-                                       K=K,N=N,higher.order=higher.order,lambda = lambda)
+                                       K=K,N=sum(freq),higher.order=higher.order,lambda = lambda)
 
       higher.order <- struc.parm$higher.order
       lambda <- struc.parm$lambda

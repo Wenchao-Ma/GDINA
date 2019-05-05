@@ -577,9 +577,14 @@ which.min.randomtie <- function(x,na.rm=TRUE){
   return(loc)
 }
 
-seq_coding <- function(dat,Qc){
+seq_coding <- function(dat,Qc=NULL,Kj=NULL){
   out <- NULL
-  x=table(Qc[,1])
+  if(is.null(Kj)){
+    x <- table(Qc[,1])
+  }else{
+    x <- Kj
+  }
+
   for (j in 1:ncol(dat)){
     for(s in 1:x[j]){
     tmp <- dat[,j]
