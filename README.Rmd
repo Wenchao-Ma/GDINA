@@ -24,11 +24,11 @@ knitr::opts_chunk$set(
 
 Ma, W. & de la Torre, J. (2019). GDINA: The generalized DINA model framework. R package version 2.5. Retrived from https://CRAN.R-project.org/package=GDINA
 
-Visit the package website https://wenchao-ma.github.io/GDINA for examples and tutorials.
+Visit the package website https://wenchao-ma.github.io/GDINA for examples, tutorials and more information.
 
 ## Learning resources
 
-* [NCME digital module 5](https://ncme.elevate.commpartners.com/) on the G-DINA model and the use of graphical user interface for CDM analyses
+* Watch [Ma and de la Torre's (2019) NCME digital module 5](https://ncme.elevate.commpartners.com/) on a gental introduction to the G-DINA model framework and the use of graphical user interface for CDM analyses
 
 * Check [de la Torre and Akbay's (2019) article](https://doi.org/10.14689/ejer.2019.80.9) on how to conduct various CDM analyses using the graphical user interface
 

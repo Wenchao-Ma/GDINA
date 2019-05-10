@@ -28,7 +28,7 @@ ILCA <- function(dat,Q,seed.num=5){
   #Initial Values and Seeds
   mg.est <- GDINA(dat = dat, Q = Q, verbose = 0)
   posteriorAttr<-personparm(mg.est)
-  class(posteriorAttr) <- "numeric";
+  class(posteriorAttr) <- "numeric"
 
   foursets_rate<-rep(0.5,(seed.num))
   foursets_seed<-vector(mode='list',length=(seed.num))
@@ -41,7 +41,6 @@ ILCA <- function(dat,Q,seed.num=5){
     foursets_seed[[i]]<-ini_posteriorAttr
   }
   foursets_seed[[i+1]]<-posteriorAttr
-
 
   LCAgo<-function(posteriorAttr){
     Aname<-paste('A',1:Na,sep='')
@@ -80,9 +79,10 @@ ILCA <- function(dat,Q,seed.num=5){
         group<-group[order(group[,1]),-1]
 
         group<-apply( group,2,as.factor)
-        eval(parse(text=paste(
-          'f<-cbind(',paste(colnames(group),collapse=','),')~1',collapse='')     ))
-        result <- poLCA(f,as.data.frame(group),nclass=2,nrep=3,verbose =F)
+
+        result <- poLCA::poLCA(eval(parse(text=paste(
+          'f<-cbind(',paste(colnames(group),collapse=','),')~1',collapse='')     )),
+          as.data.frame(group),nclass=2,nrep=3,verbose =F)
 
         current.loop.a<-result$predclass-1
         IniAttr[,loop.a]<-current.loop.a
@@ -91,6 +91,7 @@ ILCA <- function(dat,Q,seed.num=5){
     }
     IniAttr
   }
+
   for(seed.loop in 1:seed.num){
     assign(paste('seed',seed.loop,sep=''),tryCatch(LCAgo(foursets_seed[[seed.loop]]),error = function(e){posteriorAttr}))
   }
@@ -106,3 +107,5 @@ ILCA <- function(dat,Q,seed.num=5){
   finalVote[finalVote<=(seed.num/2)]<-0;finalVote[finalVote>(seed.num/2)]<-1
   finalVote
 }
+
+
