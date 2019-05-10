@@ -2,7 +2,7 @@
 % Please edit documentation in R/ILCA.R
 \name{ILCA}
 \alias{ILCA}
-\title{Transformation between latent classes and latent groups}
+\title{Iterative latent-class analysis}
 \usage{
 ILCA(dat, Q, seed.num = 5)
 }

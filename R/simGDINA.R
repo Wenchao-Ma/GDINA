@@ -629,10 +629,10 @@ if (!is.null(gs.parm)) {
       }
       a <- higher.order.parm$lambda[, 1]
       b <- higher.order.parm$lambda[, 2]
-      att <- (Pr_2PL_vec(theta = higher.order.parm$theta,
-                 a = as.vector(a,mode = "numeric"),
-                 b = as.vector(b,mode = "numeric"),
-                 minvalue = 0, maxvalue = 1)> matrix(runif(N * K), nrow = N)) * 1
+      att <- (Pr_2PL_vec(higher.order.parm$theta,
+                 as.vector(a,mode = "numeric"),
+                 as.vector(b,mode = "numeric"),
+                 0, 1)> matrix(runif(N * K), nrow = N)) * 1
       # higher order IRT model (intercept - slope style)
       # z <- outer(c(higher.order.parm$theta),a) + matrix(rep(b, N), ncol = K, byrow = T)
       # att <- ((1/(1 + exp(-z))) > matrix(runif(N * K), nrow = N)) * 1

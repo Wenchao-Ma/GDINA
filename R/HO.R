@@ -252,7 +252,7 @@ rootFinder <- function(f,interval,...){
 }
 
 Lfj_intercept <- function(dj, aj, theta, r1, r0, n, prior = FALSE, mu, sigma){
-  P <- c(Pr_2PL_vec(theta = theta, a = aj, b = dj)) #nnodes x 1
+  P <- c(Pr_2PL_vec(theta,aj,dj)) #nnodes x 1
   if(prior){
     ret <- sum(r1 - (r1 + r0) * P) + (dj - mu) / (sigma^2)
   }else{
@@ -261,7 +261,7 @@ Lfj_intercept <- function(dj, aj, theta, r1, r0, n, prior = FALSE, mu, sigma){
   ret
 }
 Lfj_slope <- function(aj, dj, theta, r1, r0, n, prior = FALSE, mu, sigma){
-  P <- c(Pr_2PL_vec(theta = theta, a = aj, b = dj)) #nnodes x 1
+  P <- c(Pr_2PL_vec(theta, aj, dj)) #nnodes x 1
   if(prior){
     ret <- sum(theta*(r1 - (r1 + r0) * P)) - (log(aj) - mu + sigma^2) /(aj * sigma^2)
 
@@ -274,7 +274,7 @@ Lfj_slope <- function(aj, dj, theta, r1, r0, n, prior = FALSE, mu, sigma){
 }
 Lfj_commonslope <- function(a,d,theta,r1, r0, n, prior = FALSE, mu, sigma){
   avec <- rep(a,length(d))
-  P <- Pr_2PL_vec(theta = theta, a = avec, b = d) #nnodes x K
+  P <- Pr_2PL_vec(theta, avec, d) #nnodes x K
 
   if(prior){
     ret <- sum(theta*(r1 - (r1 + r0) * P)) - (log(a) - mu + sigma^2) /(a * sigma^2)

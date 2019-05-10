@@ -15,7 +15,7 @@ Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travi
 ## How to cite the package
 
 Ma, W. & de la Torre, J. (2019). GDINA: The generalized DINA model
-framework. R package version 2.4. Retrived from
+framework. R package version 2.5. Retrived from
 <https://CRAN.R-project.org/package=GDINA>
 
 Visit the package website <https://wenchao-ma.github.io/GDINA> for
@@ -27,8 +27,9 @@ examples and tutorials.
     the G-DINA model and the use of graphical user interface for CDM
     analyses
 
-  - [NCME training session](https://www.ncme.org/meetings/annualmeeting)
-    on April 4, 2019
+  - Check [de la Torre and Akbay’s (2019)
+    article](https://doi.org/10.14689/ejer.2019.80.9) on how to conduct
+    various CDM analyses using the graphical user interface
 
 ## Features of the package
 
