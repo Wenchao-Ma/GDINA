@@ -1,4 +1,4 @@
-# GDINA 2.5.1
+# GDINA 2.5.2
 * Added   - `ICLA()` function for attribute profile estimation
 * Changed - data are grouped before single group GDINA analysis 
 * Changed - data are aggregated before model estimation for single group CDMs
