@@ -32,7 +32,7 @@
 
 <meta property="og:title" content="Model fit statistics — modelfit" />
 
-<meta property="og:description" content="Calculate various model-data fit statistics" />
+<meta property="og:description" content="Calculate various absolute model-data fit statistics" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.0</span>
       </span>
     </div>
 
@@ -130,11 +130,11 @@
 
     <div class="ref-description">
     
-    <p>Calculate various model-data fit statistics</p>
+    <p>Calculate various absolute model-data fit statistics</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>modelfit</span>(<span class='no'>GDINA.obj</span>, <span class='kw'>CI</span> <span class='kw'>=</span> <span class='fl'>0.9</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>modelfit</span>(<span class='no'>GDINA.obj</span>, <span class='kw'>CI</span> <span class='kw'>=</span> <span class='fl'>0.9</span>, <span class='kw'>ItemOnly</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -148,22 +148,22 @@
       <td><p>numeric value from 0 to 1 indicating the range of the confidence interval for RMSEA. Default returns the 90% interval.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>arguments passed to the function</p></td>
+      <th>ItemOnly</th>
+      <td><p>should joint attribute distribution parameters be considered? Default = TRUE. See Ma (2019).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, &amp; Xin, 2016; Hansen, Cai, Monroe, &amp; Li, 2016) and for sequential G-DINA model with graded responses (Ma, under review).
+    <p>Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, &amp; Xin, 2016; Hansen, Cai, Monroe, &amp; Li, 2016) and for sequential G-DINA model with graded responses (Ma, 2019).
 It also calculates SRMSR and RMSEA2.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Ma, W. (2019). Evaluating model data fit using limited information statistics for the sequential G-DINA model.<em>Applied Psychological Measurement.</em></p>
-<p>Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. <em>Measurement, 11</em>, 71-101.</p>
-<p>Hansen, M., Cai, L.,  Monroe, S., &amp; Li, Z. (2016). Limited-information goodness-of-fit testing of diagnostic classification item response models. <em>British Journal of Mathematical and Statistical Psychology. 69,</em> 225--252.</p>
+    <p>Hansen, M., Cai, L.,  Monroe, S., &amp; Li, Z. (2016). Limited-information goodness-of-fit testing of diagnostic classification item response models. <em>British Journal of Mathematical and Statistical Psychology. 69,</em> 225--252.</p>
 <p>Liu, Y., Tian, W., &amp; Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. <em>Journal of Educational and Behavioral Statistics, 41</em>, 3-26.</p>
+<p>Ma, W. (2019). Evaluating model data fit using limited information statistics for the sequential G-DINA model.<em>Applied Psychological Measurement.</em></p>
+<p>Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. <em>Measurement, 11</em>, 71-101.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
