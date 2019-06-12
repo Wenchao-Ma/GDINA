@@ -323,6 +323,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 nitem = ncol(object$options$dat),
                 nitr = object$options$itr,
                 nobs = nrow(object$options$dat),
+                nLC = dim(object$attributepattern)[1],
                 pf = object$pf,
                 posterior.prob = object$posterior.prob,
                 prevalence = {

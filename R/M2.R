@@ -1,25 +1,26 @@
 #' Model fit statistics
 #'
-#' Calculate various model-data fit statistics
+#' Calculate various absolute model-data fit statistics
 #'
-#' Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016) and for sequential G-DINA model with graded responses (Ma, under review).
+#' Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016) and for sequential G-DINA model with graded responses (Ma, 2019).
 #' It also calculates SRMSR and RMSEA2.
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
 #' @param CI numeric value from 0 to 1 indicating the range of the confidence interval for RMSEA. Default returns the 90\% interval.
-#' @param ... arguments passed to the function
+#' @param ItemOnly should joint attribute distribution parameters be considered? Default = TRUE. See Ma (2019).
 #'
 #' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
 #' @export
 #' @references
 #'
+#' Hansen, M., Cai, L.,  Monroe, S., & Li, Z. (2016). Limited-information goodness-of-fit testing of diagnostic classification item response models. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 225--252.
+#'
+#' Liu, Y., Tian, W., & Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. \emph{Journal of Educational and Behavioral Statistics, 41}, 3-26.
+#'
 #' Ma, W. (2019). Evaluating model data fit using limited information statistics for the sequential G-DINA model.\emph{Applied Psychological Measurement.}
 #'
 #' Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. \emph{Measurement, 11}, 71-101.
 #'
-#' Hansen, M., Cai, L.,  Monroe, S., & Li, Z. (2016). Limited-information goodness-of-fit testing of diagnostic classification item response models. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 225--252.
-#'
-#' Liu, Y., Tian, W., & Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. \emph{Journal of Educational and Behavioral Statistics, 41}, 3-26.
 #' @examples
 #' \dontrun{
 #' dat <- sim10GDINA$simdat
@@ -29,24 +30,15 @@
 #'}
 
 
-modelfit <- function(GDINA.obj,CI = 0.90,...)
+modelfit <- function(GDINA.obj, CI = 0.90, ItemOnly = FALSE)
 {
 
   if(CI>=1||CI<=0) stop("CI must be between 0 and 1.",call. = FALSE)
 
-  ItemOnly <- dots("ItemOnly",FALSE,...)
-
   if(extract(GDINA.obj, "ngroup")!=1) {
     stop("modelfit is only applicable to single group analysis.", call. = FALSE)
   }
-  if(!is.null(extract(GDINA.obj,"att.str")))
-    stop("model-fit evaluation is not available for structured attributes.",call. = FALSE)
-  if (any(extract(GDINA.obj, "models_numeric") < 0) ||
-      any(extract(GDINA.obj, "models_numeric") > 6))
-    stop("modelfit is only applicable to GDINA, DINA, DINO, ACDM, LLM and RRUM.",
-         call. = FALSE)
-  if (extract(GDINA.obj, "att.dist") %in% c("higher.order","independent","fixed"))
-    stop(paste("modelfit is not available for ",extract(GDINA.obj, "att.dist"),"joint attribute distribution."),call. = FALSE)
+
 
   delta <- extract(GDINA.obj, "delta.parm")
   Q <- extract(GDINA.obj, "Q")
@@ -61,7 +53,8 @@ modelfit <- function(GDINA.obj,CI = 0.90,...)
   nitems <- ncol(dat)   # number of items
   ncat <- extract(GDINA.obj, "ncat")
   K <- extract(GDINA.obj, "natt")
-  L <- 2^K
+  att <- as.matrix(extract(GDINA.obj,"attributepattern"))
+  L <- extract(GDINA.obj, "nLC")
   Kj <- extract(GDINA.obj, "Kj")
   nparJ <- npar(GDINA.obj)$`No. of total item parameters`
   models <- extract(GDINA.obj, "models")
@@ -70,23 +63,19 @@ modelfit <- function(GDINA.obj,CI = 0.90,...)
   pf <- extract(GDINA.obj, "LCpf.parm") # S(Xi=s|alpha) S x L without category 0
 
   # Observed p
-  crossp <-
-    crossprod.na(dat, dat, val = 0) / crossprod(!is.na(dat), !is.na(dat))
+  crossp <- crossprod.na(dat, dat, val = 0) / crossprod(!is.na(dat), !is.na(dat))
   # univariate and bivariate observed
-  p <-
-    c(colMeans(dat, na.rm = TRUE), crossp[lower.tri(crossp)]) # length of nitems + nitems*(nitems-1)/2
+  # length of nitems + nitems*(nitems-1)/2
+  p <- c(colMeans(dat, na.rm = TRUE), crossp[lower.tri(crossp)])
 
   Xi <- Mord(item.no, as.matrix(pj), post)
   Xi2 <- cbind(rbind(Xi$Xi11, Xi$Xi21), rbind(t(Xi$Xi21), Xi$Xi22))
 
-  e <-
-    c(Xi$uni, Xi$bi[lower.tri(Xi$bi)])   # length of nitems + nitems*(nitems-1)/2
+  e <- c(Xi$uni, Xi$bi[lower.tri(Xi$bi)])   # length of nitems + nitems*(nitems-1)/2
   se <- sqrt(diag(Xi$bi) - c(Xi$uni) ^ 2)
-  difr <-
-    cor(dat, use = "pairwise.complete.obs") - (Xi$bi - Xi$uni %*% t(Xi$uni)) /
+  difr <- cor(dat, use = "pairwise.complete.obs") - (Xi$bi - Xi$uni %*% t(Xi$uni)) /
     (se %*% t(se))
-  SRMSR <-
-    sqrt(sum((difr[lower.tri(difr)]) ^ 2 / (nitems * (nitems - 1) / 2)))
+  SRMSR <- sqrt(sum((difr[lower.tri(difr)]) ^ 2 / (nitems * (nitems - 1) / 2)))
   M2 <- sig <- df <- rmsea <- ci <- NULL
   if (ItemOnly &
       nitems * (nitems + 1) / 2 - extract(GDINA.obj, "npar.item") < 0) {
@@ -98,11 +87,10 @@ modelfit <- function(GDINA.obj,CI = 0.90,...)
             call. = FALSE)
   } else{
     # parameter locations
-    patt <- eta(as.matrix(Q))
-    Mj <- list()
-    for (s in 1:ncat)
-      Mj[[s]] <- designmatrix(Kj[s], models[s])
 
+    patt <- extract(GDINA.obj,"eta")
+    Mj <- extract(GDINA.obj,"designmatrix")
+    linkf <- extract(GDINA.obj,"linkfunc")
     parloc <- matrix(c(cumsum(c(
       1, unlist(lapply(Mj, ncol))[-ncat]
     )),
@@ -112,16 +100,17 @@ modelfit <- function(GDINA.obj,CI = 0.90,...)
     # partial s/ partial d
     extMj <- vector("list", ncat)
     for (j in 1:ncat) {
-      extMj[[j]] <- Mj[[j]][patt[j, ],]
-      if (models[j] == "LLM") {
-        extMj[[j]] <- pj[j, ] * (1 - pj[j, ]) * extMj[[j]]
-      } else if (models[j] == "RRUM") {
-        extMj[[j]] <- pj[j, ] * extMj[[j]]
+      if(linkf[j]=="identity"){
+        extMj[[j]] <- Mj[[j]][patt[j, ],]
+      }else if (linkf[j]=="logit") {
+        extMj[[j]] <- pj[j, ] * (1 - pj[j, ]) * Mj[[j]][patt[j, ],]
+      } else if (linkf[j]=="log") {
+        extMj[[j]] <- pj[j, ] * Mj[[j]][patt[j, ],]
       }
 
     }
     # seq_component is partial E/partial s
-    seq_component <- matrix(0, nrow(Qc), L)
+    seq_component <- matrix(0, ncat, L)
     expected.score <- matrix(0, nitems, L)
     for (j in 1:nitems) {
       locj <- which(item.no == j)
@@ -147,8 +136,6 @@ modelfit <- function(GDINA.obj,CI = 0.90,...)
 
     delta22E <- matrix(0, nitems * (nitems - 1) / 2, L)
     loc <- 1
-    pcpl <- rbind(diag(L - 1), -1)
-
     for (j in 1:nitems) {
       locj <- which(item.no == j)
       for (sj in locj) {
@@ -173,19 +160,77 @@ modelfit <- function(GDINA.obj,CI = 0.90,...)
       }
     }
 
-    if (ItemOnly) {
+    if (ItemOnly || extract(GDINA.obj, "att.dist")=="fixed") {
       delt <- rbind(delta11, delta21)
     } else{
       if (extract(GDINA.obj, "att.dist") == "saturated") {
-        delta12 <- expected.score %*% rbind(diag(L - 1), -1)
-        delta22 <- delta22E %*% rbind(diag(L - 1), -1)
-      } else if (extract(GDINA.obj, "att.dist") == "loglinear") {
+        pcpl <- rbind(diag(L - 1), -1)
+        delta12 <- expected.score %*% pcpl
+        delta22 <- delta22E %*% pcpl
+      } else if (extract(GDINA.obj, "att.dist") == "loglinear"){
         Z <- designM(K, 0)
         loglinear <- extract(GDINA.obj, "loglinear")
         Z <- Z[, seq_len(1 + sum(sapply(seq_len(extract(GDINA.obj,"loglinear")),choose,n=K)))]
 
         delta12 <- expected.score %*% (post * Z)
         delta22 <- delta22E %*% (post * Z)
+      }else if(extract(GDINA.obj, "att.dist") == "higher.order"){
+
+        higher.order <- extract(GDINA.obj,"higher.order")
+        HOpar <- extract(GDINA.obj,"struc.parm")
+
+        P.att.theta <- exp(logLikPattern(att,
+                      higher.order$QuadNodes,
+                      HOpar[,1],HOpar[,2]) +
+              matrix(1,nrow(att),1)%*%t(log(higher.order$QuadWghts))) # 2^K x nnodes
+
+        Pk_theta <- Pr_2PL_vec(higher.order$QuadNodes, HOpar[,1],HOpar[,2]) #P(\alpha_k|theta) nnodes x K
+        if(higher.order$model=="Rasch"){
+          delta12 <- matrix(0,nitems,K)
+          delta22 <- matrix(0,nrow(delta22E),K)
+          for(k in seq_len(nrow(HOpar))){
+
+            # partial E/partial intercept
+            delta12[,k] <- rowSums(expected.score%*%(P.att.theta * outer(att[,k],Pk_theta[,k],"-")))
+            delta22[,k] <- rowSums(delta22E%*%(P.att.theta * outer(att[,k],Pk_theta[,k],"-")))
+
+          }
+        }else if(higher.order$model=="2PL"){
+          delta12 <- matrix(0,nitems,2*K)
+          delta22 <- matrix(0,nrow(delta22E),2*K)
+          for(k in seq_len(nrow(HOpar))){
+
+            # partial E/partial intercept
+            delta12[,k] <- rowSums(expected.score%*%(P.att.theta * outer(att[,k],Pk_theta[,k],"-")))
+            delta22[,k] <- rowSums(delta22E%*%(P.att.theta * outer(att[,k],Pk_theta[,k],"-")))
+            # partial E/partial slope <= 2PL
+            delta12[,k+K] <- c(expected.score%*%(P.att.theta * outer(att[,k],Pk_theta[,k],"-"))%*%higher.order$QuadNodes)
+            delta22[,k+K] <- c(delta22E%*%(P.att.theta * outer(att[,k],Pk_theta[,k],"-"))%*%higher.order$QuadNodes)
+
+          }
+        }else if(higher.order$model=="1PL"){
+          delta12 <- matrix(0,nitems,1+K)
+          delta22 <- matrix(0,nrow(delta22E),1+K)
+          for(k in seq_len(nrow(HOpar))){
+
+            # partial E/partial intercept
+            delta12[,k] <- rowSums(expected.score%*%(P.att.theta * outer(att[,k],Pk_theta[,k],"-")))
+            delta22[,k] <- rowSums(delta22E%*%(P.att.theta * outer(att[,k],Pk_theta[,k],"-")))
+
+          }
+          # partial E/partial slope <= 2PL
+          delta12[,1+K] <- c(expected.score%*%(P.att.theta * outer(rowSums(att),rowSums(Pk_theta),"-"))%*%higher.order$QuadNodes)
+          delta22[,1+K] <- c(delta22E%*%(P.att.theta * outer(rowSums(att),rowSums(Pk_theta),"-"))%*%higher.order$QuadNodes)
+
+
+        }
+      }else if(extract(GDINA.obj, "att.dist") == "independent"){
+        pr <- extract(GDINA.obj,"struc.parm")
+        pr[pr < .Machine$double.eps] <- .Machine$double.eps
+        pr[pr > 1 - .Machine$double.eps] <- 1 - .Machine$double.eps
+        mp <- matrix(pr,nrow(att),ncol(att),byrow = TRUE)
+        delta12 <- expected.score %*% diag(post) %*% ( (att - mp) / (mp * (1-mp)) )
+        delta22 <- delta22E %*% diag(post) %*% ( (att - mp) / (mp * (1-mp)) )
       }
       delt <- cbind(rbind(delta11, delta21), rbind(delta12, delta22))
     }

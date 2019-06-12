@@ -4,20 +4,20 @@
 \alias{modelfit}
 \title{Model fit statistics}
 \usage{
-modelfit(GDINA.obj, CI = 0.9, ...)
+modelfit(GDINA.obj, CI = 0.9, ItemOnly = FALSE)
 }
 \arguments{
 \item{GDINA.obj}{An estimated model object of class \code{GDINA}}
 
 \item{CI}{numeric value from 0 to 1 indicating the range of the confidence interval for RMSEA. Default returns the 90\% interval.}
 
-\item{...}{arguments passed to the function}
+\item{ItemOnly}{should joint attribute distribution parameters be considered? Default = TRUE. See Ma (2019).}
 }
 \description{
-Calculate various model-data fit statistics
+Calculate various absolute model-data fit statistics
 }
 \details{
-Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016) and for sequential G-DINA model with graded responses (Ma, under review).
+Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016) and for sequential G-DINA model with graded responses (Ma, 2019).
 It also calculates SRMSR and RMSEA2.
 }
 \examples{
@@ -29,13 +29,13 @@ modelfit(mod1)
 }
 }
 \references{
-Ma, W. (2019). Evaluating model data fit using limited information statistics for the sequential G-DINA model.\emph{Applied Psychological Measurement.}
-
-Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. \emph{Measurement, 11}, 71-101.
-
 Hansen, M., Cai, L.,  Monroe, S., & Li, Z. (2016). Limited-information goodness-of-fit testing of diagnostic classification item response models. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 225--252.
 
 Liu, Y., Tian, W., & Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. \emph{Journal of Educational and Behavioral Statistics, 41}, 3-26.
+
+Ma, W. (2019). Evaluating model data fit using limited information statistics for the sequential G-DINA model.\emph{Applied Psychological Measurement.}
+
+Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. \emph{Measurement, 11}, 71-101.
 }
 \author{
 {Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}

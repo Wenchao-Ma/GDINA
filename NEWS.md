@@ -1,6 +1,10 @@
+# GDINA 2.6.0
+* Fixed   - a mistake in BIC calculation (since version 2.5.2)  
+* Fixed   - M2 calculation in `modelfit` was incorrect for LLM and RRUM
+* Changed - M2 in `modelfit` can be calculated for higher-order or independent models of joint attribute distribution
+
 # GDINA 2.5.2
 * Added   - `ICLA()` function for attribute profile estimation
-* Changed - data are grouped before single group GDINA analysis 
 * Changed - data are aggregated before model estimation for single group CDMs
 * Deleted - exported internal functions are removed
 * Fixed   - `print.GDINA`()` prints valid number of individuals by default now

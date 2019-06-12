@@ -24,7 +24,7 @@ examples, tutorials and more information.
 ## Learning resources
 
   - Watch [Ma and de la Torre’s (2019) NCME digital
-    module 5](https://ncme.elevate.commpartners.com/) on a gental
+    module 5](https://ncme.elevate.commpartners.com/) on a gentle
     introduction to the G-DINA model framework and the use of graphical
     user interface for CDM analyses
 
@@ -62,6 +62,9 @@ examples, tutorials and more information.
 
 ## Installation
 
+The stable version of GDINA should be installed from R CRAN at
+[here](https://CRAN.R-project.org/package=GDINA)
+
 To install this package from source:
 
 1)  Windows users may need to install the
@@ -83,6 +86,3 @@ To install this package from source:
 # install.packages("devtools")
 devtools::install_github("Wenchao-Ma/GDINA")
 ```
-
-The stable version of GDINA should be installed from R CRAN at
-[here](https://CRAN.R-project.org/package=GDINA)
