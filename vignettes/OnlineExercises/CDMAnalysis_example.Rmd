@@ -1,0 +1,143 @@
+---
+title: "Model Estimation and Model Diagnostics"
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This tutorial is created using R [markdown](https://rmarkdown.rstudio.com/) and [knitr](https://yihui.name/knitr/). It illustrates how to use the GDINA R pacakge (version `r packageVersion("GDINA")`) for various CDM analyses.
+
+## Model Estimation
+
+The following code estimates the G-DINA model. For extracting item and person parameters from G-DINA model, please see [this tutorial](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html).
+```{r}
+library(GDINA)
+dat <- sim10GDINA$simdat
+Q <- matrix(c(1,0,0,
+              0,1,0,
+              0,0,1,
+              1,0,1,
+              0,1,1,
+              1,1,0,
+              1,0,1,
+              1,1,0,
+              1,1,1,
+              1,0,1),byrow = T,ncol = 3)
+
+est <- GDINA(dat = dat, Q = Q, model = "GDINA", verbose = 0)
+```
+
+
+
+## Q-matrix validation
+
+The **Qval()** function is used for Q-matrix validation. By default, it implements de la Torre and Chiu's (2016) algorithm. The following example use the stepwise method (Ma & de la Torre, 2019) instead.
+```{r}
+Qv <- Qval(est, method = "Wald")
+Qv
+```
+To further examine the q-vectors that are suggested to be modified, you can draw the mesa plots (de la Torre & Ma, 2016):
+
+```{r}
+plot(Qv, item = 9)
+plot(Qv, item = 10)
+```
+
+We can also examine whether the G-DINA model with the suggested Q had better relative fit:
+```{r}
+sugQ <- extract(Qv, what = "sug.Q")
+est.sugQ <- GDINA(dat, sugQ, verbose = 0)
+anova(est,est.sugQ)
+```
+
+## Item-level model comparison
+Based on the suggested Q-matrix, we perform item level model comparison using the Wald test (see de la Torre, 2011; de la Torre & Lee, 2013; Ma, Iaconangelo & de la Torre, 2016) to check whether any reduced CDMs can be used. Note that score test and likelihood ratio test (Sorrel, Abad, Olea, de la Torre, and Barrada, 2017; Sorrel, de la Torre, Abad, & Olea, 2017; Ma & de la Torre, 2018) may also be used.
+```{r}
+mc <- modelcomp(est.sugQ)
+mc
+```
+
+We can fit the models suggested by the Wald test based on the rule in Ma, Iaconangelo and de la Torre (2016) and compare the combinations of CDMs with the G-DINA model:
+```{r}
+est.wald <- GDINA(dat, sugQ, model = extract(mc,"selected.model")$models, verbose = 0)
+anova(est.sugQ,est.wald)
+```
+
+## Absolute fit evaluation
+The test level absolute fit include M2 statistic, RMSEA and SRMSR (Maydeu-Olivares, 3013; Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016; Ma, 2019) and the item level absolute fit include log odds and transformed correlation (Chen, de la Torre, & Zhang, 2013), as well as heat plot for item pairs.
+```{r}
+# test level absolute fit
+mft <- modelfit(est.wald)
+mft
+# item level absolute fit
+ift <- itemfit(est.wald)
+ift
+summary(ift)
+plot(ift)
+```
+
+
+The estimated latent class size can be obtained by
+```{r}
+extract(est.wald,"posterior.prob")
+```
+
+
+The tetrachoric correlation between attributes can be calculated by
+```{r}
+# psych package needs to be installed
+library(psych)
+psych::tetrachoric(x = extract(est.wald,"attributepattern"),
+                   weight = extract(est.wald,"posterior.prob"))
+```
+
+## Classification Accuracy
+The following code calculates the test-, pattern- and attribute-level classification accuracy indices based on GDINA estimates using approaches in Iaconangelo (2017) and Wang, Song, Chen, Meng, and Ding (2015).
+```{r}
+CA(est.wald)
+```
+## References
+
+Chen, J., de la Torre, J., & Zhang, Z. (2013). Relative and Absolute Fit Evaluation in Cognitive Diagnosis Modeling.
+_Journal of Educational Measurement, 50_, 123-140.
+
+de la Torre, J., & Lee, Y. S. (2013). Evaluating the wald test for item-level comparison of saturated and reduced models in cognitive diagnosis. *Journal of Educational Measurement, 50*, 355-373.
+
+de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A general framework approach and its implementation in R. A short course at the
+fourth conference on the statistical methods in Psychometrics, Columbia University, New York.
+
+Hansen, M., Cai, L.,  Monroe, S., & Li, Z. (2016). Limited-information goodness-of-fit testing of diagnostic classification item response models. *British Journal of Mathematical and Statistical Psychology. 69,* 225--252.
+
+Iaconangelo, C.(2017). *Uses of Classification Error Probabilities in the Three-Step Approach to Estimating Cognitive Diagnosis Models.* (Unpublished doctoral dissertation). New Brunswick, NJ: Rutgers University.
+
+Liu, Y., Tian, W., & Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. *Journal of Educational and Behavioral Statistics, 41*, 3-26.
+
+Ma, W. (2019). Evaluating the fit of sequential G-DINA model using limited-information measures. *Applied Psychological Measurement*.
+
+Ma, W. & de la Torre, J. (2018). Category-level model selection for the sequential G-DINA model. *Journal of Educational and Behavorial Statistics*.
+
+Ma,W., & de la Torre, J. (2019). An empirical Q-matrix validation method for the sequential G-DINA model. *British Journal of  Mathematical and Statistical Psychology*. 
+
+Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. *Applied Psychological Measurement, 40*, 200-217.
+
+Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. *Measurement, 11*, 71-101.
+
+Sorrel, M. A., Abad, F. J., Olea, J., de la Torre, J., & Barrada, J. R. (2017). Inferential Item-Fit Evaluation in Cognitive Diagnosis Modeling. *Applied Psychological Measurement, 41,* 614-631.
+
+Sorrel, M. A., de la Torre, J., Abad, F. J., & Olea, J. (2017). Two-Step Likelihood Ratio Test for Item-Level Model Comparison in Cognitive Diagnosis Models. *Methodology, 13*, 39-47.
+
+Wang, W., Song, L., Chen, P., Meng, Y., & Ding, S. (2015). Attribute-Level and Pattern-Level Classification Consistency and Accuracy Indices for Cognitive Diagnostic Assessment.
+*Journal of Educational Measurement, 52* , 457-476.
+
+```{r}
+sessionInfo()
+```

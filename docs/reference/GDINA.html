@@ -113,6 +113,9 @@ use startGDINA." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/OnlineExercises/CDMAnalysis_example.html">Model Estimation and Model Diagnostics</a>
+    </li>
+    <li>
       <a href="../articles/OnlineExercises/GDINA_example.html">GDINA Estimation</a>
     </li>
     <li>
@@ -356,8 +359,9 @@ and with main effect and first-order interaction.</p></td>
 <li><p><code>conv.type</code> How is the convergence criterion evaluated? A vector with possible elements: <code>"ip"</code>, indicating
    the maximum absolute change in item success probabilities, <code>"mp"</code>, representing
    the maximum absolute change in mixing proportion parameters, <code>"delta"</code>, indicating the maximum absolute change in delta
-   parameters or <code>neg2LL</code> indicating the absolute change in negative two times loglikeihood. Multiple criteria can be specified.
-   If so, all criteria need to be met. Default = c("ip", "mp").</p></li>
+   parameters, <code>neg2LL</code> indicating the absolute change in negative two times loglikeihood,  or <code>neg2LL</code> indicating the
+   relative absolute change in negative two times loglikeihood (i.e., the absolute change divided by -2LL of the previous iteration).
+   Multiple criteria can be specified. If so, all criteria need to be met. Default = c("ip", "mp").</p></li>
 <li><p><code>nstarts</code> how many sets of starting values? Default = 3.</p></li>
 <li><p><code>lower.p</code> A vector for each item or nonzero category,
    or a scalar which will be used for all items or nonzero categories to specify the lower bound for success probabilities.

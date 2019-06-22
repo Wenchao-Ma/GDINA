@@ -1,10 +1,10 @@
 ---
 title: "GDINA Estimation"
-author: "Abdullah Asilkalkan"
+author: "Abdullah Asilkalkan  Wenchao Ma"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -51,10 +51,41 @@ deviance(est) # deviance: -2 log-likelihood
 npar(est) # number of parameters
 nobs(est) # number of observations
 ```
+The estimated latent class size can be obtained by
+```{r}
+extract(est,"posterior.prob")
+```
+
+
+The tetrachoric correlation between attributes can be calculated by
+```{r}
+# psych package needs to be installed
+library(psych)
+psych::tetrachoric(x = extract(est,"attributepattern"),
+                   weight = extract(est,"posterior.prob"))
+```
+
 You can use *extract* with argument *discrim* to extract discrimination indices. The first column gives $P(1)-P(0)$ and the second column gives the GDINA discrimination index.
 ```{r}
 # discrimination indices
 extract(est, "discrim")
+```
+
+### Model Fit Evaluation
+For test level model data fit, use *modelfit* function:
+```{r}
+modelfit(est)
+```
+
+*itemfit* function also provide test level model fit information:
+```{r}
+ift <- itemfit(est)
+ift
+```
+*itemfit* also provide item-level fit information:
+
+```{r}
+summary(ift)
 ```
 
 ### Model Parameters

@@ -4,7 +4,7 @@
 #'
 #' @param dat A required binary item response matrix.
 #' @param Q A required binary item and attribute association matrix.
-#' @param seed.num seed number
+#' @param seed.num seed number; Default = 5.
 #' @return Estimated attribute profiles.
 #'
 #' @author {Zhehan Jiang, The University of Alabama}
@@ -12,8 +12,9 @@
 #' Jiang, Z. (2019). Using the iterative latent-class analysis approach to improve attribute accuracy in diagnostic classification models. \emph{Behavior research methods}, 1-10.
 #' @export
 #' @examples
+#' \dontrun{
 #' ILCA(sim10GDINA$simdat, sim10GDINA$simQ)
-#'
+#' }
 ILCA <- function(dat,Q,seed.num=5){
   ###Dependencies
   if (!requireNamespace(c("stringr", "poLCA"), quietly = TRUE)) {

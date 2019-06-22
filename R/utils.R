@@ -58,7 +58,7 @@ inputcheck <- function(dat, Q, model, sequential,att.dist,latent.var,
 }
 
 
-inputcheck.sim <- function(N, Q, gs.parm=NULL, sequential,model = "GDINA", type = "random",
+inputcheck.sim <- function(N, Q, gs.parm=NULL, sequential, model = "GDINA", type = "random",
                            catprob.parm = NULL, delta.parm = NULL)
   {
   if (!is.nonNegativeInteger(N) ) stop("N must be negative integer.",call. = FALSE)
@@ -70,6 +70,13 @@ inputcheck.sim <- function(N, Q, gs.parm=NULL, sequential,model = "GDINA", type 
   if(!is.null(catprob.parm)&&!is.list(catprob.parm)) stop("itemprob.parm must be NULL or a list.",call. = FALSE)
   if(!is.null(gs.parm)&&!is.data.frame(gs.parm)&&!is.matrix(gs.parm)) stop("gs.parm must be NULL, a matrix or data frame.",call. = FALSE)
   if(!is.null(delta.parm)&&!is.list(delta.parm)) stop("delta.parm must be NULL or a list.",call. = FALSE)
+  if(sequential){
+    if(max(rowSums(Q[,-c(1:2)]))==0)
+      stop("Some rows of the Q-matrix contain only 0s.",call. = FALSE)
+  }else{
+    if(max(rowSums(Q))==0)
+      stop("Some rows of the Q-matrix contain only 0s.",call. = FALSE)
+  }
   }
 
 model.transform <- function(model,J){

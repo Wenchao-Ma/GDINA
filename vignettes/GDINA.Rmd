@@ -16,6 +16,7 @@ for dichotomous and polytomous responses.
 
 For more details, see [here](https://wenchao-ma.github.io/GDINA/index.html)
 
+For an example of how to use the package, see [here](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html)
 
 ## How to use this package?
 
@@ -32,7 +33,7 @@ Visit [here](https://wenchao-ma.github.io/GDINA/reference/index.html) for an onl
 
 ## A quick example
 
-Below is an illustration showing some analyses that you could do using the package. You can copy the code, paste and run it in R console.
+Below is an illustration showing some analyses that you could do using the package. You can copy the code, paste and run it in R console. For a more comprehensive example, see [this tutorial](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html).
 
 1. Load the package and assume we have the following item response matrix and Q-matrix:
 ```{r,eval=FALSE}
@@ -98,7 +99,8 @@ CA(est)
 
 ## More Examples
 
-* [G-DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html) 
+* [G-DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html)
+* [Model estimation and diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html) 
 * [LCDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html) 
 * [Higher-order GDINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.html)  
 

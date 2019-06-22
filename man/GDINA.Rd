@@ -145,8 +145,9 @@ and with main effect and first-order interaction.}
     \item \code{conv.type} How is the convergence criterion evaluated? A vector with possible elements: \code{"ip"}, indicating
    the maximum absolute change in item success probabilities, \code{"mp"}, representing
    the maximum absolute change in mixing proportion parameters, \code{"delta"}, indicating the maximum absolute change in delta
-   parameters or \code{neg2LL} indicating the absolute change in negative two times loglikeihood. Multiple criteria can be specified.
-   If so, all criteria need to be met. Default = c("ip", "mp").
+   parameters, \code{neg2LL} indicating the absolute change in negative two times loglikeihood,  or \code{neg2LL} indicating the
+   relative absolute change in negative two times loglikeihood (i.e., the absolute change divided by -2LL of the previous iteration).
+   Multiple criteria can be specified. If so, all criteria need to be met. Default = c("ip", "mp").
     \item \code{nstarts} how many sets of starting values? Default = 3.
     \item \code{lower.p} A vector for each item or nonzero category,
    or a scalar which will be used for all items or nonzero categories to specify the lower bound for success probabilities.

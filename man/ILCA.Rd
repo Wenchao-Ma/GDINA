@@ -11,7 +11,7 @@ ILCA(dat, Q, seed.num = 5)
 
 \item{Q}{A required binary item and attribute association matrix.}
 
-\item{seed.num}{seed number}
+\item{seed.num}{seed number; Default = 5.}
 }
 \value{
 Estimated attribute profiles.
@@ -20,8 +20,9 @@ Estimated attribute profiles.
 This function implements an iterative latent class analysis (ILCA; Jiang, 2019) approach to estimating attributes for cognitive diagnosis.
 }
 \examples{
+\dontrun{
 ILCA(sim10GDINA$simdat, sim10GDINA$simQ)
-
+}
 }
 \references{
 Jiang, Z. (2019). Using the iterative latent-class analysis approach to improve attribute accuracy in diagnostic classification models. \emph{Behavior research methods}, 1-10.

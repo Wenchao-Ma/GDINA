@@ -456,6 +456,7 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     if(any(tolower(control$conv.type)=="delta"))  maxchg <- max(maxchg,dif.parm$delt)
     if(any(tolower(control$conv.type)=="mp"))  maxchg <- max(maxchg,dif.parm$prior)
     if(any(tolower(control$conv.type)=="neg2ll"))  maxchg <- max(maxchg,abs(dif.parm$neg2LL))
+    if(any(tolower(control$conv.type)=="relneg2ll"))  maxchg <- max(maxchg,abs(dif.parm$neg2LL)/parm0$neg2LL)
 
     if(verbose==1L) {
       cat('\rIter =',itr,' Max. abs. change =',formatC(maxchg,digits = 5, format = "f"),
