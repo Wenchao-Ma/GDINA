@@ -1,3 +1,7 @@
+# GDINA 2.6.1
+* Added   - MC-DINA model can be estimated using `MCmodel` function
+* Added   - more components can be extracted using `extract` function
+
 # GDINA 2.6.0
 * Fixed   - a mistake in BIC calculation (since version 2.5.2)  
 * Fixed   - M2 calculation in `modelfit` was incorrect for LLM and RRUM

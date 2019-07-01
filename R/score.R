@@ -111,13 +111,21 @@ score_p <- function(object){
     for(g in sort(unique(extract(object,"group")))){
       tmp <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob")[g,])*t(lik)))[,-1]
       l <- length(score)+1
-      print(l)
+      # print(l)
       score[[l]] <- tmp
       score[[l]][which(extract(object,"group")!=g),] <- 0
       names(score)[l] <- paste0("G",g)
     }
   }else{
-    score[[length(score)+1]] <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]
+    if(extract(object,"att.dist")=="saturated"){
+      score[[length(score)+1]] <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]
+    }else if(extract(object,"att.dist")=="higher.order"){
+      if(extract(object,"higher.order")$model=="Rasch"){
+        #To DO
+      }
+
+    }
+
   }
   return(score)
 }
@@ -296,30 +304,3 @@ OPG_p <- function(object,SE.type){
 }
 
 
-# SE_seq <- function(object,SE.type = 2, item=NULL,...){
-#   dat <- extract(object,"dat")
-#   Qc <- extract(object,"Qc")
-#   Q <- extract(object,"Q")
-#
-#   J <- ncol(dat)
-#   if (is.null(item)) item <- 1:J
-#   if(SE.type>1) item <- 1:J
-#   par.loc <- eta.loc(Q)
-#   lik <- exp(indlogLik(object)) # posterior N x 2^K
-#   scorej <- scorefunc2(object, item = item)
-#
-#   if(SE.type==1){
-#     v <- lapply(scorej,inverse_crossprod)
-#     if(length(v)>1) v <- bdiag(v)
-#   }else if(SE.type==2){
-#     v <- inverse_crossprod(do.call(cbind,scorej))
-#   }else if(SE.type==3){
-#     scopp <- (lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(post))
-#     v <- inverse_crossprod(cbind(do.call(cbind,scorej),scopp[,-1]))
-#   }
-#
-#   index <- data.frame(Cat=rep(1:length(rowSums(Q[Qc[,1]%in%item,,drop=FALSE]) ),2^rowSums(Q[Qc[,1]%in%item,,drop=FALSE])) )
-#   index$Column <- seq_len(length(index$Cat))
-#   index$Item <- rep(Qc[Qc[,1]%in%item,1],2^rowSums(Q[Qc[,1]%in%item,]))
-#   return(list(var=v,index=index))
-# }

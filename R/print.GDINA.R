@@ -1,4 +1,4 @@
-#' @include GDINA.R autoGDINA.R modelcomp.R itemfit.R GDI.R dif.R s3GDINA.R
+#' @include GDINA.R autoGDINA.R modelcomp.R itemfit.R GDI.R dif.R s3GDINA.R MCmodel.R
 #' @export
 print.GDINA <-
   function(x, ...)
@@ -236,7 +236,29 @@ print.summary.GDINA <- function(x,...){
   #     print(round(x$`Posterior Weights`,4))
 
 }
-
+#'@export
+print.MCmodel <-
+  function(x, ...)
+  {
+    cat("Call:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"),
+        "\n\n", sep = "")
+    packageinfo <- utils::packageDescription("GDINA")
+    cat( paste( "  GDINA version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
+    cat("===============================================\n")
+    cat("Data\n")
+    cat("-----------------------------------------------\n")
+    cat("# of individuals    groups    items         \n")
+    cat("    ",sprintf("%11d",nrow(x$dat)),sprintf("%9d",1),sprintf("%8d",ncol(x$dat)))
+    # if (any(extract.GDINA(x,"att.dist")=="higher.order")) cat("Higher-order model    =",extract(x,"higher.order")$model,"\n")
+    # tmp <- max(extract.GDINA(x,"Q"))
+    # cat("Attribute level       =",ifelse(tmp>1,"Polytomous","Dichotomous"),"\n")
+    cat("\n===============================================\n")
+    cat("Estimation\n")
+    cat("-----------------------------------------------\n")
+    cat("Fitted model(s)       = MC-DINA\n")
+    cat("Attribute structure   = Saturated\n")
+    cat("Time used             =", format(x$time.used, digits = 4), "\n")
+  }
 #'@export
 print.anova.GDINA <- function(x,...){
   cat("\nInformation Criteria and Likelihood Ratio Test\n\n")

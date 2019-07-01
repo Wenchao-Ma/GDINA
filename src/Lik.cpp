@@ -276,17 +276,81 @@ Rcpp::List LikNR_LC(const arma::mat & mP,//J x L
 }
 
 
+// // [[Rcpp::export]]
+// Rcpp::List Lik_DTM(arma::mat & mP, //S0 x L
+//                    arma::mat & mX, //N x J
+//                    arma::vec vC, //J x 1
+//                    arma::vec vlogPrior){
+//
+//   int N = mX.n_rows;
+//   int J = vC.n_rows;
+//   arma::mat mPt = mP.t(); //L x S0
+//   int S0 = mPt.n_cols;
+//   int L = mPt.n_rows;
+//
+//   //mX contains polytomous responses--each item is in one column
+//   //X contains dichomotous responses--each item lies in Sj columns
+//   arma::mat X = arma::zeros<arma::mat>(N,S0);
+//   //This converts mX to X, that is, N x J --> N x S0
+//   int start_col;
+//   vC++;
+//   //std::cout << "vC: " << vC << std::endl;
+//   for (int j=0;j<J;++j){
+//     if (j==0){
+//       start_col=0;
+//     }else{
+//       start_col+=vC[j-1];
+//     }
+//     for (int row=0;row<N;++row){
+//       if(arma::is_finite(mX(row,j))){
+//         X(row,start_col+mX(row,j))=1;
+//       }
+//     }
+//   } //X:N x S0
+//   //for each examinee, the likelihood L(Xi) is calculated
+//   //Xi contain responses for examinee i
+//   //all L rows are identical
+//   arma::mat Lik = arma::zeros<arma::mat>(N,L);
+//   arma::mat Xi = arma::zeros<arma::mat>(L,S0);
+//   for (int i=0;i<N;++i){
+//     Xi.each_row() = X.row(i);
+//     Xi = Xi % mPt;  //element-wise product --> L x S0
+//     Xi.elem(find(Xi==0)).ones(); //change all 0 to 1
+//     Lik.row(i) = trans(prod(Xi,1));//prod -> L x 1==>transpose is needed
+//   }
+//
+//   //Calculate posterior
+//   arma::mat mlogPrior = arma::ones<arma::mat>(N,1)*trans(vlogPrior); //N x 1 * 1 x L --> N x L
+//   arma::mat mPost = exp(log(Lik) + mlogPrior); //unstandarized posterior N x L
+//   arma::mat msumPost = sum(mPost,1)*arma::ones<arma::mat>(1,L);//N x L
+//   arma::mat mlogPost = log(mPost) - log(msumPost); //standarized log posterior N x L
+//   arma::rowvec updlogPrior = log(mean(exp(mlogPost),0)); //updated log priors
+//
+//   //calculate Log Likelihood
+//   arma::vec vpost=sum(mPost,1);
+//   double LL = sum(log(vpost));
+//   //Log likelihood and log standarized posterior are returned for stability
+//   //updated log prior is also returned
+//   return Rcpp::List::create(Rcpp::Named("loglik") = log(Lik), //N x L
+//                             Rcpp::Named("logpost") = mlogPost,
+//                             Rcpp::Named("logprior") = updlogPrior,
+//                             Rcpp::Named("LL") = LL);
+//
+// }
+
 // [[Rcpp::export]]
-Rcpp::List Lik_DTM(arma::mat & mP, //S0 x L
-                   arma::mat & mX, //N x J
-                   arma::vec vC, //J x 1
-                   arma::vec vlogPrior){
+
+Rcpp::List Lik_DTM(arma::mat & mP,
+               arma::mat & mX,
+               arma::vec vC,
+               arma::vec vlogPrior){
 
   int N = mX.n_rows;
+  //int J = mX.n_cols;
   int J = vC.n_rows;
-  arma::mat mPt = mP.t(); //L x S0
-  int S0 = mPt.n_cols;
-  int L = mPt.n_rows;
+  arma::mat logMP = arma::trunc_log(mP);
+  int L = mP.n_cols;
+  int S0 = mP.n_rows;
 
   //mX contains polytomous responses--each item is in one column
   //X contains dichomotous responses--each item lies in Sj columns
@@ -294,7 +358,6 @@ Rcpp::List Lik_DTM(arma::mat & mP, //S0 x L
   //This code converts mX to X, that is, N x J --> N x S0
   int start_col;
   vC++;
-  //std::cout << "vC: " << vC << std::endl;
   for (int j=0;j<J;++j){
     if (j==0){
       start_col=0;
@@ -302,39 +365,34 @@ Rcpp::List Lik_DTM(arma::mat & mP, //S0 x L
       start_col+=vC[j-1];
     }
     for (int row=0;row<N;++row){
-      if(arma::is_finite(mX(row,j))){
-        X(row,start_col+mX(row,j))=1;
-      }
+      X(row,start_col+mX(row,j))=1;
     }
   } //X:N x S0
   //for each examinee, the likelihood L(Xi) is calculated
   //Xi contain responses for examinee i
   //all L rows are identical
-  arma::mat Lik = arma::zeros<arma::mat>(N,L);
-  arma::mat Xi = arma::zeros<arma::mat>(L,S0);
+  arma::mat logLik = arma::zeros<arma::mat>(N,L);
+  arma::mat Pi = arma::zeros<arma::mat>(S0,L);
   for (int i=0;i<N;++i){
-    Xi.each_row() = X.row(i);
-    Xi = Xi % mPt;  //element-wise product --> L x S0
-    Xi.elem(find(Xi==0)).ones(); //change all 0 to 1
-    Lik.row(i) = trans(prod(Xi,1));//prod -> L x 1==>transpose is needed
+    Pi = logMP.each_col() % trans(X.row(i));
+    logLik.row(i) = arma::sum(Pi,0);
   }
 
   //Calculate posterior
-  arma::mat mlogPrior = arma::ones<arma::mat>(N,1)*trans(vlogPrior); //N x 1 * 1 x L --> N x L
-  arma::mat mPost = exp(log(Lik) + mlogPrior); //unstandarized posterior N x L
-  arma::mat msumPost = sum(mPost,1)*arma::ones<arma::mat>(1,L);//N x L
-  arma::mat mlogPost = log(mPost) - log(msumPost); //standarized log posterior N x L
+  arma::mat mlogPost = logLik.each_row() + vlogPrior.t(); //unstandarized posterior N x L
+
+  arma::vec logsumPost = log(sum(exp(mlogPost),1));//N x 1
+  mlogPost.each_col() -= logsumPost; //standarized log posterior N x L
   arma::rowvec updlogPrior = log(mean(exp(mlogPost),0)); //updated log priors
 
   //calculate Log Likelihood
-  arma::vec vpost=sum(mPost,1);
-  double LL = sum(log(vpost));
+  double LL = accu(logsumPost);
+
   //Log likelihood and log standarized posterior are returned for stability
   //updated log prior is also returned
-  return Rcpp::List::create(Rcpp::Named("loglik") = log(Lik), //N x L
+  return Rcpp::List::create(Rcpp::Named("loglik") = logLik, //N x L
                             Rcpp::Named("logpost") = mlogPost,
                             Rcpp::Named("logprior") = updlogPrior,
                             Rcpp::Named("LL") = LL);
-
 }
 

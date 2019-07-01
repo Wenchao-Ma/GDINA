@@ -62,6 +62,8 @@ examples, tutorials and more information.
 
 ## Installation
 
+This package depends on R version 3.5.0 or newer
+
 The stable version of GDINA should be installed from R CRAN at
 [here](https://CRAN.R-project.org/package=GDINA)
 

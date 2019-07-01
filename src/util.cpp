@@ -294,7 +294,7 @@ arma::vec logP_AlphaPattern(arma::mat & AlphaPattern, //2^K x K
                             arma::vec & a,
                             arma::vec & b){
   int N = AlphaPattern.n_rows;
-  arma::mat logP = logLikPattern(AlphaPattern, theta, a, b); // 2^K x nnodes
+  arma::mat logP = logLikPattern(AlphaPattern, theta, a, b); //2^K x nnodes log P(AlphaPattern|theta_q,a,b)
   arma::vec lP = arma::log(arma::sum(arma::exp(logP + arma::ones<arma::mat>(N,1)*log(arma::trans(f_theta))),1));
   return lP; //log pi_c 2^K x 1
 }

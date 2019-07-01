@@ -23,7 +23,15 @@ To see what can be extracted from \code{\link{itemfit}}, \code{\link{modelcomp}}
 Objects which can be extracted from \code{GDINA} objects include:
 
 \describe{
+\item{AIC}{AIC}
   \item{att.prior}{attribute prior weights for calculating marginalized likelihood in the last EM iteration}
+\item{BIC}{BIC}
+\item{catprob.cov}{covariance matrix of item probability parameter estimates; Need to specify \code{SE.type}}
+\item{catprob.parm}{item parameter estimates}
+\item{catprob.se}{standard error of item probability parameter estimates; Need to specify \code{SE.type}}
+\item{delta.cov}{covariance matrix of delta parameter estimates; Need to specify \code{SE.type}}
+\item{delta.parm}{delta parameter estimates}
+\item{delta.se}{standard error of delta parameter estimates; Need to specify \code{SE.type}}
   \item{discrim}{GDINA discrimination index}
   \item{designmatrix}{A list of design matrices for each item/category}
 \item{expectedCorrect}{expected # of examinees in each latent group answering item correctly}
@@ -33,6 +41,7 @@ Objects which can be extracted from \code{GDINA} objects include:
 \item{initial.catprob}{initial item category probability parameters}
   \item{prevalence}{prevalence of each attribute}
   \item{posterior.prob}{posterior weights for each latent class}
+  \item{reduced.LG}{Reduced latent group for each item}
 }
 }
 \examples{
