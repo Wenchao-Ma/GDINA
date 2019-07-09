@@ -522,7 +522,7 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
                       itr = itr, dif.LL = dif.parm$neg2LL,dif.p=dif.parm$ip,dif.prior=dif.parm$prior,
                       att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, latent.var = latent.var,
                       mono.constraint = mono.constraint, item.names = item.names, group = rep(1,N), gr = gr,
-                      att.str= att.str,  seq.dat = dat, no.group = 1, group.label = "all",
+                      att.str= att.str,  seq.dat = dat[raw2unique, ], no.group = 1, group.label = "all",
                       verbose = verbose, catprob.parm = catprob.parm,sequential = sequential,
                       nloptr_args = nloptr_args,auglag_args=auglag_args,solnp_args = solnp_args,
                       linkfunc = LF.numeric,higher.order = higher.order, loglinear = loglinear, solver = solver,

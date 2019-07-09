@@ -1,6 +1,7 @@
-# GDINA 2.6.1
+# GDINA 2.6.2
 * Added   - MC-DINA model can be estimated using `MCmodel` function
 * Added   - more components can be extracted using `extract` function
+* Fixed   - `Qval` for sequential model using Wald test (since version 2.5.2)
 
 # GDINA 2.6.0
 * Fixed   - a mistake in BIC calculation (since version 2.5.2)  
