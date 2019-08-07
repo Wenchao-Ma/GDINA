@@ -25,23 +25,39 @@ Objects which can be extracted from \code{GDINA} objects include:
 \describe{
 \item{AIC}{AIC}
   \item{att.prior}{attribute prior weights for calculating marginalized likelihood in the last EM iteration}
+  \item{attributepattern}{all attribute patterns involved in the current calibration}
 \item{BIC}{BIC}
+\item{CAIC}{CAIC}
 \item{catprob.cov}{covariance matrix of item probability parameter estimates; Need to specify \code{SE.type}}
 \item{catprob.parm}{item parameter estimates}
 \item{catprob.se}{standard error of item probability parameter estimates; Need to specify \code{SE.type}}
+\item{convergence}{\code{TRUE} if the calibration is converged.}
+\item{dat}{raw data}
+\item{del.ind}{deleted observation number}
 \item{delta.cov}{covariance matrix of delta parameter estimates; Need to specify \code{SE.type}}
 \item{delta.parm}{delta parameter estimates}
 \item{delta.se}{standard error of delta parameter estimates; Need to specify \code{SE.type}}
-  \item{discrim}{GDINA discrimination index}
   \item{designmatrix}{A list of design matrices for each item/category}
+  \item{deviance}{deviance, or negative two times observed marginal log likelihood}
+  \item{discrim}{GDINA discrimination index}
 \item{expectedCorrect}{expected # of examinees in each latent group answering item correctly}
 \item{expectedTotal}{expected # of examinees in each latent group}
 \item{higher.order}{higher-order model specifications}
+\item{logLik}{observed marginal log likelihood}
 \item{linkfunc}{link functions for each item}
 \item{initial.catprob}{initial item category probability parameters}
+\item{natt}{number of attributes}
+\item{ncat}{number of categories}
+\item{ngroup}{number of groups}
+\item{nitem}{number of items}
+\item{nitr}{number of EM iterations}
+\item{nobs}{number of observations, or sample size}
+\item{nLC}{number of latent classes}
   \item{prevalence}{prevalence of each attribute}
   \item{posterior.prob}{posterior weights for each latent class}
   \item{reduced.LG}{Reduced latent group for each item}
+  \item{SABIC}{SABIC}
+\item{sequential}{is a sequential model fitted?}
 }
 }
 \examples{

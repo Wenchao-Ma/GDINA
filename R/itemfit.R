@@ -8,7 +8,7 @@
 #'  can be adjusted for multiple comparisons at test and item level. This is conducted using \code{p.adjust} function in \pkg{stats},
 #'  and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 #'  \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
-#'  for more details. \code{"bonferroni"} is the default.
+#'  for more details. \code{"holm"} is the default.
 #' @param N.resampling the sample size of resampling. By default, it is the maximum of 1e+5 and ten times of current sample size.
 #' @param randomseed random seed; This is used to make sure the results are replicable. The default random seed is 123456.
 #' @param cor.use how to deal with missing values when calculating correlations? This argument will be passed to \code{use} when calling \code{stats::cor}.
@@ -62,7 +62,7 @@
 #'}
 
 
-itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni",
+itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "holm",
                     cor.use = "pairwise.complete.obs",
                     digits = 4,N.resampling = NULL,randomseed=123456){
 
@@ -94,13 +94,12 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "bonferroni
     Nfit <- N.resampling
   }
   Rep <- ceiling(Nfit / N)
-  pattern <- t(attributepattern(Q = Q))
+  pattern <- t(extract(GDINA.obj, "attributepattern"))
 
   if (person.sim == "post") {
     post <- extract(GDINA.obj, "posterior.prob")
-    att_group <-
-      sample(1:length(post), Rep * N, replace = TRUE, prob = post)
-  } else{
+    att_group <- sample(1:length(post), Rep * N, replace = TRUE, prob = post)
+  }else{
     if (max(Q) > 1)
       person.sim <- "EAP"
 

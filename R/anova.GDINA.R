@@ -16,6 +16,8 @@ anova.GDINA <- function(object, ...)
   if (any(sapply(objects, class) != "GDINA"))
     stop("Inputs must be objects from class GDINA.", call. = FALSE)
   aic <- sapply(objects, AIC)
+  caic <- sapply(objects, extract, what="CAIC")
+  sabic <- sapply(objects, extract, what="SABIC")
   bic <- sapply(objects, BIC)
   logL <- sapply(objects, logLik)
   dev <- sapply(objects, deviance)
@@ -34,7 +36,9 @@ anova.GDINA <- function(object, ...)
     logLik = formatC(logL, digits = 2, format = "f"),
     deviance = formatC(dev, digits = 2, format = "f"),
     AIC = formatC(aic, digits = 2, format = "f"),
-    BIC = formatC(bic, digits = 2, format = "f")
+    BIC = formatC(bic, digits = 2, format = "f"),
+    CAIC = formatC(caic, digits = 2, format = "f"),
+    SABIC = formatC(sabic, digits = 2, format = "f")
   )
   rownames(IC) <- rownames(LR) <- paste(obj)[-1]
   output <- list(IC = IC, LR = LR)

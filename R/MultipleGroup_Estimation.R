@@ -16,7 +16,8 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
       group <- dat[,group]
     dat <- dat[,-group]
   }else{
-    if (nrow(dat) != length(group) || !all(is.positiveInteger(group))) stop("Group indicator variable is not correctly specified.", call. = FALSE)
+    if (nrow(dat) != length(group) || !all(is.positiveInteger(group)))
+      stop("Group indicator variable is not correctly specified.", call. = FALSE)
   }
   #group <- sort(group)
   gr.label <- unique(group) # group labels
@@ -268,7 +269,8 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
     higher.order <- modifyList(myHO,higher.order)
 
-    for(g in seq_len(no.mg)) lambda[[g]] <- matrix(c(rep(1,K),rnorm(K,0,0.5)),ncol = 2)
+    for(g in seq_len(no.mg))
+      lambda[[g]] <- matrix(c(rep(1,K),rnorm(K,0,0.5)),ncol = 2)
 
   }else{
     higher.order <- NULL
@@ -304,7 +306,8 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     }
 
   }
-  if(!is.matrix(saturated$prior)|!is.data.frame(saturated$prior)) saturated$prior <- matrix(saturated$prior,ncol = no.mg)
+  if(!is.matrix(saturated$prior)|!is.data.frame(saturated$prior))
+    saturated$prior <- matrix(saturated$prior,ncol = no.mg)
 
 
   logprior <- log(ColNormalize(att.prior))
@@ -532,7 +535,10 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   list(catprob.parm = item.prob, delta.parm = delta, catprob.matrix = item.parm,
        struc.parm = lambda, model = model2character(model), LC.prob = LC.Prob,
        posterior.prob = postP, pf = pf,attributepattern = AlphaPattern,
-       testfit = list(Deviance=neg2LL,npar = npar,item.npar = free.item.npar, AIC=2 * npar + neg2LL, BIC=neg2LL + npar * log(N)),
+       testfit = list(Deviance=neg2LL,npar = npar,item.npar = free.item.npar,
+                      AIC=2 * npar + neg2LL, BIC=neg2LL + npar * log(N),
+                      CAIC=neg2LL + npar * log(N+1),
+                      SABIC=neg2LL + npar * log((N+2)/24)),
        technicals = list(logposterior.i = estep$logpost, loglikelihood.i = estep$loglik, free.item.npar = free.item.npar,
                          total.item.npar = total.item.npar, stru.npar = stru.npar, total.npar = npar,
                          expectedCorrect = estep$Rg, expectedTotal = estep$Ng,initial.parm = initial.parm,

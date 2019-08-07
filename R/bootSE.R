@@ -36,8 +36,6 @@ bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=123
     on.exit(rm(".Random.seed", envir = .GlobalEnv))
   }
 
-  if(!is.null(extract(GDINA.obj,"att.str")))
-    stop("bootSE is not available for models with attribute structures.",call. = FALSE)
   set.seed(randomseed)
 
   Y <- extract(GDINA.obj,"dat")

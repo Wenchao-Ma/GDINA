@@ -107,7 +107,7 @@ This function estimates the multiple-choice DINA model (de la Torre, 2009).
  est2
  est2$prob.parm
  est2$testfit
-
+ est2$attribute
 }
 }
 \references{

@@ -7,7 +7,7 @@
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
 #' @param CI numeric value from 0 to 1 indicating the range of the confidence interval for RMSEA. Default returns the 90\% interval.
-#' @param ItemOnly should joint attribute distribution parameters be considered? Default = TRUE. See Ma (2019).
+#' @param ItemOnly should joint attribute distribution parameters be considered? Default = FALSE. See Ma (2019).
 #'
 #' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
 #' @export
@@ -248,7 +248,8 @@ modelfit <- function(GDINA.obj, CI = 0.90, ItemOnly = FALSE)
   }
 
 
-  out <- c(list(M2=c(M2),M2.pvalue=c(sig),M2.df=df,SRMSR = SRMSR,RMSEA=rmsea,RMSEA.CI = ci,CI=CI),GDINA.obj$testfit)
+  out <- c(list(M2=c(M2),M2.pvalue=c(sig),M2.df=df,SRMSR = SRMSR,RMSEA2=rmsea,RMSEA2.CI = ci,CI=CI),
+           GDINA.obj$testfit,sequential=GDINA.obj$options$sequential)
 
 
   class(out) <- "modelfit"

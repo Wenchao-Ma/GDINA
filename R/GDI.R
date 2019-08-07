@@ -43,37 +43,48 @@
 #' @export
 #' @examples
 #'\dontrun{
+#' ################################
+#' #
+#' # Binary response
+#' #
+#' ################################
 #' dat <- sim10GDINA$simdat
 #' Q <- sim10GDINA$simQ
 #' Q[10,] <- c(0,1,0)
+#'
+#' # Fit the G-DINA model
 #' mod1 <- GDINA(dat = dat, Q = Q, model = "GDINA")
+#'
+#' # Q-validation using de la Torre and Chiu's method
 #' pvaf <- Qval(mod1,method = "PVAF",eps = 0.95)
 #' pvaf
-#' #If many entries are modified, you may want to check
-#' #the PVAF plot using the function plotPVAF or
-#' #to change eps. eps = 0.9 or 0.8 seems another two
-#' #reasonable choices.
 #' extract(pvaf,what = "PVAF")
 #' #See also:
 #' extract(pvaf,what = "varsigma")
 #' extract(pvaf,what = "sug.Q")
 #'
-#' # Draw a mesa plot
-#' plot(pvaf,item=10,type="best",no.qvector=5)
+#' # Draw mesa plots using the function plot
 #'
+#' plot(pvaf,item=10)
+#'
+#' #The stepwise Wald test
 #' stepwise <- Qval(mod1,method = "wald")
 #' stepwise
-#' #If many entries are modified, you may want to check
-#' #the PVAF plot using the function plotPVAF or
-#' #to change eps. eps = 0.9 or 0.8 seems another two
-#' #reasonable choices.
 #' extract(stepwise,what = "PVAF")
 #' #See also:
 #' extract(stepwise,what = "varsigma")
 #' extract(stepwise,what = "sug.Q")
 #'
-#' # Draw a mesa plot
-#' plot(stepwise,item=10,type="best",no.qvector=5)
+#' #Set eps = -1 to determine the cutoff empirically
+#' pvaf2 <- Qval(mod1,method = "PVAF",eps = -1)
+#' pvaf2
+#' ################################
+#' #
+#' # Ordinal response
+#' #
+#' ################################
+#' seq.est <- GDINA(sim20seqGDINA$simdat,sim20seqGDINA$simQ,sequential = TRUE)
+#' stepwise <- Qval(seq.est, method = "wald", eps = -1)
 #'}
 
 Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args = list()){

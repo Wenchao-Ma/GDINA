@@ -79,7 +79,7 @@
 #'  est2
 #'  est2$prob.parm
 #'  est2$testfit
-#'
+#'  est2$attribute
 #' }
 #' @return an object of class \code{MCmodel} with the following components:
 #' \describe{

@@ -1,7 +1,11 @@
-# GDINA 2.6.2
+# GDINA 2.7.0
 * Added   - MC-DINA model can be estimated using `MCmodel` function
 * Added   - more components can be extracted using `extract` function
 * Fixed   - `Qval` for sequential model using Wald test (since version 2.5.2)
+* Added   - print CAIC and SABIC indices for GDINA estimations
+* Changed - bootstrap SEs can be calculated for models with structured attributes
+* Added   - convergence is checked for `GDINA` function
+* Changed - Bonferroni method is replaced by Holm–Bonferroni method as default settings for multiple comparisons in `dif`, `itemfit` and `modelcomp`
 
 # GDINA 2.6.0
 * Fixed   - a mistake in BIC calculation (since version 2.5.2)  

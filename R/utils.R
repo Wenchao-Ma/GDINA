@@ -47,9 +47,9 @@ inputcheck <- function(dat, Q, model, sequential,att.dist,latent.var,
   }
   if (!is.null(att.str)) {
     if (max(Q)>1) stop("Attribute structure cannot be specified if attributes are polytomous.",call. = FALSE)
-    if(any(att.dist=="higher.order")) stop("Higher-order structure is not allowed if att.str = TRUE.",call.=FALSE)
-    if(any(att.dist=="independent")) stop("Independent structure is not allowed if att.str = TRUE.",call.=FALSE)
-    if(any(att.dist=="loglinear")) stop("Loglinear structure is not allowed if att.str = TRUE.",call.=FALSE)
+    if(any(att.dist=="higher.order")) stop("Higher-order structure is not allowed when attributes are structured.",call.=FALSE)
+    if(any(att.dist=="independent")) stop("Independent structure is not allowed when attributes are structured.",call.=FALSE)
+    if(any(att.dist=="loglinear")) stop("Loglinear structure is not allowed when attributes are structured.",call.=FALSE)
     }
 
 

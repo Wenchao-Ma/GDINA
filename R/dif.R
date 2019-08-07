@@ -15,7 +15,7 @@
 #' @param p.adjust.methods adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
 #'  and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 #'  \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
-#'  for more details. \code{"bonferroni"} is the default.
+#'  for more details. \code{"holm"} is the default.
 #' @param anchor.items which items will be used as anchors? Default is \code{NULL}, which means none of the items are used as anchors.
 #'  For LR method, it can also be an integer vector giving the item numbers for anchors or \code{"all"}, which means all items are treated as anchor items.
 #' @param dif.items which items are subject to DIF detection? Default is \code{"all"}. It can also be an integer vector giving the item numbers.
@@ -59,7 +59,7 @@
 #'
 
 
-dif <- function(dat, Q, group, model = "GDINA", method = "wald", anchor.items = NULL, dif.items = "all", p.adjust.methods = "bonferroni", approx = FALSE,
+dif <- function(dat, Q, group, model = "GDINA", method = "wald", anchor.items = NULL, dif.items = "all", p.adjust.methods = "holm", approx = FALSE,
                 SE.type = 2, ...){
 
   if (!is.matrix(dat))

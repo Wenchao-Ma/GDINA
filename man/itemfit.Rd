@@ -6,9 +6,9 @@
 \alias{summary.itemfit}
 \title{Item fit statistics}
 \usage{
-itemfit(GDINA.obj, person.sim = "post",
-  p.adjust.methods = "bonferroni", cor.use = "pairwise.complete.obs",
-  digits = 4, N.resampling = NULL, randomseed = 123456)
+itemfit(GDINA.obj, person.sim = "post", p.adjust.methods = "holm",
+  cor.use = "pairwise.complete.obs", digits = 4, N.resampling = NULL,
+  randomseed = 123456)
 
 \method{extract}{itemfit}(object, what, ...)
 
@@ -23,7 +23,7 @@ itemfit(GDINA.obj, person.sim = "post",
 can be adjusted for multiple comparisons at test and item level. This is conducted using \code{p.adjust} function in \pkg{stats},
 and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
-for more details. \code{"bonferroni"} is the default.}
+for more details. \code{"holm"} is the default.}
 
 \item{cor.use}{how to deal with missing values when calculating correlations? This argument will be passed to \code{use} when calling \code{stats::cor}.}
 

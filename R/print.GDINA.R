@@ -34,11 +34,12 @@ print.GDINA <-
     cat("===============================================\n")
     cat("Estimation\n")
     cat("-----------------------------------------------\n")
-    cat("Number of iterations  =", max(extract.GDINA(x,"nitr")), "\n")
+    cat("Number of iterations  =", max(extract.GDINA(x,"nitr")), "\n\n")
     cat("For the final iteration:\n")
     cat("  Max abs change in item success prob. =", formatC(extract(x,"dif.p"), digits = 4, format = "f"), "\n")
     cat("  Max abs change in mixing proportions =", formatC(extract(x,"dif.prior"), digits = 4, format = "f"), "\n")
     cat("  Change in -2 log-likelihood          =", formatC(extract(x,"dif.LL"), digits = 4, format = "f"), "\n")
+    cat("  Converged?                           =", extract(x,"convergence"),"\n\n")
     cat("Time used             =", format(extract(x,"time"), digits = 4), "\n")
   }
 #' @export
@@ -161,15 +162,22 @@ cat("\nNote: adjusted pvalues are based on the",x$p.adjust.methods,"correction.\
 print.modelfit <-
   function(x, ...)
   {
-    cat("Model Fit Evaluation\n\n")
-    cat("-2 log likelihood = ",round(x$Deviance,4)," number of parameters = ", x$npar,"\n")
-    cat("AIC = ", round(x$AIC,4)," BIC = ", round(x$BIC,4),"\n")
+    cat("Test-level Model Fit Evaluation\n\n")
+    cat("Relative fit statistics: \n")
+    cat(" -2 log likelihood = ",round(x$Deviance,4)," ( number of parameters = ", x$npar,")\n")
+    cat(" AIC  = ", round(x$AIC,2)," BIC = ", round(x$BIC,2),"\n")
+    cat(" CAIC = ", round(x$CAIC,2)," SABIC = ", round(x$SABIC,2),"\n")
+    cat("\nAbsolute fit statistics: \n")
     if(!is.null(x$M2)){
-      cat("M2 = ", round(x$M2,4)," df = ", x$M2.df," p = ", round(x$M2.pvalue,4),"\n")
-      cat("RMSEA = ", round(x$RMSEA,4)," with ",x$CI*100,"% CI: [",round(x$RMSEA.CI[1],4),",",round(x$RMSEA.CI[2],4),"]\n")
+      if(x$sequential){
+        cat(" Mord = ", round(x$M2,4)," df = ", x$M2.df," p = ", round(x$M2.pvalue,4),"\n")
+      }else{
+        cat(" M2 = ", round(x$M2,4)," df = ", x$M2.df," p = ", round(x$M2.pvalue,4),"\n")
+      }
+      cat(" RMSEA2 = ", round(x$RMSEA2,4)," with ",x$CI*100,"% CI: [",round(x$RMSEA2.CI[1],4),",",round(x$RMSEA2.CI[2],4),"]\n")
 
     }
-    cat("SRMSR = ", round(x$SRMSR,4))
+    cat(" SRMSR = ", round(x$SRMSR,4))
   }
 
 #' @export
@@ -214,11 +222,17 @@ print.autoGDINA <-
 #'@export
 print.summary.GDINA <- function(x,...){
   cat("\nTest Fit Statistics\n\n")
-  cat("Loglik =", formatC(x$Loglikelihood,digits = 2, format = "f"), "\n")
+  cat("Loglik =", formatC(x$Loglikelihood,digits = 2, format = "f"), "\n\n")
   # cat("Deviance      =", formatC(x$Deviance,digits = 2, format = "f"), "\n")
-  cat("AIC    =", formatC(x$AIC,digits = 2, format = "f")," | penalty   =",x$`AIC Penalty`,"\n")
-  cat("BIC    =", formatC(x$BIC,digits = 2, format = "f")," | penalty   =",formatC(x$`BIC penalty`,digits = 2, format = "f"),"\n")
-  cat("\nNo. of parameters  =",formatC(x$`Number of parameters`,digits = 0, format = "d"), "\n")
+  cat("AIC    =", formatC(x$AIC,digits = 2, format = "f"),
+      " | penalty [2 * p]  =",formatC(x$`AIC penalty`,digits = 2, format = "f"),"\n")
+  cat("BIC    =", formatC(x$BIC,digits = 2, format = "f"),
+      " | penalty [(log n) * p]  =",formatC(x$`BIC penalty`,digits = 2, format = "f"),"\n")
+  cat("CAIC   =", formatC(x$CAIC,digits = 2, format = "f"),
+      " | penalty [(log n + 1) * p]  =",formatC(x$`CAIC penalty`,digits = 2, format = "f"),"\n")
+  cat("SABIC  =", formatC(x$SABIC,digits = 2, format = "f"),
+      " | penalty [(log (n + 2)/24) * p]  =",formatC(x$`SABIC penalty`,digits = 2, format = "f"),"\n")
+  cat("\nNo. of parameters (p)  =",formatC(x$`Number of parameters`,digits = 0, format = "d"), "\n")
   cat("  No. of estimated item parameters = ",formatC(x$`Number of estimated item parameters`,digits = 0, format = "d"), "\n")
   cat("  No. of fixed item parameters = ",formatC(x$`Number of fixed item parameters`,digits = 0, format = "d"), "\n")
   cat("  No. of distribution parameters = ",formatC(x$`Number of population parameters`,digits = 0, format = "d"), "\n")
@@ -269,7 +283,7 @@ print.anova.GDINA <- function(x,...){
      if(LR$chisq[m]<0) LR$df[m] <- LR$pvalue[m] <- ""
    }
    out <- cbind(x$IC,LR)
-   colnames(out) <- c("#par","logLik","Deviance","AIC","BIC","chisq","df","p-value")
+   colnames(out) <- c("#par","logLik","Deviance","AIC","BIC","CAIC","SABIC","chisq","df","p-value")
    print(out)
   if(nrow(x$IC)>2) cat("\nNotes: In LR tests, models were tested against",rownames(x$IC)[which.max(x$IC$npar)],"\n       LR test(s) do NOT check whether models are nested or not.")
 }

@@ -6,8 +6,8 @@
 \title{Differential item functioning for cognitive diagnosis models}
 \usage{
 dif(dat, Q, group, model = "GDINA", method = "wald",
-  anchor.items = NULL, dif.items = "all",
-  p.adjust.methods = "bonferroni", approx = FALSE, SE.type = 2, ...)
+  anchor.items = NULL, dif.items = "all", p.adjust.methods = "holm",
+  approx = FALSE, SE.type = 2, ...)
 
 \method{summary}{dif}(object, ...)
 }
@@ -32,7 +32,7 @@ For LR method, it can also be an integer vector giving the item numbers for anch
 \item{p.adjust.methods}{adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
 and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
-for more details. \code{"bonferroni"} is the default.}
+for more details. \code{"holm"} is the default.}
 
 \item{approx}{Whether an approximated LR test is implemented? If TRUE, parameters of items except the studied one will not be re-estimated.}
 

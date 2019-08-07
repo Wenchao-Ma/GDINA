@@ -418,7 +418,8 @@ score <- function(object,parm="delta"){
   if(parm=="delta"){
     score_d(object)
   }else{
-    if(any(extract(object,"models_numeric")>2)) stop("Score functions of success probabilities cannot be calculated for ACDM, LLM and RRUM.",call. = FALSE)
+    if(!all(extract(object,"models_numeric")%in%c(0,1,2)))
+      stop("Score functions of success probabilities are only available for the G-DINA, DINA and DINO models.",call. = FALSE)
     score_p(object)
   }
 }

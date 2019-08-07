@@ -11,7 +11,7 @@ modelfit(GDINA.obj, CI = 0.9, ItemOnly = FALSE)
 
 \item{CI}{numeric value from 0 to 1 indicating the range of the confidence interval for RMSEA. Default returns the 90\% interval.}
 
-\item{ItemOnly}{should joint attribute distribution parameters be considered? Default = TRUE. See Ma (2019).}
+\item{ItemOnly}{should joint attribute distribution parameters be considered? Default = FALSE. See Ma (2019).}
 }
 \description{
 Calculate various absolute model-data fit statistics

@@ -51,7 +51,7 @@
 #' @param p.adjust.methods adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
 #'  and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 #'  \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
-#'  for more details. \code{"bonferroni"} is the default.
+#'  for more details. \code{"holm"} is the default, indicating the Holm method.
 #'
 #'
 #' @return an object of class \code{modelcomp}. Elements that can be
@@ -134,7 +134,7 @@
 #' }
 ## @import MASS
 #' @export
-modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.methods = "bonferroni",
+modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.methods = "holm",
                       models=c("DINA","DINO","ACDM","LLM","RRUM"),
                       decision.args = list(rule = "simpler", alpha.level = 0.05, adjusted = FALSE), DS = FALSE,
                       Wald.args = list(SE.type = 2,varcov = NULL),

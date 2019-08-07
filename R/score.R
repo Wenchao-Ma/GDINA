@@ -245,7 +245,7 @@ OPG_p <- function(object,SE.type){
     scorejh <- score_p(object) # a list with elements for each category
     np <- sapply(scorejh,ncol)
     IP.loc <- length(scorejh) - NG
-    np <- np[-length(np)]
+    np <- np[seq_len(NC)]
 
     if(SE.type == 1){
       scorejh <- scorejh[seq_len(IP.loc)]

@@ -140,23 +140,39 @@ extract.simGDINA <- function(object,
 #' \describe{
 #' \item{AIC}{AIC}
 #'   \item{att.prior}{attribute prior weights for calculating marginalized likelihood in the last EM iteration}
+#'   \item{attributepattern}{all attribute patterns involved in the current calibration}
 #' \item{BIC}{BIC}
+#' \item{CAIC}{CAIC}
 #' \item{catprob.cov}{covariance matrix of item probability parameter estimates; Need to specify \code{SE.type}}
 #' \item{catprob.parm}{item parameter estimates}
 #' \item{catprob.se}{standard error of item probability parameter estimates; Need to specify \code{SE.type}}
+#' \item{convergence}{\code{TRUE} if the calibration is converged.}
+#' \item{dat}{raw data}
+#' \item{del.ind}{deleted observation number}
 #' \item{delta.cov}{covariance matrix of delta parameter estimates; Need to specify \code{SE.type}}
 #' \item{delta.parm}{delta parameter estimates}
 #' \item{delta.se}{standard error of delta parameter estimates; Need to specify \code{SE.type}}
-#'   \item{discrim}{GDINA discrimination index}
 #'   \item{designmatrix}{A list of design matrices for each item/category}
+#'   \item{deviance}{deviance, or negative two times observed marginal log likelihood}
+#'   \item{discrim}{GDINA discrimination index}
 #' \item{expectedCorrect}{expected # of examinees in each latent group answering item correctly}
 #' \item{expectedTotal}{expected # of examinees in each latent group}
 #' \item{higher.order}{higher-order model specifications}
+#' \item{logLik}{observed marginal log likelihood}
 #' \item{linkfunc}{link functions for each item}
 #' \item{initial.catprob}{initial item category probability parameters}
+#' \item{natt}{number of attributes}
+#' \item{ncat}{number of categories}
+#' \item{ngroup}{number of groups}
+#' \item{nitem}{number of items}
+#' \item{nitr}{number of EM iterations}
+#' \item{nobs}{number of observations, or sample size}
+#' \item{nLC}{number of latent classes}
 #'   \item{prevalence}{prevalence of each attribute}
 #'   \item{posterior.prob}{posterior weights for each latent class}
 #'   \item{reduced.LG}{Reduced latent group for each item}
+#'   \item{SABIC}{SABIC}
+#' \item{sequential}{is a sequential model fitted?}
 #' }
 #' @param object objects from class \code{GDINA},\code{itemfit}, \code{modelcomp}, \code{Qval} or \code{simGDINA}
 #' @param what what to extract
@@ -191,6 +207,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 att.prior = object$options$att.prior,
                 att.str=object$options$att.str,
                 BIC = object$testfit$BIC,
+                CAIC = object$testfit$CAIC,
                 catprob.cov = {var <- OPG_p(object, SE.type = SE.type);list(cov = var$cov, index = var$ind)},
                 catprob.matrix = object$catprob.matrix,
                 catprob.parm = object$catprob.parm,
@@ -199,10 +216,16 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                     stop("standard error cannot be calculated.",call. = FALSE)
                   Kj <- extract(object, "Kj")
                   se <- OPG_p(object, SE.type = SE.type, ...)$se
-                  for (j in 1:length(se)) names(se[[j]]) <- paste0("SE[P(", apply(extract(object,"reduced.LG")[[j]], 1, paste0, collapse = ""), ")]")
+                  for (j in 1:length(se))
+                    names(se[[j]]) <- paste0("SE[P(", apply(extract(object,"reduced.LG")[[j]], 1, paste0, collapse = ""), ")]")
                   names(se) <- object$options$item.names
                   se
                 },
+                convergence={if(all(object$control$vmaxitr==object$control$maxitr)&object$control$maxitr>0){
+                  object$options$itr<object$control$maxitr
+                }else{
+                  NA # to be determined
+                }},
                 dat = object$options$dat, #raw data
                 del.ind = object$technicals$del.ind,
                 delta.cov = {var <- OPG_d(object, SE.type = SE.type);list(cov = var$cov, index = var$ind)},
@@ -375,6 +398,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 }},
                 reduced.LG = object$technicals$reduced.LG,
                 originalQ = object$options$Q,
+                SABIC = object$testfit$SABIC,
                 start.time = object$extra$start.time,
                 time = object$extra$timeused,
                 sequential = object$options$sequential,
