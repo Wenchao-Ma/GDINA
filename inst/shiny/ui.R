@@ -155,7 +155,7 @@ shinydashboard::tabItem(tabName = "fit",
           title = "Item-fit plot specifications", width = 4, solidHeader = TRUE, collapsible = TRUE, status = "primary",
           shiny::radioButtons("heatmap.type", "Plot type:",
                        choices = c("log odds ratio", "transformed correlation")),
-          shiny::checkboxInput("heatmap.adjust", label = "Bonferroni adjusted?", value = TRUE),
+          shiny::checkboxInput("heatmap.adjust", label = "Holm-Bonferroni adjusted?", value = TRUE),
           shiny::downloadButton('downloadHeatPlot', 'Download Plot as PDF file')
         ),
           shinydashboard::box(

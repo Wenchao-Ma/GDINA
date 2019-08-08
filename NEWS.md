@@ -1,3 +1,6 @@
+# GDINA 2.7.1
+* Fixed   - absolute fit statistics disappear in GUI (since version 2.7.0)
+
 # GDINA 2.7.0
 * Added   - MC-DINA model can be estimated using `MCmodel` function
 * Added   - more components can be extracted using `extract` function
