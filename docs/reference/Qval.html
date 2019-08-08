@@ -65,7 +65,7 @@ You should always check the mesa plots for further examination." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
       </span>
     </div>
 
@@ -232,37 +232,48 @@ extracted using <code>extract</code> method include:</p><dl class='dl-horizontal
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'>################################</span>
+<span class='co'>#</span>
+<span class='co'># Binary response</span>
+<span class='co'>#</span>
+<span class='co'>################################</span>
 <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='no'>sim10GDINA</span>$<span class='no'>simdat</span>
 <span class='no'>Q</span> <span class='kw'>&lt;-</span> <span class='no'>sim10GDINA</span>$<span class='no'>simQ</span>
 <span class='no'>Q</span>[<span class='fl'>10</span>,] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>)
+
+<span class='co'># Fit the G-DINA model</span>
 <span class='no'>mod1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='GDINA.html'>GDINA</a></span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>Q</span> <span class='kw'>=</span> <span class='no'>Q</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"GDINA"</span>)
+
+<span class='co'># Q-validation using de la Torre and Chiu's method</span>
 <span class='no'>pvaf</span> <span class='kw'>&lt;-</span> <span class='fu'>Qval</span>(<span class='no'>mod1</span>,<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"PVAF"</span>,<span class='kw'>eps</span> <span class='kw'>=</span> <span class='fl'>0.95</span>)
 <span class='no'>pvaf</span>
-<span class='co'>#If many entries are modified, you may want to check</span>
-<span class='co'>#the PVAF plot using the function plotPVAF or</span>
-<span class='co'>#to change eps. eps = 0.9 or 0.8 seems another two</span>
-<span class='co'>#reasonable choices.</span>
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>pvaf</span>,<span class='kw'>what</span> <span class='kw'>=</span> <span class='st'>"PVAF"</span>)
 <span class='co'>#See also:</span>
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>pvaf</span>,<span class='kw'>what</span> <span class='kw'>=</span> <span class='st'>"varsigma"</span>)
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>pvaf</span>,<span class='kw'>what</span> <span class='kw'>=</span> <span class='st'>"sug.Q"</span>)
 
-<span class='co'># Draw a mesa plot</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>pvaf</span>,<span class='kw'>item</span><span class='kw'>=</span><span class='fl'>10</span>,<span class='kw'>type</span><span class='kw'>=</span><span class='st'>"best"</span>,<span class='kw'>no.qvector</span><span class='kw'>=</span><span class='fl'>5</span>)
+<span class='co'># Draw mesa plots using the function plot</span>
 
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>pvaf</span>,<span class='kw'>item</span><span class='kw'>=</span><span class='fl'>10</span>)
+
+<span class='co'>#The stepwise Wald test</span>
 <span class='no'>stepwise</span> <span class='kw'>&lt;-</span> <span class='fu'>Qval</span>(<span class='no'>mod1</span>,<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"wald"</span>)
 <span class='no'>stepwise</span>
-<span class='co'>#If many entries are modified, you may want to check</span>
-<span class='co'>#the PVAF plot using the function plotPVAF or</span>
-<span class='co'>#to change eps. eps = 0.9 or 0.8 seems another two</span>
-<span class='co'>#reasonable choices.</span>
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>stepwise</span>,<span class='kw'>what</span> <span class='kw'>=</span> <span class='st'>"PVAF"</span>)
 <span class='co'>#See also:</span>
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>stepwise</span>,<span class='kw'>what</span> <span class='kw'>=</span> <span class='st'>"varsigma"</span>)
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>stepwise</span>,<span class='kw'>what</span> <span class='kw'>=</span> <span class='st'>"sug.Q"</span>)
 
-<span class='co'># Draw a mesa plot</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>stepwise</span>,<span class='kw'>item</span><span class='kw'>=</span><span class='fl'>10</span>,<span class='kw'>type</span><span class='kw'>=</span><span class='st'>"best"</span>,<span class='kw'>no.qvector</span><span class='kw'>=</span><span class='fl'>5</span>)
+<span class='co'>#Set eps = -1 to determine the cutoff empirically</span>
+<span class='no'>pvaf2</span> <span class='kw'>&lt;-</span> <span class='fu'>Qval</span>(<span class='no'>mod1</span>,<span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"PVAF"</span>,<span class='kw'>eps</span> <span class='kw'>=</span> -<span class='fl'>1</span>)
+<span class='no'>pvaf2</span>
+<span class='co'>################################</span>
+<span class='co'>#</span>
+<span class='co'># Ordinal response</span>
+<span class='co'>#</span>
+<span class='co'>################################</span>
+<span class='no'>seq.est</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='GDINA.html'>GDINA</a></span>(<span class='no'>sim20seqGDINA</span>$<span class='no'>simdat</span>,<span class='no'>sim20seqGDINA</span>$<span class='no'>simQ</span>,<span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>stepwise</span> <span class='kw'>&lt;-</span> <span class='fu'>Qval</span>(<span class='no'>seq.est</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"wald"</span>, <span class='kw'>eps</span> <span class='kw'>=</span> -<span class='fl'>1</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

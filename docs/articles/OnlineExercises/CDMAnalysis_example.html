@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
     <div class="page-header toc-ignore">
       <h1>Model Estimation and Model Diagnostics</h1>
             
-            <h4 class="date">2019-06-22</h4>
+            <h4 class="date">2019-08-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/CDMAnalysis_example.Rmd"><code>vignettes/OnlineExercises/CDMAnalysis_example.Rmd</code></a></small>
       <div class="hidden name"><code>CDMAnalysis_example.Rmd</code></div>
@@ -106,14 +106,14 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.6.0) for various CDM analyses.</p>
+<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.7.0) for various CDM analyses.</p>
 </div>
 <div id="model-estimation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-estimation" class="anchor"></a>Model Estimation</h2>
 <p>The following code estimates the G-DINA model. For extracting item and person parameters from G-DINA model, please see <a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html">this tutorial</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(GDINA)</a></code></pre></div>
-<pre><code>## GDINA Package [Version 2.6.0; 2019-6-12]
+<pre><code>## GDINA Package [Version 2.7.0; 2019-8-8]
 ## More information: https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat</a>
 <a class="sourceLine" id="cb3-2" title="2">Q &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,</a>
@@ -164,9 +164,12 @@
 <pre><code>## 
 ## Information Criteria and Likelihood Ratio Test
 ## 
-##          #par   logLik Deviance      AIC      BIC chisq df p-value
-## est        45 -5952.73 11905.47 11995.47 12216.32                 
-## est.sugQ   45 -5918.21 11836.42 11926.42 12147.27</code></pre>
+##          #par   logLik Deviance      AIC      BIC     CAIC    SABIC chisq
+## est        45 -5952.73 11905.47 11995.47 12216.32 12216.36 12073.39      
+## est.sugQ   45 -5918.21 11836.42 11926.42 12147.27 12147.32 12004.35      
+##          df p-value
+## est                
+## est.sugQ</code></pre>
 </div>
 <div id="item-level-model-comparison" class="section level2">
 <h2 class="hasAnchor">
@@ -179,7 +182,7 @@
 ## 
 ## test statistic: Wald 
 ## Decision rule: simpler model + largest p value rule at 0.05 alpha level.
-## Adjusted p values were based on bonferroni correction.
+## Adjusted p values were based on holm correction.
 ## 
 ##         models pvalues adj.pvalues
 ## Item 1   GDINA                    
@@ -198,9 +201,12 @@
 <pre><code>## 
 ## Information Criteria and Likelihood Ratio Test
 ## 
-##          #par   logLik Deviance      AIC      BIC chisq df p-value
-## est.sugQ   45 -5918.21 11836.42 11926.42 12147.27                 
-## est.wald   33 -5921.60 11843.20 11909.20 12071.16  6.78 12    0.87</code></pre>
+##          #par   logLik Deviance      AIC      BIC     CAIC    SABIC chisq
+## est.sugQ   45 -5918.21 11836.42 11926.42 12147.27 12147.32 12004.35      
+## est.wald   33 -5921.60 11843.20 11909.20 12071.16 12071.19 11966.35  6.78
+##          df p-value
+## est.sugQ           
+## est.wald 12    0.87</code></pre>
 </div>
 <div id="absolute-fit-evaluation" class="section level2">
 <h2 class="hasAnchor">
@@ -209,13 +215,17 @@
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="co"># test level absolute fit</span></a>
 <a class="sourceLine" id="cb14-2" title="2">mft &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/modelfit.html">modelfit</a></span>(est.wald)</a>
 <a class="sourceLine" id="cb14-3" title="3">mft</a></code></pre></div>
-<pre><code>## Model Fit Evaluation
+<pre><code>## Test-level Model Fit Evaluation
 ## 
-## -2 log likelihood =  11843.2  number of parameters =  33 
-## AIC =  11909.2  BIC =  12071.16 
-## M2 =  25.976  df =  22  p =  0.2527 
-## RMSEA =  0.0134  with  90 % CI: [ 0 , 0.0308 ]
-## SRMSR =  0.0222</code></pre>
+## Relative fit statistics: 
+##  -2 log likelihood =  11843.2  ( number of parameters =  33 )
+##  AIC  =  11909.2  BIC =  12071.16 
+##  CAIC =  12071.19  SABIC =  11966.35 
+## 
+## Absolute fit statistics: 
+##  M2 =  25.976  df =  22  p =  0.2527 
+##  RMSEA2 =  0.0134  with  90 % CI: [ 0 , 0.0308 ]
+##  SRMSR =  0.0222</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="co"># item level absolute fit</span></a>
 <a class="sourceLine" id="cb16-2" title="2">ift &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/itemfit.html">itemfit</a></span>(est.wald)</a>
 <a class="sourceLine" id="cb16-3" title="3">ift</a></code></pre></div>
@@ -233,7 +243,7 @@
 ## Transformed correlation           1
 ## Log odds ratio                    1
 ## Note: p-value and adj.p-value are associated with max[z.stats].
-##       adj.p-values are based on the bonferroni method.</code></pre>
+##       adj.p-values are based on the holm method.</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(ift)</a></code></pre></div>
 <pre><code>## 
 ## Item-level fit statistics
@@ -321,7 +331,7 @@
 <p>Sorrel, M. A., de la Torre, J., Abad, F. J., &amp; Olea, J. (2017). Two-Step Likelihood Ratio Test for Item-Level Model Comparison in Cognitive Diagnosis Models. <em>Methodology, 13</em>, 39-47.</p>
 <p>Wang, W., Song, L., Chen, P., Meng, Y., &amp; Ding, S. (2015). Attribute-Level and Pattern-Level Classification Consistency and Accuracy Indices for Cognitive Diagnostic Assessment. <em>Journal of Educational Measurement, 52</em> , 457-476.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/sessionInfo">sessionInfo</a></span>()</a></code></pre></div>
-<pre><code>## R version 3.6.0 (2019-04-26)
+<pre><code>## R version 3.6.1 (2019-07-05)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 18362)
 ## 
@@ -338,29 +348,29 @@
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] psych_1.8.12 GDINA_2.6.0 
+## [1] psych_1.8.12 GDINA_2.7.0 
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] tidyselect_0.2.5     xfun_0.7             purrr_0.3.2         
+##  [1] tidyselect_0.2.5     xfun_0.8             purrr_0.3.2         
 ##  [4] lattice_0.20-38      colorspace_1.4-1     htmltools_0.3.6     
-##  [7] yaml_2.2.0           rlang_0.3.4          pkgdown_1.3.0       
-## [10] later_0.8.0          pillar_1.4.1         nloptr_1.2.1        
+##  [7] yaml_2.2.0           rlang_0.4.0          pkgdown_1.3.0       
+## [10] later_0.8.0          pillar_1.4.2         nloptr_1.2.1        
 ## [13] foreign_0.8-71       glue_1.3.1           stringr_1.4.0       
 ## [16] munsell_0.5.0        commonmark_1.7       gtable_0.3.0        
 ## [19] memoise_1.1.0        evaluate_0.14        labeling_0.3        
-## [22] knitr_1.23           httpuv_1.5.1         parallel_3.6.0      
+## [22] knitr_1.23           httpuv_1.5.1         parallel_3.6.1      
 ## [25] Rcpp_1.0.1           xtable_1.8-4         promises_1.0.1      
 ## [28] backports_1.1.4      scales_1.0.0         desc_1.2.0          
 ## [31] truncnorm_1.0-8      alabama_2015.3-1     mime_0.7            
 ## [34] fs_1.3.1             mnormt_1.5-5         ggplot2_3.2.0       
-## [37] digest_0.6.19        stringi_1.4.3        dplyr_0.8.1         
-## [40] shiny_1.3.2          numDeriv_2016.8-1.1  grid_3.6.0          
-## [43] rprojroot_1.3-2      tools_3.6.0          magrittr_1.5        
+## [37] digest_0.6.20        stringi_1.4.3        dplyr_0.8.3         
+## [40] shiny_1.3.2          numDeriv_2016.8-1.1  grid_3.6.1          
+## [43] rprojroot_1.3-2      tools_3.6.1          magrittr_1.5        
 ## [46] lazyeval_0.2.2       Rsolnp_1.16          tibble_2.1.3        
 ## [49] crayon_1.3.4         pkgconfig_2.0.2      MASS_7.3-51.4       
 ## [52] xml2_1.2.0           shinydashboard_0.7.1 assertthat_0.2.1    
-## [55] rmarkdown_1.13       roxygen2_6.1.1       rstudioapi_0.10     
-## [58] R6_2.4.0             nlme_3.1-139         compiler_3.6.0</code></pre>
+## [55] rmarkdown_1.14       roxygen2_6.1.1       rstudioapi_0.10     
+## [58] R6_2.4.0             nlme_3.1-140         compiler_3.6.1</code></pre>
 </div>
   </div>
 

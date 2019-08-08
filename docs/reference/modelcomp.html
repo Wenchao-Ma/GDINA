@@ -69,7 +69,7 @@ between the reduced models and the G-DINA model, which can be viewed as a measur
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
       </span>
     </div>
 
@@ -150,12 +150,11 @@ between the reduced models and the G-DINA model, which can be viewed as a measur
     </div>
 
     <pre class="usage"><span class='fu'>modelcomp</span>(<span class='kw'>GDINA.obj</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"Wald"</span>, <span class='kw'>items</span> <span class='kw'>=</span> <span class='st'>"all"</span>,
-  <span class='kw'>p.adjust.methods</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>, <span class='kw'>models</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"DINA"</span>, <span class='st'>"DINO"</span>, <span class='st'>"ACDM"</span>,
-  <span class='st'>"LLM"</span>, <span class='st'>"RRUM"</span>), <span class='kw'>decision.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>rule</span> <span class='kw'>=</span> <span class='st'>"simpler"</span>, <span class='kw'>alpha.level</span> <span class='kw'>=</span>
-  <span class='fl'>0.05</span>, <span class='kw'>adjusted</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>), <span class='kw'>DS</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>Wald.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>varcov</span> <span class='kw'>=</span> <span class='kw'>NULL</span>), <span class='kw'>LR.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>LR.approx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
-  <span class='kw'>LM.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>reducedMDINA</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reducedMDINO</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reducedMACDM</span> <span class='kw'>=</span>
-  <span class='kw'>NULL</span>, <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>))
+  <span class='kw'>p.adjust.methods</span> <span class='kw'>=</span> <span class='st'>"holm"</span>, <span class='kw'>models</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"DINA"</span>, <span class='st'>"DINO"</span>, <span class='st'>"ACDM"</span>, <span class='st'>"LLM"</span>,
+  <span class='st'>"RRUM"</span>), <span class='kw'>decision.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>rule</span> <span class='kw'>=</span> <span class='st'>"simpler"</span>, <span class='kw'>alpha.level</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>adjusted</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>), <span class='kw'>DS</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>Wald.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>varcov</span> <span class='kw'>=</span>
+  <span class='kw'>NULL</span>), <span class='kw'>LR.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>LR.approx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>), <span class='kw'>LM.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>reducedMDINA</span>
+  <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reducedMDINO</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reducedMACDM</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>))
 
 <span class='co'># S3 method for modelcomp</span>
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>object</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"stats"</span>, <span class='st'>"pvalues"</span>,
@@ -184,7 +183,7 @@ between the reduced models and the G-DINA model, which can be viewed as a measur
       <td><p>adjusted p-values for multiple hypothesis tests. This is conducted using <code>p.adjust</code> function in <span class="pkg">stats</span>,
 and therefore all adjustment methods supported by <code>p.adjust</code> can be used, including <code>"holm"</code>,
 <code>"hochberg"</code>, <code>"hommel"</code>, <code>"bonferroni"</code>, <code>"BH"</code> and <code>"BY"</code>. See <code>p.adjust</code>
-for more details. <code>"bonferroni"</code> is the default.</p></td>
+for more details. <code>"holm"</code> is the default, indicating the Holm method.</p></td>
     </tr>
     <tr>
       <th>models</th>

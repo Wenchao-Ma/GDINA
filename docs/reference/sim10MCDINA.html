@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Score function — score • GDINA</title>
+<title>Simulated data (10 items, MC-DINA model) — sim10MCDINA • GDINA</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Score function — score" />
+<meta property="og:title" content="Simulated data (10 items, MC-DINA model) — sim10MCDINA" />
 
-<meta property="og:description" content="Calculate score function for each dichotomous item or each nonzero category for polytomous items
-Only applicable to saturated model ofr joint attribute distribution" />
+<meta property="og:description" content="Simulated data, Q-matrix and item parameters for a 10-item test measuring 3 attributes." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -127,58 +126,34 @@ Only applicable to saturated model ofr joint attribute distribution" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Score function</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Wenchao-Ma/GDINA/blob/master/R/ExportedFuncs.R'><code>R/ExportedFuncs.R</code></a></small>
-    <div class="hidden name"><code>score.Rd</code></div>
+    <h1>Simulated data (10 items, MC-DINA model)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Wenchao-Ma/GDINA/blob/master/R/sim10MCDINA.R'><code>R/sim10MCDINA.R</code></a></small>
+    <div class="hidden name"><code>sim10MCDINA.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Calculate score function for each dichotomous item or each nonzero category for polytomous items
-Only applicable to saturated model ofr joint attribute distribution</p>
+    <p>Simulated data, Q-matrix and item parameters for a 10-item test measuring 3 attributes.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>score</span>(<span class='no'>object</span>, <span class='kw'>parm</span> <span class='kw'>=</span> <span class='st'>"delta"</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>object</th>
-      <td><p>an object of class GDINA</p></td>
-    </tr>
-    <tr>
-      <th>parm</th>
-      <td><p>Either <code>delta</code> or <code>prob</code> indicating score function for delta parameters and
-success probabily parameters</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <pre class="usage"><span class='no'>sim10MCDINA</span></pre>
+        
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>a list where elements give the score functions for each item or category</p>
+    <p>A list with components:</p><dl class='dl-horizontal'>
+<dt><code>simdat</code></dt><dd><p>simulated responses of 3000 examinees</p></dd>
+<dt><code>simQ</code></dt><dd><p>artificial Q-matrix</p></dd>
+</dl>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='no'>sim10GDINA</span>$<span class='no'>simdat</span>
-<span class='no'>Q</span> <span class='kw'>&lt;-</span> <span class='no'>sim10GDINA</span>$<span class='no'>simQ</span>
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='GDINA.html'>GDINA</a></span>(<span class='kw'>dat</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>Q</span> <span class='kw'>=</span> <span class='no'>Q</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"GDINA"</span>)
-<span class='fu'>score</span>(<span class='no'>fit</span>)
-<span class='co'># }</span><div class='input'>
-
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+      <li><a href="#format">Format</a></li>
+          </ul>
 
   </div>
 </div>

@@ -39,16 +39,41 @@ To see what can be extracted from itemfit, modelcomp, and
 Qval, go to the corresponding function help page.
 Objects which can be extracted from GDINA objects include:
 
+AICAIC
   att.priorattribute prior weights for calculating marginalized likelihood in the last EM iteration
-  discrimGDINA discrimination index
+  attributepatternall attribute patterns involved in the current calibration
+BICBIC
+CAICCAIC
+catprob.covcovariance matrix of item probability parameter estimates; Need to specify SE.type
+catprob.parmitem parameter estimates
+catprob.sestandard error of item probability parameter estimates; Need to specify SE.type
+convergenceTRUE if the calibration is converged.
+datraw data
+del.inddeleted observation number
+delta.covcovariance matrix of delta parameter estimates; Need to specify SE.type
+delta.parmdelta parameter estimates
+delta.sestandard error of delta parameter estimates; Need to specify SE.type
   designmatrixA list of design matrices for each item/category
+  deviancedeviance, or negative two times observed marginal log likelihood
+  discrimGDINA discrimination index
 expectedCorrectexpected # of examinees in each latent group answering item correctly
 expectedTotalexpected # of examinees in each latent group
 higher.orderhigher-order model specifications
+logLikobserved marginal log likelihood
 linkfunclink functions for each item
 initial.catprobinitial item category probability parameters
+nattnumber of attributes
+ncatnumber of categories
+ngroupnumber of groups
+nitemnumber of items
+nitrnumber of EM iterations
+nobsnumber of observations, or sample size
+nLCnumber of latent classes
   prevalenceprevalence of each attribute
   posterior.probposterior weights for each latent class
+  reduced.LGReduced latent group for each item
+  SABICSABIC
+sequentialis a sequential model fitted?
 " />
 <meta name="twitter:card" content="summary" />
 
@@ -80,7 +105,7 @@ initial.catprobinitial item category probability parameters
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
       </span>
     </div>
 
@@ -157,16 +182,41 @@ To see what can be extracted from <code><a href='itemfit.html'>itemfit</a></code
 <code><a href='Qval.html'>Qval</a></code>, go to the corresponding function help page.</p>
 <p>Objects which can be extracted from <code>GDINA</code> objects include:</p>
 <dl class='dl-horizontal'>
+<dt>AIC</dt><dd><p>AIC</p></dd>
   <dt>att.prior</dt><dd><p>attribute prior weights for calculating marginalized likelihood in the last EM iteration</p></dd>
-  <dt>discrim</dt><dd><p>GDINA discrimination index</p></dd>
+  <dt>attributepattern</dt><dd><p>all attribute patterns involved in the current calibration</p></dd>
+<dt>BIC</dt><dd><p>BIC</p></dd>
+<dt>CAIC</dt><dd><p>CAIC</p></dd>
+<dt>catprob.cov</dt><dd><p>covariance matrix of item probability parameter estimates; Need to specify <code>SE.type</code></p></dd>
+<dt>catprob.parm</dt><dd><p>item parameter estimates</p></dd>
+<dt>catprob.se</dt><dd><p>standard error of item probability parameter estimates; Need to specify <code>SE.type</code></p></dd>
+<dt>convergence</dt><dd><p><code>TRUE</code> if the calibration is converged.</p></dd>
+<dt>dat</dt><dd><p>raw data</p></dd>
+<dt>del.ind</dt><dd><p>deleted observation number</p></dd>
+<dt>delta.cov</dt><dd><p>covariance matrix of delta parameter estimates; Need to specify <code>SE.type</code></p></dd>
+<dt>delta.parm</dt><dd><p>delta parameter estimates</p></dd>
+<dt>delta.se</dt><dd><p>standard error of delta parameter estimates; Need to specify <code>SE.type</code></p></dd>
   <dt>designmatrix</dt><dd><p>A list of design matrices for each item/category</p></dd>
+  <dt>deviance</dt><dd><p>deviance, or negative two times observed marginal log likelihood</p></dd>
+  <dt>discrim</dt><dd><p>GDINA discrimination index</p></dd>
 <dt>expectedCorrect</dt><dd><p>expected # of examinees in each latent group answering item correctly</p></dd>
 <dt>expectedTotal</dt><dd><p>expected # of examinees in each latent group</p></dd>
 <dt>higher.order</dt><dd><p>higher-order model specifications</p></dd>
+<dt>logLik</dt><dd><p>observed marginal log likelihood</p></dd>
 <dt>linkfunc</dt><dd><p>link functions for each item</p></dd>
 <dt>initial.catprob</dt><dd><p>initial item category probability parameters</p></dd>
+<dt>natt</dt><dd><p>number of attributes</p></dd>
+<dt>ncat</dt><dd><p>number of categories</p></dd>
+<dt>ngroup</dt><dd><p>number of groups</p></dd>
+<dt>nitem</dt><dd><p>number of items</p></dd>
+<dt>nitr</dt><dd><p>number of EM iterations</p></dd>
+<dt>nobs</dt><dd><p>number of observations, or sample size</p></dd>
+<dt>nLC</dt><dd><p>number of latent classes</p></dd>
   <dt>prevalence</dt><dd><p>prevalence of each attribute</p></dd>
   <dt>posterior.prob</dt><dd><p>posterior weights for each latent class</p></dd>
+  <dt>reduced.LG</dt><dd><p>Reduced latent group for each item</p></dd>
+  <dt>SABIC</dt><dd><p>SABIC</p></dd>
+<dt>sequential</dt><dd><p>is a sequential model fitted?</p></dd>
 </dl>
     
     </div>
