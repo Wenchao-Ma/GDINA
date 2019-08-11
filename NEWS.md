@@ -1,5 +1,6 @@
-# GDINA 2.7.1
+# GDINA 2.7.2
 * Fixed   - absolute fit statistics disappear in GUI (since version 2.7.0)
+* Fixed   - error in calculating CAIC for GDINA estimation (since version 2.7.0)
 
 # GDINA 2.7.0
 * Added   - MC-DINA model can be estimated using `MCmodel` function
