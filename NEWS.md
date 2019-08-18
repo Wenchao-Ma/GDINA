@@ -1,6 +1,8 @@
-# GDINA 2.7.2
+# GDINA 2.7.3
+* Added   - Q-validation and model comparison when joint attribute model is not saturated
 * Fixed   - absolute fit statistics disappear in GUI (since version 2.7.0)
 * Fixed   - error in calculating CAIC for GDINA estimation (since version 2.7.0)
+
 
 # GDINA 2.7.0
 * Added   - MC-DINA model can be estimated using `MCmodel` function

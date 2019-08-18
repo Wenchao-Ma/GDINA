@@ -140,43 +140,12 @@ shinyServer(function(input, output) {
     summary.info(est.result())
   })
   iter.info <- shiny::reactive({
-    est.info <- function(x) {
-      # cat("\nThe Generalized DINA Model Framework  \n")
-      # packageinfo <- utils::packageDescription("GDINA")
-      # cat( paste( "   GDINA Version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
-      # cat(  "   Wenchao Ma & Jimmy de la Torre \n" )
-      # cat("See https://wenchao-ma.github.io/GDINA for more information.\n")
-
-      cat("\nNumber of items       =", extract(x,"nitem"), "\n")
-      cat("Number of individuals =", extract(x,"nobs"), "\n")
-      cat("Number of attributes  =", extract(x,"natt"), "\n")
-      cat("Number of iterations  =", extract(x,"nitr"), "\n")
-      cat("Fitted models         =", unique(c(extract(x,"models"))),"\n")
-
-
-      tmp <- ifelse(extract(x,"sequential"),max(extract(x,"Q")),max(extract(x,"Q")[,-c(1:2)]))
-      cat("Attribute level       =",ifelse(tmp>1,"Polytomous","Dichotomous"),"\n")
-      cat("Response level        =",ifelse(max(extract(x,"dat"),na.rm = TRUE)>1,"Polytomous","Dichotomous"),"\n")
-      cat("\nNumber of parameters  =", extract(x,"npar"), "\n")
-      cat("  No. of item parameters       =",extract(x,"npar.item"),"\n")
-      cat("  No. of population parameters =",extract(x,"npar.att"),"\n")
-      cat("\nFor the last iteration:\n")
-      cat("  Max abs change in success prob. =", format(round(extract(x,"dif.p"), 5),scientific = FALSE), "\n")
-      cat("  Abs change in deviance          =", format(round(extract(x,"dif.LL"), 2),scientific = FALSE), "\n")
-      cat("\nTime used             =", format(round(extract(x,"time"), 4),scientific = FALSE), "\n")
-
-    }
-    est.info(est.result())
+    print(est.result())
+    summary(est.result())
   })
 
   iter.info2 <- shiny::reactive({
-    est.info2 <- function(x) {
-      # cat("\nAttribute prevalence\n")
-      # print(round(extract(x,"prevalence")$`1`,4))
-      # cat("\n\n")
-      print(CA(x))
-    }
-    est.info2(est.result())
+    print(CA(est.result()))
   })
 
 
@@ -194,7 +163,7 @@ shinyServer(function(input, output) {
   itf <- shiny::reactive({
     fitcheck <- function(object){
       x <- itemfit(object)
-      if(all(extract(object,"models_numeric")>=0)&&all(extract(object,"models_numeric")<=5)&&input$attdis==0){
+
         z <- modelfit(object)
         if(!is.null(z$M2)){
           cat("\nM2=",z$M2,"( df=",z$M2.df,")","p-value=",round(z$M2.pvalue,4))
@@ -203,7 +172,7 @@ shinyServer(function(input, output) {
         }
 
         cat("\nSRMSR = ", round(z$SRMSR,4),"\n\n")
-      }
+
 
       p <- extract(x,"p")
       r <- extract(x,"r")

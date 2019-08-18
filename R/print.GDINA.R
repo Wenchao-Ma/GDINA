@@ -227,11 +227,11 @@ print.summary.GDINA <- function(x,...){
   cat("AIC    =", formatC(x$AIC,digits = 2, format = "f"),
       " | penalty [2 * p]  =",formatC(x$`AIC penalty`,digits = 2, format = "f"),"\n")
   cat("BIC    =", formatC(x$BIC,digits = 2, format = "f"),
-      " | penalty [(log n) * p]  =",formatC(x$`BIC penalty`,digits = 2, format = "f"),"\n")
+      " | penalty [log(n) * p]  =",formatC(x$`BIC penalty`,digits = 2, format = "f"),"\n")
   cat("CAIC   =", formatC(x$CAIC,digits = 2, format = "f"),
-      " | penalty [(log n + 1) * p]  =",formatC(x$`CAIC penalty`,digits = 2, format = "f"),"\n")
+      " | penalty [(log(n) + 1) * p]  =",formatC(x$`CAIC penalty`,digits = 2, format = "f"),"\n")
   cat("SABIC  =", formatC(x$SABIC,digits = 2, format = "f"),
-      " | penalty [(log (n + 2)/24) * p]  =",formatC(x$`SABIC penalty`,digits = 2, format = "f"),"\n")
+      " | penalty [log((n + 2)/24) * p]  =",formatC(x$`SABIC penalty`,digits = 2, format = "f"),"\n")
   cat("\nNo. of parameters (p)  =",formatC(x$`Number of parameters`,digits = 0, format = "d"), "\n")
   cat("  No. of estimated item parameters = ",formatC(x$`Number of estimated item parameters`,digits = 0, format = "d"), "\n")
   cat("  No. of fixed item parameters = ",formatC(x$`Number of fixed item parameters`,digits = 0, format = "d"), "\n")

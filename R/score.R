@@ -196,7 +196,11 @@ OPG_d <- function(object,SE.type){
   NC <- nrow(Q)
   NG <- extract(object,"ngroup")
   scorejh <- score_d(object) # a list of score function for delta with elements for each category
-  IP.loc <- length(scorejh) - NG
+  if(extract(object,"att.dist")!="saturated"){
+    IP.loc <- length(scorejh)
+  }else{
+    IP.loc <- length(scorejh) - NG
+  }
 
   np <- sapply(scorejh,ncol)[seq_len(IP.loc)] # the last element is for mixing proportions
 # print(np)
@@ -244,7 +248,12 @@ OPG_p <- function(object,SE.type){
 
     scorejh <- score_p(object) # a list with elements for each category
     np <- sapply(scorejh,ncol)
-    IP.loc <- length(scorejh) - NG
+    if(extract(object,"att.dist")!="saturated"){
+      IP.loc <- length(scorejh)
+    }else{
+      IP.loc <- length(scorejh) - NG
+    }
+
     np <- np[seq_len(NC)]
 
     if(SE.type == 1){

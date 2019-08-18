@@ -229,8 +229,15 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
                              catprob.j=itemparj[j],        # a list with H elements giving the reduced catprob.parm for each nonzero category
                              logpost=indlogPost(GDINA.obj))[[1]]
         if(SE.type==2){
-          v <- inverse_crossprod(do.call(cbind,sco[-length(sco)]))
+          if(extract(GDINA.obj,"att.dist")!="saturated"){
+            v <- inverse_crossprod(do.call(cbind,sco))
+          }else{
+            v <- inverse_crossprod(do.call(cbind,sco[-length(sco)]))
+          }
+
         }else if(SE.type==3){
+          if(extract(GDINA.obj,"att.dist")!="saturated")
+            warning("structural parameters are not considered in the calculation of covariance matrix.",call. = FALSE)
           v <- inverse_crossprod(do.call(cbind,sco))
         }
         # print(j)
