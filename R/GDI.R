@@ -135,6 +135,7 @@ Qval <- function(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args =
   }
   ret$method <- method
   ret$wald.args <- updated.wald.args
+  ret$sequential <- extract(GDINA.obj,"sequential")
   class(ret) <- "Qval"
   return(ret)
 }

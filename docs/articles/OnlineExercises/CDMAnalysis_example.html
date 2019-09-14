@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Model Estimation and Model Diagnostics • GDINA</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
 <script src="../../pkgdown.js"></script><meta property="og:title" content="Model Estimation and Model Diagnostics">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.4</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -67,6 +68,9 @@
     <li>
       <a href="../../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
     </li>
+    <li>
+      <a href="../../articles/OnlineExercises/sGDINA_analysis_example.html">Sequential G-DINA: Model Estimation and Model Diagnostics</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -76,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/Wenchao-Ma/GDINA">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,12 +93,13 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Model Estimation and Model Diagnostics</h1>
             
-            <h4 class="date">2019-08-18</h4>
+            <h4 class="date">2019-09-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/CDMAnalysis_example.Rmd"><code>vignettes/OnlineExercises/CDMAnalysis_example.Rmd</code></a></small>
       <div class="hidden name"><code>CDMAnalysis_example.Rmd</code></div>
@@ -106,17 +111,17 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.7.3) for various CDM analyses.</p>
+<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.7.4) for various CDM analyses.</p>
 </div>
 <div id="model-estimation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-estimation" class="anchor"></a>Model Estimation</h2>
 <p>The following code estimates the G-DINA model. For extracting item and person parameters from G-DINA model, please see <a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html">this tutorial</a>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(GDINA)</a></code></pre></div>
-<pre><code>## GDINA Package [Version 2.7.3; 2019-8-19]
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(GDINA)</a></code></pre></div>
+<pre><code>## GDINA Package [Version 2.7.4; 2019-9-14]
 ## More information: https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat</a>
-<a class="sourceLine" id="cb3-2" title="2">Q &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb3-2" title="2">Q &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,</a>
 <a class="sourceLine" id="cb3-3" title="3">              <span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,</a>
 <a class="sourceLine" id="cb3-4" title="4">              <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,</a>
 <a class="sourceLine" id="cb3-5" title="5">              <span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,</a>
@@ -153,14 +158,14 @@
 ## 10 1  1* 1 
 ## Note: * denotes a modified element.</code></pre>
 <p>To further examine the q-vectors that are suggested to be modified, you can draw the mesa plots (de la Torre &amp; Ma, 2016):</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(Qv, <span class="dt">item =</span> <span class="dv">9</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(Qv, <span class="dt">item =</span> <span class="dv">9</span>)</a></code></pre></div>
 <p><img src="CDMAnalysis_example_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(Qv, <span class="dt">item =</span> <span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(Qv, <span class="dt">item =</span> <span class="dv">10</span>)</a></code></pre></div>
 <p><img src="CDMAnalysis_example_files/figure-html/unnamed-chunk-3-2.png" width="700"></p>
 <p>We can also examine whether the G-DINA model with the suggested Q had better relative fit:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">sugQ &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/extract.html">extract</a></span>(Qv, <span class="dt">what =</span> <span class="st">"sug.Q"</span>)</a>
 <a class="sourceLine" id="cb8-2" title="2">est.sugQ &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/GDINA.html">GDINA</a></span>(dat, sugQ, <span class="dt">verbose =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/anova">anova</a></span>(est,est.sugQ)</a></code></pre></div>
+<a class="sourceLine" id="cb8-3" title="3"><span class="kw"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span>(est,est.sugQ)</a></code></pre></div>
 <pre><code>## 
 ## Information Criteria and Likelihood Ratio Test
 ## 
@@ -197,7 +202,7 @@
 ## Item 10   RRUM  0.5674           1</code></pre>
 <p>We can fit the models suggested by the Wald test based on the rule in Ma, Iaconangelo and de la Torre (2016) and compare the combinations of CDMs with the G-DINA model:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">est.wald &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/GDINA.html">GDINA</a></span>(dat, sugQ, <span class="dt">model =</span> <span class="kw"><a href="../../reference/extract.html">extract</a></span>(mc,<span class="st">"selected.model"</span>)<span class="op">$</span>models, <span class="dt">verbose =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/anova">anova</a></span>(est.sugQ,est.wald)</a></code></pre></div>
+<a class="sourceLine" id="cb12-2" title="2"><span class="kw"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span>(est.sugQ,est.wald)</a></code></pre></div>
 <pre><code>## 
 ## Information Criteria and Likelihood Ratio Test
 ## 
@@ -244,7 +249,7 @@
 ## Log odds ratio                    1
 ## Note: p-value and adj.p-value are associated with max[z.stats].
 ##       adj.p-values are based on the holm method.</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(ift)</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(ift)</a></code></pre></div>
 <pre><code>## 
 ## Item-level fit statistics
 ##         z.prop pvalue[z.prop] max[z.r] pvalue.max[z.r] adj.pvalue.max[z.r]
@@ -269,7 +274,7 @@
 ## Item 8        1.7499              0.0801                  0.7212
 ## Item 9        1.7499              0.0801                  0.7212
 ## Item 10       0.7345              0.4627                  1.0000</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(ift)</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(ift)</a></code></pre></div>
 <p><img src="CDMAnalysis_example_files/figure-html/unnamed-chunk-7-1.png" width="700"><img src="CDMAnalysis_example_files/figure-html/unnamed-chunk-7-2.png" width="700"></p>
 <p>The estimated latent class size can be obtained by</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est.wald,<span class="st">"posterior.prob"</span>)</a></code></pre></div>
@@ -279,8 +284,8 @@
 ## [1,] 0.1126905</code></pre>
 <p>The tetrachoric correlation between attributes can be calculated by</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="co"># psych package needs to be installed</span></a>
-<a class="sourceLine" id="cb23-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(psych)</a>
-<a class="sourceLine" id="cb23-3" title="3">psych<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/psych/topics/tetrachor">tetrachoric</a></span>(<span class="dt">x =</span> <span class="kw"><a href="../../reference/extract.html">extract</a></span>(est.wald,<span class="st">"attributepattern"</span>),</a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(psych)</a>
+<a class="sourceLine" id="cb23-3" title="3">psych<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/psych/man/tetrachor.html">tetrachoric</a></span>(<span class="dt">x =</span> <span class="kw"><a href="../../reference/extract.html">extract</a></span>(est.wald,<span class="st">"attributepattern"</span>),</a>
 <a class="sourceLine" id="cb23-4" title="4">                   <span class="dt">weight =</span> <span class="kw"><a href="../../reference/extract.html">extract</a></span>(est.wald,<span class="st">"posterior.prob"</span>))</a></code></pre></div>
 <pre><code>## Call: psych::tetrachoric(x = extract(est.wald, "attributepattern"), 
 ##     weight = extract(est.wald, "posterior.prob"))
@@ -330,7 +335,7 @@
 <p>Sorrel, M. A., Abad, F. J., Olea, J., de la Torre, J., &amp; Barrada, J. R. (2017). Inferential Item-Fit Evaluation in Cognitive Diagnosis Modeling. <em>Applied Psychological Measurement, 41,</em> 614-631.</p>
 <p>Sorrel, M. A., de la Torre, J., Abad, F. J., &amp; Olea, J. (2017). Two-Step Likelihood Ratio Test for Item-Level Model Comparison in Cognitive Diagnosis Models. <em>Methodology, 13</em>, 39-47.</p>
 <p>Wang, W., Song, L., Chen, P., Meng, Y., &amp; Ding, S. (2015). Attribute-Level and Pattern-Level Classification Consistency and Accuracy Indices for Cognitive Diagnostic Assessment. <em>Journal of Educational Measurement, 52</em> , 457-476.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/sessionInfo">sessionInfo</a></span>()</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a></code></pre></div>
 <pre><code>## R version 3.6.1 (2019-07-05)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 18362)
@@ -348,33 +353,33 @@
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] psych_1.8.12 GDINA_2.7.3 
+## [1] psych_1.8.12 GDINA_2.7.4 
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] tidyselect_0.2.5     xfun_0.8             purrr_0.3.2         
+##  [1] tidyselect_0.2.5     xfun_0.9             purrr_0.3.2         
 ##  [4] lattice_0.20-38      colorspace_1.4-1     htmltools_0.3.6     
-##  [7] yaml_2.2.0           rlang_0.4.0          pkgdown_1.3.0       
+##  [7] yaml_2.2.0           rlang_0.4.0          pkgdown_1.4.0       
 ## [10] later_0.8.0          pillar_1.4.2         nloptr_1.2.1        
 ## [13] foreign_0.8-71       glue_1.3.1           stringr_1.4.0       
-## [16] munsell_0.5.0        commonmark_1.7       gtable_0.3.0        
-## [19] memoise_1.1.0        evaluate_0.14        labeling_0.3        
-## [22] knitr_1.24           httpuv_1.5.1         parallel_3.6.1      
-## [25] Rcpp_1.0.2           xtable_1.8-4         promises_1.0.1      
-## [28] backports_1.1.4      scales_1.0.0         desc_1.2.0          
-## [31] truncnorm_1.0-8      alabama_2015.3-1     mime_0.7            
-## [34] fs_1.3.1             mnormt_1.5-5         ggplot2_3.2.1       
-## [37] digest_0.6.20        stringi_1.4.3        dplyr_0.8.3         
-## [40] shiny_1.3.2          numDeriv_2016.8-1.1  grid_3.6.1          
-## [43] rprojroot_1.3-2      tools_3.6.1          magrittr_1.5        
-## [46] lazyeval_0.2.2       Rsolnp_1.16          tibble_2.1.3        
-## [49] crayon_1.3.4         pkgconfig_2.0.2      MASS_7.3-51.4       
-## [52] xml2_1.2.2           shinydashboard_0.7.1 assertthat_0.2.1    
-## [55] rmarkdown_1.14       roxygen2_6.1.1       rstudioapi_0.10     
-## [58] R6_2.4.0             nlme_3.1-140         compiler_3.6.1</code></pre>
+## [16] munsell_0.5.0        gtable_0.3.0         memoise_1.1.0       
+## [19] evaluate_0.14        labeling_0.3         knitr_1.24          
+## [22] httpuv_1.5.1         parallel_3.6.1       Rcpp_1.0.2          
+## [25] xtable_1.8-4         promises_1.0.1       scales_1.0.0        
+## [28] backports_1.1.4      desc_1.2.0           truncnorm_1.0-8     
+## [31] alabama_2015.3-1     mime_0.7             fs_1.3.1            
+## [34] mnormt_1.5-5         ggplot2_3.2.1        digest_0.6.20       
+## [37] stringi_1.4.3        dplyr_0.8.3          shiny_1.3.2         
+## [40] numDeriv_2016.8-1.1  grid_3.6.1           rprojroot_1.3-2     
+## [43] tools_3.6.1          magrittr_1.5         lazyeval_0.2.2      
+## [46] Rsolnp_1.16          tibble_2.1.3         crayon_1.3.4        
+## [49] pkgconfig_2.0.2      MASS_7.3-51.4        shinydashboard_0.7.1
+## [52] assertthat_0.2.1     rmarkdown_1.15       rstudioapi_0.10     
+## [55] R6_2.4.0             nlme_3.1-140         compiler_3.6.1</code></pre>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -393,17 +398,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Wenchao Ma, Jimmy de la Torre.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

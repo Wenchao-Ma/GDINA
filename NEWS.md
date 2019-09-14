@@ -1,3 +1,7 @@
+# GDINA 2.7.4
+* Added   - mesa plot for validating Q-matrix based on sequential G-DINA model
+
+
 # GDINA 2.7.3
 * Added   - Q-validation and model comparison when joint attribute model is not saturated
 * Fixed   - absolute fit statistics disappear in GUI (since version 2.7.0)

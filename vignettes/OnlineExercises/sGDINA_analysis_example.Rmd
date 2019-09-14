@@ -1,0 +1,172 @@
+---
+title: "Sequential G-DINA: Model Estimation and Model Diagnostics"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This tutorial is created using R [markdown](https://rmarkdown.rstudio.com/) and [knitr](https://yihui.name/knitr/). It illustrates how to use the GDINA R pacakge (version `r packageVersion("GDINA")`) to analyze polytomous response data using the sequential models.
+
+## Model Estimation
+
+The following code fits the sequential G-DINA model to a set of simulated data, which consist of 20 items (15 polytomous and 5 dichotomous) measuring 5 attributes:
+```{r}
+library(GDINA)
+dat <- sim20seqGDINA$simdat
+head(dat)
+Q <- matrix(c(1,	1,	1,	0,	0,	0,	0,
+              1,	2,	0,	1,	0,	1,	0,
+              2,	1,	1,	0,	1,	0,	0,
+              2,	2,	0,	0,	0,	1,	0,
+              3,	1,	0,	1,	0,	1,	1,
+              3,	2,	1,	0,	0,	0,	0,
+              4,	1,	0,	0,	0,	0,	1,
+              4,	2,	0,	0,	0,	1,	0,
+              5,	1,	0,	0,	1,	0,	0,
+              5,	2,	0,	1,	0,	0,	0,
+              6,	1,	1,	0,	0,	0,	0,
+              6,	2,	0,	1,	1,	0,	0,
+              7,	1,	0,	1,	0,	0,	0,
+              7,	2,	0,	0,	1,	1,	0,
+              8,	1,	0,	0,	0,	1,	0,
+              8,	2,	1,	0,	0,	0,	1,
+              9,	1,	0,	0,	0,	1,	1,
+              9,	2,	0,	0,	1,	0,	0,
+              10,	1,	0,	1,	1,	0,	0,
+              10,	2,	1,	0,	0,	0,	0,
+              11,	1,	1,	1,	0,	0,	0,
+              11,	2,	0,	0,	0,	0,	1,
+              12,	1,	0,	1,	0,	0,	0,
+              12,	2,	0,	0,	0,	1,	0,
+              12,	3,	0,	0,	0,	0,	1,
+              13,	1,	0,	0,	0,	0,	1,
+              13,	2,	0,	0,	0,	1,	0,
+              13,	3,	0,	0,	1,	0,	0,
+              14,	1,	1,	0,	0,	0,	0,
+              14,	2,	0,	1,	0,	0,	0,
+              14,	3,	0,	0,	1,	0,	0,
+              15,	1,	0,	0,	0,	1,	0,
+              15,	2,	0,	0,	0,	0,	1,
+              15,	3,	1,	0,	0,	0,	0,
+              16,	1,	1,	0,	0,	0,	0,
+              17,	1,	0,	1,	0,	0,	0,
+              18,	1,	0,	0,	1,	0,	0,
+              19,	1,	0,	0,	0,	1,	0,
+              20,	1,	0,	0,	0,	0,	1),byrow = TRUE,ncol = 7)
+
+est <- GDINA(dat = dat, Q = Q, sequential = TRUE, model = "GDINA")
+```
+
+**coef()** can be used to extract various item parameters:
+```{r}
+ coef(est) # processing function
+ coef(est,"itemprob") # success probabilities for each item
+```
+
+## Q-matrix validation
+
+The **Qval()** function is used for Q-matrix validation. By default, it implements de la Torre and Chiu's (2016) algorithm. The following example use the stepwise method (Ma & de la Torre, 2019) instead.
+```{r}
+Qv <- Qval(est, method = "Wald")
+Qv
+```
+To further examine the q-vectors, you can draw the mesa plots (de la Torre & Ma, 2016):
+
+```{r}
+plot(Qv, item = 2) # the 2nd row in the Q-matrix - not item 2
+```
+
+We can also examine whether the G-DINA model with the suggested Q had better relative fit:
+```{r}
+sugQ <- extract(Qv, what = "sug.Q")
+est.sugQ <- GDINA(dat, sugQ, sequential = TRUE, verbose = 0)
+anova(est,est.sugQ)
+```
+
+## Item-level model comparison
+Based on the suggested Q-matrix, we perform item level model comparison using the Wald test (see de la Torre, 2011; de la Torre & Lee, 2013; Ma, Iaconangelo & de la Torre, 2016) to check whether any reduced CDMs can be used. Note that score test and likelihood ratio test (Sorrel, Abad, Olea, de la Torre, and Barrada, 2017; Sorrel, de la Torre, Abad, & Olea, 2017; Ma & de la Torre, 2018) may also be used.
+```{r}
+mc <- modelcomp(est.sugQ)
+mc
+```
+
+We can fit the models suggested by the Wald test based on the rule in Ma, Iaconangelo and de la Torre (2016) and compare the combinations of CDMs with the G-DINA model:
+```{r}
+est.wald <- GDINA(dat, sugQ, model = extract(mc,"selected.model")$models, sequential = TRUE, verbose = 0)
+anova(est.sugQ,est.wald)
+```
+
+## Absolute fit evaluation
+The test level absolute fit include M2 statistic, RMSEA and SRMSR (Maydeu-Olivares, 3013; Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016; Ma, 2019) and the item level absolute fit include log odds and transformed correlation (Chen, de la Torre, & Zhang, 2013), as well as heat plot for item pairs.
+```{r}
+# test level absolute fit
+mft <- modelfit(est.wald)
+mft
+
+```
+
+
+The estimated latent class size can be obtained by
+```{r}
+extract(est.wald,"posterior.prob")
+```
+
+
+The tetrachoric correlation between attributes can be calculated by
+```{r}
+# psych package needs to be installed
+library(psych)
+psych::tetrachoric(x = extract(est.wald,"attributepattern"),
+                   weight = extract(est.wald,"posterior.prob"))
+```
+
+## Classification Accuracy
+The following code calculates the test-, pattern- and attribute-level classification accuracy indices based on GDINA estimates using approaches in Iaconangelo (2017) and Wang, Song, Chen, Meng, and Ding (2015).
+```{r}
+CA(est.wald)
+```
+## References
+
+Chen, J., de la Torre, J., & Zhang, Z. (2013). Relative and Absolute Fit Evaluation in Cognitive Diagnosis Modeling.
+_Journal of Educational Measurement, 50_, 123-140.
+
+de la Torre, J., & Lee, Y. S. (2013). Evaluating the wald test for item-level comparison of saturated and reduced models in cognitive diagnosis. *Journal of Educational Measurement, 50*, 355-373.
+
+de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A general framework approach and its implementation in R. A short course at the
+fourth conference on the statistical methods in Psychometrics, Columbia University, New York.
+
+Hansen, M., Cai, L.,  Monroe, S., & Li, Z. (2016). Limited-information goodness-of-fit testing of diagnostic classification item response models. *British Journal of Mathematical and Statistical Psychology. 69,* 225--252.
+
+Iaconangelo, C.(2017). *Uses of Classification Error Probabilities in the Three-Step Approach to Estimating Cognitive Diagnosis Models.* (Unpublished doctoral dissertation). New Brunswick, NJ: Rutgers University.
+
+Liu, Y., Tian, W., & Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. *Journal of Educational and Behavioral Statistics, 41*, 3-26.
+
+Ma, W. (2019). Evaluating the fit of sequential G-DINA model using limited-information measures. *Applied Psychological Measurement*.
+
+Ma, W. & de la Torre, J. (2018). Category-level model selection for the sequential G-DINA model. *Journal of Educational and Behavorial Statistics*.
+
+Ma,W., & de la Torre, J. (2019). An empirical Q-matrix validation method for the sequential G-DINA model. *British Journal of  Mathematical and Statistical Psychology*. 
+
+Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. *Applied Psychological Measurement, 40*, 200-217.
+
+Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. *Measurement, 11*, 71-101.
+
+Sorrel, M. A., Abad, F. J., Olea, J., de la Torre, J., & Barrada, J. R. (2017). Inferential Item-Fit Evaluation in Cognitive Diagnosis Modeling. *Applied Psychological Measurement, 41,* 614-631.
+
+Sorrel, M. A., de la Torre, J., Abad, F. J., & Olea, J. (2017). Two-Step Likelihood Ratio Test for Item-Level Model Comparison in Cognitive Diagnosis Models. *Methodology, 13*, 39-47.
+
+Wang, W., Song, L., Chen, P., Meng, Y., & Ding, S. (2015). Attribute-Level and Pattern-Level Classification Consistency and Accuracy Indices for Cognitive Diagnostic Assessment.
+*Journal of Educational Measurement, 52* , 457-476.
+
+```{r}
+sessionInfo()
+```

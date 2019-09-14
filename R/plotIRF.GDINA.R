@@ -250,7 +250,12 @@ plot.Qval <-
            original.q.label = FALSE,auto.ylim = TRUE,...)
   {
     if(eps=="auto") eps <- x$eps
-    Q <- extract.Qval(x,"Q")
+    if(x$sequential){
+      Q <- extract.Qval(x,"Q")[,-c(1:2)]
+    }else{
+      Q <- extract.Qval(x,"Q")
+    }
+
     K <- ncol(Q)
     L <- (2^K-1) # L-1
     patt <- attributepattern(K)

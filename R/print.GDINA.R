@@ -12,21 +12,20 @@ print.GDINA <-
     cat("-----------------------------------------------\n")
     cat("# of individuals    groups    items         \n")
     cat("    ",sprintf("%11d",extract.GDINA(x,"nobs")),sprintf("%9d",extract.GDINA(x,"ngroup")),sprintf("%8d",extract.GDINA(x,"nitem")))
-    # cat("Number of items       =", extract.GDINA(x,"nitem"), "\n")
-    # cat("Number of individuals =", extract.GDINA(x,"nobs"), "\n")
-    # cat("Number of attributes  =", extract.GDINA(x,"natt"), "\n")
-    # cat("Number of groups      =", extract.GDINA(x,"ngroup"), "\n")
     M <- c("User-defined Function","GDINA", "DINA", "DINO", "ACDM", "LLM", "RRUM")
     # cat("Response level        =",ifelse(max(extract.GDINA(x,"dat"),na.rm = TRUE)>1,"Polytomous","Dichotomous"),"\n")
     cat("\n===============================================\n")
     # cat("\n-----------------------------------------------\n")
     cat("Model")
     cat("\n-----------------------------------------------\n")
-    lv <- NULL
+    lv <- s <- NULL
     if(extract(x,"latent.var")=="bugs"){
       lv <- "Bug"
     }
-    cat("Fitted model(s)       =", lv,unique(extract.GDINA(x,"models")), "\n")
+    if(extract(est,"sequential")){
+      s <- "sequential"
+    }
+    cat("Fitted model(s)       =", s, lv,unique(extract.GDINA(x,"models")), "\n")
     cat("Attribute structure   =",extract(x,"att.dist"),"\n")
     if (any(extract.GDINA(x,"att.dist")=="higher.order")) cat("Higher-order model    =",extract(x,"higher.order")$model,"\n")
     tmp <- max(extract.GDINA(x,"Q"))

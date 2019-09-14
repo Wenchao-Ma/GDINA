@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Higher-order GDINA Estimation • GDINA</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
 <script src="../../pkgdown.js"></script><meta property="og:title" content="Higher-order GDINA Estimation">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.4</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -67,6 +68,9 @@
     <li>
       <a href="../../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
     </li>
+    <li>
+      <a href="../../articles/OnlineExercises/sGDINA_analysis_example.html">Sequential G-DINA: Model Estimation and Model Diagnostics</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -76,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/Wenchao-Ma/GDINA">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,13 +93,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Higher-order GDINA Estimation</h1>
                         <h4 class="author">Wenchao</h4>
             
-            <h4 class="date">2019-08-07</h4>
+            <h4 class="date">2019-09-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/HOGDINA_example.Rmd"><code>vignettes/OnlineExercises/HOGDINA_example.Rmd</code></a></small>
       <div class="hidden name"><code>HOGDINA_example.Rmd</code></div>
@@ -107,21 +112,21 @@
 <div id="introduction" class="section level3">
 <h3 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h3>
-<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.7.0) to estimate the higher-order G-DINA model.</p>
+<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.7.4) to estimate the higher-order G-DINA model.</p>
 </div>
 <div id="model-estimation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#model-estimation" class="anchor"></a>Model Estimation</h3>
 <p>The following code estimates the higher-order G-DINA model.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(GDINA)</a></code></pre></div>
-<pre><code>## GDINA Package [Version 2.7.0; 2019-8-8]
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(GDINA)</a></code></pre></div>
+<pre><code>## GDINA Package [Version 2.7.4; 2019-9-14]
 ## More information: https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># A simulated data in GDINA package</span></a>
 <a class="sourceLine" id="cb3-2" title="2">dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat</a>
 <a class="sourceLine" id="cb3-3" title="3">Q &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simQ</a>
 <a class="sourceLine" id="cb3-4" title="4"></a>
 <a class="sourceLine" id="cb3-5" title="5"><span class="co"># Estimating GDINA model</span></a>
-<a class="sourceLine" id="cb3-6" title="6">est &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/GDINA.html">GDINA</a></span>(<span class="dt">dat =</span> dat, <span class="dt">Q =</span> Q, <span class="dt">model =</span> <span class="st">"GDINA"</span>, <span class="dt">att.dist =</span> <span class="st">"higher.order"</span>, <span class="dt">higher.order =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">model =</span> <span class="st">"2PL"</span>))</a></code></pre></div>
+<a class="sourceLine" id="cb3-6" title="6">est &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/GDINA.html">GDINA</a></span>(<span class="dt">dat =</span> dat, <span class="dt">Q =</span> Q, <span class="dt">model =</span> <span class="st">"GDINA"</span>, <span class="dt">att.dist =</span> <span class="st">"higher.order"</span>, <span class="dt">higher.order =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">model =</span> <span class="st">"2PL"</span>))</a></code></pre></div>
 <pre><code>## 
 Iter = 1  Max. abs. change = 0.29086  Deviance  = 12723.23                                                                                  
 Iter = 2  Max. abs. change = 0.05035  Deviance  = 11962.12                                                                                  
@@ -193,7 +198,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## GDINA(dat = dat, Q = Q, model = "GDINA", att.dist = "higher.order", 
 ##     higher.order = list(model = "2PL"))
 ## 
-##   GDINA version 2.7.0 (2019-8-8) 
+##   GDINA version 2.7.4 (2019-9-14) 
 ## ===============================================
 ## Data
 ## -----------------------------------------------
@@ -217,18 +222,18 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ##   Change in -2 log-likelihood          = 0.0018 
 ##   Converged?                           = TRUE 
 ## 
-## Time used             = 0.1528 secs</code></pre>
+## Time used             = 0.1636 secs</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># summary information</span></a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(est)</a></code></pre></div>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(est)</a></code></pre></div>
 <pre><code>## 
 ## Test Fit Statistics
 ## 
 ## Loglik = -5920.30 
 ## 
 ## AIC    = 11928.60  | penalty [2 * p]  = 88.00 
-## BIC    = 12144.54  | penalty [(log n) * p]  = 303.94 
-## CAIC   = 12144.59  | penalty [(log n + 1) * p]  = 303.99 
-## SABIC  = 12004.80  | penalty [(log (n + 2)/24) * p]  = 164.19 
+## BIC    = 12144.54  | penalty [log(n) * p]  = 303.94 
+## CAIC   = 12188.54  | penalty [(log(n) + 1) * p]  = 347.94 
+## SABIC  = 12004.80  | penalty [log((n + 2)/24) * p]  = 164.19 
 ## 
 ## No. of parameters (p)  = 44 
 ##   No. of estimated item parameters =  38 
@@ -241,20 +246,20 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## A1 0.5028 0.4972
 ## A2 0.5008 0.4992
 ## A3 0.4764 0.5236</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">AIC</a></span>(est) <span class="co">#AIC</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span>(est) <span class="co">#AIC</span></a></code></pre></div>
 <pre><code>## [1] 11928.6</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">BIC</a></span>(est) <span class="co">#BIC</span></a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/AIC.html">BIC</a></span>(est) <span class="co">#BIC</span></a></code></pre></div>
 <pre><code>## [1] 12144.54</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(est) <span class="co">#log-likelihood value</span></a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/logLik.html">logLik</a></span>(est) <span class="co">#log-likelihood value</span></a></code></pre></div>
 <pre><code>## 'log Lik.' -5920.301 (df=44)</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/deviance">deviance</a></span>(est) <span class="co"># deviance: -2 log-likelihood</span></a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span>(est) <span class="co"># deviance: -2 log-likelihood</span></a></code></pre></div>
 <pre><code>## [1] 11840.6</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw"><a href="../../reference/npar.html">npar</a></span>(est) <span class="co"># number of parameters</span></a></code></pre></div>
 <pre><code>## No. of total parameters = 44 
 ## No. of population parameters = 6 
 ## No. of free item parameters = 38 
 ## No. of fixed item parameters = 0</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/nobs">nobs</a></span>(est) <span class="co"># number of observations</span></a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/nobs.html">nobs</a></span>(est) <span class="co"># number of observations</span></a></code></pre></div>
 <pre><code>## [1] 1000</code></pre>
 <p>You can use <em>extract</em> with argument <em>discrim</em> to extract discrimination indices. The first column gives <span class="math inline">\(P(1)-P(0)\)</span> and the second column gives the GDINA discrimination index.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="co"># discrimination indices</span></a>
@@ -280,7 +285,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 <a class="sourceLine" id="cb23-4" title="4"><span class="co"># </span></a>
 <a class="sourceLine" id="cb23-5" title="5"><span class="co">#####################################</span></a></code></pre></div>
 <p>The following code gives the item probalities of each reduced latent classes. As shown below, the probability of answering item 1 correctly for individuals who do not master the required attribute is 0.2032, and the probability of answering item 1 correctly for individuals who master the required attribute is 0.9007:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est) <span class="co"># item probabilities of success for each reduced latent class</span></a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est) <span class="co"># item probabilities of success for each reduced latent class</span></a></code></pre></div>
 <pre><code>## $`Item 1`
 ##   P(0)   P(1) 
 ## 0.2032 0.9007 
@@ -321,58 +326,58 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## P(000) P(100) P(010) P(001) P(110) P(101) P(011) P(111) 
 ## 0.1723 0.1490 0.2866 0.3828 0.4980 0.4984 0.6717 0.8909</code></pre>
 <p>The following code gives the item probalities of each reduced latent classes with standard errors.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># item probabilities of success &amp; standard errors</span></a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># item probabilities of success &amp; standard errors</span></a></code></pre></div>
 <pre><code>## $`Item 1`
 ##        P(0)   P(1)
 ## Est. 0.2032 0.9007
-## S.E. 0.0257 0.0223
+## S.E. 0.0258 0.0224
 ## 
 ## $`Item 2`
 ##        P(0)   P(1)
 ## Est. 0.1382 0.7849
-## S.E. 0.0221 0.0246
+## S.E. 0.0224 0.0247
 ## 
 ## $`Item 3`
 ##        P(0)   P(1)
 ## Est. 0.0872 0.9081
-## S.E. 0.0210 0.0197
+## S.E. 0.0213 0.0199
 ## 
 ## $`Item 4`
 ##       P(00)  P(10)  P(01)  P(11)
 ## Est. 0.1132 0.2974 0.4748 0.8924
-## S.E. 0.0278 0.0368 0.0374 0.0281
+## S.E. 0.0279 0.0369 0.0377 0.0284
 ## 
 ## $`Item 5`
 ##       P(00)  P(10)  P(01)  P(11)
 ## Est. 0.1077 0.0738 0.0896 0.8169
-## S.E. 0.0247 0.0252 0.0254 0.0330
+## S.E. 0.0248 0.0253 0.0256 0.0335
 ## 
 ## $`Item 6`
 ##       P(00)  P(10)  P(01)  P(11)
 ## Est. 0.1839 0.9005 0.9272 0.9211
-## S.E. 0.0408 0.0315 0.0284 0.0226
+## S.E. 0.0411 0.0316 0.0286 0.0226
 ## 
 ## $`Item 7`
 ##       P(00)  P(10)  P(01)  P(11)
 ## Est. 0.0545 0.4731 0.3889 0.7703
-## S.E. 0.0238 0.0392 0.0366 0.0321
+## S.E. 0.0239 0.0394 0.0367 0.0321
 ## 
 ## $`Item 8`
 ##       P(00)  P(10)  P(01)  P(11)
 ## Est. 0.1106 0.2682 0.2732 0.8953
-## S.E. 0.0262 0.0380 0.0387 0.0345
+## S.E. 0.0262 0.0384 0.0388 0.0348
 ## 
 ## $`Item 9`
 ##       P(00)  P(10)  P(01)  P(11)
 ## Est. 0.1000 0.3771 0.4168 0.8049
-## S.E. 0.0292 0.0379 0.0360 0.0286
+## S.E. 0.0293 0.0381 0.0363 0.0286
 ## 
 ## $`Item 10`
 ##      P(000) P(100) P(010) P(001) P(110) P(101) P(011) P(111)
-## Est. 0.1723  0.149 0.2866 0.3828  0.498 0.4984 0.6717 0.8909
-## S.E.     NA     NA     NA     NA     NA     NA     NA     NA</code></pre>
+## Est. 0.1723 0.1490 0.2866 0.3828 0.4980 0.4984 0.6717 0.8909
+## S.E. 0.0456 0.0555 0.0556 0.0540 0.0597 0.0534 0.0488 0.0386</code></pre>
 <p>The following code gives delta parameters.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>) <span class="co"># delta parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>) <span class="co"># delta parameters</span></a></code></pre></div>
 <pre><code>## $`Item 1`
 ##     d0     d1 
 ## 0.2032 0.6976 
@@ -413,7 +418,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ##      d0      d1      d2      d3     d12     d13     d23    d123 
 ##  0.1723 -0.0232  0.1143  0.2106  0.2346  0.1388  0.1746 -0.1310</code></pre>
 <p>The following code gives delta parameters with standard errors.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># delta parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># delta parameters</span></a></code></pre></div>
 <pre><code>## $`Item 1`
 ##          d0     d1
 ## Est. 0.2032 0.6976
@@ -464,7 +469,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## Est. 0.1723 -0.0232 0.1143 0.2106 0.2346 0.1388 0.1746 -0.1310
 ## S.E. 0.0456  0.0759 0.0759 0.0760 0.1232 0.1173 0.1113  0.1693</code></pre>
 <p>The following code gives <span class="math inline">\(P(0)\)</span> and 1-<span class="math inline">\(P(0)\)</span>, which is guessing and slipping parameters.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>) <span class="co"># guessing and slip parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>) <span class="co"># guessing and slip parameters</span></a></code></pre></div>
 <pre><code>##         guessing   slip
 ## Item 1    0.2032 0.0993
 ## Item 2    0.1382 0.2151
@@ -477,28 +482,28 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## Item 9    0.1000 0.1951
 ## Item 10   0.1723 0.1091</code></pre>
 <p>The following code gives guessing and slipping parameters with standard errors.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># guessing and slip parameters &amp; standard errors</span></a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># guessing and slip parameters &amp; standard errors</span></a></code></pre></div>
 <pre><code>##         guessing   slip SE[guessing] SE[slip]
-## Item 1    0.2032 0.0993       0.0257   0.0223
-## Item 2    0.1382 0.2151       0.0221   0.0246
-## Item 3    0.0872 0.0919       0.0210   0.0197
-## Item 4    0.1132 0.1076       0.0278   0.0281
-## Item 5    0.1077 0.1831       0.0247   0.0330
-## Item 6    0.1839 0.0789       0.0408   0.0226
-## Item 7    0.0545 0.2297       0.0238   0.0321
-## Item 8    0.1106 0.1047       0.0262   0.0345
-## Item 9    0.1000 0.1951       0.0292   0.0286
-## Item 10   0.1723 0.1091           NA       NA</code></pre>
+## Item 1    0.2032 0.0993       0.0258   0.0224
+## Item 2    0.1382 0.2151       0.0224   0.0247
+## Item 3    0.0872 0.0919       0.0213   0.0199
+## Item 4    0.1132 0.1076       0.0279   0.0284
+## Item 5    0.1077 0.1831       0.0248   0.0335
+## Item 6    0.1839 0.0789       0.0411   0.0226
+## Item 7    0.0545 0.2297       0.0239   0.0321
+## Item 8    0.1106 0.1047       0.0262   0.0348
+## Item 9    0.1000 0.1951       0.0293   0.0286
+## Item 10   0.1723 0.1091       0.0456   0.0386</code></pre>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"><span class="co"># Estimated proportions of latent classes</span></a></code></pre></div>
 <p>The following code gives the slope and intercept parameters for attributes. As you can see, the estimated slope and intercept for the first attribute are 0.1 and -0.0113, respectively:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est,<span class="st">"lambda"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est,<span class="st">"lambda"</span>)</a></code></pre></div>
 <pre><code>##     slope intercept
 ## A1 0.1000   -0.0113
 ## A2 0.1000   -0.0034
 ## A3 0.2885    0.0962</code></pre>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="co"># success probabilities for each latent class</span></a></code></pre></div>
 <p>The following code gives item success probabilities for all latent classes,</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est,<span class="st">"LCprob"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est,<span class="st">"LCprob"</span>)</a></code></pre></div>
 <pre><code>##            000    100    010    001    110    101    011    111
 ## Item 1  0.2032 0.9007 0.2032 0.2032 0.9007 0.9007 0.2032 0.9007
 ## Item 2  0.1382 0.1382 0.7849 0.1382 0.7849 0.1382 0.7849 0.7849
@@ -516,7 +521,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 <a class="sourceLine" id="cb42-4" title="4"><span class="co"># </span></a>
 <a class="sourceLine" id="cb42-5" title="5"><span class="co">#####################################</span></a></code></pre></div>
 <p>The following code returns EAP estimates of attribute patterns (for the first six individuals). As you can see, the EAP estimate of attribute profile for the first individual is (1, 0, 1):</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est)) <span class="co"># EAP estimates of attribute profiles</span></a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est)) <span class="co"># EAP estimates of attribute profiles</span></a></code></pre></div>
 <pre><code>##      A1 A2 A3
 ## [1,]  1  0  1
 ## [2,]  1  1  1
@@ -525,7 +530,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [5,]  0  0  1
 ## [6,]  1  0  0</code></pre>
 <p>By specifying <em>what</em> argument, the following code gives MAP estimates of attribute patterns (for the first six individuals).</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MAP"</span>)) <span class="co"># MAP estimates of attribute profiles</span></a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MAP"</span>)) <span class="co"># MAP estimates of attribute profiles</span></a></code></pre></div>
 <pre><code>##   A1 A2 A3 multimodes
 ## 1  1  0  1      FALSE
 ## 2  1  1  1      FALSE
@@ -534,7 +539,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## 5  0  0  1      FALSE
 ## 6  0  0  0      FALSE</code></pre>
 <p>The following code extracts MLE estimates of attribute patterns (for the first six individuals).</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MLE"</span>)) <span class="co"># MLE estimates of attribute profiles</span></a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MLE"</span>)) <span class="co"># MLE estimates of attribute profiles</span></a></code></pre></div>
 <pre><code>##   A1 A2 A3 multimodes
 ## 1  1  0  1      FALSE
 ## 2  1  1  1      FALSE
@@ -554,27 +559,26 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 <a class="sourceLine" id="cb49-6" title="6"></a>
 <a class="sourceLine" id="cb49-7" title="7"><span class="co">#plot item response functions for item 10</span></a></code></pre></div>
 <p>The following code gives item response functions of item 10.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>)</a></code></pre></div>
 <p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
 <p>The following code gives item response functions of item 10 with error bars.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># with error bars</span></a></code></pre></div>
-<pre><code>## Warning: Removed 8 rows containing missing values (geom_errorbar).</code></pre>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># with error bars</span></a></code></pre></div>
 <p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
 <p>The following code plots mastery probabilities of three attributes for individuals 1,20 and 50.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="co">#plot mastery probability for individuals 1, 20 and 50</span></a>
-<a class="sourceLine" id="cb53-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(est, <span class="dt">what =</span> <span class="st">"mp"</span>, <span class="dt">person =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dv">50</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1"><span class="co">#plot mastery probability for individuals 1, 20 and 50</span></a>
+<a class="sourceLine" id="cb52-2" title="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(est, <span class="dt">what =</span> <span class="st">"mp"</span>, <span class="dt">person =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dv">50</span>))</a></code></pre></div>
 <p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
 </div>
 <div id="advanced-topics" class="section level3">
 <h3 class="hasAnchor">
 <a href="#advanced-topics" class="anchor"></a>Advanced Topics</h3>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb54-2" title="2"><span class="co">#</span></a>
-<a class="sourceLine" id="cb54-3" title="3"><span class="co">#      Advanced elements</span></a>
-<a class="sourceLine" id="cb54-4" title="4"><span class="co"># </span></a>
-<a class="sourceLine" id="cb54-5" title="5"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb54-6" title="6"></a>
-<a class="sourceLine" id="cb54-7" title="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/indlogLik.html">indlogLik</a></span>(est)) <span class="co"># individual log-likelihood</span></a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="co">#####################################</span></a>
+<a class="sourceLine" id="cb53-2" title="2"><span class="co">#</span></a>
+<a class="sourceLine" id="cb53-3" title="3"><span class="co">#      Advanced elements</span></a>
+<a class="sourceLine" id="cb53-4" title="4"><span class="co"># </span></a>
+<a class="sourceLine" id="cb53-5" title="5"><span class="co">#####################################</span></a>
+<a class="sourceLine" id="cb53-6" title="6"></a>
+<a class="sourceLine" id="cb53-7" title="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/indlogLik.html">indlogLik</a></span>(est)) <span class="co"># individual log-likelihood</span></a></code></pre></div>
 <pre><code>##             000        100        010        001        110        101
 ## [1,] -15.142205  -8.197156 -13.830209  -9.016180  -7.481586  -3.474603
 ## [2,] -19.086617 -12.141568 -15.065901 -13.165454  -8.717277  -7.623877
@@ -589,7 +593,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [4,]  -7.822446  -4.940081
 ## [5,] -10.933913 -14.661850
 ## [6,] -14.300841 -13.826349</code></pre>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/indlogPost.html">indlogPost</a></span>(est)) <span class="co"># individual log-posterior</span></a></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/indlogPost.html">indlogPost</a></span>(est)) <span class="co"># individual log-posterior</span></a></code></pre></div>
 <pre><code>##              000       100        010          001        110        101
 ## [1,] -11.8567587 -4.942601 -10.567742  -5.66444281  -4.240262 -0.1256319
 ## [2,] -16.2280739 -9.313916 -12.230337 -10.24062018  -5.902857 -4.7018093
@@ -604,7 +608,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [4,] -3.2008010  -0.31145426
 ## [5,] -7.3764088 -11.09736355
 ## [6,] -8.7031070  -8.22163257</code></pre>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est,<span class="st">"designmatrix"</span>) <span class="co">#design matrix</span></a></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est,<span class="st">"designmatrix"</span>) <span class="co">#design matrix</span></a></code></pre></div>
 <pre><code>## [[1]]
 ##      [,1] [,2]
 ## [1,]    1    0
@@ -672,10 +676,10 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [6,]    1    1    0    1    0    1    0    0
 ## [7,]    1    0    1    1    0    0    1    0
 ## [8,]    1    1    1    1    1    1    1    1</code></pre>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est,<span class="st">"linkfunc"</span>) <span class="co">#link functions</span></a></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est,<span class="st">"linkfunc"</span>) <span class="co">#link functions</span></a></code></pre></div>
 <pre><code>##  [1] "identity" "identity" "identity" "identity" "identity" "identity"
 ##  [7] "identity" "identity" "identity" "identity"</code></pre>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/sessionInfo">sessionInfo</a></span>()</a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a></code></pre></div>
 <pre><code>## R version 3.6.1 (2019-07-05)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 18362)
@@ -693,35 +697,36 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] GDINA_2.7.0
+## [1] GDINA_2.7.4
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.1           nloptr_1.2.1         pillar_1.4.2        
+##  [1] Rcpp_1.0.2           nloptr_1.2.1         pillar_1.4.2        
 ##  [4] compiler_3.6.1       later_0.8.0          tools_3.6.1         
 ##  [7] digest_0.6.20        tibble_2.1.3         evaluate_0.14       
 ## [10] memoise_1.1.0        gtable_0.3.0         pkgconfig_2.0.2     
 ## [13] rlang_0.4.0          shiny_1.3.2          rstudioapi_0.10     
-## [16] commonmark_1.7       yaml_2.2.0           parallel_3.6.1      
-## [19] pkgdown_1.3.0        xfun_0.8             dplyr_0.8.3         
-## [22] stringr_1.4.0        roxygen2_6.1.1       xml2_1.2.0          
-## [25] knitr_1.23           desc_1.2.0           fs_1.3.1            
-## [28] tidyselect_0.2.5     rprojroot_1.3-2      shinydashboard_0.7.1
-## [31] grid_3.6.1           glue_1.3.1           R6_2.4.0            
-## [34] rmarkdown_1.14       Rsolnp_1.16          alabama_2015.3-1    
-## [37] purrr_0.3.2          ggplot2_3.2.0        magrittr_1.5        
-## [40] scales_1.0.0         backports_1.1.4      promises_1.0.1      
-## [43] htmltools_0.3.6      MASS_7.3-51.4        assertthat_0.2.1    
-## [46] colorspace_1.4-1     mime_0.7             xtable_1.8-4        
-## [49] httpuv_1.5.1         numDeriv_2016.8-1.1  labeling_0.3        
-## [52] stringi_1.4.3        lazyeval_0.2.2       munsell_0.5.0       
-## [55] truncnorm_1.0-8      crayon_1.3.4</code></pre>
+## [16] yaml_2.2.0           parallel_3.6.1       pkgdown_1.4.0       
+## [19] xfun_0.9             dplyr_0.8.3          stringr_1.4.0       
+## [22] knitr_1.24           desc_1.2.0           fs_1.3.1            
+## [25] tidyselect_0.2.5     rprojroot_1.3-2      shinydashboard_0.7.1
+## [28] grid_3.6.1           glue_1.3.1           R6_2.4.0            
+## [31] rmarkdown_1.15       Rsolnp_1.16          alabama_2015.3-1    
+## [34] purrr_0.3.2          ggplot2_3.2.1        magrittr_1.5        
+## [37] backports_1.1.4      scales_1.0.0         promises_1.0.1      
+## [40] htmltools_0.3.6      MASS_7.3-51.4        assertthat_0.2.1    
+## [43] colorspace_1.4-1     mime_0.7             xtable_1.8-4        
+## [46] httpuv_1.5.1         numDeriv_2016.8-1.1  labeling_0.3        
+## [49] stringi_1.4.3        lazyeval_0.2.2       munsell_0.5.0       
+## [52] truncnorm_1.0-8      crayon_1.3.4</code></pre>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
       </div>
 
 </div>
+
 
 
       <footer><div class="copyright">
@@ -729,12 +734,14 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

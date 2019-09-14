@@ -117,7 +117,7 @@ score_p <- function(object){
       names(score)[l] <- paste0("G",g)
     }
   }else{
-    if(extract(object,"att.dist")=="saturated"){
+    if(any(extract(object,"att.dist")=="saturated")){
       score[[length(score)+1]] <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]
     }else if(extract(object,"att.dist")=="higher.order"){
       if(extract(object,"higher.order")$model=="Rasch"){
@@ -196,25 +196,24 @@ OPG_d <- function(object,SE.type){
   NC <- nrow(Q)
   NG <- extract(object,"ngroup")
   scorejh <- score_d(object) # a list of score function for delta with elements for each category
-  if(extract(object,"att.dist")!="saturated"){
-    IP.loc <- length(scorejh)
-  }else{
-    IP.loc <- length(scorejh) - NG
-  }
-
-  np <- sapply(scorejh,ncol)[seq_len(IP.loc)] # the last element is for mixing proportions
+  np <- sapply(scorejh,ncol)[seq_len(NC)] # the last NG elements are for mixing proportions
 # print(np)
   if(SE.type == 1){
     scorej <- vector("list",J)
-    scorejh <- scorejh[seq_len(IP.loc)]
+    # scorejh <- scorejh[seq_len(IP.loc)]
     for(j in 1:J)  scorej[[j]] <- do.call(cbind,scorejh[which(Qc[,1]==j)])
     vars <- bdiag(lapply(scorej,inverse_crossprod))
   }else if(SE.type == 2){
-    scorejh <- scorejh[seq_len(IP.loc)]
+    scorejh <- scorejh[seq_len(extract(object,"ncat"))] #for all categories
     vars <- inverse_crossprod(do.call(cbind,scorejh))
   }else if(SE.type==3){
-    vars <- inverse_crossprod(do.call(cbind,scorejh))
-    vars <- vars[1:sum(np),1:sum(np)]
+    if(all(extract(object,"att.dist")=="saturated")){
+      vars <- inverse_crossprod(do.call(cbind,scorejh))
+      vars <- vars[1:sum(np),1:sum(np)]
+    }else{
+      stop("SEs base on the complete information are only available for saturated joint att. distributions.",call. = FALSE)
+    }
+
   }
   covIndex <- data.frame(item = rep(Qc[,1],np),
                          itemcat = rep(Qc[,2],np),
@@ -247,26 +246,25 @@ OPG_p <- function(object,SE.type){
   if(all(m<=2)&all(m>=0)){
 
     scorejh <- score_p(object) # a list with elements for each category
-    np <- sapply(scorejh,ncol)
-    if(extract(object,"att.dist")!="saturated"){
-      IP.loc <- length(scorejh)
-    }else{
-      IP.loc <- length(scorejh) - NG
-    }
 
-    np <- np[seq_len(NC)]
+    np <- sapply(scorejh,ncol)[seq_len(NC)] # the last NG elements are for mixing proportions
 
     if(SE.type == 1){
-      scorejh <- scorejh[seq_len(IP.loc)]
+      # scorejh <- scorejh[seq_len(IP.loc)]
       scorej <- vector("list",J)
       for(j in 1:J)  scorej[[j]] <- do.call(cbind,scorejh[which(Qc[,1]==j)])
       vars <- bdiag(lapply(scorej,inverse_crossprod))
     }else if(SE.type == 2){
-      scorejh <- scorejh[seq_len(IP.loc)]
+      scorejh <- scorejh[seq_len(extract(object,"ncat"))]
       vars <- inverse_crossprod(do.call(cbind,scorejh))
     }else if(SE.type==3){
-      vars <- inverse_crossprod(do.call(cbind,scorejh))
-      vars <- vars[1:sum(np),1:sum(np)]
+      if(all(extract(object,"att.dist")=="saturated")){
+        vars <- inverse_crossprod(do.call(cbind,scorejh))
+        vars <- vars[1:sum(np),1:sum(np)]
+      }else{
+        stop("SEs base on the complete information are only available for saturated joint att. distributions.",call. = FALSE)
+      }
+
     }
   }else{
     grad <- vector("list",NC)

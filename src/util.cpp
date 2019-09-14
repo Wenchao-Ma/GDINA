@@ -268,7 +268,6 @@ Rcpp::List expectedNR(arma::mat AlphaPattern, //2^K x K
                       arma::vec a,
                       arma::vec b){
   int Q = f_theta.n_elem;
-  int N = AlphaPattern.n_rows; //2^K
   int K = AlphaPattern.n_cols;
   arma::mat post = PostTheta(AlphaPattern, theta, f_theta, a,b); // 2^K x nnodes P(theta_q|AlphaPattern)
   post.each_col()%=nc;

@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LCDM Estimation • GDINA</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
 <script src="../../pkgdown.js"></script><meta property="og:title" content="LCDM Estimation">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -30,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.4</span>
       </span>
     </div>
 
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -67,6 +68,9 @@
     <li>
       <a href="../../articles/OnlineExercises/LCDM_example.html">LCDM Estimation</a>
     </li>
+    <li>
+      <a href="../../articles/OnlineExercises/sGDINA_analysis_example.html">Sequential G-DINA: Model Estimation and Model Diagnostics</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -76,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/Wenchao-Ma/GDINA">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,13 +93,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>LCDM Estimation</h1>
                         <h4 class="author">Wenchao</h4>
             
-            <h4 class="date">2019-08-07</h4>
+            <h4 class="date">2019-09-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/LCDM_example.Rmd"><code>vignettes/OnlineExercises/LCDM_example.Rmd</code></a></small>
       <div class="hidden name"><code>LCDM_example.Rmd</code></div>
@@ -104,8 +109,8 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(GDINA)</a></code></pre></div>
-<pre><code>## GDINA Package [Version 2.7.0; 2019-8-8]
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(GDINA)</a></code></pre></div>
+<pre><code>## GDINA Package [Version 2.7.4; 2019-9-14]
 ## More information: https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># A simulated data in GDINA package</span></a>
 <a class="sourceLine" id="cb3-2" title="2">dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat</a>
@@ -171,7 +176,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 <pre><code>## Call:
 ## GDINA(dat = dat, Q = Q, model = "logitGDINA")
 ## 
-##   GDINA version 2.7.0 (2019-8-8) 
+##   GDINA version 2.7.4 (2019-9-14) 
 ## ===============================================
 ## Data
 ## -----------------------------------------------
@@ -194,18 +199,18 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ##   Change in -2 log-likelihood          = 0.0004 
 ##   Converged?                           = TRUE 
 ## 
-## Time used             = 0.852 secs</code></pre>
+## Time used             = 0.9221 secs</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># summary information</span></a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(est)</a></code></pre></div>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(est)</a></code></pre></div>
 <pre><code>## 
 ## Test Fit Statistics
 ## 
 ## Loglik = -5918.21 
 ## 
 ## AIC    = 11926.42  | penalty [2 * p]  = 90.00 
-## BIC    = 12147.27  | penalty [(log n) * p]  = 310.85 
-## CAIC   = 12147.32  | penalty [(log n + 1) * p]  = 310.89 
-## SABIC  = 12004.35  | penalty [(log (n + 2)/24) * p]  = 167.93 
+## BIC    = 12147.27  | penalty [log(n) * p]  = 310.85 
+## CAIC   = 12192.27  | penalty [(log(n) + 1) * p]  = 355.85 
+## SABIC  = 12004.35  | penalty [log((n + 2)/24) * p]  = 167.93 
 ## 
 ## No. of parameters (p)  = 45 
 ##   No. of estimated item parameters =  38 
@@ -218,20 +223,20 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ## A1 0.5028 0.4972
 ## A2 0.4974 0.5026
 ## A3 0.4784 0.5216</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">AIC</a></span>(est) <span class="co">#AIC</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span>(est) <span class="co">#AIC</span></a></code></pre></div>
 <pre><code>## [1] 11926.42</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">BIC</a></span>(est) <span class="co">#BIC</span></a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/AIC.html">BIC</a></span>(est) <span class="co">#BIC</span></a></code></pre></div>
 <pre><code>## [1] 12147.27</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(est) <span class="co">#log-likelihood value</span></a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/logLik.html">logLik</a></span>(est) <span class="co">#log-likelihood value</span></a></code></pre></div>
 <pre><code>## 'log Lik.' -5918.211 (df=45)</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/deviance">deviance</a></span>(est) <span class="co"># deviance: -2 log-likelihood</span></a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span>(est) <span class="co"># deviance: -2 log-likelihood</span></a></code></pre></div>
 <pre><code>## [1] 11836.42</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw"><a href="../../reference/npar.html">npar</a></span>(est) <span class="co"># number of parameters</span></a></code></pre></div>
 <pre><code>## No. of total parameters = 45 
 ## No. of population parameters = 7 
 ## No. of free item parameters = 38 
 ## No. of fixed item parameters = 0</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/nobs">nobs</a></span>(est) <span class="co"># number of observations</span></a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/nobs.html">nobs</a></span>(est) <span class="co"># number of observations</span></a></code></pre></div>
 <pre><code>## [1] 1000</code></pre>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="co"># discrimination indices</span></a>
 <a class="sourceLine" id="cb21-2" title="2"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est, <span class="st">"discrim"</span>)</a></code></pre></div>
@@ -251,7 +256,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 <a class="sourceLine" id="cb23-3" title="3"><span class="co">#      structural parameters</span></a>
 <a class="sourceLine" id="cb23-4" title="4"><span class="co"># </span></a>
 <a class="sourceLine" id="cb23-5" title="5"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb23-6" title="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est) <span class="co"># item probabilities of success for each reduced latent class</span></a></code></pre></div>
+<a class="sourceLine" id="cb23-6" title="6"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est) <span class="co"># item probabilities of success for each reduced latent class</span></a></code></pre></div>
 <pre><code>## $`Item 1`
 ##   P(0)   P(1) 
 ## 0.2052 0.8986 
@@ -291,7 +296,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ## $`Item 10`
 ## P(000) P(100) P(010) P(001) P(110) P(101) P(011) P(111) 
 ## 0.1757 0.1326 0.2846 0.3823 0.4928 0.4997 0.6734 0.9011</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># item probabilities of success &amp; standard errors</span></a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># item probabilities of success &amp; standard errors</span></a></code></pre></div>
 <pre><code>## $`Item 1`
 ##        P(0)   P(1)
 ## Est. 0.2052 0.8986
@@ -341,7 +346,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ##      P(000) P(100) P(010) P(001) P(110) P(101) P(011) P(111)
 ## Est. 0.1757 0.1326 0.2846 0.3823 0.4928 0.4997 0.6734 0.9011
 ## S.E. 0.0449 0.0570 0.0563 0.0554 0.0567 0.0517 0.0479 0.0391</code></pre>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>) <span class="co"># delta parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>) <span class="co"># delta parameters</span></a></code></pre></div>
 <pre><code>## $`Item 1`
 ##      d0      d1 
 ## -1.3541  3.5360 
@@ -381,7 +386,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ## $`Item 10`
 ##      d0      d1      d2      d3     d12     d13     d23    d123 
 ## -1.5456 -0.3325  0.6238  1.0659  1.2254  0.8109  0.5794 -0.2179</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># delta parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># delta parameters</span></a></code></pre></div>
 <pre><code>## $`Item 1`
 ##           d0    d1
 ## Est. -1.3541 3.536
@@ -431,7 +436,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ##           d0      d1     d2     d3    d12    d13    d23    d123
 ## Est. -1.5456 -0.3325 0.6238 1.0659 1.2254 0.8109 0.5794 -0.2179
 ## S.E.  0.3098  0.6141 0.4381 0.4178 0.7581 0.7326 0.5741  1.0221</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>) <span class="co"># guessing and slip parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>) <span class="co"># guessing and slip parameters</span></a></code></pre></div>
 <pre><code>##         guessing   slip
 ## Item 1    0.2052 0.1014
 ## Item 2    0.1391 0.2204
@@ -443,7 +448,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ## Item 8    0.1107 0.1000
 ## Item 9    0.0995 0.1943
 ## Item 10   0.1757 0.0989</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># guessing and slip parameters &amp; standard errors</span></a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># guessing and slip parameters &amp; standard errors</span></a></code></pre></div>
 <pre><code>##         guessing   slip SE[guessing] SE[slip]
 ## Item 1    0.2052 0.1014       0.0258   0.0224
 ## Item 2    0.1391 0.2204       0.0221   0.0247
@@ -456,11 +461,11 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ## Item 9    0.0995 0.1943       0.0294   0.0288
 ## Item 10   0.1757 0.0989       0.0449   0.0391</code></pre>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1"><span class="co"># Estimated proportions of latent classes</span></a>
-<a class="sourceLine" id="cb35-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est,<span class="st">"lambda"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb35-2" title="2"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est,<span class="st">"lambda"</span>)</a></code></pre></div>
 <pre><code>## p(000) p(100) p(010) p(001) p(110) p(101) p(011) p(111) 
 ## 0.1268 0.1054 0.1149 0.1201 0.1313 0.1452 0.1409 0.1155</code></pre>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="co"># success probabilities for each latent class</span></a>
-<a class="sourceLine" id="cb37-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(est,<span class="st">"LCprob"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb37-2" title="2"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est,<span class="st">"LCprob"</span>)</a></code></pre></div>
 <pre><code>##            000    100    010    001    110    101    011    111
 ## Item 1  0.2052 0.8986 0.2052 0.2052 0.8986 0.8986 0.2052 0.8986
 ## Item 2  0.1391 0.1391 0.7796 0.1391 0.7796 0.1391 0.7796 0.7796
@@ -477,7 +482,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 <a class="sourceLine" id="cb39-3" title="3"><span class="co">#      person parameters</span></a>
 <a class="sourceLine" id="cb39-4" title="4"><span class="co"># </span></a>
 <a class="sourceLine" id="cb39-5" title="5"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb39-6" title="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est)) <span class="co"># EAP estimates of attribute profiles</span></a></code></pre></div>
+<a class="sourceLine" id="cb39-6" title="6"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est)) <span class="co"># EAP estimates of attribute profiles</span></a></code></pre></div>
 <pre><code>##      A1 A2 A3
 ## [1,]  1  0  1
 ## [2,]  1  1  1
@@ -485,7 +490,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ## [4,]  1  1  1
 ## [5,]  0  0  1
 ## [6,]  1  0  0</code></pre>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MAP"</span>)) <span class="co"># MAP estimates of attribute profiles</span></a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MAP"</span>)) <span class="co"># MAP estimates of attribute profiles</span></a></code></pre></div>
 <pre><code>##   A1 A2 A3 multimodes
 ## 1  1  0  1      FALSE
 ## 2  1  1  1      FALSE
@@ -493,7 +498,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ## 4  1  1  1      FALSE
 ## 5  0  0  1      FALSE
 ## 6  0  0  0      FALSE</code></pre>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MLE"</span>)) <span class="co"># MLE estimates of attribute profiles</span></a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MLE"</span>)) <span class="co"># MLE estimates of attribute profiles</span></a></code></pre></div>
 <pre><code>##   A1 A2 A3 multimodes
 ## 1  1  0  1      FALSE
 ## 2  1  1  1      FALSE
@@ -508,12 +513,12 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 <a class="sourceLine" id="cb45-5" title="5"><span class="co">#####################################</span></a>
 <a class="sourceLine" id="cb45-6" title="6"></a>
 <a class="sourceLine" id="cb45-7" title="7"><span class="co">#plot item response functions for item 10</span></a>
-<a class="sourceLine" id="cb45-8" title="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb45-8" title="8"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>)</a></code></pre></div>
 <p><img src="LCDM_example_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># with error bars</span></a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># with error bars</span></a></code></pre></div>
 <p><img src="LCDM_example_files/figure-html/unnamed-chunk-1-2.png" width="700"></p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="co">#plot mastery probability for individuals 1, 20 and 50</span></a>
-<a class="sourceLine" id="cb47-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(est, <span class="dt">what =</span> <span class="st">"mp"</span>, <span class="dt">person =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dv">50</span>))</a></code></pre></div>
+<a class="sourceLine" id="cb47-2" title="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(est, <span class="dt">what =</span> <span class="st">"mp"</span>, <span class="dt">person =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dv">50</span>))</a></code></pre></div>
 <p><img src="LCDM_example_files/figure-html/unnamed-chunk-1-3.png" width="700"></p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1"><span class="co">#####################################</span></a>
 <a class="sourceLine" id="cb48-2" title="2"><span class="co">#</span></a>
@@ -521,7 +526,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 <a class="sourceLine" id="cb48-4" title="4"><span class="co"># </span></a>
 <a class="sourceLine" id="cb48-5" title="5"><span class="co">#####################################</span></a>
 <a class="sourceLine" id="cb48-6" title="6"></a>
-<a class="sourceLine" id="cb48-7" title="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/indlogLik.html">indlogLik</a></span>(est)) <span class="co"># individual log-likelihood</span></a></code></pre></div>
+<a class="sourceLine" id="cb48-7" title="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/indlogLik.html">indlogLik</a></span>(est)) <span class="co"># individual log-likelihood</span></a></code></pre></div>
 <pre><code>##             000        100        010        001        110        101
 ## [1,] -15.109064  -8.336731 -13.759593  -9.045856  -7.459095  -3.508170
 ## [2,] -19.066937 -12.294603 -14.951286 -13.177082  -8.650788  -7.639396
@@ -536,7 +541,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ## [4,]  -7.773785  -5.000666
 ## [5,] -10.990722 -14.742933
 ## [6,] -14.363595 -13.823293</code></pre>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../../reference/indlogPost.html">indlogPost</a></span>(est)) <span class="co"># individual log-posterior</span></a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/indlogPost.html">indlogPost</a></span>(est)) <span class="co"># individual log-posterior</span></a></code></pre></div>
 <pre><code>##             000       100        010          001         110        101
 ## [1,] -11.842477 -5.255258 -10.591309  -5.83356941  -4.1580300 -0.1064761
 ## [2,] -16.055068 -9.467849 -12.037721 -10.21951423  -5.6044424 -4.4924209
@@ -622,7 +627,7 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 <div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est,<span class="st">"linkfunc"</span>) <span class="co">#link functions</span></a></code></pre></div>
 <pre><code>##  [1] "logit" "logit" "logit" "logit" "logit" "logit" "logit" "logit"
 ##  [9] "logit" "logit"</code></pre>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/sessionInfo">sessionInfo</a></span>()</a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a></code></pre></div>
 <pre><code>## R version 3.6.1 (2019-07-05)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 18362)
@@ -640,34 +645,35 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] GDINA_2.7.0
+## [1] GDINA_2.7.4
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.1           nloptr_1.2.1         pillar_1.4.2        
+##  [1] Rcpp_1.0.2           nloptr_1.2.1         pillar_1.4.2        
 ##  [4] compiler_3.6.1       later_0.8.0          tools_3.6.1         
 ##  [7] digest_0.6.20        tibble_2.1.3         evaluate_0.14       
 ## [10] memoise_1.1.0        gtable_0.3.0         pkgconfig_2.0.2     
 ## [13] rlang_0.4.0          shiny_1.3.2          rstudioapi_0.10     
-## [16] commonmark_1.7       yaml_2.2.0           parallel_3.6.1      
-## [19] pkgdown_1.3.0        xfun_0.8             dplyr_0.8.3         
-## [22] stringr_1.4.0        roxygen2_6.1.1       xml2_1.2.0          
-## [25] knitr_1.23           desc_1.2.0           fs_1.3.1            
-## [28] tidyselect_0.2.5     rprojroot_1.3-2      shinydashboard_0.7.1
-## [31] grid_3.6.1           glue_1.3.1           R6_2.4.0            
-## [34] rmarkdown_1.14       Rsolnp_1.16          alabama_2015.3-1    
-## [37] purrr_0.3.2          ggplot2_3.2.0        magrittr_1.5        
-## [40] scales_1.0.0         backports_1.1.4      promises_1.0.1      
-## [43] htmltools_0.3.6      MASS_7.3-51.4        assertthat_0.2.1    
-## [46] colorspace_1.4-1     mime_0.7             xtable_1.8-4        
-## [49] httpuv_1.5.1         numDeriv_2016.8-1.1  labeling_0.3        
-## [52] stringi_1.4.3        lazyeval_0.2.2       munsell_0.5.0       
-## [55] truncnorm_1.0-8      crayon_1.3.4</code></pre>
+## [16] yaml_2.2.0           parallel_3.6.1       pkgdown_1.4.0       
+## [19] xfun_0.9             dplyr_0.8.3          stringr_1.4.0       
+## [22] knitr_1.24           desc_1.2.0           fs_1.3.1            
+## [25] tidyselect_0.2.5     rprojroot_1.3-2      shinydashboard_0.7.1
+## [28] grid_3.6.1           glue_1.3.1           R6_2.4.0            
+## [31] rmarkdown_1.15       Rsolnp_1.16          alabama_2015.3-1    
+## [34] purrr_0.3.2          ggplot2_3.2.1        magrittr_1.5        
+## [37] backports_1.1.4      scales_1.0.0         promises_1.0.1      
+## [40] htmltools_0.3.6      MASS_7.3-51.4        assertthat_0.2.1    
+## [43] colorspace_1.4-1     mime_0.7             xtable_1.8-4        
+## [46] httpuv_1.5.1         numDeriv_2016.8-1.1  labeling_0.3        
+## [49] stringi_1.4.3        lazyeval_0.2.2       munsell_0.5.0       
+## [52] truncnorm_1.0-8      crayon_1.3.4</code></pre>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
       </div>
 
 </div>
+
 
 
       <footer><div class="copyright">
@@ -675,12 +681,14 @@ Iter = 45  Max. abs. change = 0.00010  Deviance  = 11836.42</code></pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
