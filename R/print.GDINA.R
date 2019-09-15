@@ -22,7 +22,7 @@ print.GDINA <-
     if(extract(x,"latent.var")=="bugs"){
       lv <- "Bug"
     }
-    if(extract(est,"sequential")){
+    if(extract(x,"sequential")){
       s <- "sequential"
     }
     cat("Fitted model(s)       =", s, lv,unique(extract.GDINA(x,"models")), "\n")

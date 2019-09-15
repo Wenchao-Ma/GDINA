@@ -30,12 +30,12 @@ nobs.GDINA <- function(object,...){
 
 #' @export
 #' @describeIn GDINA calculate covariance-matrix for delta parameters
-vcov.GDINA <- function(object,SE.type = 2,...){
+vcov.GDINA <- function(object,...){
   dn <- lapply(coef(object,"delta"),names)
   nm <- names(dn)
   v.names <- NULL
   for(j in seq_len(length(dn))) v.names <- c(v.names,paste(nm[j],dn[[j]]))
-  opg <- OPG_d(object,SE.type=SE.type)$cov
+  opg <- OPG_d(object,...)$cov
   rownames(opg) <- colnames(opg) <- v.names
   opg
   }
