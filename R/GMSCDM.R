@@ -209,32 +209,32 @@ GMSCDM <- function(dat, msQ, model = "ACDM", s = 1, att.prior=NULL,
     qj <- apply(Q[jrows,,drop=FALSE],2,max)
     Kjmax <- which(qj==1)
     des1 <- patt[,Kjmax,drop=FALSE]
-    for(s in str.no[jrows]){
+    for(ss in str.no[jrows]){
       if(model_numeric>2){
-        red.qjs <- Q[which(item.no==j&str.no==s),which(qj==1)]
+        red.qjs <- Q[which(item.no==j&str.no==ss),which(qj==1)]
         des[[i]] <- cbind(1,sweep(des1,2,red.qjs,FUN = "*"))
       }else if(model_numeric==1){
         des[[i]] <- designmatrix(K,model_numeric)
-        des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==s),]==1),drop=FALSE],1,min)==1),2] <- 1
+        des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==ss),]==1),drop=FALSE],1,min)==1),2] <- 1
       }else if(model_numeric==2){
         des[[i]] <- designmatrix(K,model_numeric)
-        des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==s),]==1),drop=FALSE],1,max)==1),2] <- 1
+        des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==ss),]==1),drop=FALSE],1,max)==1),2] <- 1
       }else if(model_numeric==-1){# DINA - delta1 varies
         if(sm[j]){
           des[[i]] <- cbind(1,matrix(0,L,length(jrows)))
-          des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==s),]==1),drop=FALSE],1,min)==1),s+1] <- 1
+          des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==ss),]==1),drop=FALSE],1,min)==1),ss+1] <- 1
         }else{
           des[[i]] <- designmatrix(K,1)
-          des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==s),]==1),drop=FALSE],1,min)==1),2] <- 1
+          des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==ss),]==1),drop=FALSE],1,min)==1),2] <- 1
         }
 
       }else if(model_numeric==0){#DINO - delta1 varies
         if(sm[j]){
           des[[i]] <- cbind(1,matrix(0,L,length(jrows)))
-          des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==s),]==1),drop=FALSE],1,max)==1),s+1] <- 1
+          des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==ss),]==1),drop=FALSE],1,max)==1),ss+1] <- 1
         }else{
           des[[i]] <- designmatrix(K,2)
-          des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==s),]==1),drop=FALSE],1,max)==1),2] <- 1
+          des[[i]][which(apply(patt[,which(Q[which(item.no==j&str.no==ss),]==1),drop=FALSE],1,max)==1),2] <- 1
         }
       }
 
