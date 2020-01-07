@@ -90,12 +90,12 @@
 #' @param attribute optional user-specified person attributes. It is a \eqn{N\times K} matrix or data frame. If this is not supplied, attributes are simulated
 #'    from a distribution specified in \code{att.dist}.
 #' @param att.dist A string indicating the distribution for attribute simulation. It can be \code{"uniform"}, \code{"higher.order"},
-#'    \code{"mvnorm"} or \code{"multinomial"} for uniform, higher-order, multivariate normal and multinomial distributions, respectively.
+#'    \code{"mvnorm"} or \code{"categorical"} for uniform, higher-order, multivariate normal and categorical distributions, respectively.
 #'    The default is the uniform distribution. To specify structural parameters for the higher-order
 #'    and multivariate normal distributions, see \code{higher.order.parm} and \code{mvnorm.parm}, respectively. To specify the probabilities
-#'    for the multinomial distribution, use \code{att.prior} argument.
+#'    for the categorical distribution, use \code{att.prior} argument.
 #'@param att.prior probability for each attribute pattern. Order is the same as that returned from \code{attributepattern(Q = Q)}. This is only
-#'    applicable when \code{att.dist="multinomial"}.
+#'    applicable when \code{att.dist="categorical"}.
 #' @param higher.order.parm A list specifying parameters for higher-order distribution for attributes
 #'    if \code{att.dist=higher.order}. Particularly, \code{theta} is a
 #'    vector of length \eqn{N} representing the higher-order ability
@@ -376,7 +376,7 @@
 #' # data simulation
 #' gs <- matrix(0.1,nrow(Q),2)
 #' simD <- simGDINA(N,Q,gs.parm = gs,
-#'                    model = "DINA",att.dist = "multinomial",att.prior = struc$att.prob)
+#'                    model = "DINA",att.dist = "categorical",att.prior = struc$att.prob)
 #'
 #'
 #'####################################################
@@ -439,7 +439,7 @@
 #'####################################################
 #'#                   Example 13
 #'#         DINA model Attribute generated using
-#'#             multinomial distribution
+#'#             categorical distribution
 #'####################################################
 #'
 #' Q <- sim10GDINA$simQ
@@ -447,7 +447,7 @@
 #' N <- 5000
 #' set.seed(12345)
 #' prior <- c(0.1,0.2,0,0,0.2,0,0,0.5)
-#' sim <- simGDINA(N,Q,gs.parm = gs, model="DINA", att.dist = "multinomial",att.prior = prior)
+#' sim <- simGDINA(N,Q,gs.parm = gs, model="DINA", att.dist = "categorical",att.prior = prior)
 #' # check latent class sizes
 #' table(sim$att.group)/N
 #'
@@ -653,7 +653,7 @@ if (!is.null(gs.parm)) {
         # if Q matrix is polytomous, cutoffs must be a list - each for one attribute
         stop("multivariate normal distribution is only available for dichotomous attributes.",call. = FALSE)
       }
-    }else if(tolower(att.dist) == "multinomial"){
+    }else if(tolower(att.dist) == "categorical"){
       att.group <- sample.int(L, N, replace = T, prob = att.prior)
     }
 

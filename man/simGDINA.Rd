@@ -76,10 +76,10 @@ if there is no polytomously scored items.}
 from a distribution specified in \code{att.dist}.}
 
 \item{att.dist}{A string indicating the distribution for attribute simulation. It can be \code{"uniform"}, \code{"higher.order"},
-\code{"mvnorm"} or \code{"multinomial"} for uniform, higher-order, multivariate normal and multinomial distributions, respectively.
+\code{"mvnorm"} or \code{"categorical"} for uniform, higher-order, multivariate normal and categorical distributions, respectively.
 The default is the uniform distribution. To specify structural parameters for the higher-order
 and multivariate normal distributions, see \code{higher.order.parm} and \code{mvnorm.parm}, respectively. To specify the probabilities
-for the multinomial distribution, use \code{att.prior} argument.}
+for the categorical distribution, use \code{att.prior} argument.}
 
 \item{item.names}{A vector giving the name of items or categories. If it is \code{NULL} (default), items are named as "Item 1", "Item 2", etc.}
 
@@ -96,7 +96,7 @@ symmetric matrix specifying the variance-covariance matrix. \code{cutoffs} is a 
 cutoff for each attribute. See \code{Examples}.}
 
 \item{att.prior}{probability for each attribute pattern. Order is the same as that returned from \code{attributepattern(Q = Q)}. This is only
-applicable when \code{att.dist="multinomial"}.}
+applicable when \code{att.dist="categorical"}.}
 
 \item{digits}{How many decimal places in each number? The default is 4.}
 
@@ -386,7 +386,7 @@ N <- 1000
 # data simulation
 gs <- matrix(0.1,nrow(Q),2)
 simD <- simGDINA(N,Q,gs.parm = gs,
-                   model = "DINA",att.dist = "multinomial",att.prior = struc$att.prob)
+                   model = "DINA",att.dist = "categorical",att.prior = struc$att.prob)
 
 
 ####################################################
@@ -449,7 +449,7 @@ extract(simseq,what = "attribute")
 ####################################################
 #                   Example 13
 #         DINA model Attribute generated using
-#             multinomial distribution
+#             categorical distribution
 ####################################################
 
 Q <- sim10GDINA$simQ
@@ -457,7 +457,7 @@ gs <- matrix(0.1,nrow(Q),2)
 N <- 5000
 set.seed(12345)
 prior <- c(0.1,0.2,0,0,0.2,0,0,0.5)
-sim <- simGDINA(N,Q,gs.parm = gs, model="DINA", att.dist = "multinomial",att.prior = prior)
+sim <- simGDINA(N,Q,gs.parm = gs, model="DINA", att.dist = "categorical",att.prior = prior)
 # check latent class sizes
 table(sim$att.group)/N
 

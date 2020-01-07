@@ -43,6 +43,7 @@ Objects which can be extracted from \code{GDINA} objects include:
 \item{expectedCorrect}{expected # of examinees in each latent group answering item correctly}
 \item{expectedTotal}{expected # of examinees in each latent group}
 \item{higher.order}{higher-order model specifications}
+\item{LCprob.parm}{success probabilities for all latent classes}
 \item{logLik}{observed marginal log likelihood}
 \item{linkfunc}{link functions for each item}
 \item{initial.catprob}{initial item category probability parameters}
