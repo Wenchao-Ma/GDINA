@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.8</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
     <div class="page-header toc-ignore">
       <h1>Sequential G-DINA: Model Estimation and Model Diagnostics</h1>
             
-            <h4 class="date">2019-09-14</h4>
+            <h4 class="date">2020-01-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/sGDINA_analysis_example.Rmd"><code>vignettes/OnlineExercises/sGDINA_analysis_example.Rmd</code></a></small>
       <div class="hidden name"><code>sGDINA_analysis_example.Rmd</code></div>
@@ -111,31 +111,31 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.7.4) to analyze polytomous response data using the sequential models.</p>
+<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.7.7) to analyze polytomous response data using the sequential models.</p>
 </div>
 <div id="model-estimation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-estimation" class="anchor"></a>Model Estimation</h2>
 <p>The following code fits the sequential G-DINA model to a set of simulated data, which consist of 20 items (15 polytomous and 5 dichotomous) measuring 5 attributes:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(GDINA)</a></code></pre></div>
-<pre><code>## GDINA Package [Version 2.7.4; 2019-9-14]
+<pre><code>## GDINA Package [Version 2.7.7; 2020-01-07]
 ## More information: https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">dat &lt;-<span class="st"> </span>sim20seqGDINA<span class="op">$</span>simdat</a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(dat)</a></code></pre></div>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]
-## [1,]    0    2    0    2    2    0    0    1    0     0     0     0     3
-## [2,]    2    0    0    0    0    1    1    1    0     0     1     1     0
-## [3,]    0    0    2    2    0    0    2    1    0     0     0     0     2
-## [4,]    0    0    0    0    0    0    0    0    0     0     1     0     0
-## [5,]    0    2    1    1    1    0    0    1    2     0     2     0     3
-## [6,]    0    0    2    2    0    0    1    1    1     0     0     3     0
-##      [,14] [,15] [,16] [,17] [,18] [,19] [,20]
-## [1,]     0     2     0     0     1     1     1
-## [2,]     2     0     1     0     0     1     0
-## [3,]     0     2     0     0     0     1     1
-## [4,]     0     0     0     1     0     0     0
-## [5,]     0     1     0     0     1     0     1
-## [6,]     0     2     0     1     0     1     0</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] [,14]
+## [1,]    0    2    0    2    2    0    0    1    0     0     0     0     3     0
+## [2,]    2    0    0    0    0    1    1    1    0     0     1     1     0     2
+## [3,]    0    0    2    2    0    0    2    1    0     0     0     0     2     0
+## [4,]    0    0    0    0    0    0    0    0    0     0     1     0     0     0
+## [5,]    0    2    1    1    1    0    0    1    2     0     2     0     3     0
+## [6,]    0    0    2    2    0    0    1    1    1     0     0     3     0     0
+##      [,15] [,16] [,17] [,18] [,19] [,20]
+## [1,]     2     0     0     1     1     1
+## [2,]     0     1     0     0     1     0
+## [3,]     2     0     0     0     1     1
+## [4,]     0     0     1     0     0     0
+## [5,]     1     0     0     1     0     1
+## [6,]     2     0     1     0     1     0</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">Q &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>,    <span class="dv">1</span>,  <span class="dv">1</span>,  <span class="dv">0</span>,  <span class="dv">0</span>,  <span class="dv">0</span>,  <span class="dv">0</span>,</a>
 <a class="sourceLine" id="cb5-2" title="2">              <span class="dv">1</span>,    <span class="dv">2</span>,  <span class="dv">0</span>,  <span class="dv">1</span>,  <span class="dv">0</span>,  <span class="dv">1</span>,  <span class="dv">0</span>,</a>
 <a class="sourceLine" id="cb5-3" title="3">              <span class="dv">2</span>,    <span class="dv">1</span>,  <span class="dv">1</span>,  <span class="dv">0</span>,  <span class="dv">1</span>,  <span class="dv">0</span>,  <span class="dv">0</span>,</a>
@@ -355,12 +355,12 @@ Iter = 8  Max. abs. change = 0.00004  Deviance  = 49764.83</code></pre>
 ## Cat 2 0.0110 0.0097 0.0883 0.0986 0.0901 0.0870 0.7918 0.8076
 ## 
 ## $`Item 3`
-##       P(0000) P(1000) P(0100) P(0010) P(0001) P(1100) P(1010) P(1001)
-## Cat 1  0.1077  0.0129  0.0514  0.0983  0.7898  0.0062  0.0118  0.0947
-## Cat 2  0.0137  0.1085  0.0065  0.0125  0.1002  0.0518  0.0989  0.7953
-##       P(0110) P(0101) P(0011) P(1110) P(1101) P(1011) P(0111) P(1111)
-## Cat 1  0.0862  0.7871  0.8165  0.0103  0.0944  0.0979  0.8190  0.0982
-## Cat 2  0.0109  0.0999  0.1036  0.0868  0.7926  0.8222  0.1039  0.8247
+##       P(0000) P(1000) P(0100) P(0010) P(0001) P(1100) P(1010) P(1001) P(0110)
+## Cat 1  0.1077  0.0129  0.0514  0.0983  0.7898  0.0062  0.0118  0.0947  0.0862
+## Cat 2  0.0137  0.1085  0.0065  0.0125  0.1002  0.0518  0.0989  0.7953  0.0109
+##       P(0101) P(0011) P(1110) P(1101) P(1011) P(0111) P(1111)
+## Cat 1  0.7871  0.8165  0.0103  0.0944  0.0979  0.8190  0.0982
+## Cat 2  0.0999  0.1036  0.0868  0.7926  0.8222  0.1039  0.8247
 ## 
 ## $`Item 4`
 ##        P(00)  P(10)  P(01)  P(11)
@@ -508,12 +508,12 @@ Iter = 8  Max. abs. change = 0.00004  Deviance  = 49764.83</code></pre>
 <pre><code>## 
 ## Information Criteria and Likelihood Ratio Test
 ## 
-##          #par    logLik Deviance      AIC      BIC     CAIC    SABIC chisq
-## est       131 -24882.42 49764.83 50026.83 50760.55 50891.55 50344.36      
-## est.sugQ  123 -24883.89 49767.78 50013.78 50702.69 50825.69 50311.91  2.95
-##          df p-value
-## est                
-## est.sugQ  8    0.94</code></pre>
+##          #par    logLik Deviance      AIC      BIC     CAIC    SABIC chisq df
+## est       131 -24882.42 49764.83 50026.83 50760.55 50891.55 50344.36         
+## est.sugQ  123 -24883.89 49767.78 50013.78 50702.69 50825.69 50311.91  2.95  8
+##          p-value
+## est             
+## est.sugQ    0.94</code></pre>
 </div>
 <div id="item-level-model-comparison" class="section level2">
 <h2 class="hasAnchor">
@@ -574,12 +574,12 @@ Iter = 8  Max. abs. change = 0.00004  Deviance  = 49764.83</code></pre>
 <pre><code>## 
 ## Information Criteria and Likelihood Ratio Test
 ## 
-##          #par    logLik Deviance      AIC      BIC     CAIC    SABIC chisq
-## est.sugQ  123 -24883.89 49767.78 50013.78 50702.69 50825.69 50311.91      
-## est.wald  111 -24888.01 49776.02 49998.02 50619.72 50730.72 50267.07  8.24
-##          df p-value
-## est.sugQ           
-## est.wald 12    0.77</code></pre>
+##          #par    logLik Deviance      AIC      BIC     CAIC    SABIC chisq df
+## est.sugQ  123 -24883.89 49767.78 50013.78 50702.69 50825.69 50311.91         
+## est.wald  111 -24888.01 49776.02 49998.02 50619.72 50730.72 50267.07  8.24 12
+##          p-value
+## est.sugQ        
+## est.wald    0.77</code></pre>
 </div>
 <div id="absolute-fit-evaluation" class="section level2">
 <h2 class="hasAnchor">
@@ -643,14 +643,12 @@ Iter = 8  Max. abs. change = 0.00004  Deviance  = 49764.83</code></pre>
 ## 
 ## Pattern level accuracy: 
 ## 
-##  00000  10000  01000  00100  00010  00001  11000  10100  10010  10001 
-## 0.8589 0.8960 0.8928 0.9479 0.9135 0.8715 0.9469 0.8843 0.8556 0.9234 
-##  01100  01010  01001  00110  00101  00011  11100  11010  11001  10110 
-## 0.9528 0.9035 0.9572 0.8843 0.9119 0.9454 0.9587 0.9576 0.9898 0.9404 
-##  10101  10011  01110  01101  01011  00111  11110  11101  11011  10111 
-## 0.9463 0.9832 0.9741 0.9016 0.9440 0.9531 0.9690 0.9615 0.9935 0.9664 
-##  01111  11111 
-## 0.9859 0.9934 
+##  00000  10000  01000  00100  00010  00001  11000  10100  10010  10001  01100 
+## 0.8589 0.8960 0.8928 0.9479 0.9135 0.8715 0.9469 0.8843 0.8556 0.9234 0.9528 
+##  01010  01001  00110  00101  00011  11100  11010  11001  10110  10101  10011 
+## 0.9035 0.9572 0.8843 0.9119 0.9454 0.9587 0.9576 0.9898 0.9404 0.9463 0.9832 
+##  01110  01101  01011  00111  11110  11101  11011  10111  01111  11111 
+## 0.9741 0.9016 0.9440 0.9531 0.9690 0.9615 0.9935 0.9664 0.9859 0.9934 
 ## 
 ## Attribute level accuracy: 
 ## 
@@ -675,9 +673,9 @@ Iter = 8  Max. abs. change = 0.00004  Deviance  = 49764.83</code></pre>
 <p>Sorrel, M. A., de la Torre, J., Abad, F. J., &amp; Olea, J. (2017). Two-Step Likelihood Ratio Test for Item-Level Model Comparison in Cognitive Diagnosis Models. <em>Methodology, 13</em>, 39-47.</p>
 <p>Wang, W., Song, L., Chen, P., Meng, Y., &amp; Ding, S. (2015). Attribute-Level and Pattern-Level Classification Consistency and Accuracy Indices for Cognitive Diagnostic Assessment. <em>Journal of Educational Measurement, 52</em> , 457-476.</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a></code></pre></div>
-<pre><code>## R version 3.6.1 (2019-07-05)
+<pre><code>## R version 3.6.2 (2019-12-12)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 18362)
+## Running under: Windows 10 x64 (build 18363)
 ## 
 ## Matrix products: default
 ## 
@@ -692,28 +690,28 @@ Iter = 8  Max. abs. change = 0.00004  Deviance  = 49764.83</code></pre>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] psych_1.8.12 GDINA_2.7.4 
+## [1] psych_1.9.12 GDINA_2.7.7 
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] tidyselect_0.2.5     xfun_0.9             purrr_0.3.2         
-##  [4] lattice_0.20-38      colorspace_1.4-1     htmltools_0.3.6     
-##  [7] yaml_2.2.0           rlang_0.4.0          pkgdown_1.4.0       
-## [10] later_0.8.0          pillar_1.4.2         nloptr_1.2.1        
-## [13] foreign_0.8-71       glue_1.3.1           stringr_1.4.0       
+##  [1] tidyselect_0.2.5     xfun_0.11            purrr_0.3.3         
+##  [4] lattice_0.20-38      colorspace_1.4-1     htmltools_0.4.0     
+##  [7] yaml_2.2.0           rlang_0.4.2          pkgdown_1.4.1       
+## [10] later_1.0.0          pillar_1.4.3         nloptr_1.2.1        
+## [13] glue_1.3.1           lifecycle_0.1.0      stringr_1.4.0       
 ## [16] munsell_0.5.0        gtable_0.3.0         memoise_1.1.0       
-## [19] evaluate_0.14        knitr_1.24           httpuv_1.5.1        
-## [22] parallel_3.6.1       Rcpp_1.0.2           xtable_1.8-4        
-## [25] promises_1.0.1       scales_1.0.0         backports_1.1.4     
-## [28] desc_1.2.0           truncnorm_1.0-8      alabama_2015.3-1    
-## [31] mime_0.7             fs_1.3.1             mnormt_1.5-5        
-## [34] ggplot2_3.2.1        digest_0.6.20        stringi_1.4.3       
-## [37] dplyr_0.8.3          shiny_1.3.2          numDeriv_2016.8-1.1 
-## [40] grid_3.6.1           rprojroot_1.3-2      tools_3.6.1         
-## [43] magrittr_1.5         lazyeval_0.2.2       Rsolnp_1.16         
-## [46] tibble_2.1.3         crayon_1.3.4         pkgconfig_2.0.2     
-## [49] MASS_7.3-51.4        shinydashboard_0.7.1 assertthat_0.2.1    
-## [52] rmarkdown_1.15       rstudioapi_0.10      R6_2.4.0            
-## [55] nlme_3.1-140         compiler_3.6.1</code></pre>
+## [19] evaluate_0.14        knitr_1.26           fastmap_1.0.1       
+## [22] httpuv_1.5.2         parallel_3.6.2       Rcpp_1.0.3          
+## [25] xtable_1.8-4         promises_1.1.0       backports_1.1.5     
+## [28] scales_1.1.0         desc_1.2.0           truncnorm_1.0-8     
+## [31] alabama_2015.3-1     mime_0.8             fs_1.3.1            
+## [34] mnormt_1.5-5         ggplot2_3.2.1        digest_0.6.23       
+## [37] stringi_1.4.3        dplyr_0.8.3          shiny_1.4.0         
+## [40] numDeriv_2016.8-1.1  grid_3.6.2           rprojroot_1.3-2     
+## [43] tools_3.6.2          magrittr_1.5         lazyeval_0.2.2      
+## [46] Rsolnp_1.16          tibble_2.1.3         crayon_1.3.4        
+## [49] pkgconfig_2.0.3      MASS_7.3-51.4        shinydashboard_0.7.1
+## [52] assertthat_0.2.1     rmarkdown_2.0        rstudioapi_0.10     
+## [55] R6_2.4.1             nlme_3.1-142         compiler_3.6.2</code></pre>
 </div>
   </div>
 
@@ -743,7 +741,7 @@ Iter = 8  Max. abs. change = 0.00004  Deviance  = 49764.83</code></pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>

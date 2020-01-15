@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.8</span>
       </span>
     </div>
 
@@ -248,10 +248,10 @@ from a distribution specified in <code>att.dist</code>.</p></td>
     <tr>
       <th>att.dist</th>
       <td><p>A string indicating the distribution for attribute simulation. It can be <code>"uniform"</code>, <code>"higher.order"</code>,
-<code>"mvnorm"</code> or <code>"multinomial"</code> for uniform, higher-order, multivariate normal and multinomial distributions, respectively.
+<code>"mvnorm"</code> or <code>"categorical"</code> for uniform, higher-order, multivariate normal and categorical distributions, respectively.
 The default is the uniform distribution. To specify structural parameters for the higher-order
 and multivariate normal distributions, see <code>higher.order.parm</code> and <code>mvnorm.parm</code>, respectively. To specify the probabilities
-for the multinomial distribution, use <code>att.prior</code> argument.</p></td>
+for the categorical distribution, use <code>att.prior</code> argument.</p></td>
     </tr>
     <tr>
       <th>item.names</th>
@@ -276,7 +276,7 @@ cutoff for each attribute. See <code>Examples</code>.</p></td>
     <tr>
       <th>att.prior</th>
       <td><p>probability for each attribute pattern. Order is the same as that returned from <code><a href='attributepattern.html'>attributepattern(Q = Q)</a></code>. This is only
-applicable when <code>att.dist="multinomial"</code>.</p></td>
+applicable when <code>att.dist="categorical"</code>.</p></td>
     </tr>
     <tr>
       <th>digits</th>
@@ -581,7 +581,7 @@ item response theory. <em>Applied Psychological Measurement, 25</em>, 258-272.</
 <span class='co'># data simulation</span>
 <span class='no'>gs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0.1</span>,<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>Q</span>),<span class='fl'>2</span>)
 <span class='no'>simD</span> <span class='kw'>&lt;-</span> <span class='fu'>simGDINA</span>(<span class='no'>N</span>,<span class='no'>Q</span>,<span class='kw'>gs.parm</span> <span class='kw'>=</span> <span class='no'>gs</span>,
-                   <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"DINA"</span>,<span class='kw'>att.dist</span> <span class='kw'>=</span> <span class='st'>"multinomial"</span>,<span class='kw'>att.prior</span> <span class='kw'>=</span> <span class='no'>struc</span>$<span class='no'>att.prob</span>)
+                   <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"DINA"</span>,<span class='kw'>att.dist</span> <span class='kw'>=</span> <span class='st'>"categorical"</span>,<span class='kw'>att.prior</span> <span class='kw'>=</span> <span class='no'>struc</span>$<span class='no'>att.prob</span>)
 
 
 <span class='co'>####################################################</span>
@@ -644,7 +644,7 @@ item response theory. <em>Applied Psychological Measurement, 25</em>, 258-272.</
 <span class='co'>####################################################</span>
 <span class='co'>#                   Example 13</span>
 <span class='co'>#         DINA model Attribute generated using</span>
-<span class='co'>#             multinomial distribution</span>
+<span class='co'>#             categorical distribution</span>
 <span class='co'>####################################################</span>
 
 <span class='no'>Q</span> <span class='kw'>&lt;-</span> <span class='no'>sim10GDINA</span>$<span class='no'>simQ</span>
@@ -652,7 +652,7 @@ item response theory. <em>Applied Psychological Measurement, 25</em>, 258-272.</
 <span class='no'>N</span> <span class='kw'>&lt;-</span> <span class='fl'>5000</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>12345</span>)
 <span class='no'>prior</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.1</span>,<span class='fl'>0.2</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0.2</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0.5</span>)
-<span class='no'>sim</span> <span class='kw'>&lt;-</span> <span class='fu'>simGDINA</span>(<span class='no'>N</span>,<span class='no'>Q</span>,<span class='kw'>gs.parm</span> <span class='kw'>=</span> <span class='no'>gs</span>, <span class='kw'>model</span><span class='kw'>=</span><span class='st'>"DINA"</span>, <span class='kw'>att.dist</span> <span class='kw'>=</span> <span class='st'>"multinomial"</span>,<span class='kw'>att.prior</span> <span class='kw'>=</span> <span class='no'>prior</span>)
+<span class='no'>sim</span> <span class='kw'>&lt;-</span> <span class='fu'>simGDINA</span>(<span class='no'>N</span>,<span class='no'>Q</span>,<span class='kw'>gs.parm</span> <span class='kw'>=</span> <span class='no'>gs</span>, <span class='kw'>model</span><span class='kw'>=</span><span class='st'>"DINA"</span>, <span class='kw'>att.dist</span> <span class='kw'>=</span> <span class='st'>"categorical"</span>,<span class='kw'>att.prior</span> <span class='kw'>=</span> <span class='no'>prior</span>)
 <span class='co'># check latent class sizes</span>
 <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='no'>sim</span>$<span class='no'>att.group</span>)/<span class='no'>N</span>
 
@@ -709,7 +709,7 @@ item response theory. <em>Applied Psychological Measurement, 25</em>, 258-272.</
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>

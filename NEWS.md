@@ -1,6 +1,8 @@
-# GDINA 2.7.5
+# GDINA 2.7.8
 * Added   - mesa plot for validating Q-matrix based on sequential G-DINA model
 * Fixed   - A bug in `GMSCDM` function (Thanks to Ouyang Xueyuan)
+* Changed - examples and documentations of `GDINA` function
+* Changed - argument of `simGDINA` function
 
 
 # GDINA 2.7.3

@@ -118,7 +118,7 @@
 #' and slope parameters for attribute \eqn{k}, respectively. In the Rasch model, \eqn{\lambda_{1k}=1 \forall k};
 #' whereas in the 1PL model, a common slope parameter \eqn{\lambda_{1}} is estimated.
 #' The probability of joint attributes can be written as
-#'  \deqn{P(\strong{\alpha}|\theta_i,\strong{\lambda})=\prod_k P(\alpha_k|\theta_i,\strong{\lambda})}.
+#'  \deqn{P(\mathbf{\alpha}|\theta_i,\mathbf{\lambda})=\prod_k P(\alpha_k|\theta_i,\mathbf{\lambda})}.
 #'
 #'
 #'@section Model Estimation:
@@ -129,8 +129,8 @@
 #' adopted in M-step (Ma, Iaconangelo & de la Torre, 2016). The selection of optimization techniques mainly depends on whether
 #' some specific constraints need to be added.
 #'
-#' The sequential G-DINA model is a special case of the diagnostic tree model (DTM; Ma, in press) and estimated using
-#' the mapping matrix accordingly (See Tutz, 1997; Ma, in press).
+#' The sequential G-DINA model is a special case of the diagnostic tree model (DTM; Ma, 2019) and estimated using
+#' the mapping matrix accordingly (See Tutz, 1997; Ma, 2019).
 #'
 #'
 #' @section The Number of Parameters:
@@ -575,6 +575,22 @@
 #'
 #'####################################
 #'#           Example 6.             #
+#'# Specify initial values for item  #
+#'# parameters                       #
+#'####################################
+#'
+#'  # check initials to see the format for initial item parameters
+#'  initials <- sim10GDINA$simItempar
+#'
+#'  dat <- sim10GDINA$simdat
+#'  Q <- sim10GDINA$simQ
+#'  mod.initial <- GDINA(dat,Q,catprob.parm = initials)
+#'
+#'  # compare initial item parameters
+#'  Map(rbind, initials,extract(mod.initial,"initial.catprob"))
+#'
+#'####################################
+#'#           Example 7a.            #
 #'# Fix item and structure parameters#
 #'# Estimate person attribute profile#
 #'####################################
@@ -591,7 +607,7 @@
 #'  Map(rbind, initials,coef(mod.ini))
 #'
 #'####################################
-#'#           Example 7.             #
+#'#           Example 7b.            #
 #'#   Fix parameters for some items  #
 #'# Estimate person attribute profile#
 #'####################################

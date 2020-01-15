@@ -22,13 +22,15 @@ knitr::opts_chunk$set(
 
 ## How to cite the package
 
-Ma, W. & de la Torre, J. (2019). GDINA: The generalized DINA model framework. R package version 2.7.4. Retrived from https://CRAN.R-project.org/package=GDINA
+Ma, W. & de la Torre, J. (2020). GDINA: The generalized DINA model framework. R package version 2.7.8. Retrived from https://CRAN.R-project.org/package=GDINA
 
 Visit the package website https://wenchao-ma.github.io/GDINA for examples, tutorials and more information.
 
 ## Learning resources
 
 * Watch [Ma and de la Torre's (2019) NCME digital module 5](https://ncme.elevate.commpartners.com/) on a gentle introduction to the G-DINA model framework and the use of graphical user interface for CDM analyses
+
+* Check [the book chapter by Ma (2019)](https://doi.org/10.1007/978-3-030-05584-4_29) on an introduction to the GDINA package
 
 * Check [de la Torre and Akbay's (2019) article](https://doi.org/10.14689/ejer.2019.80.9) on how to conduct various CDM analyses using the graphical user interface
 
@@ -40,6 +42,7 @@ Visit the package website https://wenchao-ma.github.io/GDINA for examples, tutor
 *  Estimating sequential G-DINA model for ordinal and nominal responses
 *  Estimating the generalized multiple-strategy cognitive diagnosis models (experimental)
 *  Estimating the diagnostic tree model (experimental)
+*  Estimating multiple-choice models
 *  Modelling independent, saturated, higher-order, loglinear smoothed, and structured joint attribute distribution
 *  Accommodating multiple-group model analysis
 *  Imposing monotonic constrained success probabilities
