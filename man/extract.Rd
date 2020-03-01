@@ -27,7 +27,7 @@ Objects which can be extracted from \code{GDINA} objects include:
   \item{att.prior}{attribute prior weights for calculating marginalized likelihood in the last EM iteration}
   \item{attributepattern}{all attribute patterns involved in the current calibration}
 \item{BIC}{BIC}
-\item{CAIC}{CAIC}
+\item{CAIC}{Consistent AIC}
 \item{catprob.cov}{covariance matrix of item probability parameter estimates; Need to specify \code{SE.type}}
 \item{catprob.parm}{item parameter estimates}
 \item{catprob.se}{standard error of item probability parameter estimates; Need to specify \code{SE.type}}
@@ -57,7 +57,7 @@ Objects which can be extracted from \code{GDINA} objects include:
   \item{prevalence}{prevalence of each attribute}
   \item{posterior.prob}{posterior weights for each latent class}
   \item{reduced.LG}{Reduced latent group for each item}
-  \item{SABIC}{SABIC}
+  \item{SABIC}{Sample size Adusted BIC}
 \item{sequential}{is a sequential model fitted?}
 }
 }

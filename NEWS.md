@@ -1,3 +1,7 @@
+# GDINA 2.7.9
+* Changed   - data set format so the package can be used for R versions prior to 3.5
+
+
 # GDINA 2.7.8
 * Added   - mesa plot for validating Q-matrix based on sequential G-DINA model
 * Fixed   - A bug in `GMSCDM` function (Thanks to Ouyang Xueyuan)

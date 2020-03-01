@@ -22,6 +22,7 @@ For an example of how to use the package, see [here](https://wenchao-ma.github.i
 
 * To estimate various CDMs, use **GDINA()** function
 * To extract item and person parameters from GDINA estimates, use **coef()** and **personparm()** functions, respectively
+* To extract other estimation components, use **extract()** function
 * To evaluate absolute model fit, use **modelfit()** or **itemfit()** functions
 * To evaluate relative model fit, use **AIC()**, **BIC()** or **deviance()** functions
 * To validate Q-matrix, use **Qval()** function

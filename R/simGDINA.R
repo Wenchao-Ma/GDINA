@@ -584,6 +584,8 @@ if (!is.null(gs.parm)) {
 
   }else if(length(delta.args$design.matrix)!=J){
     stop("length of design matrix is not correctly specified.",call. = FALSE)
+  }else{
+    design.matrix <- delta.args$design.matrix
   }
 
     for (j in 1:J){
