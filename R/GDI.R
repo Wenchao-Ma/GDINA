@@ -225,6 +225,7 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
         index <- data.frame(Cat=rep(1:length(rowSums(Qr) ),2^rowSums(Qr)) )
         index$Column <- seq_len(length(index$Cat))
         sco <- scofun
+
         sco[[j]] <- score_pj(Xj = dat[,j],                   # a vector of item responses to item j
                              parloc.j=etas[j,,drop=FALSE],         # parameter locations for item j - H by 2^K matrix
                              catprob.j=itemparj[j],        # a list with H elements giving the reduced catprob.parm for each nonzero category

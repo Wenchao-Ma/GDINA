@@ -1,5 +1,5 @@
 pandoc: 2.7.2
-pkgdown: 1.4.1
+pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   GDINA: GDINA.html
@@ -8,4 +8,5 @@ articles:
   HOGDINA_example: OnlineExercises/HOGDINA_example.html
   LCDM_example: OnlineExercises/LCDM_example.html
   sGDINA_analysis_example: OnlineExercises/sGDINA_analysis_example.html
+last_built: 2020-05-14T00:57Z
 

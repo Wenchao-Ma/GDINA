@@ -15,7 +15,7 @@ Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travi
 ## How to cite the package
 
 Ma, W. & de la Torre, J. (2020). GDINA: The generalized DINA model
-framework. R package version 2.7.8. Retrived from
+framework. R package version 2.7.9. Retrived from
 <https://CRAN.R-project.org/package=GDINA>
 
 Visit the package website <https://wenchao-ma.github.io/GDINA> for
@@ -66,8 +66,6 @@ examples, tutorials and more information.
   - Providing graphical user interface for users less familiar with R
 
 ## Installation
-
-This package depends on R version 3.5.0 or newer
 
 The stable version of GDINA should be installed from R CRAN at
 [here](https://CRAN.R-project.org/package=GDINA)

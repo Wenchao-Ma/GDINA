@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ## How to cite the package
 
-Ma, W. & de la Torre, J. (2020). GDINA: The generalized DINA model framework. R package version 2.7.8. Retrived from https://CRAN.R-project.org/package=GDINA
+Ma, W. & de la Torre, J. (2020). GDINA: The generalized DINA model framework. R package version 2.7.9. Retrived from https://CRAN.R-project.org/package=GDINA
 
 Visit the package website https://wenchao-ma.github.io/GDINA for examples, tutorials and more information.
 
@@ -57,7 +57,6 @@ Visit the package website https://wenchao-ma.github.io/GDINA for examples, tutor
 
 ## Installation
 
-This package depends on R version 3.5.0 or newer
 
 The stable version of GDINA should be installed from R CRAN at [here](https://CRAN.R-project.org/package=GDINA)
 

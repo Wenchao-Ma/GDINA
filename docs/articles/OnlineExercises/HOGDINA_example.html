@@ -6,19 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Higher-order GDINA Estimation • GDINA</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
+<script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
 <script src="../../pkgdown.js"></script><meta property="og:title" content="Higher-order GDINA Estimation">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="GDINA">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -79,7 +79,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Wenchao-Ma/GDINA">
+  <a href="https://github.com/Wenchao-Ma/GDINA/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -97,10 +97,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Higher-order GDINA Estimation</h1>
+      <h1 data-toc-skip>Higher-order GDINA Estimation</h1>
                         <h4 class="author">Wenchao</h4>
             
-            <h4 class="date">2020-03-01</h4>
+            <h4 class="date">2020-05-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/HOGDINA_example.Rmd"><code>vignettes/OnlineExercises/HOGDINA_example.Rmd</code></a></small>
       <div class="hidden name"><code>HOGDINA_example.Rmd</code></div>
@@ -118,15 +118,15 @@
 <h3 class="hasAnchor">
 <a href="#model-estimation" class="anchor"></a>Model Estimation</h3>
 <p>The following code estimates the higher-order G-DINA model.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(GDINA)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">GDINA</span>)</pre></body></html></div>
 <pre><code>## GDINA Package [Version 2.7.9; 2020-03-01]
 ## More information: https://wenchao-ma.github.io/GDINA</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># A simulated data in GDINA package</span></a>
-<a class="sourceLine" id="cb3-2" title="2">dat &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simdat</a>
-<a class="sourceLine" id="cb3-3" title="3">Q &lt;-<span class="st"> </span>sim10GDINA<span class="op">$</span>simQ</a>
-<a class="sourceLine" id="cb3-4" title="4"></a>
-<a class="sourceLine" id="cb3-5" title="5"><span class="co"># Estimating GDINA model</span></a>
-<a class="sourceLine" id="cb3-6" title="6">est &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/GDINA.html">GDINA</a></span>(<span class="dt">dat =</span> dat, <span class="dt">Q =</span> Q, <span class="dt">model =</span> <span class="st">"GDINA"</span>, <span class="dt">att.dist =</span> <span class="st">"higher.order"</span>, <span class="dt">higher.order =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">model =</span> <span class="st">"2PL"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># A simulated data in GDINA package</span>
+<span class="no">dat</span> <span class="kw">&lt;-</span> <span class="no">sim10GDINA</span>$<span class="no">simdat</span>
+<span class="no">Q</span> <span class="kw">&lt;-</span> <span class="no">sim10GDINA</span>$<span class="no">simQ</span>
+
+<span class="co"># Estimating GDINA model</span>
+<span class="no">est</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/GDINA.html">GDINA</a></span>(<span class="kw">dat</span> <span class="kw">=</span> <span class="no">dat</span>, <span class="kw">Q</span> <span class="kw">=</span> <span class="no">Q</span>, <span class="kw">model</span> <span class="kw">=</span> <span class="st">"GDINA"</span>, <span class="kw">att.dist</span> <span class="kw">=</span> <span class="st">"higher.order"</span>, <span class="kw">higher.order</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">model</span> <span class="kw">=</span> <span class="st">"2PL"</span>))</pre></body></html></div>
 <pre><code>## 
 Iter = 1  Max. abs. change = 0.29086  Deviance  = 12723.23                                                                                  
 Iter = 2  Max. abs. change = 0.05035  Deviance  = 11962.12                                                                                  
@@ -187,13 +187,13 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 <h3 class="hasAnchor">
 <a href="#summary-information" class="anchor"></a>Summary Information</h3>
 <p>The following code extracts the summary information from higher-order GDINA estimates.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="co">#</span></a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="co">#      Summary Information</span></a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="co"># </span></a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb5-6" title="6"><span class="co"># print estimation information</span></a>
-<a class="sourceLine" id="cb5-7" title="7">est</a></code></pre></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co">#####################################</span>
+<span class="co">#</span>
+<span class="co">#      Summary Information</span>
+<span class="co"># </span>
+<span class="co">#####################################</span>
+<span class="co"># print estimation information</span>
+<span class="no">est</span></pre></body></html></div>
 <pre><code>## Call:
 ## GDINA(dat = dat, Q = Q, model = "GDINA", att.dist = "higher.order", 
 ##     higher.order = list(model = "2PL"))
@@ -222,9 +222,9 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ##   Change in -2 log-likelihood          = 0.0018 
 ##   Converged?                           = TRUE 
 ## 
-## Time used             = 0.123 secs</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># summary information</span></a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(est)</a></code></pre></div>
+## Time used             = 0.1735 secs</code></pre>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># summary information</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">est</span>)</pre></body></html></div>
 <pre><code>## 
 ## Test Fit Statistics
 ## 
@@ -246,24 +246,24 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## A1 0.5028 0.4972
 ## A2 0.5008 0.4992
 ## A3 0.4764 0.5236</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span>(est) <span class="co">#AIC</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span>(<span class="no">est</span>) <span class="co">#AIC</span></pre></body></html></div>
 <pre><code>## [1] 11928.6</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/AIC.html">BIC</a></span>(est) <span class="co">#BIC</span></a></code></pre></div>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">BIC</a></span>(<span class="no">est</span>) <span class="co">#BIC</span></pre></body></html></div>
 <pre><code>## [1] 12144.54</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/logLik.html">logLik</a></span>(est) <span class="co">#log-likelihood value</span></a></code></pre></div>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html">logLik</a></span>(<span class="no">est</span>) <span class="co">#log-likelihood value</span></pre></body></html></div>
 <pre><code>## 'log Lik.' -5920.301 (df=44)</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span>(est) <span class="co"># deviance: -2 log-likelihood</span></a></code></pre></div>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span>(<span class="no">est</span>) <span class="co"># deviance: -2 log-likelihood</span></pre></body></html></div>
 <pre><code>## [1] 11840.6</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw"><a href="../../reference/npar.html">npar</a></span>(est) <span class="co"># number of parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="../../reference/npar.html">npar</a></span>(<span class="no">est</span>) <span class="co"># number of parameters</span></pre></body></html></div>
 <pre><code>## No. of total parameters = 44 
 ## No. of population parameters = 6 
 ## No. of free item parameters = 38 
 ## No. of fixed item parameters = 0</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/nobs.html">nobs</a></span>(est) <span class="co"># number of observations</span></a></code></pre></div>
+<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/nobs.html">nobs</a></span>(<span class="no">est</span>) <span class="co"># number of observations</span></pre></body></html></div>
 <pre><code>## [1] 1000</code></pre>
 <p>You can use <em>extract</em> with argument <em>discrim</em> to extract discrimination indices. The first column gives <span class="math inline">\(P(1)-P(0)\)</span> and the second column gives the GDINA discrimination index.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="co"># discrimination indices</span></a>
-<a class="sourceLine" id="cb21-2" title="2"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est, <span class="st">"discrim"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="co"># discrimination indices</span>
+<span class="fu"><a href="../../reference/extract.html">extract</a></span>(<span class="no">est</span>, <span class="st">"discrim"</span>)</pre></body></html></div>
 <pre><code>##         P(1)-P(0)        GDI
 ## Item 1  0.6975500 0.12164019
 ## Item 2  0.6467191 0.10456115
@@ -279,13 +279,13 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 <div id="model-parameters" class="section level3">
 <h3 class="hasAnchor">
 <a href="#model-parameters" class="anchor"></a>Model Parameters</h3>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb23-2" title="2"><span class="co">#</span></a>
-<a class="sourceLine" id="cb23-3" title="3"><span class="co">#      structural parameters</span></a>
-<a class="sourceLine" id="cb23-4" title="4"><span class="co"># </span></a>
-<a class="sourceLine" id="cb23-5" title="5"><span class="co">#####################################</span></a></code></pre></div>
+<div class="sourceCode" id="cb23"><html><body><pre class="r">#####################################
+#
+#      structural parameters
+# 
+#####################################</pre></body></html></div>
 <p>The following code gives the item probalities of each reduced latent classes. As shown below, the probability of answering item 1 correctly for individuals who do not master the required attribute is 0.2032, and the probability of answering item 1 correctly for individuals who master the required attribute is 0.9007:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est) <span class="co"># item probabilities of success for each reduced latent class</span></a></code></pre></div>
+<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(<span class="no">est</span>) <span class="co"># item probabilities of success for each reduced latent class</span></pre></body></html></div>
 <pre><code>## $`Item 1`
 ##   P(0)   P(1) 
 ## 0.2032 0.9007 
@@ -326,7 +326,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## P(000) P(100) P(010) P(001) P(110) P(101) P(011) P(111) 
 ## 0.1723 0.1490 0.2866 0.3828 0.4980 0.4984 0.6717 0.8909</code></pre>
 <p>The following code gives the item probalities of each reduced latent classes with standard errors.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># item probabilities of success &amp; standard errors</span></a></code></pre></div>
+<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(<span class="no">est</span>, <span class="kw">withSE</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="co"># item probabilities of success &amp; standard errors</span></pre></body></html></div>
 <pre><code>## $`Item 1`
 ##        P(0)   P(1)
 ## Est. 0.2032 0.9007
@@ -377,7 +377,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## Est. 0.1723 0.1490 0.2866 0.3828 0.4980 0.4984 0.6717 0.8909
 ## S.E. 0.0456 0.0555 0.0556 0.0540 0.0597 0.0534 0.0488 0.0386</code></pre>
 <p>The following code gives delta parameters.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>) <span class="co"># delta parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(<span class="no">est</span>, <span class="kw">what</span> <span class="kw">=</span> <span class="st">"delta"</span>) <span class="co"># delta parameters</span></pre></body></html></div>
 <pre><code>## $`Item 1`
 ##     d0     d1 
 ## 0.2032 0.6976 
@@ -418,7 +418,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ##      d0      d1      d2      d3     d12     d13     d23    d123 
 ##  0.1723 -0.0232  0.1143  0.2106  0.2346  0.1388  0.1746 -0.1310</code></pre>
 <p>The following code gives delta parameters with standard errors.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"delta"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># delta parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(<span class="no">est</span>, <span class="kw">what</span> <span class="kw">=</span> <span class="st">"delta"</span>, <span class="kw">withSE</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="co"># delta parameters</span></pre></body></html></div>
 <pre><code>## $`Item 1`
 ##          d0     d1
 ## Est. 0.2032 0.6976
@@ -469,7 +469,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## Est. 0.1723 -0.0232 0.1143 0.2106 0.2346 0.1388 0.1746 -0.1310
 ## S.E. 0.0456  0.0759 0.0759 0.0760 0.1232 0.1173 0.1113  0.1693</code></pre>
 <p>The following code gives <span class="math inline">\(P(0)\)</span> and 1-<span class="math inline">\(P(0)\)</span>, which is guessing and slipping parameters.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>) <span class="co"># guessing and slip parameters</span></a></code></pre></div>
+<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(<span class="no">est</span>, <span class="kw">what</span> <span class="kw">=</span> <span class="st">"gs"</span>) <span class="co"># guessing and slip parameters</span></pre></body></html></div>
 <pre><code>##         guessing   slip
 ## Item 1    0.2032 0.0993
 ## Item 2    0.1382 0.2151
@@ -482,7 +482,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## Item 9    0.1000 0.1951
 ## Item 10   0.1723 0.1091</code></pre>
 <p>The following code gives guessing and slipping parameters with standard errors.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est, <span class="dt">what =</span> <span class="st">"gs"</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># guessing and slip parameters &amp; standard errors</span></a></code></pre></div>
+<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(<span class="no">est</span>, <span class="kw">what</span> <span class="kw">=</span> <span class="st">"gs"</span>, <span class="kw">withSE</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="co"># guessing and slip parameters &amp; standard errors</span></pre></body></html></div>
 <pre><code>##         guessing   slip SE[guessing] SE[slip]
 ## Item 1    0.2032 0.0993       0.0258   0.0224
 ## Item 2    0.1382 0.2151       0.0224   0.0247
@@ -494,16 +494,16 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## Item 8    0.1106 0.1047       0.0262   0.0348
 ## Item 9    0.1000 0.1951       0.0293   0.0286
 ## Item 10   0.1723 0.1091       0.0456   0.0386</code></pre>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"><span class="co"># Estimated proportions of latent classes</span></a></code></pre></div>
+<div class="sourceCode" id="cb36"><html><body><pre class="r"># Estimated proportions of latent classes</pre></body></html></div>
 <p>The following code gives the slope and intercept parameters for attributes. As you can see, the estimated slope and intercept for the first attribute are 0.1 and -0.0113, respectively:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est,<span class="st">"lambda"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(<span class="no">est</span>,<span class="st">"lambda"</span>)</pre></body></html></div>
 <pre><code>##     slope intercept
 ## A1 0.1000   -0.0113
 ## A2 0.1000   -0.0034
 ## A3 0.2885    0.0962</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="co"># success probabilities for each latent class</span></a></code></pre></div>
+<div class="sourceCode" id="cb39"><html><body><pre class="r"># success probabilities for each latent class</pre></body></html></div>
 <p>The following code gives item success probabilities for all latent classes,</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(est,<span class="st">"LCprob"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(<span class="no">est</span>,<span class="st">"LCprob"</span>)</pre></body></html></div>
 <pre><code>##            000    100    010    001    110    101    011    111
 ## Item 1  0.2032 0.9007 0.2032 0.2032 0.9007 0.9007 0.2032 0.9007
 ## Item 2  0.1382 0.1382 0.7849 0.1382 0.7849 0.1382 0.7849 0.7849
@@ -515,13 +515,13 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## Item 8  0.1106 0.2682 0.2732 0.1106 0.8953 0.2682 0.2732 0.8953
 ## Item 9  0.1000 0.1000 0.3771 0.4168 0.3771 0.4168 0.8049 0.8049
 ## Item 10 0.1723 0.1490 0.2866 0.3828 0.4980 0.4984 0.6717 0.8909</code></pre>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb42-2" title="2"><span class="co">#</span></a>
-<a class="sourceLine" id="cb42-3" title="3"><span class="co">#      person parameters</span></a>
-<a class="sourceLine" id="cb42-4" title="4"><span class="co"># </span></a>
-<a class="sourceLine" id="cb42-5" title="5"><span class="co">#####################################</span></a></code></pre></div>
+<div class="sourceCode" id="cb42"><html><body><pre class="r">#####################################
+#
+#      person parameters
+# 
+#####################################</pre></body></html></div>
 <p>The following code returns EAP estimates of attribute patterns (for the first six individuals). As you can see, the EAP estimate of attribute profile for the first individual is (1, 0, 1):</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est)) <span class="co"># EAP estimates of attribute profiles</span></a></code></pre></div>
+<div class="sourceCode" id="cb43"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../../reference/personparm.html">personparm</a></span>(<span class="no">est</span>)) <span class="co"># EAP estimates of attribute profiles</span></pre></body></html></div>
 <pre><code>##      A1 A2 A3
 ## [1,]  1  0  1
 ## [2,]  1  1  1
@@ -530,7 +530,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [5,]  0  0  1
 ## [6,]  1  0  0</code></pre>
 <p>By specifying <em>what</em> argument, the following code gives MAP estimates of attribute patterns (for the first six individuals).</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MAP"</span>)) <span class="co"># MAP estimates of attribute profiles</span></a></code></pre></div>
+<div class="sourceCode" id="cb45"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../../reference/personparm.html">personparm</a></span>(<span class="no">est</span>, <span class="kw">what</span> <span class="kw">=</span> <span class="st">"MAP"</span>)) <span class="co"># MAP estimates of attribute profiles</span></pre></body></html></div>
 <pre><code>##   A1 A2 A3 multimodes
 ## 1  1  0  1      FALSE
 ## 2  1  1  1      FALSE
@@ -539,7 +539,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## 5  0  0  1      FALSE
 ## 6  0  0  0      FALSE</code></pre>
 <p>The following code extracts MLE estimates of attribute patterns (for the first six individuals).</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/personparm.html">personparm</a></span>(est, <span class="dt">what =</span> <span class="st">"MLE"</span>)) <span class="co"># MLE estimates of attribute profiles</span></a></code></pre></div>
+<div class="sourceCode" id="cb47"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../../reference/personparm.html">personparm</a></span>(<span class="no">est</span>, <span class="kw">what</span> <span class="kw">=</span> <span class="st">"MLE"</span>)) <span class="co"># MLE estimates of attribute profiles</span></pre></body></html></div>
 <pre><code>##   A1 A2 A3 multimodes
 ## 1  1  0  1      FALSE
 ## 2  1  1  1      FALSE
@@ -551,34 +551,34 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 <div id="some-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#some-plots" class="anchor"></a>Some Plots</h3>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb49-2" title="2"><span class="co">#</span></a>
-<a class="sourceLine" id="cb49-3" title="3"><span class="co">#           Plots</span></a>
-<a class="sourceLine" id="cb49-4" title="4"><span class="co"># </span></a>
-<a class="sourceLine" id="cb49-5" title="5"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb49-6" title="6"></a>
-<a class="sourceLine" id="cb49-7" title="7"><span class="co">#plot item response functions for item 10</span></a></code></pre></div>
+<div class="sourceCode" id="cb49"><html><body><pre class="r">#####################################
+#
+#           Plots
+# 
+#####################################
+
+#plot item response functions for item 10</pre></body></html></div>
 <p>The following code gives item response functions of item 10.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb50"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">est</span>, <span class="kw">item</span> <span class="kw">=</span> <span class="fl">10</span>)</pre></body></html></div>
 <p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
 <p>The following code gives item response functions of item 10 with error bars.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(est, <span class="dt">item =</span> <span class="dv">10</span>, <span class="dt">withSE =</span> <span class="ot">TRUE</span>) <span class="co"># with error bars</span></a></code></pre></div>
+<div class="sourceCode" id="cb51"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">est</span>, <span class="kw">item</span> <span class="kw">=</span> <span class="fl">10</span>, <span class="kw">withSE</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="co"># with error bars</span></pre></body></html></div>
 <p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
 <p>The following code plots mastery probabilities of three attributes for individuals 1,20 and 50.</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1"><span class="co">#plot mastery probability for individuals 1, 20 and 50</span></a>
-<a class="sourceLine" id="cb52-2" title="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(est, <span class="dt">what =</span> <span class="st">"mp"</span>, <span class="dt">person =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="dv">50</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb52"><html><body><pre class="r"><span class="co">#plot mastery probability for individuals 1, 20 and 50</span>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">est</span>, <span class="kw">what</span> <span class="kw">=</span> <span class="st">"mp"</span>, <span class="kw">person</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">20</span>, <span class="fl">50</span>))</pre></body></html></div>
 <p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
 </div>
 <div id="advanced-topics" class="section level3">
 <h3 class="hasAnchor">
 <a href="#advanced-topics" class="anchor"></a>Advanced Topics</h3>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb53-2" title="2"><span class="co">#</span></a>
-<a class="sourceLine" id="cb53-3" title="3"><span class="co">#      Advanced elements</span></a>
-<a class="sourceLine" id="cb53-4" title="4"><span class="co"># </span></a>
-<a class="sourceLine" id="cb53-5" title="5"><span class="co">#####################################</span></a>
-<a class="sourceLine" id="cb53-6" title="6"></a>
-<a class="sourceLine" id="cb53-7" title="7"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/indlogLik.html">indlogLik</a></span>(est)) <span class="co"># individual log-likelihood</span></a></code></pre></div>
+<div class="sourceCode" id="cb53"><html><body><pre class="r"><span class="co">#####################################</span>
+<span class="co">#</span>
+<span class="co">#      Advanced elements</span>
+<span class="co"># </span>
+<span class="co">#####################################</span>
+
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../../reference/indlogLik.html">indlogLik</a></span>(<span class="no">est</span>)) <span class="co"># individual log-likelihood</span></pre></body></html></div>
 <pre><code>##             000        100        010        001        110        101
 ## [1,] -15.142205  -8.197156 -13.830209  -9.016180  -7.481586  -3.474603
 ## [2,] -19.086617 -12.141568 -15.065901 -13.165454  -8.717277  -7.623877
@@ -593,7 +593,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [4,]  -7.822446  -4.940081
 ## [5,] -10.933913 -14.661850
 ## [6,] -14.300841 -13.826349</code></pre>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="../../reference/indlogPost.html">indlogPost</a></span>(est)) <span class="co"># individual log-posterior</span></a></code></pre></div>
+<div class="sourceCode" id="cb55"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../../reference/indlogPost.html">indlogPost</a></span>(<span class="no">est</span>)) <span class="co"># individual log-posterior</span></pre></body></html></div>
 <pre><code>##              000       100        010          001        110        101
 ## [1,] -11.8567587 -4.942601 -10.567742  -5.66444281  -4.240262 -0.1256319
 ## [2,] -16.2280739 -9.313916 -12.230337 -10.24062018  -5.902857 -4.7018093
@@ -608,7 +608,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [4,] -3.2008010  -0.31145426
 ## [5,] -7.3764088 -11.09736355
 ## [6,] -8.7031070  -8.22163257</code></pre>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est,<span class="st">"designmatrix"</span>) <span class="co">#design matrix</span></a></code></pre></div>
+<div class="sourceCode" id="cb57"><html><body><pre class="r"><span class="fu"><a href="../../reference/extract.html">extract</a></span>(<span class="no">est</span>,<span class="st">"designmatrix"</span>) <span class="co">#design matrix</span></pre></body></html></div>
 <pre><code>## [[1]]
 ##      [,1] [,2]
 ## [1,]    1    0
@@ -676,13 +676,13 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [6,]    1    1    0    1    0    1    0    0
 ## [7,]    1    0    1    1    0    0    1    0
 ## [8,]    1    1    1    1    1    1    1    1</code></pre>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1"><span class="kw"><a href="../../reference/extract.html">extract</a></span>(est,<span class="st">"linkfunc"</span>) <span class="co">#link functions</span></a></code></pre></div>
+<div class="sourceCode" id="cb59"><html><body><pre class="r"><span class="fu"><a href="../../reference/extract.html">extract</a></span>(<span class="no">est</span>,<span class="st">"linkfunc"</span>) <span class="co">#link functions</span></pre></body></html></div>
 <pre><code>##  [1] "identity" "identity" "identity" "identity" "identity" "identity"
 ##  [7] "identity" "identity" "identity" "identity"</code></pre>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a></code></pre></div>
-<pre><code>## R version 3.6.3 (2020-02-29)
+<div class="sourceCode" id="cb61"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
+<pre><code>## R version 4.0.0 (2020-04-24)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 18363)
+## Running under: Windows 10 x64 (build 17763)
 ## 
 ## Matrix products: default
 ## 
@@ -700,29 +700,28 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [1] GDINA_2.7.9
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] tidyselect_1.0.0     xfun_0.12            purrr_0.3.3         
-##  [4] colorspace_1.4-1     htmltools_0.4.0      yaml_2.2.1          
-##  [7] rlang_0.4.4          pkgdown_1.4.1        later_1.0.0         
-## [10] pillar_1.4.3         nloptr_1.2.1         glue_1.3.1          
-## [13] lifecycle_0.1.0      stringr_1.4.0        munsell_0.5.0       
-## [16] gtable_0.3.0         memoise_1.1.0        evaluate_0.14       
-## [19] labeling_0.3         knitr_1.28           fastmap_1.0.1       
-## [22] httpuv_1.5.2         parallel_3.6.3       Rcpp_1.0.3          
-## [25] xtable_1.8-4         promises_1.1.0       backports_1.1.5     
-## [28] scales_1.1.0         desc_1.2.0           truncnorm_1.0-8     
-## [31] alabama_2015.3-1     farver_2.0.3         mime_0.9            
-## [34] fs_1.3.1             ggplot2_3.2.1        digest_0.6.24       
-## [37] stringi_1.4.6        dplyr_0.8.4          shiny_1.4.0         
-## [40] numDeriv_2016.8-1.1  grid_3.6.3           rprojroot_1.3-2     
-## [43] tools_3.6.3          magrittr_1.5         lazyeval_0.2.2      
-## [46] Rsolnp_1.16          tibble_2.1.3         crayon_1.3.4        
-## [49] pkgconfig_2.0.3      MASS_7.3-51.5        shinydashboard_0.7.1
-## [52] assertthat_0.2.1     rmarkdown_2.1        rstudioapi_0.11     
-## [55] R6_2.4.1             compiler_3.6.3</code></pre>
+##  [1] Rcpp_1.0.4.6         nloptr_1.2.2.1       pillar_1.4.3        
+##  [4] compiler_4.0.0       later_1.0.0          tools_4.0.0         
+##  [7] digest_0.6.25        tibble_3.0.1         lifecycle_0.2.0     
+## [10] evaluate_0.14        memoise_1.1.0        gtable_0.3.0        
+## [13] pkgconfig_2.0.3      rlang_0.4.5          shiny_1.4.0.2       
+## [16] rstudioapi_0.11      yaml_2.2.1           parallel_4.0.0      
+## [19] pkgdown_1.5.1        xfun_0.13            fastmap_1.0.1       
+## [22] stringr_1.4.0        knitr_1.28           vctrs_0.2.4         
+## [25] desc_1.2.0           fs_1.4.1             rprojroot_1.3-2     
+## [28] shinydashboard_0.7.1 grid_4.0.0           glue_1.4.0          
+## [31] R6_2.4.1             rmarkdown_2.1        Rsolnp_1.16         
+## [34] alabama_2015.3-1     farver_2.0.3         ggplot2_3.3.0       
+## [37] magrittr_1.5         ellipsis_0.3.0       scales_1.1.0        
+## [40] backports_1.1.6      promises_1.1.0       htmltools_0.4.0     
+## [43] MASS_7.3-51.5        assertthat_0.2.1     colorspace_1.4-1    
+## [46] mime_0.9             xtable_1.8-4         httpuv_1.5.2        
+## [49] numDeriv_2016.8-1.1  labeling_0.3         stringi_1.4.6       
+## [52] munsell_0.5.0        truncnorm_1.0-8      crayon_1.3.4</code></pre>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
       </div>
 
@@ -735,7 +734,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
