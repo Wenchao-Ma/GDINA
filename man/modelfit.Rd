@@ -17,7 +17,7 @@ modelfit(GDINA.obj, CI = 0.9, ItemOnly = FALSE)
 Calculate various absolute model-data fit statistics
 }
 \details{
-Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016) and for sequential G-DINA model with graded responses (Ma, 2019).
+Various model-data fit statistics including M2 statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016) and for sequential G-DINA model with graded responses (Ma, 2020).
 It also calculates SRMSR and RMSEA2.
 }
 \examples{
@@ -33,7 +33,9 @@ Hansen, M., Cai, L.,  Monroe, S., & Li, Z. (2016). Limited-information goodness-
 
 Liu, Y., Tian, W., & Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. \emph{Journal of Educational and Behavioral Statistics, 41}, 3-26.
 
-Ma, W. (2019). Evaluating model data fit using limited information statistics for the sequential G-DINA model.\emph{Applied Psychological Measurement.}
+Ma, W. (2020). Evaluating the fit of sequential G-DINA model using limited-information measures. \emph{Applied Psychological Measurement, 44}, 167-181.
+
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
 
 Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. \emph{Measurement, 11}, 71-101.
 }

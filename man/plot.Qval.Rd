@@ -4,9 +4,17 @@
 \alias{plot.Qval}
 \title{Mesa plot for Q-matrix validation}
 \usage{
-\method{plot}{Qval}(x, item, type = "best", no.qvector = 10,
-  data.label = TRUE, eps = "auto", original.q.label = FALSE,
-  auto.ylim = TRUE, ...)
+\method{plot}{Qval}(
+  x,
+  item,
+  type = "best",
+  no.qvector = 10,
+  data.label = TRUE,
+  eps = "auto",
+  original.q.label = FALSE,
+  auto.ylim = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{model object of class \code{Qvalidation}}

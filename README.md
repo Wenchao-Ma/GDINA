@@ -14,8 +14,12 @@ Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travi
 
 ## How to cite the package
 
+Ma, W. & de la Torre, J. (2020). GDINA: An R Package for Cognitive
+Diagnosis Modeling. Journal of Statistical Software, 93(14), 1-26.
+<https://doi.org/10.18637/jss.v093.i14>
+
 Ma, W. & de la Torre, J. (2020). GDINA: The generalized DINA model
-framework. R package version 2.7.9. Retrived from
+framework. R package version 2.8.0. Retrived from
 <https://CRAN.R-project.org/package=GDINA>
 
 Visit the package website <https://wenchao-ma.github.io/GDINA> for

@@ -4,15 +4,23 @@
 \name{sim21seqDINA}
 \alias{sim21seqDINA}
 \title{Simulated data (21 items, sequential DINA model)}
-\format{A list with components:
+\format{
+A list with components:
 \describe{
 \item{\code{simdat}}{simulated responses of 2000 examinees}
 \item{\code{simQ}}{artificial Qc-matrix}
-}}
+}
+}
 \usage{
 sim21seqDINA
 }
 \description{
 Simulated data, and Qc-matrix for a 21-item test measuring 5 attributes.
+}
+\references{
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+}
+\author{
+{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
 }
 \keyword{datasets}

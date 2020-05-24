@@ -4,11 +4,13 @@
 \name{frac20}
 \alias{frac20}
 \title{Tatsuoka's fraction subtraction data}
-\format{A list of responses and Q-matrix with components:
+\format{
+A list of responses and Q-matrix with components:
 \describe{
 \item{\code{dat}}{responses of 536 examinees to 20 items}
 \item{\code{Q}}{The \eqn{20 \times 8} Q-matrix}
-}}
+}
+}
 \usage{
 frac20
 }
@@ -27,6 +29,11 @@ anova(mod1,mod2)
 }
 }
 \references{
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+
 Tatsuoka, C. (2002). Data analytic methods for latent partially ordered classification models. \emph{Journal of the Royal Statistical Society, Series C, Applied Statistics, 51}, 337-350.
+}
+\author{
+{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
 }
 \keyword{datasets}

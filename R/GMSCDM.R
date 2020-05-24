@@ -31,6 +31,8 @@
 #'
 #'@references
 #'
+#' Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+#'
 #' Ma, W., & Guo, W. (2019). Cognitive Diagnosis Models for Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
 #'
 #' @examples

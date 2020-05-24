@@ -1,6 +1,6 @@
 #' Q-matrix validation
 #'
-#' Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016; Najera, Sorrel, & Abad, 2019), stepwise Wald test (Ma & de la Torre, 2019) or mesa plot (de la Torre & Ma, 2016).
+#' Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016; Najera, Sorrel, & Abad, 2019), stepwise Wald test (Ma & de la Torre, 2020) or mesa plot (de la Torre & Ma, 2016).
 #' All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method or predicted cutoffs.
 #' You should always check the mesa plots for further examination.
 #'
@@ -35,7 +35,7 @@
 #'
 #' de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A general framework approach and its implementation in R. A Short Course at the Fourth Conference on Statistical Methods in Psychometrics, Columbia University, New York.
 #'
-#' Ma, W. & de la Torre, J. (2019). An Empirical Q-Matrix Validation Method for the Sequential G-DINA Model. \emph{British Journal of Mathematical and Statistical Psychology}
+#' Ma, W., & de la Torre, J. (2020). An empirical Q-matrix validation method for the sequential G-DINA model. \emph{British Journal of Mathematical and Statistical Psychology, 73}, 142-163.
 #'
 #' Najera, P., Sorrel, M., & Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. \emph{Educational and Psychological Measurement}.
 #'

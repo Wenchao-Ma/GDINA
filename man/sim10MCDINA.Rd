@@ -4,15 +4,23 @@
 \name{sim10MCDINA}
 \alias{sim10MCDINA}
 \title{Simulated data (10 items, MC-DINA model)}
-\format{A list with components:
+\format{
+A list with components:
 \describe{
 \item{\code{simdat}}{simulated responses of 3000 examinees}
 \item{\code{simQ}}{artificial Q-matrix}
-}}
+}
+}
 \usage{
 sim10MCDINA
 }
 \description{
 Simulated data, Q-matrix and item parameters for a 10-item test measuring 3 attributes.
+}
+\references{
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+}
+\author{
+{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
 }
 \keyword{datasets}

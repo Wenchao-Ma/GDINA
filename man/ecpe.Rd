@@ -4,11 +4,13 @@
 \name{ecpe}
 \alias{ecpe}
 \title{Examination for the Certificate of Proficiency in English (ECPE) data}
-\format{A list of responses and Q-matrix with components:
+\format{
+A list of responses and Q-matrix with components:
 \describe{
 \item{\code{dat}}{Responses of 2922 examinees to 28 items.}
 \item{\code{Q}}{The \eqn{28 \times 3} Q-matrix.}
-}}
+}
+}
 \usage{
 ecpe
 }
@@ -47,6 +49,8 @@ summary(est.gdina2)
 
 }
 \references{
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+
 Feng, Y., Habing, B. T., & Huebner, A. (2014). Parameter estimation of the reduced RUM using the EM algorithm. \emph{Applied Psychological Measurement, 38}, 137-150.
 
 Henson, R. A., & Templin, J. (2007, April). Large-scale language assessment using cognitive diagnosis models. Paper presented at the annual meeting of the National Council for Measurement in Education in Chicago, Illinois.
@@ -54,5 +58,8 @@ Henson, R. A., & Templin, J. (2007, April). Large-scale language assessment usin
 Templin, J., & Bradshaw, L. (2014). Hierarchical diagnostic classification models: A family of models for estimating and testing attribute hierarchies. \emph{Psychometrika, 79}, 317-339.
 
 Templin, J., & Hoffman, L. (2013). Obtaining diagnostic classification model estimates using Mplus. \emph{Educational Measurement: Issues and Practice, 32}, 37-50.
+}
+\author{
+{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
 }
 \keyword{datasets}

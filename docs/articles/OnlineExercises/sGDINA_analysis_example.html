@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.8.0</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Sequential G-DINA: Model Estimation and Model Diagnostics</h1>
             
-            <h4 class="date">2020-05-13</h4>
+            <h4 class="date">2020-05-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/sGDINA_analysis_example.Rmd"><code>vignettes/OnlineExercises/sGDINA_analysis_example.Rmd</code></a></small>
       <div class="hidden name"><code>sGDINA_analysis_example.Rmd</code></div>
@@ -111,15 +111,15 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.7.9) to analyze polytomous response data using the sequential models.</p>
+<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.8.0) to analyze polytomous response data using the sequential models.</p>
 </div>
 <div id="model-estimation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-estimation" class="anchor"></a>Model Estimation</h2>
 <p>The following code fits the sequential G-DINA model to a set of simulated data, which consist of 20 items (15 polytomous and 5 dichotomous) measuring 5 attributes:</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">GDINA</span>)</pre></body></html></div>
-<pre><code>## GDINA Package [Version 2.7.9; 2020-03-01]
-## More information: https://wenchao-ma.github.io/GDINA</code></pre>
+<pre><code>## GDINA Package (version 2.8.0; 2020-05-23)
+## For tutorials, see https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">dat</span> <span class="kw">&lt;-</span> <span class="no">sim20seqGDINA</span>$<span class="no">simdat</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">dat</span>)</pre></body></html></div>
 <pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] [,14]
@@ -690,7 +690,7 @@ Iter = 8  Max. abs. change = 0.00004  Deviance  = 49764.83</code></pre>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] psych_1.9.12.31 GDINA_2.7.9    
+## [1] psych_1.9.12.31 GDINA_2.8.0    
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] xfun_0.13            lattice_0.20-41      colorspace_1.4-1    

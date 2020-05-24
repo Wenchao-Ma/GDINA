@@ -5,10 +5,19 @@
 \alias{summary.autoGDINA}
 \title{Q-matrix validation, model selection and calibration in one run}
 \usage{
-autoGDINA(dat, Q, modelselection = TRUE,
-  modelselectionrule = "simpler", alpha.level = 0.05,
-  modelselection.args = list(), Qvalid = TRUE, Qvalid.args = list(),
-  GDINA1.args = list(), GDINA2.args = list(), CDM.args = list())
+autoGDINA(
+  dat,
+  Q,
+  modelselection = TRUE,
+  modelselectionrule = "simpler",
+  alpha.level = 0.05,
+  modelselection.args = list(),
+  Qvalid = TRUE,
+  Qvalid.args = list(),
+  GDINA1.args = list(),
+  GDINA2.args = list(),
+  CDM.args = list()
+)
 
 \method{summary}{autoGDINA}(object, ...)
 }
@@ -153,6 +162,8 @@ summary(out3)
 }
 }
 \references{
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+
 Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification.
 \emph{Applied Psychological Measurement, 40}, 200-217.
 }
@@ -160,5 +171,5 @@ Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selec
 \code{\link{GDINA}}, \code{\link{modelcomp}}, \code{\link{Qval}}
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
 }

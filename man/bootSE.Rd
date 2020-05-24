@@ -4,8 +4,7 @@
 \alias{bootSE}
 \title{Calculating standard errors and variance-covariance matrix using bootstrap methods}
 \usage{
-bootSE(GDINA.obj, bootsample = 50, type = "nonparametric",
-  randomseed = 12345)
+bootSE(GDINA.obj, bootsample = 50, type = "nonparametric", randomseed = 12345)
 }
 \arguments{
 \item{GDINA.obj}{an object of class GDINA}
@@ -42,6 +41,9 @@ boot.fit$delta.se
 boot.fit$lambda.se
 }
 }
+\references{
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+}
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
 }

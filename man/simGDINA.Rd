@@ -5,18 +5,31 @@
 \alias{extract.simGDINA}
 \title{Data simulation based on the G-DINA models}
 \usage{
-simGDINA(N, Q, gs.parm = NULL, delta.parm = NULL,
-  catprob.parm = NULL, model = "GDINA", sequential = FALSE,
+simGDINA(
+  N,
+  Q,
+  gs.parm = NULL,
+  delta.parm = NULL,
+  catprob.parm = NULL,
+  model = "GDINA",
+  sequential = FALSE,
   gs.args = list(type = "random", mono.constraint = TRUE),
   delta.args = list(design.matrix = NULL, linkfunc = NULL),
-  attribute = NULL, att.dist = "uniform", item.names = NULL,
+  attribute = NULL,
+  att.dist = "uniform",
+  item.names = NULL,
   higher.order.parm = list(theta = NULL, lambda = NULL),
   mvnorm.parm = list(mean = NULL, sigma = NULL, cutoffs = NULL),
-  att.prior = NULL, digits = 4)
+  att.prior = NULL,
+  digits = 4
+)
 
-\method{extract}{simGDINA}(object, what = c("dat", "Q", "attribute",
-  "catprob.parm", "delta.parm", "higher.order.parm", "mvnorm.parm",
-  "LCprob.parm"), ...)
+\method{extract}{simGDINA}(
+  object,
+  what = c("dat", "Q", "attribute", "catprob.parm", "delta.parm", "higher.order.parm",
+    "mvnorm.parm", "LCprob.parm"),
+  ...
+)
 }
 \arguments{
 \item{N}{Sample size.}
@@ -511,6 +524,8 @@ Junker, B. W., & Sijtsma, K. (2001). Cognitive assessment models with few assump
 item response theory. \emph{Applied Psychological Measurement, 25}, 258-272.
 
 Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
+
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
 
 Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. \emph{Applied Psychological Measurement, 40}, 200-217.
 

@@ -17,25 +17,46 @@
 \alias{summary.GDINA}
 \title{CDM calibration under the G-DINA model framework}
 \usage{
-GDINA(dat, Q, model = "GDINA", sequential = FALSE,
-  att.dist = "saturated", mono.constraint = FALSE, group = NULL,
-  linkfunc = NULL, design.matrix = NULL, latent.var = "att",
-  att.prior = NULL, att.str = NULL, verbose = 1,
-  higher.order = list(), loglinear = 2, catprob.parm = NULL,
-  control = list(), item.names = NULL, solver = NULL,
-  nloptr.args = list(), auglag.args = list(), solnp.args = list(),
-  ...)
+GDINA(
+  dat,
+  Q,
+  model = "GDINA",
+  sequential = FALSE,
+  att.dist = "saturated",
+  mono.constraint = FALSE,
+  group = NULL,
+  linkfunc = NULL,
+  design.matrix = NULL,
+  latent.var = "att",
+  att.prior = NULL,
+  att.str = NULL,
+  verbose = 1,
+  higher.order = list(),
+  loglinear = 2,
+  catprob.parm = NULL,
+  control = list(),
+  item.names = NULL,
+  solver = NULL,
+  nloptr.args = list(),
+  auglag.args = list(),
+  solnp.args = list(),
+  ...
+)
 
 \method{anova}{GDINA}(object, ...)
 
-\method{coef}{GDINA}(object, what = c("catprob", "delta", "gs",
-  "itemprob", "LCprob", "rrum", "lambda"), withSE = FALSE, SE.type = 2,
-  digits = 4, ...)
+\method{coef}{GDINA}(
+  object,
+  what = c("catprob", "delta", "gs", "itemprob", "LCprob", "rrum", "lambda"),
+  withSE = FALSE,
+  SE.type = 2,
+  digits = 4,
+  ...
+)
 
 \method{extract}{GDINA}(object, what, SE.type = 2, ...)
 
-\method{personparm}{GDINA}(object, what = c("EAP", "MAP", "MLE", "mp",
-  "HO"), digits = 4, ...)
+\method{personparm}{GDINA}(object, what = c("EAP", "MAP", "MLE", "mp", "HO"), digits = 4, ...)
 
 \method{logLik}{GDINA}(object, ...)
 
@@ -989,7 +1010,9 @@ item response theory. \emph{Applied Psychological Measurement, 25}, 258-272.
 
 Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
 
-Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+
+Ma, W. (2019). A diagnostic tree model for polytomous responses with multiple strategies. \emph{British Journal of Mathematical and Statistical Psychology, 72}, 61-82.
 
 Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification. \emph{Applied Psychological Measurement, 40}, 200-217.
 

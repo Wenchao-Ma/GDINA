@@ -5,9 +5,19 @@
 \alias{summary.dif}
 \title{Differential item functioning for cognitive diagnosis models}
 \usage{
-dif(dat, Q, group, model = "GDINA", method = "wald",
-  anchor.items = NULL, dif.items = "all", p.adjust.methods = "holm",
-  approx = FALSE, SE.type = 2, ...)
+dif(
+  dat,
+  Q,
+  group,
+  model = "GDINA",
+  method = "wald",
+  anchor.items = NULL,
+  dif.items = "all",
+  p.adjust.methods = "holm",
+  approx = FALSE,
+  SE.type = 2,
+  ...
+)
 
 \method{summary}{dif}(object, ...)
 }

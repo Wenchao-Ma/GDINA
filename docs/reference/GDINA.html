@@ -96,7 +96,7 @@ use startGDINA." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.8.0</span>
       </span>
     </div>
 
@@ -195,29 +195,50 @@ check whether monotonicity is violated, use <code><a href='monocheck.html'>monoc
 use <code><a href='startGDINA.html'>startGDINA</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>GDINA</span>(<span class='no'>dat</span>, <span class='no'>Q</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"GDINA"</span>, <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>att.dist</span> <span class='kw'>=</span> <span class='st'>"saturated"</span>, <span class='kw'>mono.constraint</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>linkfunc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>design.matrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>latent.var</span> <span class='kw'>=</span> <span class='st'>"att"</span>,
-  <span class='kw'>att.prior</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>att.str</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>higher.order</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>loglinear</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>catprob.parm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>item.names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>solver</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>nloptr.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>auglag.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>solnp.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>GDINA</span>(
+  <span class='no'>dat</span>,
+  <span class='no'>Q</span>,
+  <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"GDINA"</span>,
+  <span class='kw'>sequential</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>att.dist</span> <span class='kw'>=</span> <span class='st'>"saturated"</span>,
+  <span class='kw'>mono.constraint</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>linkfunc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>design.matrix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>latent.var</span> <span class='kw'>=</span> <span class='st'>"att"</span>,
+  <span class='kw'>att.prior</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>att.str</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>higher.order</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>loglinear</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>catprob.parm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>item.names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>solver</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>nloptr.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>auglag.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>solnp.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for GDINA</span>
 <span class='fu'><a href='https://rdrr.io/r/stats/anova.html'>anova</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for GDINA</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"catprob"</span>, <span class='st'>"delta"</span>, <span class='st'>"gs"</span>,
-  <span class='st'>"itemprob"</span>, <span class='st'>"LCprob"</span>, <span class='st'>"rrum"</span>, <span class='st'>"lambda"</span>), <span class='kw'>withSE</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(
+  <span class='no'>object</span>,
+  <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"catprob"</span>, <span class='st'>"delta"</span>, <span class='st'>"gs"</span>, <span class='st'>"itemprob"</span>, <span class='st'>"LCprob"</span>, <span class='st'>"rrum"</span>, <span class='st'>"lambda"</span>),
+  <span class='kw'>withSE</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for GDINA</span>
 <span class='fu'><a href='extract.html'>extract</a></span>(<span class='no'>object</span>, <span class='no'>what</span>, <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for GDINA</span>
-<span class='fu'><a href='personparm.html'>personparm</a></span>(<span class='no'>object</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"EAP"</span>, <span class='st'>"MAP"</span>, <span class='st'>"MLE"</span>, <span class='st'>"mp"</span>,
-  <span class='st'>"HO"</span>), <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>...</span>)
+<span class='fu'><a href='personparm.html'>personparm</a></span>(<span class='no'>object</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"EAP"</span>, <span class='st'>"MAP"</span>, <span class='st'>"MLE"</span>, <span class='st'>"mp"</span>, <span class='st'>"HO"</span>), <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for GDINA</span>
 <span class='fu'><a href='https://rdrr.io/r/stats/logLik.html'>logLik</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
@@ -624,7 +645,8 @@ Blending theory with practicality (Unpublished doctoral dissertation). Universit
 <p>Junker, B. W., &amp; Sijtsma, K. (2001). Cognitive assessment models with few assumptions, and connections with nonparametric
 item response theory. <em>Applied Psychological Measurement, 25</em>, 258-272.</p>
 <p>Ma, W., &amp; de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. <em>British Journal of Mathematical and Statistical Psychology. 69,</em> 253-275.</p>
-<p>Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. <em>British Journal of Mathematical and Statistical Psychology.</em></p>
+<p>Ma, W., &amp; de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. <em>Journal of Statistical Software, 93(14)</em>, 1-26.</p>
+<p>Ma, W. (2019). A diagnostic tree model for polytomous responses with multiple strategies. <em>British Journal of Mathematical and Statistical Psychology, 72</em>, 61-82.</p>
 <p>Ma, W., Iaconangelo, C., &amp; de la Torre, J. (2016). Model similarity, model selection and attribute classification. <em>Applied Psychological Measurement, 40</em>, 200-217.</p>
 <p>Ma, W. (2017). <em>A Sequential Cognitive Diagnosis Model for Graded Response: Model Development, Q-Matrix Validation,and Model Comparison. Unpublished doctoral dissertation.</em> New Brunswick, NJ: Rutgers University.</p>
 <p>Maris, E. (1999). Estimating multiple classification latent class models. <em>Psychometrika, 64</em>, 187-212.</p>

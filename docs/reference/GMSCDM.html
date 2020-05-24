@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.8.0</span>
       </span>
     </div>
 
@@ -147,8 +147,15 @@
     <p>An (experimental) function for calibrating the multiple-strategy CDMs for dichotomous response data (Ma &amp; Guo, 2019)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>GMSCDM</span>(<span class='no'>dat</span>, <span class='no'>msQ</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"ACDM"</span>, <span class='kw'>s</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>att.prior</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>delta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>())</pre>
+    <pre class="usage"><span class='fu'>GMSCDM</span>(
+  <span class='no'>dat</span>,
+  <span class='no'>msQ</span>,
+  <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"ACDM"</span>,
+  <span class='kw'>s</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>att.prior</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>delta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -202,7 +209,8 @@ for the whole test.</p></td>
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Ma, W., &amp; Guo, W. (2019). Cognitive Diagnosis Models for Multiple Strategies. <em>British Journal of Mathematical and Statistical Psychology.</em></p>
+    <p>Ma, W., &amp; de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. <em>Journal of Statistical Software, 93(14)</em>, 1-26.</p>
+<p>Ma, W., &amp; Guo, W. (2019). Cognitive Diagnosis Models for Multiple Strategies. <em>British Journal of Mathematical and Statistical Psychology.</em></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='GDINA.html'>GDINA</a></code> for MS-DINA model and single strategy CDMs,

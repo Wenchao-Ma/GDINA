@@ -4,12 +4,14 @@
 \name{sim30pGDINA}
 \alias{sim30pGDINA}
 \title{Simulated data (30 items, polytomous G-DINA model)}
-\format{A list with components:
+\format{
+A list with components:
 \describe{
 \item{\code{simdat}}{simulated responses of 3000 examinees}
 \item{\code{simQ}}{artificial Q-matrix}
 \item{\code{simItempar}}{artificial item parameters(probability of success for each latent group)}
-}}
+}
+}
 \usage{
 sim30pGDINA
 }

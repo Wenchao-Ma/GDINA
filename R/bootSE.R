@@ -13,7 +13,11 @@
 #' @return lambda.se standard errors for structural parameters of joint attribute distribution
 #' @return boot.est resample estimates
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @references
+#'
+#' Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+#'
 #' @export
 #' @examples
 #' \dontrun{

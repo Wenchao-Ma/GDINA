@@ -6,9 +6,15 @@
 \alias{summary.itemfit}
 \title{Item fit statistics}
 \usage{
-itemfit(GDINA.obj, person.sim = "post", p.adjust.methods = "holm",
-  cor.use = "pairwise.complete.obs", digits = 4, N.resampling = NULL,
-  randomseed = 123456)
+itemfit(
+  GDINA.obj,
+  person.sim = "post",
+  p.adjust.methods = "holm",
+  cor.use = "pairwise.complete.obs",
+  digits = 4,
+  N.resampling = NULL,
+  randomseed = 123456
+)
 
 \method{extract}{itemfit}(object, what, ...)
 
@@ -98,6 +104,8 @@ itmfit2
 \references{
 Chen, J., de la Torre, J., & Zhang, Z. (2013). Relative and Absolute Fit Evaluation in Cognitive Diagnosis Modeling.
 \emph{Journal of Educational Measurement, 50}, 123-140.
+
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
 }
 \author{
 {Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}

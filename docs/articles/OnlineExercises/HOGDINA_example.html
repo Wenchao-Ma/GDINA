@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.8.0</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Higher-order GDINA Estimation</h1>
                         <h4 class="author">Wenchao</h4>
             
-            <h4 class="date">2020-05-13</h4>
+            <h4 class="date">2020-05-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/OnlineExercises/HOGDINA_example.Rmd"><code>vignettes/OnlineExercises/HOGDINA_example.Rmd</code></a></small>
       <div class="hidden name"><code>HOGDINA_example.Rmd</code></div>
@@ -112,15 +112,15 @@
 <div id="introduction" class="section level3">
 <h3 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h3>
-<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.7.9) to estimate the higher-order G-DINA model.</p>
+<p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/">markdown</a> and <a href="https://yihui.name/knitr/">knitr</a>. It illustrates how to use the GDINA R pacakge (version 2.8.0) to estimate the higher-order G-DINA model.</p>
 </div>
 <div id="model-estimation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#model-estimation" class="anchor"></a>Model Estimation</h3>
 <p>The following code estimates the higher-order G-DINA model.</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">GDINA</span>)</pre></body></html></div>
-<pre><code>## GDINA Package [Version 2.7.9; 2020-03-01]
-## More information: https://wenchao-ma.github.io/GDINA</code></pre>
+<pre><code>## GDINA Package (version 2.8.0; 2020-05-23)
+## For tutorials, see https://wenchao-ma.github.io/GDINA</code></pre>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># A simulated data in GDINA package</span>
 <span class="no">dat</span> <span class="kw">&lt;-</span> <span class="no">sim10GDINA</span>$<span class="no">simdat</span>
 <span class="no">Q</span> <span class="kw">&lt;-</span> <span class="no">sim10GDINA</span>$<span class="no">simQ</span>
@@ -198,7 +198,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## GDINA(dat = dat, Q = Q, model = "GDINA", att.dist = "higher.order", 
 ##     higher.order = list(model = "2PL"))
 ## 
-##   GDINA version 2.7.9 (2020-03-01) 
+##   GDINA version 2.8.0 (2020-05-23) 
 ## ===============================================
 ## Data
 ## -----------------------------------------------
@@ -222,7 +222,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ##   Change in -2 log-likelihood          = 0.0018 
 ##   Converged?                           = TRUE 
 ## 
-## Time used             = 0.1735 secs</code></pre>
+## Time used             = 0.1954 secs</code></pre>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># summary information</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">est</span>)</pre></body></html></div>
 <pre><code>## 
@@ -697,7 +697,7 @@ Iter = 54  Max. abs. change = 0.00010  Deviance  = 11840.60</code></pre>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] GDINA_2.7.9
+## [1] GDINA_2.8.0
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.4.6         nloptr_1.2.2.1       pillar_1.4.3        

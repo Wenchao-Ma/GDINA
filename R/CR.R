@@ -13,6 +13,11 @@
   #'                   element is the proportion of at least two attributes in the vector are correctly identified; and so forth. The last
   #'                   element is the proportion of all elements in the vector are correctly identified.}
   #' }
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @references
+#'
+#' Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+#'
 #' @export
 #'
 #' @examples

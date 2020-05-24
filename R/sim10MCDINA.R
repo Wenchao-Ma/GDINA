@@ -7,4 +7,10 @@
 #' \item{\code{simdat}}{simulated responses of 3000 examinees}
 #' \item{\code{simQ}}{artificial Q-matrix}
 #' }
+#'
+#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @references
+#'
+#' Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+#'
 "sim10MCDINA"

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.8.0</span>
       </span>
     </div>
 
@@ -147,8 +147,15 @@
     <p>This function estimates the multiple-choice DINA model (de la Torre, 2009).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>MCmodel</span>(<span class='no'>dat</span>, <span class='no'>Qc</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"MCDINA"</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>conv.crit</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
-  <span class='kw'>maxitr</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>conv.type</span> <span class='kw'>=</span> <span class='st'>"pr"</span>)</pre>
+    <pre class="usage"><span class='fu'>MCmodel</span>(
+  <span class='no'>dat</span>,
+  <span class='no'>Qc</span>,
+  <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"MCDINA"</span>,
+  <span class='kw'>key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>conv.crit</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
+  <span class='kw'>maxitr</span> <span class='kw'>=</span> <span class='fl'>2000</span>,
+  <span class='kw'>conv.type</span> <span class='kw'>=</span> <span class='st'>"pr"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -209,6 +216,7 @@ indicating category response function, or -2 times log-likelihood,respectively.<
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>De La Torre, J. (2009). A cognitive diagnosis model for cognitively based multiple-choice options. <em>Applied Psychological Measurement, 33</em>, 163--183.</p>
+<p>Ma, W., &amp; de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. <em>Journal of Statistical Software, 93(14)</em>, 1-26.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='GDINA.html'>GDINA</a></code> for G-DINA model</p></div>

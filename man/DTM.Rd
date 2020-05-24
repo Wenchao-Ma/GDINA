@@ -4,8 +4,15 @@
 \alias{DTM}
 \title{Experimental function for diagnostic multiple-strategy CDMs}
 \usage{
-DTM(dat, Qc, delta = NULL, Tmatrix = NULL, conv.crit = 0.001,
-  conv.type = "pr", maxitr = 1000)
+DTM(
+  dat,
+  Qc,
+  delta = NULL,
+  Tmatrix = NULL,
+  conv.crit = 0.001,
+  conv.type = "pr",
+  maxitr = 1000
+)
 }
 \arguments{
 \item{dat}{A required \eqn{N \times J} data matrix of N examinees to J items. Missing

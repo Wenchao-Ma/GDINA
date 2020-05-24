@@ -4,8 +4,15 @@
 \alias{GMSCDM}
 \title{Estimating multiple-strategy cognitive diagnosis models}
 \usage{
-GMSCDM(dat, msQ, model = "ACDM", s = 1, att.prior = NULL,
-  delta = NULL, control = list())
+GMSCDM(
+  dat,
+  msQ,
+  model = "ACDM",
+  s = 1,
+  att.prior = NULL,
+  delta = NULL,
+  control = list()
+)
 }
 \arguments{
 \item{dat}{A required binary item response matrix}
@@ -115,6 +122,8 @@ est2 <- GMSCDM(dat, Q, model = "rDINA", s = 10,
 
 }
 \references{
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+
 Ma, W., & Guo, W. (2019). Cognitive Diagnosis Models for Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
 }
 \seealso{

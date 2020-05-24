@@ -28,6 +28,8 @@
 #' Chen, J., de la Torre, J., & Zhang, Z. (2013). Relative and Absolute Fit Evaluation in Cognitive Diagnosis Modeling.
 #' \emph{Journal of Educational Measurement, 50}, 123-140.
 #'
+#' Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+#'
 #' @examples
 #' \dontrun{
 #' dat <- sim10GDINA$simdat

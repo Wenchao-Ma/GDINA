@@ -4,8 +4,16 @@
 \alias{plot.GDINA}
 \title{Create plots for GDINA estimates}
 \usage{
-\method{plot}{GDINA}(x, what = "IRF", item = "all", withSE = FALSE,
-  SE.type = 2, person = 1, att.names = NULL, ...)
+\method{plot}{GDINA}(
+  x,
+  what = "IRF",
+  item = "all",
+  withSE = FALSE,
+  SE.type = 2,
+  person = 1,
+  att.names = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{model object of class \code{\link{GDINA}}}

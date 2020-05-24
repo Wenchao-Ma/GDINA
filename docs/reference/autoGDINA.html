@@ -80,7 +80,7 @@ See Details for the rules of item-level model selection." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.8.0</span>
       </span>
     </div>
 
@@ -163,10 +163,19 @@ Possible reduced CDMs for Wald test include the DINA model, the DINO model, A-CD
 See <code>Details</code> for the rules of item-level model selection.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>autoGDINA</span>(<span class='no'>dat</span>, <span class='no'>Q</span>, <span class='kw'>modelselection</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>modelselectionrule</span> <span class='kw'>=</span> <span class='st'>"simpler"</span>, <span class='kw'>alpha.level</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
-  <span class='kw'>modelselection.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>Qvalid</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>Qvalid.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>GDINA1.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>GDINA2.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>CDM.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>())
+    <pre class="usage"><span class='fu'>autoGDINA</span>(
+  <span class='no'>dat</span>,
+  <span class='no'>Q</span>,
+  <span class='kw'>modelselection</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>modelselectionrule</span> <span class='kw'>=</span> <span class='st'>"simpler"</span>,
+  <span class='kw'>alpha.level</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>modelselection.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>Qvalid</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>Qvalid.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>GDINA1.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>GDINA2.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>CDM.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
+)
 
 <span class='co'># S3 method for autoGDINA</span>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
@@ -283,7 +292,8 @@ the best model:</p>
  Similarly, returned <code>Qval.obj</code> and <code>Wald.obj</code> are objects of class <code><a href='Qval.html'>Qval</a></code> and <code><a href='modelcomp.html'>modelcomp</a></code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Ma, W., Iaconangelo, C., &amp; de la Torre, J. (2016). Model similarity, model selection and attribute classification.
+    <p>Ma, W., &amp; de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. <em>Journal of Statistical Software, 93(14)</em>, 1-26.</p>
+<p>Ma, W., Iaconangelo, C., &amp; de la Torre, J. (2016). Model similarity, model selection and attribute classification.
 <em>Applied Psychological Measurement, 40</em>, 200-217.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

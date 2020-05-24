@@ -5,12 +5,23 @@
 \alias{itemparm.GDINA}
 \title{extract item parameters (deprecated)}
 \usage{
-itemparm(object, what = c("catprob", "gs", "delta", "rrum", "itemprob",
-  "LCprob"), withSE = FALSE, SE.type = 2, digits = 4, ...)
+itemparm(
+  object,
+  what = c("catprob", "gs", "delta", "rrum", "itemprob", "LCprob"),
+  withSE = FALSE,
+  SE.type = 2,
+  digits = 4,
+  ...
+)
 
-\method{itemparm}{GDINA}(object, what = c("catprob", "gs", "delta",
-  "rrum", "itemprob", "LCprob"), withSE = FALSE, SE.type = 2,
-  digits = 4, ...)
+\method{itemparm}{GDINA}(
+  object,
+  what = c("catprob", "gs", "delta", "rrum", "itemprob", "LCprob"),
+  withSE = FALSE,
+  SE.type = 2,
+  digits = 4,
+  ...
+)
 }
 \arguments{
 \item{object}{estimated GDINA object returned from \code{\link{GDINA}}}

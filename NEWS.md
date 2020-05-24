@@ -1,3 +1,7 @@
+# GDINA 2.8.0
+* Changed   - add reference to the JSS article
+* Changed   - clean references
+
 # GDINA 2.7.9
 * Changed   - data set format so the package can be used for R versions prior to 3.5
 

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.8.0</span>
       </span>
     </div>
 
@@ -147,13 +147,24 @@
     <p>This function has been deprecated; use <code>coef</code> instead.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>itemparm</span>(<span class='no'>object</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"catprob"</span>, <span class='st'>"gs"</span>, <span class='st'>"delta"</span>, <span class='st'>"rrum"</span>, <span class='st'>"itemprob"</span>,
-  <span class='st'>"LCprob"</span>), <span class='kw'>withSE</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>itemparm</span>(
+  <span class='no'>object</span>,
+  <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"catprob"</span>, <span class='st'>"gs"</span>, <span class='st'>"delta"</span>, <span class='st'>"rrum"</span>, <span class='st'>"itemprob"</span>, <span class='st'>"LCprob"</span>),
+  <span class='kw'>withSE</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for GDINA</span>
-<span class='fu'>itemparm</span>(<span class='no'>object</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"catprob"</span>, <span class='st'>"gs"</span>, <span class='st'>"delta"</span>,
-  <span class='st'>"rrum"</span>, <span class='st'>"itemprob"</span>, <span class='st'>"LCprob"</span>), <span class='kw'>withSE</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>itemparm</span>(
+  <span class='no'>object</span>,
+  <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"catprob"</span>, <span class='st'>"gs"</span>, <span class='st'>"delta"</span>, <span class='st'>"rrum"</span>, <span class='st'>"itemprob"</span>, <span class='st'>"LCprob"</span>),
+  <span class='kw'>withSE</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>SE.type</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

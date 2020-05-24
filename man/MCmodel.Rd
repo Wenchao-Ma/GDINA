@@ -4,8 +4,15 @@
 \alias{MCmodel}
 \title{Multiple-choice models}
 \usage{
-MCmodel(dat, Qc, model = "MCDINA", key = NULL, conv.crit = 0.001,
-  maxitr = 2000, conv.type = "pr")
+MCmodel(
+  dat,
+  Qc,
+  model = "MCDINA",
+  key = NULL,
+  conv.crit = 0.001,
+  maxitr = 2000,
+  conv.type = "pr"
+)
 }
 \arguments{
 \item{dat}{A required \eqn{N \times J} data matrix of N examinees to J items. Values must be 1, 2,... representing nominal categories.
@@ -112,6 +119,8 @@ This function estimates the multiple-choice DINA model (de la Torre, 2009).
 }
 \references{
 De La Torre, J. (2009). A cognitive diagnosis model for cognitively based multiple-choice options. \emph{Applied Psychological Measurement, 33}, 163--183.
+
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
 }
 \seealso{
 \code{\link{GDINA}} for G-DINA model

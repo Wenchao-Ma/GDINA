@@ -1,15 +1,18 @@
-citHeader("To cite GDINA package in publications use:")
-
-citEntry(entry = "Manual",
-  title        = "{GDINA: The generalized DINA model framework}",
-  author       = as.person("Ma, W. and de la Torre, J."),
+bibentry(bibtype = "Article",
+  title        = "{GDINA}: An {R} Package for Cognitive Diagnosis Modeling",
+  author       = c(person(given = "Wenchao",
+                          family = "Ma",
+                          email = "wenchao.ma@ua.edu"),
+                   person(given = "Jimmy",
+                          family = "de la Torre",
+                          email = "j.delatorre@hku.hk")),
+  journal      = "Journal of Statistical Software",
   year         = "2020",
-  note         = "R package version 2.7.9",
-  url          = "https://CRAN.R-project.org/package=GDINA",
+  volume       = "93",
+  number       = "14",
+  pages        = "1--26",
+  doi          = "10.18637/jss.v093.i14",
 
-  textVersion  =
-  paste("Ma, W. & de la Torre, J. (2020).",
-        "GDINA: The generalized DINA model framework.",
-        "R package version 2.7.9. Retrived from https://CRAN.R-project.org/package=GDINA")
+  header       = "To cite GDINA in publications use:"
 )
 

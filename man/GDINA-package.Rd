@@ -8,7 +8,7 @@
 For conducting CDM analysis within the G-DINA model framework
 }
 \details{
-This package provides a framework for a series of cognitively diagnostic analyses
+This package (Ma & de la Torre, 2020a) provides a framework for a series of cognitively diagnostic analyses
 for dichotomous and polytomous responses.
 
 Various cognitive
@@ -28,23 +28,24 @@ the sequential G-DINA model (Ma, & de la Torre, 2016) can be fitted and most of 
 aforementioned CDMs can be used as the processing functions (Ma, & de la Torre, 2016) at the category level.
 Different CDMs can be assigned to different items within a single assessment.
 Item parameters are estimated using the MMLE/EM algorithm. Details about the estimation algorithm
-can be found in de la Torre (2009), de la Torre (2011),
-Ma, Iaconangelo, & de la Torre (2016) and Ma, & de la Torre (2016).
-The joint attribute distribution can be modelled using an independent model,
+can be found in Ma and de la Torre (2020).
+The joint attribute distribution can be modeled using an independent model,
 a higher-order IRT model (de la Torre, & Douglas, 2004), a loglinear model (Xu & von Davier, 2008),
 a saturated model or a hierarchical structures (e.g., linear, divergent). Monotonicity constraints for item/category success
 probabilities can also be specified.
 
 In addition, to handle multiple strategies, generalized multiple-strategy CDMs for dichotomous response (Ma & Guo, 2019) can be fitted using \code{\link{GMSCDM}} function and
-diagnostic tree model (Ma, 2018) can also be estimated using \code{\link{DTM}} function for polytomous responses. Note that these functions are experimental, and are expected to be further extended
-in the future.
+diagnostic tree model (Ma, 2019) can also be estimated using \code{\link{DTM}} function for polytomous responses. Note that these functions are experimental, and are expected to be further extended
+in the future. Other diagnostic approaches include the multiple-choice model (de la Torre, 2009) and an iterative latent class analysis (ILCA; Jiang, 2019).
 
-Q-matrix validation (de la Torre, & Chiu, 2016; de la Torre & Ma, 2016; Ma & de la Torre, 2019; see \code{\link{Qval}}),
-model fit statistics (see \code{\link{modelfit}} and \code{\link{itemfit}}),
-model comparison at test and item level (de la Torre, & Lee, 2013;
-Ma, Iaconangelo, & de la Torre, 2016; Ma & de la Torre, 2019; see \code{\link{modelcomp}}),
-and differential item functioning (Hou, de la Torre, & Nandakumar, 2014;
+Various Q-matrix validation methods (de la Torre, & Chiu, 2016; de la Torre & Ma, 2016; Ma & de la Torre, 2020b; Najera, Sorrel, & Abad, 2019; see \code{\link{Qval}}),
+model-data fit statistics (Chen, de la Torre, & Zhang, 2013; Hansen, Cai, Monroe, & Li, 2016; Liu, Tian, & Xin, 2016; Ma, 2020; see \code{\link{modelfit}} and \code{\link{itemfit}}),
+model comparison at test and item level (de la Torre, 2011; de la Torre, & Lee, 2013;
+Ma, Iaconangelo, & de la Torre, 2016; Ma & de la Torre, 2019; Sorrel, Abad, Olea, de la Torre, & Barrada, 2017; Sorrel, de la Torre, Abad, & Olea, 2017; see \code{\link{modelcomp}}),
+and differential item functioning (Hou, de la Torre, & Nandakumar, 2014; Ma, Terzi, Lee, & de la Torre, 2017;
 see \code{\link{dif}}) can also be conducted.
+
+To use the graphical user interface, check \code{\link{startGDINA}}.
 }
 \references{
 Chen, J., & de la Torre, J. (2013). A General Cognitive Diagnosis Model for Expert-Defined Polytomous Attributes.
@@ -81,19 +82,34 @@ investigate DIF in the DINA model. \emph{Journal of Educational Measurement, 51}
 Junker, B. W., & Sijtsma, K. (2001). Cognitive assessment models with few assumptions, and connections with nonparametric
 item response theory. \emph{Applied Psychological Measurement, 25}, 258-272.
 
-Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
+Ma, W. (2019). A diagnostic tree model for polytomous responses with multiple strategies. \emph{British Journal of Mathematical and Statistical Psychology, 72}, 61-82.
+
+Ma, W. (2020). Evaluating the fit of sequential G-DINA model using limited-information measures. \emph{Applied Psychological Measurement, 44}, 167-181.
 
 Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
 
-Ma, W., & de la Torre, J. (2018). Category-Level Model Selection for the Sequential G-DINA Model. \emph{Journal of Educational and Behavioral Statistics}. https://doi.org/10.3102/1076998618792484
+Ma, W., & de la Torre, J. (2019). Category-Level Model Selection for the Sequential G-DINA Model. \emph{Journal of Educational and Behavioral Statistics}. 44, 61-82.
 
-Ma, W., & de la Torre, J. (2019). An Empirical Q-Matrix Validation Method for the Sequential G-DINA Model. \emph{British Journal of Mathematical and Statistical Psychology}
+Ma, W., & de la Torre, J. (2019). Digital Module 05: Diagnostic measurement-The G-DINA framework.\emph{ Educational Measurement: Issues and Practice, 39}, 114-115.
+
+Ma, W., & de la Torre, J. (2020a). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
+
+Ma, W., & de la Torre, J. (2020b). An empirical Q-matrix validation method for the sequential G-DINA model. \emph{British Journal of Mathematical and Statistical Psychology, 73}, 142-163.
+
+Ma, W., & Guo, W. (2019). Cognitive diagnosis models for multiple strategies. \emph{British Journal of Mathematical and Statistical Psychology, 72}, 370-392.
 
 Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selection and attribute classification.
 \emph{Applied Psychological Measurement, 40}, 200-217.
 
+Ma, W., Terzi, R., Lee, S., & de la Torre, J. (2017, April). Multiple group cognitive diagnosis models and their applications in detecting differential item functioning. Paper presented at the Annual Meeting ofthe American Educational Research Association, San Antonio, TX.
+
 Maris, E. (1999). Estimating multiple classification latent class models. \emph{Psychometrika, 64}, 187-212.
 
+Najera, P., Sorrel, M., & Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. \emph{Educational and Psychological Measurement}.
+
+Sorrel, M. A., Abad, F. J., Olea, J., de la Torre, J., & Barrada, J. R. (2017). Inferential Item-Fit Evaluation in Cognitive Diagnosis Modeling. \emph{Applied Psychological Measurement, 41,} 614-631.
+
+Sorrel, M. A., de la Torre, J., Abad, F. J., & Olea, J. (2017). Two-Step Likelihood Ratio Test for Item-Level Model Comparison in Cognitive Diagnosis Models. \emph{Methodology, 13}, 39-47.
 Xu, X., & von Davier, M. (2008). Fitting the structured general diagnostic model to NAEP data. ETS research report, RR-08-27.
 }
 \seealso{

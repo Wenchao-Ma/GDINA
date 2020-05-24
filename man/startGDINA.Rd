@@ -7,7 +7,7 @@
 startGDINA()
 }
 \description{
-An experimental interactive Shiny application for running GDINA function
+An interactive Shiny application for running GDINA function. See Ma and de la Torre (2019) and de la Torre and Akbay (2019) for tutorials.
 }
 \examples{
 \dontrun{
@@ -16,6 +16,13 @@ library(shinydashboard)
 startGDINA()
 }
 
+}
+\references{
+de la Torre, J & Akbay, L. (2019). Implementation of Cognitive Diagnosis Modeling using the GDINA R Package. \emph{Eurasian Journal of Educational Research, 80}, 171-192.
+
+Ma, W., & de la Torre, J. (2019). Digital Module 05: Diagnostic measurement-The G-DINA framework.\emph{ Educational Measurement: Issues and Practice, 39}, 114-115.
+
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
 }
 \author{
 {Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
