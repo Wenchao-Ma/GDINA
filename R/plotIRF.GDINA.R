@@ -249,7 +249,7 @@ plot.Qval <-
            data.label = TRUE,eps = "auto",
            original.q.label = FALSE,auto.ylim = TRUE,...)
   {
-    if(eps=="auto") eps <- x$eps
+    if(eps=="auto") eps <- round(x$eps, 2)
     if(x$sequential){
       Q <- extract.Qval(x,"Q")[,-c(1:2)]
     }else{
