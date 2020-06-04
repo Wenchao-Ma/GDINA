@@ -6,31 +6,48 @@
 \alias{summary.Qval}
 \title{Q-matrix validation}
 \usage{
-Qval(GDINA.obj, method = "PVAF", eps = 0.95, digits = 4, wald.args = list())
+Qval(
+  GDINA.obj,
+  method = "PVAF",
+  iter = "none",
+  eps = 0.95,
+  digits = 4,
+  wald.args = list(),
+  iter.args = list(empty.att = FALSE, max.iter = 150, verbose = FALSE)
+)
 
 \method{extract}{Qval}(object, what = c("sug.Q", "varsigma", "PVAF", "eps", "Q"), ...)
 
 \method{summary}{Qval}(object, ...)
 }
 \arguments{
-\item{GDINA.obj}{An estimated model object of class \code{GDINA}}
+\item{GDINA.obj}{an estimated model object of class \code{GDINA}}
 
 \item{method}{which Q-matrix validation method is used? Can be either \code{"PVAF"} or \code{"wald"}.}
 
-\item{eps}{cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicted cutoff based on Najera, P., Sorrel, M., and Abad, P. (2019).}
+\item{iter}{implement the method iteratively? Can be \code{"none"} for non-iterative validation (by default), \code{"test"}, \code{"test.att"}, or \code{"item"} (Najera et al., 2020).}
 
-\item{digits}{How many decimal places in each number? The default is 4.}
+\item{eps}{cutoff value for PVAF from 0 to 1. Default = 0.95. Note that it can also be -1, indicating the predicted cutoff based on Najera, Sorrel, and Abad (2019).}
+
+\item{digits}{how many decimal places in each number? The default is 4.}
 
 \item{wald.args}{a list of arguments for the stepwise Wald test method.
 \describe{
-\item{SE.type}{Type of covariance matrix for the Wald test}
+\item{SE.type}{type of covariance matrix for the Wald test}
 \item{alpha.level}{alpha level for the wald test}
-\item{GDI}{It can be 0, 1 or 2; 0 means GDI is not used to choose the attribute -
+\item{GDI}{it can be 0, 1 or 2; 0 means GDI is not used to choose the attribute -
 when more than one attributes are significant, the one with the largest p-value will be selected;
 GDI=1 means the attribute with the largest GDI will be selected; GDI=2 means the q-vector with
 the largest GDI will be selected.}
-\item{verbose}{Print detailed information or not?}
+\item{verbose}{print detailed information or not?}
 \item{stepwise}{\code{TRUE} for stepwise approach and \code{FALSE} for forward approach}
+}}
+
+\item{iter.args}{a list of arguments for the iterative implementation.
+\describe{
+\item{empty.att}{can a Q-matrix with an empty attribute (i.e., measured by no items) be provided? Default is FALSE}
+\item{max.iter}{maximum number of iterations. Default is 150}
+\item{verbose}{print information after each iteration? Default is FALSE}
 }}
 
 \item{object}{\code{Qval} objects for S3 methods}
@@ -53,8 +70,8 @@ extracted using \code{extract} method include:
 }
 }
 \description{
-Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016; Najera, Sorrel, & Abad, 2019), stepwise Wald test (Ma & de la Torre, 2020) or mesa plot (de la Torre & Ma, 2016).
-All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method or predicted cutoffs.
+Q-matrix validation for the (sequential) G-DINA model based on PVAF (de la Torre & Chiu, 2016; Najera, Sorrel, & Abad, 2019; Najera et al., 2020), stepwise Wald test (Ma & de la Torre, 2020) or mesa plot (de la Torre & Ma, 2016).
+All these methods are suitable for dichotomous and ordinal response data. If too many modifications are suggested based on the default PVAF method, you are suggested to try the stepwise Wald test method, iterative procedures or predicted cutoffs.
 You should always check the mesa plots for further examination.
 }
 \section{Methods (by generic)}{
@@ -101,13 +118,19 @@ extract(stepwise,what = "sug.Q")
 #Set eps = -1 to determine the cutoff empirically
 pvaf2 <- Qval(mod1,method = "PVAF",eps = -1)
 pvaf2
+
+#Iterative procedure (test-attribute level)
+pvaf3 <- Qval(mod1, method = "PVAF", eps = -1, 
+              iter = "test.att", iter.args = list(verbose = 1))
+pvaf3
+
 ################################
 #
 # Ordinal response
 #
 ################################
-seq.est <- GDINA(sim20seqGDINA$simdat,sim20seqGDINA$simQ,sequential = TRUE)
-stepwise <- Qval(seq.est, method = "wald", eps = -1)
+seq.est <- GDINA(sim20seqGDINA$simdat,sim20seqGDINA$simQ, sequential = TRUE)
+stepwise <- Qval(seq.est, method = "wald")
 }
 }
 \references{
@@ -117,7 +140,9 @@ de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A genera
 
 Ma, W., & de la Torre, J. (2020). An empirical Q-matrix validation method for the sequential G-DINA model. \emph{British Journal of Mathematical and Statistical Psychology, 73}, 142-163.
 
-Najera, P., Sorrel, M., & Abad, P. (2019). Reconsidering Cutoff Points in the General Method of Empirical Q-Matrix Validation. \emph{Educational and Psychological Measurement}.
+Najera, P., Sorrel, M. A., & Abad, F.J. (2019). Reconsidering cutoff points in the general method of empirical Q-matrix validation. \emph{Educational and Psychological Measurement, 79}, 727-753.
+
+Najera, P., Sorrel, M. A., de la Torre, J., & Abad, F. J. (2020). Improving robustness in Q-matrix validation using an iterative and dynamic procedure. \emph{Applied Psychological Measurement}.
 }
 \seealso{
 \code{\link{GDINA}}
