@@ -173,13 +173,13 @@ score_d <- function(object){
 
   if(extract(object,"ngroup")>1){
 
-    for(g in sort(unique(extract(object,"group")))){
+    for(g in sort(unique(extract(object,"gr")))){
       tmp <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob")[g,])*t(lik)))[,-1]
       l <- length(score)+1
       # print(l)
       score[[l]] <- tmp
-      score[[l]][which(extract(object,"group")!=g),] <- 0
-      names(score)[l] <- paste0("G",g)
+      score[[l]][which(extract(object,"gr")!=g),] <- 0
+      names(score)[l] <- extract(object,"group.label")[g]
     }
   }else{
     score[[length(score)+1]] <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob"))*t(lik)))[,-1]

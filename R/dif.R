@@ -1,15 +1,13 @@
 #' @include GDINA.R
 #' @title  Differential item functioning for cognitive diagnosis models
 #'
-#' @description   This function is used to detect differential item functioning based on the models estimated
-#' in the \code{\link{GDINA}} function using the Wald test (Hou, de la Torre, & Nandakumar, 2014) and the likelihood ratio
-#' test (Ma, Terzi, Lee, & de la Torre, 2017). It can only detect DIF for two groups currently.
+#' @description   This function is used to detect differential item functioning using the Wald test (Hou, de la Torre, & Nandakumar, 2014; Ma, Terzi, & de la Torre, 2021) and the likelihood ratio
+#' test (Ma, Terzi, & de la Torre, 2021). The forward anchor item search procedure developed in Ma, Terzi, and de la Torre (2021) was implemented. Note that it can only detect DIF for two groups currently.
 #'
 #' @param dat item responses from two groups; missing data need to be coded as \code{NA}
 #' @param Q Q-matrix specifying the association between items and attributes
 #' @param model model for each item.
-#' @param group a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its
-#'    length must be equal to the number of individuals.
+#' @param group a factor or a vector indicating the group each individual belongs to. Its length must be equal to the number of individuals.
 #' @param method DIF detection method; It can be \code{"wald"} for Hou, de la Torre, and Nandakumar's (2014)
 #' Wald test method, and \code{"LR"} for likelihood ratio test (Ma, Terzi, Lee,& de la Torre, 2017).
 #' @param p.adjust.methods adjusted p-values for multiple hypothesis tests. This is conducted using \code{p.adjust} function in \pkg{stats},
@@ -21,6 +19,13 @@
 #' @param dif.items which items are subject to DIF detection? Default is \code{"all"}. It can also be an integer vector giving the item numbers.
 #' @param approx Whether an approximated LR test is implemented? If TRUE, parameters of items except the studied one will not be re-estimated.
 #' @param SE.type Type of standard error estimation methods for the Wald test.
+#' @param FS.args arguments for the forward anchor item search procedure developed in Ma, Terzi, and de la Torre (2021). A list with the following elements:
+#'  \itemize{
+#'    \item \code{on} - logical; \code{TRUE} if activate the forward anchor item search procedure. Default = \code{FALSE}.
+#'    \item \code{alpha.level} - nominal level for Wald or LR test. Default = .05.
+#'    \item \code{maxit} - maximum number of iterations allowed. Default = 10.
+#'    \item \code{verbose} - logical; print information for each iteration or not? Default = \code{FALSE}.
+#'    }
 #' @param ... arguments passed to GDINA function for model calibration
 #' @return A data frame giving the Wald statistics and associated p-values.
 #'
@@ -31,46 +36,56 @@
 #' \dontrun{
 #' set.seed(123456)
 #' N <- 3000
-#' Q <- sim10GDINA$simQ
-#' gs <- matrix(c(0.1,0.2,
-#'                        0.1,0.2,
-#'                        0.1,0.2,
-#'                        0.1,0.2,
-#'                        0.1,0.2,
-#'                        0.1,0.2,
-#'                        0.1,0.2,
-#'                        0.1,0.2,
-#'                        0.1,0.2,
-#'                        0.1,0.2),ncol = 2, byrow = TRUE)
+#' Q <- sim30GDINA$simQ
+#' gs <- matrix(.2,ncol = 2, nrow = nrow(Q))
 #' # By default, individuals are simulated from uniform distribution
 #' # and deltas are simulated randomly
 #' sim1 <- simGDINA(N,Q,gs.parm = gs,model="DINA")
-#' sim2 <- simGDINA(N,Q,gs.parm = gs,model=c(rep("DINA",9),"DINO"))
+#' sim2 <- simGDINA(N,Q,gs.parm = gs,model=c(rep("DINA",nrow(Q)-1),"DINO"))
 #' dat <- rbind(extract(sim1,"dat"),extract(sim2,"dat"))
-#' gr <- c(rep(1,N),rep(2,N))
-#' dif.out <- dif(dat,Q,group=gr)
-#' dif.out2 <- dif(dat,Q,group=gr,method="LR")
+#' gr <- rep(c("G1","G2"),each=N)
+#'
+#' # DIF using Wald test
+#' dif.wald <- dif(dat, Q, group=gr, method = "Wald")
+#' dif.wald
+#' # DIF using LR test
+#' dif.LR <- dif(dat, Q, group=gr, method="LR")
+#' dif.LR
+#' # DIF using Wald test + forward search algorithm
+#' dif.wald.FS <- dif(dat, Q, group=gr, method = "Wald", FS.args = list(on = TRUE, verbose = TRUE))
+#' dif.wald.FS
+#' # DIF using LR test + forward search algorithm
+#' dif.LR.FS <- dif(dat, Q, group=gr, method = "LR", FS.args = list(on = TRUE, verbose = TRUE))
+#' dif.LR.FS
 #'}
 #' @references
 #' Hou, L., de la Torre, J., & Nandakumar, R. (2014). Differential item functioning assessment in cognitive diagnostic modeling: Application of the Wald test to
 #' investigate DIF in the DINA model. \emph{Journal of Educational Measurement, 51}, 98-125.
 #'
-#' Ma, W., Terzi, R., Lee, S., & de la Torre, J. (2017, April). Multiple group cognitive diagnosis models and their applications in detecting differential item functioning. Paper presented at the Annual Meeting ofthe American Educational Research Association, San Antonio, TX.
+#' Ma, W., Terzi, R., & de la Torre, J. (2021). Detecting differential item functioning using multiple-group cognitive diagnosis models. \emph{Applied Psychological Measurement}.
 #'
 
 
 dif <- function(dat, Q, group, model = "GDINA", method = "wald", anchor.items = NULL, dif.items = "all", p.adjust.methods = "holm", approx = FALSE,
-                SE.type = 2, ...){
+                SE.type = 2, FS.args = list(on = FALSE, alpha.level = .05, maxit = 10, verbose = FALSE),...){
 
   if (!is.matrix(dat))
     dat <- as.matrix(dat)
+
   if (!is.matrix(Q))
     Q <- as.matrix(Q)
 
   if (nrow(dat) != length(group))
     stop("The length of group variable must be equal to the number of individuals.", call. = FALSE)
 
-  gr.label <- unique(group)
+  dat <- dat[order(group),]
+  group <- sort(group)
+
+  if(is.factor(group)){
+    gr.label <- levels(group)
+  }else if(is.vector(group)){
+    gr.label <- unique(group)
+  }
 
   if (length(gr.label) != 2)
     stop("Only two group DIF can be examined.", call. = FALSE)
@@ -81,21 +96,22 @@ dif <- function(dat, Q, group, model = "GDINA", method = "wald", anchor.items = 
   if (length(anchor.items) == 1 && tolower(anchor.items) == "all")
     anchor.items <- seq_len(J)
 
+  myFS <- list( on = FALSE, alpha.level = .05, maxit = 10, verbose = FALSE  )
 
+  FS.args <- utils::modifyList(myFS,FS.args)
 
-  purification.args <- dots("purification.args",list(on = FALSE, alpha.level = .05, maxit = 10, verbose = FALSE),...)
 
   log.purification <- NULL
 
   if(tolower(method)=="wald"){
 
-    if(purification.args$on){
+    if(FS.args$on){
 
       anchor.items <- NULL
       dif.items <- seq_len(J)
 
       x <- purif.WaldDIF(dat = dat,Q = Q, group = group, model = model, SE.type = SE.type,
-                         alpha.level = purification.args$alpha.level, maxit = purification.args$maxit, progress = purification.args$verbose, ...)
+                         alpha.level = FS.args$alpha.level, maxit = FS.args$maxit, progress = FS.args$verbose, ...)
       output <- x$output
       log.purification <- x$log
       output <- as.data.frame(output)
@@ -119,7 +135,7 @@ dif <- function(dat, Q, group, model = "GDINA", method = "wald", anchor.items = 
           stop("At least one item needs to be non-anchor items when Wald test is used.",call. = FALSE)
 
       if(any(dif.items %in% anchor.items))
-          stop("Elements in dif.items and anchor.items must differ.",call. = FALSE)
+          stop("dif.items must be different from anchor.items.",call. = FALSE)
 
       nonstudied.items <- NULL
 
@@ -138,7 +154,7 @@ dif <- function(dat, Q, group, model = "GDINA", method = "wald", anchor.items = 
 
   }else if(method=="LR"){
 
-    if(purification.args$on) {
+    if(FS.args$on) {
 
       anchor.items <- NULL
       dif.items <- seq_len(J)
@@ -146,16 +162,16 @@ dif <- function(dat, Q, group, model = "GDINA", method = "wald", anchor.items = 
       output <- NULL
       it <- 0
 
-      while(it<purification.args$maxit){
+      while(it<FS.args$maxit){
         output <- LRDIF(dat = dat,Q = Q, group = group, model = model, anchor.items = anchor.items, dif.items = dif.items, LR.approx = approx,...)
         it <- it + 1
         log.purification[[it]] <- output
-        if(purification.args$verbose){
+        if(FS.args$verbose){
           cat("Iter = ", it,"Anchor items = Items ",anchor.items,"\n")
           # rownames(output) <- paste("Item",seq_len(J))
           print(output)
         }
-        new.anchoritems.loc <- which(output$p.value > purification.args$alpha.level)
+        new.anchoritems.loc <- which(output$p.value > FS.args$alpha.level)
         if(length(new.anchoritems.loc)==0)
           new.anchoritems.loc <- NULL
         if(identical(anchor.items,new.anchoritems.loc))
@@ -210,6 +226,7 @@ invisible(output)
       }
 
       if (!is.null(nonstudied.items)) {
+
         Data[, (JD + JA + 1):J] <- GDINA::bdiagMatrix(list(dat[which(group == gr.label[1]), nonstudied.items],
                                                            dat[which(group == gr.label[2]), nonstudied.items]), NA)
         QQ[(JD + JA + 1):J, ] <- Q[rep(nonstudied.items, 2), ]
@@ -251,12 +268,16 @@ output
       log.purification <- list()
       while(it < maxit){
 
-        if(is.null(anchor.items)){
+        if(is.null(anchor.items)){ # it = 0
           output <- WaldDIF(dat = dat,Q = Q, group = group, model=model, SE.type = SE.type, anchor.items = anchor.items,dif.items = dif.items, ...)
-        }else{
+        }else{ # it = 1, 2, ...
           output <- matrix(0, J, 3)
           nonanchor <- setdiff(seq_len(J),anchor.items)
-          output[nonanchor,] <- WaldDIF(dat = dat, Q = Q, group = group, model=model, SE.type = SE.type, anchor.items = anchor.items,dif.items = nonanchor, ...)
+          if(length(nonanchor)==0){
+            nonanchor <- NULL
+          }else{
+            output[nonanchor,] <- WaldDIF(dat = dat, Q = Q, group = group, model=model, SE.type = SE.type, anchor.items = anchor.items,dif.items = nonanchor, ...)
+          }
 
           l.anchor <- length(anchor.items)
 

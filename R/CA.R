@@ -51,7 +51,7 @@ CA <- function(GDINA.obj,what="MAP"){
     pp <- as.matrix(pp[,-ncol(pp)])
   }
   mp <- personparm(GDINA.obj,what = "mp")
-  patt <- attributepattern(Q = extract(GDINA.obj,"Q"))
+  patt <- extract(GDINA.obj,"attributepattern")
   gr <- matchMatrix(patt,pp)
   pseudo.gr <- setdiff(seq(nrow(patt)),unique(gr))
   gr <- c(gr,pseudo.gr)

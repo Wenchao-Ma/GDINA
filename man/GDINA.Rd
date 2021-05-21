@@ -111,8 +111,7 @@ it must be used for all groups.}
 for all \eqn{k}, \eqn{\alpha_{1k} < \alpha_{2k}}. Can be a vector for each item or nonzero category or a scalar which will be used for all
 items to specify whether monotonicity constraint should be added.}
 
-\item{group}{a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its
-length must be equal to the number of individuals.}
+\item{group}{a factor or a vector indicating the group each individual belongs to. Its length must be equal to the number of individuals.}
 
 \item{linkfunc}{a vector of link functions for each item/category; It can be \code{"identity"},\code{"log"} or \code{"logit"}. Only applicable
 when, for some items, \code{model="UDF"}.}

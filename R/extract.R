@@ -287,6 +287,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 },
                 group = object$options$group,
                 gr = object$options$gr,
+                group.label = object$options$group.label,
                 higher.order = object$options$higher.order,
                 initial.catprob = object$technical$initial.parm,
                 itemprob.parm = {

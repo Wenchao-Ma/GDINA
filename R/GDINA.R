@@ -164,8 +164,7 @@
 #'    equivalent to the identity link saturated G-DINA model. The logit G-DINA model is identical to the log-linear CDM.
 #'    When \code{"UDF"}, indicating user defined function, is specified for any item, arguments \code{design.matrix} and \code{linkfunc} need to be defined.
 #' @param sequential logical; \code{TRUE} if the sequential model is fitted for polytomous responses.
-#' @param group a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its
-#'    length must be equal to the number of individuals.
+#' @param group a factor or a vector indicating the group each individual belongs to. Its length must be equal to the number of individuals.
 #' @param att.dist How is the joint attribute distribution estimated? It can be (1) \code{saturated}, which is the default, indicating that
 #'    the proportion parameter for each permissible latent class is estimated separately; (2) \code{higher.order}, indicating
 #'    that a higher-order joint attribute distribution is assumed (higher-order model can be specified in \code{higher.order} argument);

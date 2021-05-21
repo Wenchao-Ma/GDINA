@@ -110,7 +110,7 @@ This function estimates the multiple-choice DINA model (de la Torre, 2009).
                 9,	1,	0,	1,	0,
                 10, 4,	0,	0,	1),ncol = 5,byrow = TRUE)
 
- est2 <- MCmodel(sim10MCDINA$simdat,Qc, key = c(1,2,4,1,1,3,2,4,1,4))
+ est2 <- MCmodel(sim10MCDINA2$simdat,Qc, key = c(1,2,4,1,1,3,2,4,1,4))
  est2
  est2$prob.parm
  est2$testfit

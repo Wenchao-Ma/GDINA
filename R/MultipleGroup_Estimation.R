@@ -16,12 +16,31 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
       group <- dat[,group]
     dat <- dat[,-group]
   }else{
-    if (nrow(dat) != length(group) || !all(is.positiveInteger(group)))
+    if (nrow(dat) != length(group))
       stop("Group indicator variable is not correctly specified.", call. = FALSE)
   }
-  #group <- sort(group)
-  gr.label <- unique(group) # group labels
-  no.mg <- length(gr.label) # the number of groups
+
+  #original group indicator
+  ori.group <- group
+
+  if(is.factor(group)){
+    ori.gr.label <- levels(group)
+    group <- as.vector.factor(group) # factor -> vector
+  }else if(is.vector(group)){
+    ori.gr.label <- unique(group)
+  }
+
+  group <- vector("numeric",length = length(ori.group))
+  no.mg <- length(ori.gr.label) # the number of groups
+  gr.label <- seq_len(no.mg)
+  # group -> numeric vector
+  if(!is.numeric(ori.group)){
+    for(g in seq_len(no.mg)){
+      group[ori.group==ori.gr.label[g]] <- g
+    }
+  }else{
+    group <- ori.group
+  }
 
   #################################
   #
@@ -44,6 +63,7 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
       )
       dat <- dat[-del.ind,]
       group <- group[-del.ind]
+      ori.group <- ori.group[-del.ind]
     }
   }
 
@@ -527,7 +547,7 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   names(item.prob) <- names(initial.parm) <- rownames(LC.Prob) <- names(delta) <- rownames(item.parm) <- item.names
   colnames(LC.Prob) <- colnames(pf) <- colnames(postP) <- LC.labels
 
-  rownames(postP) <- paste("Group",gr.label)
+  rownames(postP) <- paste("Group",ori.gr.label)
 
   att.prior = exp(logprior0)
 
@@ -546,8 +566,8 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
        options = list(dat = originalData, Q = originalQ, Qm = Q, Qcm = Qcm, model = model,
                       itr = itr, dif.LL = dif.parm$neg2LL,dif.p=dif.parm$ip,dif.prior=dif.parm$prior,
                       att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, latent.var = latent.var,
-                      mono.constraint = mono.constraint, item.names = item.names,group = group, gr = group,
-                      att.str= att.str,  seq.dat = dat, no.group = no.mg, group.label = gr.label,
+                      mono.constraint = mono.constraint, item.names = item.names,group = ori.group, gr = group,
+                      att.str= att.str,  seq.dat = dat, no.group = no.mg, group.label = ori.gr.label,
                       verbose = verbose, catprob.parm = catprob.parm,sequential = sequential,
                       nloptr_args = nloptr_args,auglag_args=auglag_args,solnp_args = solnp_args,
                       linkfunc = LF.numeric,higher.order = higher.order, loglinear = loglinear, solver = solver,

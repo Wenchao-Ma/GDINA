@@ -16,6 +16,7 @@ dif(
   p.adjust.methods = "holm",
   approx = FALSE,
   SE.type = 2,
+  FS.args = list(on = FALSE, alpha.level = 0.05, maxit = 10, verbose = FALSE),
   ...
 )
 
@@ -26,8 +27,7 @@ dif(
 
 \item{Q}{Q-matrix specifying the association between items and attributes}
 
-\item{group}{a numerical vector with integer 1, 2, ..., # of groups indicating the group each individual belongs to. It must start from 1 and its
-length must be equal to the number of individuals.}
+\item{group}{a factor or a vector indicating the group each individual belongs to. Its length must be equal to the number of individuals.}
 
 \item{model}{model for each item.}
 
@@ -48,6 +48,14 @@ for more details. \code{"holm"} is the default.}
 
 \item{SE.type}{Type of standard error estimation methods for the Wald test.}
 
+\item{FS.args}{arguments for the forward anchor item search procedure developed in Ma, Terzi, and de la Torre (2021). A list with the following elements:
+\itemize{
+  \item \code{on} - logical; \code{TRUE} if activate the forward anchor item search procedure. Default = \code{FALSE}.
+  \item \code{alpha.level} - nominal level for Wald or LR test. Default = .05.
+  \item \code{maxit} - maximum number of iterations allowed. Default = 10.
+  \item \code{verbose} - logical; print information for each iteration or not? Default = \code{FALSE}.
+  }}
+
 \item{...}{arguments passed to GDINA function for model calibration}
 
 \item{object}{dif object for S3 method}
@@ -56,9 +64,8 @@ for more details. \code{"holm"} is the default.}
 A data frame giving the Wald statistics and associated p-values.
 }
 \description{
-This function is used to detect differential item functioning based on the models estimated
-in the \code{\link{GDINA}} function using the Wald test (Hou, de la Torre, & Nandakumar, 2014) and the likelihood ratio
-test (Ma, Terzi, Lee, & de la Torre, 2017). It can only detect DIF for two groups currently.
+This function is used to detect differential item functioning using the Wald test (Hou, de la Torre, & Nandakumar, 2014; Ma, Terzi, & de la Torre, 2021) and the likelihood ratio
+test (Ma, Terzi, & de la Torre, 2021). The forward anchor item search procedure developed in Ma, Terzi, and de la Torre (2021) was implemented. Note that it can only detect DIF for two groups currently.
 }
 \section{Methods (by generic)}{
 \itemize{
@@ -69,32 +76,34 @@ test (Ma, Terzi, Lee, & de la Torre, 2017). It can only detect DIF for two group
 \dontrun{
 set.seed(123456)
 N <- 3000
-Q <- sim10GDINA$simQ
-gs <- matrix(c(0.1,0.2,
-                       0.1,0.2,
-                       0.1,0.2,
-                       0.1,0.2,
-                       0.1,0.2,
-                       0.1,0.2,
-                       0.1,0.2,
-                       0.1,0.2,
-                       0.1,0.2,
-                       0.1,0.2),ncol = 2, byrow = TRUE)
+Q <- sim30GDINA$simQ
+gs <- matrix(.2,ncol = 2, nrow = nrow(Q))
 # By default, individuals are simulated from uniform distribution
 # and deltas are simulated randomly
 sim1 <- simGDINA(N,Q,gs.parm = gs,model="DINA")
-sim2 <- simGDINA(N,Q,gs.parm = gs,model=c(rep("DINA",9),"DINO"))
+sim2 <- simGDINA(N,Q,gs.parm = gs,model=c(rep("DINA",nrow(Q)-1),"DINO"))
 dat <- rbind(extract(sim1,"dat"),extract(sim2,"dat"))
-gr <- c(rep(1,N),rep(2,N))
-dif.out <- dif(dat,Q,group=gr)
-dif.out2 <- dif(dat,Q,group=gr,method="LR")
+gr <- rep(c("G1","G2"),each=N)
+
+# DIF using Wald test
+dif.wald <- dif(dat, Q, group=gr, method = "Wald")
+dif.wald
+# DIF using LR test
+dif.LR <- dif(dat, Q, group=gr, method="LR")
+dif.LR
+# DIF using Wald test + forward search algorithm
+dif.wald.FS <- dif(dat, Q, group=gr, method = "Wald", FS.args = list(on = TRUE, verbose = TRUE))
+dif.wald.FS
+# DIF using LR test + forward search algorithm
+dif.LR.FS <- dif(dat, Q, group=gr, method = "LR", FS.args = list(on = TRUE, verbose = TRUE))
+dif.LR.FS
 }
 }
 \references{
 Hou, L., de la Torre, J., & Nandakumar, R. (2014). Differential item functioning assessment in cognitive diagnostic modeling: Application of the Wald test to
 investigate DIF in the DINA model. \emph{Journal of Educational Measurement, 51}, 98-125.
 
-Ma, W., Terzi, R., Lee, S., & de la Torre, J. (2017, April). Multiple group cognitive diagnosis models and their applications in detecting differential item functioning. Paper presented at the Annual Meeting ofthe American Educational Research Association, San Antonio, TX.
+Ma, W., Terzi, R., & de la Torre, J. (2021). Detecting differential item functioning using multiple-group cognitive diagnosis models. \emph{Applied Psychological Measurement}.
 }
 \seealso{
 \code{\link{GDINA}}

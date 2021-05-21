@@ -1,3 +1,12 @@
+# GDINA 2.8.5
+* Change    - data set: sim10MCDINA
+* Change    - `GDINA` function can accept factor or char vector for `group` argument
+* Change    - forward search algorithm implemented in `dif` function now
+* Added     - data set: sim10MCDINA2
+* Fixed     - `CA` function for models with attribute structures
+* Fixed     - `GDINA` function when one set of initial values was used (Thanks to Hulya Yigit)
+
+
 # GDINA 2.8.0
 * Changed   - add reference to the JSS article
 * Changed   - clean references

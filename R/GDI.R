@@ -87,9 +87,9 @@
 #' #Set eps = -1 to determine the cutoff empirically
 #' pvaf2 <- Qval(mod1,method = "PVAF",eps = -1)
 #' pvaf2
-#' 
+#'
 #' #Iterative procedure (test-attribute level)
-#' pvaf3 <- Qval(mod1, method = "PVAF", eps = -1, 
+#' pvaf3 <- Qval(mod1, method = "PVAF", eps = -1,
 #'               iter = "test.att", iter.args = list(verbose = 1))
 #' pvaf3
 #'
@@ -102,48 +102,48 @@
 #' stepwise <- Qval(seq.est, method = "wald")
 #'}
 
-Qval <- function(GDINA.obj, method = "PVAF", iter = "none", eps = 0.95, 
-                    digits = 4, wald.args = list(), 
+Qval <- function(GDINA.obj, method = "PVAF", iter = "none", eps = 0.95,
+                    digits = 4, wald.args = list(),
                     iter.args = list(empty.att = FALSE, max.iter = 150, verbose = FALSE)){
-  
+
   if (class(GDINA.obj) != "GDINA")
     stop("GDINA.obj must be a GDINA object from GDINA function.", call. = FALSE)
-  
+
   if (!is.null(extract(GDINA.obj, "att.str")))
     stop("Q-matrix validation is not available if attributes are structured.",
          call. = FALSE)
-  
+
   if(method == "wald" & iter != "none"){
     warning("Iterative implementation is not available for the Wald method.")
   }
-  
+
   if(eps != -1){
     if (eps > 1 || eps < 0) stop("eps must be between 0 and 1, or equal to -1.", call. = FALSE)
   }
-  
+
   if(!(iter %in% c("none", "test", "test.att", "item"))){stop("iter must be 'none', 'test', 'test.att', or 'item'.")}
-  
+
   if(extract(GDINA.obj,"ngroup")>1) stop("Only available for single-group models.",call. = FALSE)
-  
+
   # if(any(extract(GDINA.obj,"models_numeric")<0)||any(extract(GDINA.obj,"models_numeric")>5))
   #   stop("Models must be GDINA, DINA, DINO, ACDM, LLM or RRUM",call. = FALSE)
-  
+
   if (max(extract(GDINA.obj, "Q")) > 1)
     stop("Q-validation can only be used for dichotomous attribute G-DINA model.",
          call. = FALSE)
-  
+
   updated.wald.args <- NULL
   if(toupper(method)=="PVAF"){
-    
+
     if(is.null(iter.args$empty.att)){iter.args$empty.att <- FALSE}
     if(is.null(iter.args$max.iter)){iter.args$max.iter <- 150}
     if(is.null(iter.args$verbose)){iter.args$verbose <- FALSE}
     iter.args <- iter.args[c("empty.att", "max.iter", "verbose")]
     # if(any(extract(GDINA.obj,"models")!="GDINA"))
     #   warning("Saturated G-DINA model may be used to calibrate all items for better performance.",call. = FALSE)
-    ret <- Qval_PVAF(GDINA.obj,eps = eps, digits = digits, 
+    ret <- Qval_PVAF(GDINA.obj,eps = eps, digits = digits,
                      iter = iter, iter.args = iter.args)
-    
+
   }else if (toupper(method)=="WALD"){
     if(any(extract(GDINA.obj,"models")!="GDINA"))
       stop("Saturated G-DINA model needs to be fitted to all items.",call. = FALSE)
@@ -173,35 +173,35 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
                       alpha.level = 0.05, GDI = 2, PVAF = 0.95,
                       verbose = FALSE, stepwise = TRUE, digits = 4,...){
   seqent <- extract(GDINA.obj,"sequential")
-  
+
   if(seqent){
     dat <- extract(GDINA.obj,"seq.dat")
   }else{
     dat <- extract(GDINA.obj,"dat")
   }
-  
+
   Qc <- extract(GDINA.obj,"Qc")
-  
+
   Qr <- Q <- extract(GDINA.obj,"Q")
-  
+
   N <- extract(GDINA.obj,"nobs")
-  
+
   # number of categories
   J <- extract(GDINA.obj,"ncat")
-  
+
   K <- extract(GDINA.obj,"natt")
-  
+
   L <- 2^K
-  
+
   Kj <- rowSums(attributepattern(K)[-1,])
   w <- extract(GDINA.obj,"posterior.prob") #1 x L
-  
+
   scofun <- score(GDINA.obj,parm="prob") # a list with # of category elements
-  
+
   # RN <- NgRg(GDINA.obj$technicals$logposterior.i,seqdat,eta.loc(matrix(1,J,K)),1-is.na(seqdat))
   expectedR <- extract(GDINA.obj,"expectedCorrect.LC")
   expectedN <- extract(GDINA.obj,"expectedTotal.LC")
-  
+
   est.p <- t((expectedR + 1e-10)/(expectedN + 2*1e-10))
   # est.p[is.nan(est.p)] <- 0.5
   patt <- attributepattern(K)[-1,]
@@ -224,12 +224,12 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
   # iteras <- NULL
   item <- c(1:nrow(Q))
   for (j in item) {
-    
+
     item.no <- Qc[j,1]
-    
+
     inichoose[j] <- currentset <- first.att[j] # initial att. ---largest GDI
-    
-    
+
+
     att.monitor[[j]] <- c(att.monitor[[j]],currentset)
     loop <- ifelse(vsgK[j,currentset]>=PVAF,FALSE,TRUE)
     it <- 1
@@ -244,16 +244,16 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
         Qr <- extract(GDINA.obj,"Q")
         Qr[j,seq_len(ncol(Qr))] <- 0
         Qr[j,c(currentset,k)] <- 1
-        
+
         etas <- LC2LG(as.matrix(Qr))
         itemparj <- extract(GDINA.obj,"catprob.parm")
-        
+
         itemparj[[j]] <- aggregate(expectedR[j,],by=list(etas[j,]),sum)$x/
           aggregate(expectedN[j,],by=list(etas[j,]),sum)$x
         index <- data.frame(Cat=rep(1:length(rowSums(Qr) ),2^rowSums(Qr)) )
         index$Column <- seq_len(length(index$Cat))
         sco <- scofun
-        
+
         sco[[j]] <- score_pj(Xj = dat[,j],                   # a vector of item responses to item j
                                      parloc.j=etas[j,,drop=FALSE],         # parameter locations for item j - H by 2^K matrix
                                      catprob.j=itemparj[j],        # a list with H elements giving the reduced catprob.parm for each nonzero category
@@ -264,7 +264,7 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
           }else{
             v <- inverse_crossprod(do.call(cbind,sco[-length(sco)]))
           }
-          
+
         }else if(SE.type==3){
           if(extract(GDINA.obj,"att.dist")!="saturated")
             warning("structural parameters are not considered in the calculation of covariance matrix.",call. = FALSE)
@@ -302,8 +302,8 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
         colnames(info) <- c("att","p(att)","GDI-largest att","GDI-largest vec",paste0("p-A",currentset))
         print(info)
       }
-      
-      
+
+
       #*********************************************************If additional elements should be added
       if (any(add.new[,2]<alpha.level)){ # Yes - sig some attributes should be required
         add.new <- add.new[which(add.new[,2]<alpha.level),,drop=FALSE] # which should be added
@@ -319,7 +319,7 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
         if(!stepwise) remove.a <- NULL
         currentset <- sort(setdiff(c(currentset,add.a),remove.a)) # all att. chosen
         att.monitor[[j]] <- c(att.monitor[[j]],add.a)
-        
+
         if(is.null(remove.a)){ #if no attributes will be removed
           current_vec_PVAF <- add.new[which(add.new[,1,drop=FALSE]==add.a),4]
         }else{ # if some need to be removed - vector PVAF need to be recalculated
@@ -327,25 +327,25 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
           newq[currentset] <- 1
           current_vec_PVAF <- vsg0[j,rowMatch(patt,newq)$row.no]
         }
-        
+
         if(current_vec_PVAF>=PVAF){
           loop <- FALSE
         }else{
           loop <- TRUE
           it <- it + 1
         }
-        
+
       }else{   # No
         loop <- FALSE
       }
     }
-    
+
     Q[j,] <- 0
     Q[j,currentset] <- 1
-    
+
     j <- j+1
   }
-  
+
   if(seqent){
     ret.Q <- Qc
     ret.sugQ <- cbind(Qc[,1:2],Q)
@@ -358,7 +358,7 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
   rownames(out.vsg) <-
     rownames(out.PVAF) <-
     apply(patt, 1, paste, collapse = "")
-  
+
   qvalid <-
     list(
       sug.Q = ret.sugQ,
@@ -369,9 +369,9 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
       initialAtt=inichoose,
       est.p = est.p
     )
-  
+
   return(qvalid)
-  
+
 }
 
 Qval_PVAF <- function(GDINA.obj,
@@ -379,12 +379,12 @@ Qval_PVAF <- function(GDINA.obj,
                       digits = 4,
                       iter = "none",
                       iter.args = list(empty.att = FALSE, max.iter = 150, verbose = FALSE)){
-  
+
   seqent <- extract(GDINA.obj,"sequential")
   eps.base <- eps
-  
+
   fit <- GDINA.obj
-  
+
   Qiter <- list()
   if(seqent){
     Y <- extract(GDINA.obj,"seq.dat")
@@ -394,7 +394,7 @@ Qval_PVAF <- function(GDINA.obj,
     Y <- dat <- extract(GDINA.obj,"dat")
     Qiter[["0"]] <- Qtest <- Qprov <- Q <- extract(GDINA.obj,"Q")
   }
-  
+
   model <- GDINA.obj$options$model
   mono.constraint <- GDINA.obj$options$mono.constraint
   if(!is.null(GDINA.obj$options$higher.order)){
@@ -406,7 +406,7 @@ Qval_PVAF <- function(GDINA.obj,
     ho.iPrior <- GDINA.obj$options$higher.order$InterceptPrior
     ho.prior <- GDINA.obj$options$higher.order$Prior
   }
-  
+
   N <- extract(GDINA.obj, "nobs")
   J <- extract(GDINA.obj, "nitem")
   K <- extract(GDINA.obj, "natt")
@@ -416,7 +416,7 @@ Qval_PVAF <- function(GDINA.obj,
   } else {
     L <- no_LC(Q)
   }
-  
+
   M <- attributepattern(K)[-1,]
   Kj <- rowSums(attributepattern(K)[-1, ])
   w <- extract(GDINA.obj, "posterior.prob") #1 x L
@@ -434,9 +434,9 @@ Qval_PVAF <- function(GDINA.obj,
   loc <- eta(patt) #2^K-1 x 2^K
   vsg <- varsigma(as.matrix(t(loc)), as.matrix(est.p), c(w))
   PVAF <- vsg / vsg[, L - 1]
-  
+
   i <- 0
-  
+
   if(iter == "none"){
     if(eps.base == -1){
       gs <- coef(fit, what = "gs") # item parameters
@@ -469,7 +469,7 @@ Qval_PVAF <- function(GDINA.obj,
       x[which.max(x > 0)]
     })
     val_q <- attributepattern(K)[-1, ][loc_q, ]
-    
+
     out.vsg <- round(t(vsg), digits)
     out.PVAF <- round(t(PVAF), digits)
     rownames(out.vsg) <-
@@ -483,9 +483,9 @@ Qval_PVAF <- function(GDINA.obj,
       ret.Q <- Q
       ret.sugQ <- val_q
     }
-    
+
     i <- n.iter <- convergence <- 1
-    
+
     qvalid <-
       list(
         sug.Q = ret.sugQ,
@@ -494,14 +494,14 @@ Qval_PVAF <- function(GDINA.obj,
         PVAF = out.PVAF,
         eps = eps,
         est.p = est.p,
-        n.iter = n.iter, 
+        n.iter = n.iter,
         convergence = convergence
       )
-    
+
   } else {
     while(i < iter.args$max.iter){
       i <- i + 1
-      
+
       if(eps.base == -1){
         gs <- coef(fit, what = "gs") # item parameters
         eps <- plogis(-0.4045140782147791 +
@@ -509,9 +509,9 @@ Qval_PVAF <- function(GDINA.obj,
                         2.8667570118638275*(1-sum(colMeans(gs))) +
                         -0.003315555999671906*extract(fit,"nitem"))
       }
-      
+
       w <- extract(fit, "posterior.prob") #1 x L
-      
+
       rc <- apply(YY, 2, function(x) {
         colSums(x * exp(extract(fit, "logposterior.i")))
       })
@@ -520,11 +520,11 @@ Qval_PVAF <- function(GDINA.obj,
       })
       # est.p <- rc/c(w*N)
       est.p <- (rc + 1e-10) / (rn + 2* 1e-10)
-      
+
       loc <- eta(patt) #2^K-1 x 2^K
       vsg <- varsigma(as.matrix(t(loc)), as.matrix(est.p), c(w))
       PVAF <- vsg / vsg[, L - 1]
-      
+
       val_q <- NULL
       for (k in sort(unique(Kj))) {
         tmp <- PVAF[, which(Kj == k)]
@@ -549,7 +549,7 @@ Qval_PVAF <- function(GDINA.obj,
         x[which.max(x > 0)]
       })
       val_q <- attributepattern(K)[-1, ][loc_q, ]
-      
+
       out.vsg <- round(t(vsg), digits)
       out.PVAF <- round(t(PVAF), digits)
       rownames(out.vsg) <-
@@ -563,7 +563,7 @@ Qval_PVAF <- function(GDINA.obj,
         ret.Q <- Q
         ret.sugQ <- val_q
       }
-      
+
       Qsug.obj <-
         list(
           sug.Q = ret.sugQ,
@@ -572,10 +572,10 @@ Qval_PVAF <- function(GDINA.obj,
           PVAF = out.PVAF,
           eps = eps,
           est.p = est.p)
-      
+
       Qsug <- Qsug.obj$sug.Q
       res.eps <- Qsug.obj$eps
-      
+
       if(seqent){
         maxloc <- matrix(NA, nrow = K, ncol = Js, dimnames = list(paste0("K", 1:K), paste0("Js", 1:Js)))
       } else {
@@ -597,7 +597,7 @@ Qval_PVAF <- function(GDINA.obj,
       } else {
         hit <- hit.cand <- which(sapply(1:J, function(j) any(Qprov[j,] != Qsug[j,])))
       }
-      
+
       if(length(hit.cand) == 0){
         i <- i - 1
         convergence <- 1 # YES convergence
@@ -623,7 +623,7 @@ Qval_PVAF <- function(GDINA.obj,
             }
           }
         }
-        
+
         if(iter == "item"){
           if(seqent){
             prov.q <- match(apply(Qprov[hit.cand, -c(1:2), drop = F], 1, paste, collapse = ""), apply(M, 1, paste, collapse = ""))
@@ -638,7 +638,7 @@ Qval_PVAF <- function(GDINA.obj,
           hit <- hit.cand[which.max(PVAF.diff)]
         }
       }
-      
+
       Qtest[hit,] <- Qsug[hit,]
       if(any(sapply(1:i, function(x) mean(Qtest == Qiter[[x]])) == 1)){convergence <- 2; break} # NO convergence (loop)
       if(any(colSums(Qtest) == 0)){convergence <- 3; break} # NO convergence (null attribute)
@@ -648,11 +648,11 @@ Qval_PVAF <- function(GDINA.obj,
         fit <- GDINA(dat, Qprov, model, mono.constraint = mono.constraint, sequential = seqent, verbose = 0)
       } else {
         fit <- GDINA(dat, Qprov, model, mono.constraint = mono.constraint, att.dist = "higher.order", sequential = seqent, verbose = 0,
-                     higher.order = list(model = ho.model, nquad = ho.nquad, SlopeRange = ho.sRange, InterceptRange = ho.iRange, 
+                     higher.order = list(model = ho.model, nquad = ho.nquad, SlopeRange = ho.sRange, InterceptRange = ho.iRange,
                                          SlopePrior = ho.sPrior, InterceptPrior = ho.iPrior, Prior = ho.prior))
       }
     }
-    
+
     n.iter <- i
     if(n.iter == iter.args$max.iter){convergence <- 4} # NO convergence (max.iter reached)
     if(iter.args$empty.att & convergence == 3){
@@ -660,19 +660,20 @@ Qval_PVAF <- function(GDINA.obj,
     } else {
       Qsug <- Qprov
     }
-    
+
     qvalid <-
       list(
-        sug.Q = ret.sugQ,
+        # sug.Q = ret.sugQ,
+        sug.Q = Qsug,
         Q = ret.Q,
         varsigma = out.vsg,
         PVAF = out.PVAF,
         eps = eps,
         est.p = est.p,
-        n.iter = n.iter, 
+        n.iter = n.iter,
         convergence = convergence
       )
   }
-  
+
   return(qvalid)
 }

@@ -1132,7 +1132,8 @@ initials <- function(Q,nstarts=1,DesignMatrices,latent.var="att",att.str=NULL){
       for(j in seq_len(J)){
         g <- runif(1,0.05,0.25)
         p <- runif(1,0.75,0.95)
-        d <- c(g,(p-g)/(ncol(DesignMatrices[[j]])-1))
+        dd <- runif(ncol(DesignMatrices[[j]])-1)
+        d <- c(g,(p-g)*dd/sum(dd))
         par[[j]] <- c(DesignMatrices[[j]] %*%d)
       }
       ret <- l2m(par)

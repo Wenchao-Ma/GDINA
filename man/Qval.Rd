@@ -120,7 +120,7 @@ pvaf2 <- Qval(mod1,method = "PVAF",eps = -1)
 pvaf2
 
 #Iterative procedure (test-attribute level)
-pvaf3 <- Qval(mod1, method = "PVAF", eps = -1, 
+pvaf3 <- Qval(mod1, method = "PVAF", eps = -1,
               iter = "test.att", iter.args = list(verbose = 1))
 pvaf3
 
