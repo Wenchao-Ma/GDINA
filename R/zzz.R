@@ -7,7 +7,7 @@
 
 StartWelcomeMessage <- function(){
 
-  paste("GDINA Package ",
+  paste("GDINA R Package ",
         "(version ", utils::packageDescription("GDINA")$Version,
         "; ",utils::packageDescription("GDINA")$Date, ")\n",
         "For tutorials, see https://wenchao-ma.github.io/GDINA\n",
