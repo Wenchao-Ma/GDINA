@@ -148,5 +148,5 @@ Najera, P., Sorrel, M. A., de la Torre, J., & Abad, F. J. (2020). Improving robu
 \code{\link{GDINA}}
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}, Miguel \cr Jimmy de la Torre, The University of Hong Kong}
+{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}, \cr Miguel A. Sorrel, Universidad Autónoma de Madrid, \cr Jimmy de la Torre, The University of Hong Kong}
 }

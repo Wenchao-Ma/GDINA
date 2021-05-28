@@ -333,7 +333,8 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 LC.labels = object$technicals$LC.labels,
                 LCprob.parm = object$LC.prob,
                 LCpf.parm = {
-                  LCpf <- patt <- eta(as.matrix(extract(object,"Q")))
+                  # LCpf <- patt <- eta(as.matrix(extract(object,"Q")))
+                  LCpf <- patt <- eta(as.matrix(extract(object,"Q")), object$attributepattern)
                   pf <- extract(object,"catprob.parm")
                   for(i in 1:nrow(LCpf)) LCpf[i,] <- pf[[i]][patt[i,]]
                   rownames(LCpf) <- rownames(extract(object,"catprob.matrix"))

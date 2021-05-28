@@ -1,10 +1,12 @@
-# GDINA 2.8.5
+# GDINA 2.8.7
 * Change    - data set: sim10MCDINA
 * Change    - `GDINA` function can accept factor or char vector for `group` argument
 * Change    - forward search algorithm implemented in `dif` function now
+* Change    - `Qval` for Q-matrix validation using an iterative and dynamic procedure
 * Added     - data set: sim10MCDINA2
 * Fixed     - `CA` function for models with attribute structures
 * Fixed     - `GDINA` function when one set of initial values was used (Thanks to Hulya Yigit)
+* Fixed     - Mord statistic calculation in `modelfit` function when attribute structure exists (Thanks to Haiymiao Yuan)
 
 
 # GDINA 2.8.0

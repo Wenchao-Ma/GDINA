@@ -9,3 +9,6 @@
 ^_pkgdown\.yml$
 ^docs$
 ^vignettes/OnlineExercises/.*$
+\.fsrc$
+\.o$
+\.so$
