@@ -313,7 +313,6 @@
 #'
 #' Xu, X., & von Davier, M. (2008). Fitting the structured general diagnostic model to NAEP data. ETS research report, RR-08-27.
 #'
-#' @importFrom nloptr nloptr slsqp nl.grad nl.jacobian
 #' @importFrom Rcpp sourceCpp
 #' @importFrom numDeriv hessian jacobian
 #' @importFrom alabama auglag

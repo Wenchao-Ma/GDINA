@@ -1,3 +1,6 @@
+# GDINA 2.8.8
+* Change    - update the package to remove the dependence on nloptr package
+
 # GDINA 2.8.7
 * Change    - data set: sim10MCDINA
 * Change    - `GDINA` function can accept factor or char vector for `group` argument

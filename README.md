@@ -8,7 +8,7 @@ state and is being actively
 developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Build
 Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travis-ci.org/Wenchao-Ma/GDINA)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA)
 [![](https://cranlogs.r-pkg.org/badges/GDINA?color=brightgreen)](https://cran.r-project.org/package=GDINA)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/GDINA?color=green)](https://cran.r-project.org/package=GDINA)
 
@@ -18,8 +18,8 @@ Ma, W. & de la Torre, J. (2020). GDINA: An R Package for Cognitive
 Diagnosis Modeling. Journal of Statistical Software, 93(14), 1-26.
 <https://doi.org/10.18637/jss.v093.i14>
 
-Ma, W. & de la Torre, J. (2020). GDINA: The generalized DINA model
-framework. R package version 2.8.0. Retrived from
+Ma, W. & de la Torre, J. (2022). GDINA: The generalized DINA model
+framework. R package version 2.8.8. Retrived from
 <https://CRAN.R-project.org/package=GDINA>
 
 Visit the package website <https://wenchao-ma.github.io/GDINA> for
@@ -27,47 +27,51 @@ examples, tutorials and more information.
 
 ## Learning resources
 
-  - Watch [Ma and de la Torre’s (2019) NCME digital
-    module 5](https://ncme.elevate.commpartners.com/) on a gentle
-    introduction to the G-DINA model framework and the use of graphical
-    user interface for CDM analyses
+-   Watch [Ma and de la Torre’s (2019) NCME digital module
+    5](https://ncme.elevate.commpartners.com/) on a gentle introduction
+    to the G-DINA model framework and the use of graphical user
+    interface for CDM analyses
 
-  - Check [the book chapter by Ma
-    (2019)](https://doi.org/10.1007/978-3-030-05584-4_29) on an
+-   Check [the book chapter by
+    Ma (2019)](https://doi.org/10.1007/978-3-030-05584-4_29) on an
     introduction to the GDINA package
 
-  - Check [de la Torre and Akbay’s (2019)
+-   Check [de la Torre and Akbay’s (2019)
     article](https://doi.org/10.14689/ejer.2019.80.9) on how to conduct
     various CDM analyses using the graphical user interface
 
+-   Check [Shi, et al (2021)](https://doi.org/10.3390/psych3040052) on
+    how to use this package, along with other R packages for CDM
+    analyses
+
 ## Features of the package
 
-  - Estimating G-DINA model and a variety of widely-used models subsumed
+-   Estimating G-DINA model and a variety of widely-used models subsumed
     by the G-DINA model, including the DINA model, DINO model,
     additive-CDM (A-CDM), linear logistic model (LLM), reduced
     reparametrized unified model (RRUM), multiple-strategy DINA model
     for dichotomous responses
-  - Estimating models within the G-DINA model framework using
+-   Estimating models within the G-DINA model framework using
     user-specified design matrix and link functions
-  - Estimating Bugs-DINA, DINO and G-DINA models for dichotomous
+-   Estimating Bugs-DINA, DINO and G-DINA models for dichotomous
     responses
-  - Estimating sequential G-DINA model for ordinal and nominal responses
-  - Estimating the generalized multiple-strategy cognitive diagnosis
+-   Estimating sequential G-DINA model for ordinal and nominal responses
+-   Estimating the generalized multiple-strategy cognitive diagnosis
     models (experimental)
-  - Estimating the diagnostic tree model (experimental)
-  - Estimating multiple-choice models
-  - Modelling independent, saturated, higher-order, loglinear smoothed,
+-   Estimating the diagnostic tree model (experimental)
+-   Estimating multiple-choice models
+-   Modelling independent, saturated, higher-order, loglinear smoothed,
     and structured joint attribute distribution
-  - Accommodating multiple-group model analysis
-  - Imposing monotonic constrained success probabilities
-  - Accommodating binary and polytomous attributes
-  - Validating Q-matrix under the general model framework
-  - Evaluating absolute and relative item and model fit
-  - Comparing models at the test and item levels
-  - Detecting differential item functioning using Wald and likelihood
+-   Accommodating multiple-group model analysis
+-   Imposing monotonic constrained success probabilities
+-   Accommodating binary and polytomous attributes
+-   Validating Q-matrix under the general model framework
+-   Evaluating absolute and relative item and model fit
+-   Comparing models at the test and item levels
+-   Detecting differential item functioning using Wald and likelihood
     ratio test
-  - Simulating data based on all aforementioned CDMs
-  - Providing graphical user interface for users less familiar with R
+-   Simulating data based on all aforementioned CDMs
+-   Providing graphical user interface for users less familiar with R
 
 ## Installation
 
@@ -76,7 +80,7 @@ The stable version of GDINA should be installed from R CRAN at
 
 To install this package from source:
 
-1)  Windows users may need to install the
+1.  Windows users may need to install the
     [Rtools](https://CRAN.R-project.org/bin/windows/Rtools/) and include
     the checkbox option of installing Rtools to their path for easier
     command line usage. Mac users will have to download the necessary
@@ -86,10 +90,8 @@ To install this package from source:
     under Downloads/Components); most Linux distributions should already
     have up to date compilers (or if not they can be updated easily).
 
-2)  Install the `devtools` package (if necessary), and install the
+2.  Install the `devtools` package (if necessary), and install the
     package from the Github source code.
-
-<!-- end list -->
 
 ``` r
 # install.packages("devtools")

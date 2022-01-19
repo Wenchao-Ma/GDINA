@@ -168,59 +168,59 @@ GNLOptim <- function(par,fn,gr=NULL,hin=NULL,hin.gr=NULL,optimizer=NULL,
     }
 
   }else if(optimizer=="slsqp"){
-
-    op <- tryCatch(nloptr::nloptr(x0=par,eval_f=fn,eval_grad_f=gr,eval_g_ineq = hin,eval_jac_g_ineq = hin.gr,
-                                  Nj=Nj,Rj=Rj,designMj=designMj,uPj=uPj,ConstrMatrix=ConstrMatrix,greaterthan0 = FALSE,
-                                  lPj=lPj,linkfunc=linkfunc,eps=eps,ConstrType=ConstrType,
-                                  opts=nloptr_args,...),
-                   error=function(e){
-                     if(MstepMessage){
-                       message(paste("M-step optimization failed for item",j,"at iteration",itr))
-                       message("Error message from nloptr::slsqp:")
-                       message(e)
-                     }
-                     return("error")
-                   })
-    if(length(op)==1&&op=="error"){
-      ret$convergence <- -1
-    }else{
-      ret$delta <- op$solution
-      ret$opt <- op
-      ret$phat <- c(Calc_Pj(op$solution,designMj,linkfunc,FALSE))
-      if(any(ret$phat<0)||any(ret$phat>1)){
-        message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[nloptr:slsqp]"),call. = FALSE)
-        ret$convergence <- -3
-      }else{
-        ret$convergence <- 0
-      }
-    }
+    message("slsqp is not available now")
+    # op <- tryCatch(nloptr::nloptr(x0=par,eval_f=fn,eval_grad_f=gr,eval_g_ineq = hin,eval_jac_g_ineq = hin.gr,
+    #                               Nj=Nj,Rj=Rj,designMj=designMj,uPj=uPj,ConstrMatrix=ConstrMatrix,greaterthan0 = FALSE,
+    #                               lPj=lPj,linkfunc=linkfunc,eps=eps,ConstrType=ConstrType,
+    #                               opts=nloptr_args,...),
+    #                error=function(e){
+    #                  if(MstepMessage){
+    #                    message(paste("M-step optimization failed for item",j,"at iteration",itr))
+    #                    message("Error message from nloptr::slsqp:")
+    #                    message(e)
+    #                  }
+    #                  return("error")
+    #                })
+    # if(length(op)==1&&op=="error"){
+    #   ret$convergence <- -1
+    # }else{
+    #   ret$delta <- op$solution
+    #   ret$opt <- op
+    #   ret$phat <- c(Calc_Pj(op$solution,designMj,linkfunc,FALSE))
+    #   if(any(ret$phat<0)||any(ret$phat>1)){
+    #     message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[nloptr:slsqp]"),call. = FALSE)
+    #     ret$convergence <- -3
+    #   }else{
+    #     ret$convergence <- 0
+    #   }
+    # }
   }else if(optimizer=="nloptr"){
-
-    op <- tryCatch(nloptr::nloptr(x0=par,eval_f=fn,eval_grad_f=gr,eval_g_ineq = hin,eval_jac_g_ineq = hin.gr,
-                                  Nj=Nj,Rj=Rj,designMj=designMj,uPj=uPj,ConstrMatrix=ConstrMatrix,greaterthan0 = FALSE,
-                                  lPj=lPj,linkfunc=linkfunc,eps=eps,ConstrType=ConstrType,
-                                  opts=nloptr_args,...),
-                   error=function(e){
-                     if(MstepMessage){
-                       message(paste("M-step optimization failed for item",j,"at iteration",itr))
-                       message("Error message from nloptr::nloptr:")
-                       message(e)
-                     }
-                     return("error")
-                   })
-    if(length(op)==1&&op=="error"){
-      ret$convergence <- -1
-    }else{
-      ret$delta <- op$solution
-      ret$opt <- op
-      ret$phat <- c(Calc_Pj(op$solution,designMj,linkfunc,FALSE))
-      if(any(ret$phat<0)||any(ret$phat>1)){
-        message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[nloptr:nloptr]"),call. = FALSE)
-        ret$convergence <- -3
-      }else{
-        ret$convergence <- 0
-      }
-    }
+    message("slsqp is not available now")
+    # op <- tryCatch(nloptr::nloptr(x0=par,eval_f=fn,eval_grad_f=gr,eval_g_ineq = hin,eval_jac_g_ineq = hin.gr,
+    #                               Nj=Nj,Rj=Rj,designMj=designMj,uPj=uPj,ConstrMatrix=ConstrMatrix,greaterthan0 = FALSE,
+    #                               lPj=lPj,linkfunc=linkfunc,eps=eps,ConstrType=ConstrType,
+    #                               opts=nloptr_args,...),
+    #                error=function(e){
+    #                  if(MstepMessage){
+    #                    message(paste("M-step optimization failed for item",j,"at iteration",itr))
+    #                    message("Error message from nloptr::nloptr:")
+    #                    message(e)
+    #                  }
+    #                  return("error")
+    #                })
+    # if(length(op)==1&&op=="error"){
+    #   ret$convergence <- -1
+    # }else{
+    #   ret$delta <- op$solution
+    #   ret$opt <- op
+    #   ret$phat <- c(Calc_Pj(op$solution,designMj,linkfunc,FALSE))
+    #   if(any(ret$phat<0)||any(ret$phat>1)){
+    #     message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[nloptr:nloptr]"),call. = FALSE)
+    #     ret$convergence <- -3
+    #   }else{
+    #     ret$convergence <- 0
+    #   }
+    # }
   }
   ret
 }
@@ -318,32 +318,32 @@ GNLOptim_call <- function(par,solver,modelj,correction,auglag_args,nloptr_args,s
       return(ret)
 
     }else if(linkfunc==2){ #logit link function
-
-      op <- tryCatch(nloptr::slsqp(x0=par,fn=Mstep_obj_fn_prior,
-                                    Nj=Nj,Rj=Rj,designMj=designMj,uPj=uPj,ConstrMatrix=ConstrMatrix,greaterthan0 = FALSE,
-                                    lPj=lPj,linkfunc=linkfunc,eps=eps,ConstrType=ConstrType,m=item.prior$normal[1],sd=item.prior$normal[2]),
-                     error=function(e){
-                       if(MstepMessage){
-                         message(paste("M-step optimization failed for item",j,"at iteration",itr))
-                         message("Error message from nloptr::slsqp:")
-                         message(e)
-                       }
-                       return("error")
-                     })
-      if(length(op)==1&&op=="error"){
-        ret$convergence <- -1
-      }else{
-        ret$delta <- op$par
-        ret$opt <- op
-        ret$phat <- c(Calc_Pj(op$par,designMj,linkfunc,FALSE))
-        if(any(ret$phat<0)||any(ret$phat>1)){
-          message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[nloptr:slsqp]"),call. = FALSE)
-          ret$convergence <- -3
-        }else{
-          ret$convergence <- 0
-        }
-      }
-      return(ret)
+      message("This is not currently available because of nloptr.")
+      # op <- tryCatch(nloptr::slsqp(x0=par,fn=Mstep_obj_fn_prior,
+      #                               Nj=Nj,Rj=Rj,designMj=designMj,uPj=uPj,ConstrMatrix=ConstrMatrix,greaterthan0 = FALSE,
+      #                               lPj=lPj,linkfunc=linkfunc,eps=eps,ConstrType=ConstrType,m=item.prior$normal[1],sd=item.prior$normal[2]),
+      #                error=function(e){
+      #                  if(MstepMessage){
+      #                    message(paste("M-step optimization failed for item",j,"at iteration",itr))
+      #                    message("Error message from nloptr::slsqp:")
+      #                    message(e)
+      #                  }
+      #                  return("error")
+      #                })
+      # if(length(op)==1&&op=="error"){
+      #   ret$convergence <- -1
+      # }else{
+      #   ret$delta <- op$par
+      #   ret$opt <- op
+      #   ret$phat <- c(Calc_Pj(op$par,designMj,linkfunc,FALSE))
+      #   if(any(ret$phat<0)||any(ret$phat>1)){
+      #     message(paste("Estimates are out of bounds for item",j,"at iteration",itr,"[nloptr:slsqp]"),call. = FALSE)
+      #     ret$convergence <- -3
+      #   }else{
+      #     ret$convergence <- 0
+      #   }
+      # }
+      # return(ret)
     }else{
       stop("Priors cannot be imposed.",call. = FALSE)
     }
@@ -354,15 +354,15 @@ GNLOptim_call <- function(par,solver,modelj,correction,auglag_args,nloptr_args,s
         if(modelj<3&modelj>=0){
           solver <- "ClosedForm"
         }else if(modelj>=3){
-          solver <- c("BFGS","slsqp","auglag","solnp")
+          solver <- c("BFGS","auglag","solnp")
         }else if(modelj==-1||modelj==-2||modelj==-3){
-          solver <- c("slsqp","auglag","solnp")
+          solver <- c("auglag","solnp")
         }
       }else{
         if(modelj>0){
-          solver <- c("BFGS","slsqp","auglag","solnp")
+          solver <- c("BFGS","auglag","solnp")
         }else if(modelj<=0){
-          solver <- c("slsqp","auglag","solnp")
+          solver <- c("auglag","solnp")
         }
       }
     }
@@ -370,7 +370,7 @@ GNLOptim_call <- function(par,solver,modelj,correction,auglag_args,nloptr_args,s
     conv <- vector("numeric",length(solver))
     for(s in solver){
       # print(s)
-      if(s=="slsqp"){nloptr_args$algorithm = "NLOPT_LD_SLSQP"}
+      # if(s=="slsqp"){nloptr_args$algorithm = "NLOPT_LD_SLSQP"}
       optims <- GNLOptim(par = par,fn=Mstep_obj_fn,gr=Mstep_obj_gr,hin=Mstep_ineq_fn,hin.gr=Mstep_ineq_jac,
                          optimizer=s,modelj=modelj,correction=correction,
                          auglag_args=auglag_args,nloptr_args=nloptr_args,solnp_args = solnp_args,
