@@ -12,7 +12,7 @@ Imports: alabama, graphics, ggplot2, MASS, numDeriv, Rcpp (>=
         0.12.1), Rsolnp, stats, shiny, shinydashboard, utils
 Suggests: CDM, Matrix, testthat, poLCA, stringr, knitr, rmarkdown
 LinkingTo: Rcpp, RcppArmadillo
-URL: https://github.com/Wenchao-Ma/GDINA, https://wenchao-ma.github.io/GDINA
+URL: https://github.com/Wenchao-Ma/GDINA, https://wenchao-ma.github.io/GDINA/
 BugReports: https://github.com/Wenchao-Ma/GDINA/issues
 RoxygenNote: 7.1.2
 Encoding: UTF-8

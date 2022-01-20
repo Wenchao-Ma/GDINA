@@ -5,7 +5,7 @@
 
 [![Project Status: Active ? The project has reached a stable, usable
 state and is being actively
-developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/)
 [![Build
 Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travis-ci.org/Wenchao-Ma/GDINA)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA)
@@ -22,7 +22,7 @@ Ma, W. & de la Torre, J. (2022). GDINA: The generalized DINA model
 framework. R package version 2.8.8. Retrived from
 <https://CRAN.R-project.org/package=GDINA>
 
-Visit the package website <https://wenchao-ma.github.io/GDINA> for
+Visit the package website <https://wenchao-ma.github.io/GDINA/> for
 examples, tutorials and more information.
 
 ## Learning resources
@@ -36,9 +36,9 @@ examples, tutorials and more information.
     Ma (2019)](https://doi.org/10.1007/978-3-030-05584-4_29) on an
     introduction to the GDINA package
 
--   Check [de la Torre and Akbay’s (2019)
-    article](https://doi.org/10.14689/ejer.2019.80.9) on how to conduct
-    various CDM analyses using the graphical user interface
+-   Check [de la Torre and Akbay’s (2019) article](https://ejer.com.tr/)
+    on how to conduct various CDM analyses using the graphical user
+    interface
 
 -   Check [Shi, et al (2021)](https://doi.org/10.3390/psych3040052) on
     how to use this package, along with other R packages for CDM
@@ -85,7 +85,7 @@ To install this package from source:
     the checkbox option of installing Rtools to their path for easier
     command line usage. Mac users will have to download the necessary
     tools from the
-    [Xcode](https://itunes.apple.com/ca/app/xcode/id497799835?mt=12) and
+    [Xcode](https://apps.apple.com/ca/app/xcode/id497799835?mt=12) and
     its related command line tools (found within Xcode’s Preference Pane
     under Downloads/Components); most Linux distributions should already
     have up to date compilers (or if not they can be updated easily).
