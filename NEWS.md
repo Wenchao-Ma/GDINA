@@ -1,3 +1,6 @@
+# GDINA 2.8.9
+* Change    - add an argument `SE` for MCmodel function
+
 # GDINA 2.8.8
 * Change    - update the package to remove the dependence on nloptr package
 

@@ -105,7 +105,7 @@
 #'
 #'
 #'
-MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxitr=2000,conv.type="pr"){
+MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxitr=2000,conv.type="pr",SE=TRUE){
 
   s1 <- Sys.time()
   mcm.call <- match.call()
@@ -199,27 +199,31 @@ MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxi
   #number of expected examinees getting each score in each latent class - including 0 score
   R1 <- Rljs_DTM(likepost$logpost,dat-1,C-1) #S0 x L
 
-sco <- NULL
+  sco <- NULL
   for(j in 1:J){
     sco <- c(sco,score.mcm.j(Xj = dat[,j],
-                parloc.j = eta[j,],
-                catprob.j = param[[j]],
-                logpost = likepost$logpost))
+                             parloc.j = eta[j,],
+                             catprob.j = param[[j]],
+                             logpost = likepost$logpost))
   }
-SEs <- sqrt(diag(inverse_crossprod(do.call(cbind,sco))))
-se <- list()
-st <- 1
-for(j in 1:J){
-  se[[j]] <- rbind(matrix(SEs[st:(st+length(param[[j]])-ncol(param[[j]])-1)],ncol = ncol(param[[j]]),byrow = TRUE),NA)
-  st <- st+length(param[[j]])-ncol(param[[j]])
-}
+  se <- list()
+  if(SE){
+    SEs <- sqrt(diag(inverse_crossprod(do.call(cbind,sco))))
+
+    st <- 1
+    for(j in 1:J){
+      se[[j]] <- rbind(matrix(SEs[st:(st+length(param[[j]])-ncol(param[[j]])-1)],ncol = ncol(param[[j]]),byrow = TRUE),NA)
+      st <- st+length(param[[j]])-ncol(param[[j]])
+    }
+  }
+
   #-----------------Test Fit information----------------#
 
   neg2LL <- -2*likepost$LL
 
   npar.item <- 0
   for(j in seq_len(J))
-      npar.item <- npar.item + length(param[[j]]) - ncol(param[[j]])
+    npar.item <- npar.item + length(param[[j]]) - ncol(param[[j]])
 
   npar <- L - 1 + npar.item
 
@@ -233,12 +237,17 @@ for(j in 1:J){
   att <- list(EAP=((exp(likepost$logpost)%*%patt)>0.5)*1,
               MAP=patt[apply(likepost$logpost,1,which.max.randomtie),],
               MLE=patt[apply(likepost$loglik,1,which.max.randomtie),])
-  names(param) <- names(se) <- paste("Item",1:J)
+  names(param) <- paste("Item",1:J)
+  if (SE) names(se) <- paste("Item",1:J)
   total.row.label <- NULL
   for(j in seq_len(J)){
     colnames(param[[j]]) <- paste0("P(",init$label[[j]],")")
-    rownames(param[[j]]) <- rownames(se[[j]]) <- paste("Cat",seq_len(nrow(param[[j]])))
-    colnames(se[[j]]) <- paste0("SE(",init$label[[j]],")")
+    rownames(param[[j]]) <- paste("Cat",seq_len(nrow(param[[j]])))
+    if(SE){
+      rownames(se[[j]]) <- paste("Cat",seq_len(nrow(param[[j]])))
+      colnames(se[[j]]) <- paste0("SE(",init$label[[j]],")")
+    }
+
     total.row.label <- c(total.row.label,paste("Item",j,"Cat",seq_len(nrow(param[[j]]))))
   }
 
@@ -381,7 +390,7 @@ pl <- function(eta.obj,model = "MCDINA"){
       p[[j]][p[[j]]==0] <- .2/(nrow(p[[j]])-1)
     }
   }
-p
+  p
 }
 
 pl2pm <- function(plist,eta){
@@ -403,11 +412,11 @@ pl2pm <- function(plist,eta){
 
 
 score.mcm.j <- function(Xj,
-                     parloc.j,
-                     catprob.j,
-                     logpost){
+                        parloc.j,
+                        catprob.j,
+                        logpost){
 
-   Xj[is.na(Xj)] <- -1 # remove NA from the data
+  Xj[is.na(Xj)] <- -1 # remove NA from the data
   post <- exp(logpost) # posterior N x 2^K
   score.p <- vector("list",nrow(catprob.j)-1)
   for(r in 1:length(score.p)){
