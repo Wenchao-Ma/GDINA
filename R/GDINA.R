@@ -74,23 +74,25 @@
 #'        To obtain the DINA model from the G-DINA model,
 #'        all terms in identity link G-DINA model except \eqn{\delta_0} and \eqn{\delta_{12{\ldots}K_j^*}}
 #'        need to be fixed to zero, that is,
-#'        \deqn{ P(\mathbf{\alpha}_{lj}^*)=\delta_{j0}+\delta_{j12{\cdots}K_j^*}\prod_{k=1}^{K_j^*}\alpha_{lk}}
+#'        \deqn{P(\mathbf{\alpha}_{lj}^*)=
+#'        \delta_{j0}+\delta_{j12{\cdots}K_j^*}\prod_{k=1}^{K_j^*}\alpha_{lk}}
 #'        In this parameterization, \eqn{\delta_{j0}=g_j} and \eqn{\delta_{j0}+\delta_{j12{\cdots}K_j^*}=1-s_j}.
-#'
 #'    }
 #' \item{\code{DINO model}}{
 #'        The DINO model can be given by
-#'        \deqn{P(\mathbf{\alpha}_{lj}^*)=\delta_{j0}+\delta_{j1}I(\mathbf{\alpha}_{lj}^*\neq \mathbf{0})}
+#'        \deqn{P(\mathbf{\alpha}_{lj}^{*})=
+#'        \delta_{j0}+\delta_{j1}I(\mathbf{\alpha}_{lj}^*\neq \mathbf{0})}
 #'
 #'        where \eqn{I(\cdot)} is an indicator variable. The DINO model is also a constrained identity
 #'        link G-DINA model. As shown by de la Torre (2011), the appropriate constraint is
 #'        \deqn{\delta_{jk}=-\delta_{jk^{'}k^{''}}=\cdots=(-1)^{K_j^*+1}\delta_{j12{\cdots}K_j^*},} for
-#'        \eqn{k=1,\cdots,K_j^*, k^{'}=1,\cdots,K_j^*-1$, and $k^{''}>k^{'},\cdots,K_j^*}.
+#'        \eqn{k=1,\cdots,K_j^*, k^{'}=1,\cdots,K_j^*-1}, and \eqn{k^{''}>k^{'},\cdots,K_j^*}.
 #'    }
 #' \item{\code{Additive models with different link functions}}{
 #'        The A-CDM, LLM and R-RUM can be obtained by setting all interactions to be zero in
 #'        identity, logit and log link G-DINA model, respectively. Specifically, the A-CDM can be formulated as
-#'        \deqn{P(\mathbf{\alpha}_{lj}^*)=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}.}
+#'        \deqn{P(\mathbf{\alpha}_{lj}^*)=
+#'        \delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}}
 #'        The item response function for
 #'        LLM can be given by
 #'        \deqn{ logit[P(\mathbf{\alpha}_{lj}^*)]=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk},}
@@ -98,6 +100,24 @@
 #'        \deqn{log[P(\mathbf{\alpha}_{lj}^*)]=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}.} It should be
 #'        noted that the LLM is equivalent to the compensatory RUM, which is subsumed by the GDM, and that
 #'        the RRUM is a special case of the generalized noisy inputs, deterministic ``And" gate model (G-NIDA).
+#'    }
+#' \item{\code{Simultaneously identifying skills and misconceptions (SISM)}}{
+#'        The SISM can be can be reformulated as
+#'        \deqn{P(\mathbf{\alpha}_{lj}^*)=
+#'        \delta_{j0}+\delta_{j1}I[\text{mastering all skills}]+
+#'        \delta_{j2}I[\text{having no bugs}]+\delta_{j12}I[\text{mastering all skills and having no bugs}].}
+#'        As a result,the success probability of students who have mastered all the measured skills and possess
+#'        none of the measured misconceptions (\eqn{h_j} in Equation 4 of Kuo, et al, 2018) is
+#'        \eqn{\delta_{j0}+\delta_{j1}+\delta_{j2}+\delta_{j12}}, the success probability of students who have
+#'        mastered all the measured skills but possess some of the measured misconceptions (\eqn{\omega_j})
+#'          is \eqn{\delta_{j0}+\delta_{j1}}, the success probability of students who have not mastered all the
+#'          measured skills and possess none of the measured misconceptions (\eqn{g_j}) is
+#'          \eqn{\delta_{j0}+\delta_{j2}} and success probability of students who have not mastered all the
+#'          measured skills and possess at least one of the measured misconceptions(\eqn{\epsilon_j}) is
+#'          \eqn{\delta_{j0}}.
+#'
+#'          By specifying \code{no.bugs} being equal to the number of attributes, the Bug-DINO is obtained, as in
+#'          \deqn{P(\mathbf{\alpha}_{lj}^*)=\delta_{j0}+\delta_{j1}I[\text{having no bugs}].}
 #'    }
 #'    }
 #'
@@ -159,10 +179,10 @@
 #'    of attributes are needed (see Chen, & de la Torre, 2013).  See \code{Examples}.
 #' @param model A vector for each item or nonzero category, or a scalar which will be used for all
 #'    items or nonzero categories to specify the CDMs fitted. The possible options
-#'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"} and \code{"UDF"}. Note that
+#'    include \code{"GDINA"},\code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, \code{"RRUM"}, \code{"MSDINA"}, \code{"BUGDINO"}, \code{"SISM"}, and \code{"UDF"}. Note that
 #'    model can also be \code{"logitGDINA"} and \code{"logGDINA"}, indicating the saturated G-DINA model in logit and log link functions. They are
 #'    equivalent to the identity link saturated G-DINA model. The logit G-DINA model is identical to the log-linear CDM.
-#'    When \code{"UDF"}, indicating user defined function, is specified for any item, arguments \code{design.matrix} and \code{linkfunc} need to be defined.
+#'    When \code{"UDF"}, indicating user defined function, is specified for any item, arguments \code{design.matrix} and \code{linkfunc} need to be specified.
 #' @param sequential logical; \code{TRUE} if the sequential model is fitted for polytomous responses.
 #' @param group a factor or a vector indicating the group each individual belongs to. Its length must be equal to the number of individuals.
 #' @param att.dist How is the joint attribute distribution estimated? It can be (1) \code{saturated}, which is the default, indicating that
@@ -201,9 +221,10 @@
 #'    The sum of all elements does not have to be equal to 1; however, it will be normalized so that the sum is equal to 1
 #'    before calibration.
 #'    The label for each latent class can be obtained by calling \code{attributepattern(K)}. See \code{examples} for more info.
-#' @param latent.var A string indicating the nature of the latent variables. It is \code{"att"} (by default) if the latent variables are attributes,
-#'    and \code{"bugs"} if the latent variables are misconceptions. When \code{"bugs"} is specified, only the DINA, DINO or G-DINA model can be
-#'    specified in \code{model} argument (Kuo, Chen, Yang & Mok, 2016).
+#' @param no.bugs A numeric scalar (whole numbers only) indicating the number of bugs or misconceptions in the Q-matrix. The bugs must be included in the last \code{no.bugs} columns.
+#'    It can be used along with the \code{BUGDINO} and \code{SISM} models (see, Kuo, Chen, Yang & Mok, 2016; Kuo, Chen, & de la Torre, 2018). This argument will be ignored if the
+#'    model is not specified in \code{model} argument. Note that the \code{BUGDINO} and \code{SISM} models are reparametrized - see \code{Details} below. By default,
+#'    \code{no.bugs}=0, implying that there is no bugs/misconceptions.
 #' @param att.str Specify attribute structures. \code{NULL}, by default, means there is no structure. Attribute structure needs be specified as a list -
 #'    which will be internally handled by \code{att.structure} function. See examples. It can also be a matrix giving all permissible attribute profiles.
 #' @param loglinear the order of loglinear smooth for attribute space. It can be either 1 or 2 indicating the loglinear model with main effect only
@@ -293,6 +314,8 @@
 #' Junker, B. W., & Sijtsma, K. (2001). Cognitive assessment models with few assumptions, and connections with nonparametric
 #' item response theory. \emph{Applied Psychological Measurement, 25}, 258-272.
 #'
+#' Kuo, B.-C., Chen.-H., & de la Torre,J. (2018). A cognitive diagnosis model for identifying coexisting skills and misconceptions.\emph{Applied Psychological Measuremet}, 179–191.
+#'
 #' Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model for polytomous responses. \emph{British Journal of Mathematical and Statistical Psychology. 69,} 253-275.
 #'
 #' Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
@@ -314,6 +337,7 @@
 #' Xu, X., & von Davier, M. (2008). Fitting the structured general diagnostic model to NAEP data. ETS research report, RR-08-27.
 #'
 #' @importFrom Rcpp sourceCpp
+#' @importFrom nloptr nloptr slsqp nl.grad nl.jacobian
 #' @importFrom numDeriv hessian jacobian
 #' @importFrom alabama auglag
 #' @importFrom MASS ginv
@@ -748,46 +772,53 @@
 #'
 #' set.seed(123)
 #' Q <- sim10GDINA$simQ # 1 represents misconceptions/bugs
-#' ip <- list(
-#' c(0.8,0.2),
-#' c(0.7,0.1),
-#' c(0.9,0.2),
-#' c(0.9,0.1,0.1,0.1),
-#' c(0.9,0.1,0.1,0.1),
-#' c(0.9,0.1,0.1,0.1),
-#' c(0.9,0.1,0.1,0.1),
-#' c(0.9,0.1,0.1,0.1),
-#' c(0.9,0.1,0.1,0.1),
-#' c(0.9,0.1,0.1,0.1,0.1,0.1,0.1,0.1))
-#' sim <- simGDINA(N=1000,Q=Q,catprob.parm = ip,model = "DINO")
+#' N <- 1000
+#' J <- nrow(Q)
+#'
+#' gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+#'
+#' sim <- simGDINA(N,Q,gs.parm = gs,model = "BUGDINO")
 #' dat <- extract(sim,"dat")
-#' # use latent.var to specify a bug model
-#' est <- GDINA(dat=dat,Q=Q,latent.var="bugs",model="DINO")
+#' est <- GDINA(dat=dat,Q=Q,model = "BUGDINO")
 #' coef(est)
 #'
 #'####################################
 #'#           Example 12.            #
-#'#           Bug DINA model         #
+#'#           SISM model             #
 #'####################################
 #'
-#' set.seed(123)
-#' Q <- sim10GDINA$simQ # 1 represents misconceptions/bugs
-#' ip <- list(
-#' c(0.8,0.2),
-#' c(0.7,0.1),
-#' c(0.9,0.2),
-#' c(0.9,0.9,0.9,0.1),
-#' c(0.9,0.9,0.9,0.1),
-#' c(0.9,0.9,0.9,0.1),
-#' c(0.9,0.9,0.9,0.1),
-#' c(0.9,0.9,0.9,0.1),
-#' c(0.9,0.9,0.9,0.1),
-#' c(0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.1))
-#' sim <- simGDINA(N=1000,Q=Q,catprob.parm = ip,model="DINA")
+#' # The Q-matrix used in Kuo, et al (2018)
+#' # The first four columns are for Attributes 1-4
+#' # The last three columns are for Bugs 1-3
+#' Q <- matrix(c(1,0,0,0,0,0,0,
+#' 0,1,0,0,0,0,0,
+#' 0,0,1,0,0,0,0,
+#' 0,0,0,1,0,0,0,
+#' 0,0,0,0,1,0,0,
+#' 0,0,0,0,0,1,0,
+#' 0,0,0,0,0,0,1,
+#' 1,0,0,0,1,0,0,
+#' 0,1,0,0,1,0,0,
+#' 0,0,1,0,0,0,1,
+#' 0,0,0,1,0,1,0,
+#' 1,1,0,0,1,0,0,
+#' 1,0,1,0,0,0,1,
+#' 1,0,0,1,0,0,1,
+#' 0,1,1,0,0,0,1,
+#' 0,1,0,1,0,1,1,
+#' 0,0,1,1,0,1,1,
+#' 1,0,1,0,1,1,0,
+#' 1,1,0,1,1,1,0,
+#' 0,1,1,1,1,1,0),ncol = 7,byrow = TRUE)
+#'
+#' J <- nrow(Q)
+#' N <- 1000
+#' gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+#'
+#' sim <- simGDINA(N,Q,gs.parm = gs,model = "SISM",no.bugs=3)
 #' dat <- extract(sim,"dat")
-#' # use latent.var to specify a bug model
-#' est <- GDINA(dat=dat,Q=Q,latent.var="bugs",model="DINA")
-#' coef(est)
+#' est <- GDINA(dat=dat,Q=Q,model="SISM",no.bugs=3)
+#' coef(est,"delta")
 #'
 #'####################################
 #'#           Example 13a.           #
@@ -875,7 +906,7 @@
 GDINA <-
   function(dat, Q, model = "GDINA", sequential = FALSE, att.dist = "saturated", mono.constraint = FALSE,
            group = NULL,linkfunc = NULL, design.matrix = NULL,
-           latent.var = "att", att.prior = NULL, att.str = NULL, verbose = 1,
+           no.bugs = 0, att.prior = NULL, att.str = NULL, verbose = 1,
            higher.order = list(),loglinear = 2,catprob.parm = NULL,control=list(),
            item.names = NULL, solver = NULL,
            nloptr.args=list(),auglag.args=list(),solnp.args = list(),...)
@@ -901,7 +932,7 @@ GDINA <-
       ret <- SG.Est(dat = dat, Q = Q, model = model, sequential = sequential,
                     att.dist = att.dist, att.prior = att.prior,saturated=saturated,
                     att.str = att.str, mono.constraint=mono.constraint,
-                    latent.var = latent.var, verbose = verbose,
+                    no.bugs = no.bugs, verbose = verbose,
                     catprob.parm = catprob.parm,loglinear = loglinear,
                     item.names = item.names, control = control, item.prior = item.prior,
                     nloptr_args = nloptr.args,auglag_args=auglag.args,solnp_args = solnp.args,
@@ -911,7 +942,7 @@ GDINA <-
       ret <- MG.Est(dat = dat, Q = Q, model = model, sequential = sequential,
                     att.dist = att.dist, att.prior = att.prior,saturated=saturated,
                     att.str = att.str, mono.constraint=mono.constraint,
-                    group = group, latent.var=latent.var, verbose = verbose,
+                    group = group, no.bugs=no.bugs, verbose = verbose,
                     catprob.parm = catprob.parm,loglinear = loglinear,
                     item.names = item.names, control = control, item.prior = item.prior,
                     nloptr_args = nloptr.args,auglag_args=auglag.args,solnp_args = solnp.args,

@@ -125,7 +125,7 @@ GMSCDM <- function(dat, msQ, model = "ACDM", s = 1, att.prior=NULL,
   }
   myControl <- list(conv.crit = 0.0001, maxitr = 2000,
                     conv.type=c("ip","mp"),seed=123, lower.p = 1e-4,
-                    solver = "auglag")
+                    solver = "nloptr",algorithm = "NLOPT_LD_SLSQP")
   control <- utils::modifyList(myControl,control)
   set.seed(control$seed)
 
@@ -275,31 +275,31 @@ GMSCDM <- function(dat, msQ, model = "ACDM", s = 1, att.prior=NULL,
         d[[j]] <- alabama::auglag(par = d[[j]],fn=objf,hin = inf,j=j,des=des,msQ=msQ,Nj=estep$N[j,],Rj = estep$R[j,],
                                   model=model_numeric,r=s,control.outer = list(trace=FALSE,method="nlminb",kkt2.check=FALSE,eps=1e-6))$par
       }else if(control$solver=="nloptr"){
-        message("nloptr is not available")
-        # gf <- function(x,j,des,msQ,Nj,Rj,model,r) nloptr::nl.grad(x, objf, heps = 1e-7,des=des,msQ=msQ,Nj=estep$N[j,],Rj = estep$R[j,],
-        #                                                           model=model_numeric,r=r,j=j)
-        # ingf <- function(x,j,des,msQ,Nj,Rj,model,r) nloptr::nl.jacobian(x, inf3, heps = 1e-7,des=des,msQ=msQ,Nj=estep$N[j,],Rj = estep$R[j,],
-        #                                                                 model=model_numeric,r=r,j=j)
-        #
-        # if(model=="ACDM"){
-        #   lb <- rep(control$lower.p,length(d[[j]]))
-        #   ub <- rep(Inf,length(d[[j]]))
-        # }else if(model=="LLM"){
-        #   lb <- c(qlogis(control$lower.p),rep(0,length(d[[j]])-1))
-        #   ub <- rep(Inf,length(d[[j]]))
-        # }else if(model=="RRUM"){
-        #   lb <- c(log(control$lower.p),rep(0,length(d[[j]])-1))
-        #   ub <- c(0,rep(-1*log(control$lower.p),length(d[[j]])-1))
-        # }else{
-        #   lb <- rep(0,length(d[[j]]))
-        #   ub <- rep(1,length(d[[j]]))
-        # }
-        #
-        # d[[j]] <- nloptr::nloptr(d[[j]],eval_f=objf,eval_grad_f = gf,eval_g_ineq = inf3,
-        #                          eval_jac_g_ineq = ingf,lb = lb, ub = ub,
-        #                          opts = list("algorithm"=control$algorithm,xtol_rel = 1e-4,print_level=0),
-        #                          des=des,msQ=msQ,Nj=estep$N[j,],Rj = estep$R[j,],
-        #                          model=model_numeric,r=s,j=j)$solution
+
+        gf <- function(x,j,des,msQ,Nj,Rj,model,r) nloptr::nl.grad(x, objf, heps = 1e-7,des=des,msQ=msQ,Nj=estep$N[j,],Rj = estep$R[j,],
+                                                                  model=model_numeric,r=r,j=j)
+        ingf <- function(x,j,des,msQ,Nj,Rj,model,r) nloptr::nl.jacobian(x, inf3, heps = 1e-7,des=des,msQ=msQ,Nj=estep$N[j,],Rj = estep$R[j,],
+                                                                        model=model_numeric,r=r,j=j)
+
+        if(model=="ACDM"){
+          lb <- rep(control$lower.p,length(d[[j]]))
+          ub <- rep(Inf,length(d[[j]]))
+        }else if(model=="LLM"){
+          lb <- c(qlogis(control$lower.p),rep(0,length(d[[j]])-1))
+          ub <- rep(Inf,length(d[[j]]))
+        }else if(model=="RRUM"){
+          lb <- c(log(control$lower.p),rep(0,length(d[[j]])-1))
+          ub <- c(0,rep(-1*log(control$lower.p),length(d[[j]])-1))
+        }else{
+          lb <- rep(0,length(d[[j]]))
+          ub <- rep(1,length(d[[j]]))
+        }
+
+        d[[j]] <- nloptr::nloptr(d[[j]],eval_f=objf,eval_grad_f = gf,eval_g_ineq = inf3,
+                                 eval_jac_g_ineq = ingf,lb = lb, ub = ub,
+                                 opts = list("algorithm"=control$algorithm,xtol_rel = 1e-4,print_level=0),
+                                 des=des,msQ=msQ,Nj=estep$N[j,],Rj = estep$R[j,],
+                                 model=model_numeric,r=s,j=j)$solution
 
 
       }

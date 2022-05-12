@@ -13,6 +13,7 @@ simGDINA(
   catprob.parm = NULL,
   model = "GDINA",
   sequential = FALSE,
+  no.bugs = 0,
   gs.args = list(type = "random", mono.constraint = TRUE),
   delta.args = list(design.matrix = NULL, linkfunc = NULL),
   attribute = NULL,
@@ -63,6 +64,8 @@ options \code{design.matrix} and \code{linkfunc} in argument \code{delta.args}.}
 
 \item{sequential}{logical; \code{TRUE} if the sequential model is used for polytomous responses simulation, and \code{FALSE}
 if there is no polytomously scored items.}
+
+\item{no.bugs}{the number of bugs (or misconceptions) for the \code{SISM} model. Note that bugs must be given in the last no.bugs columns.}
 
 \item{gs.args}{a list of options when \code{gs.parm} is specified. It consists of two components:
 \itemize{
@@ -497,6 +500,55 @@ d <- list(
   set.seed(12345)
 sim <- simGDINA(N=1000,Q = Q, delta.parm = d,
                model = c("MSDINA","MSDINA","DINA","DINA","DINA","MSDINA","MSDINA"))
+
+# simulated data
+extract(sim,what = "dat")
+
+# simulated attributes
+extract(sim,what = "attribute")
+
+
+##############################################################
+#                   Example 15
+#  reparameterized SISM model (Kuo, Chen, & de la Torre, 2018)
+#  see GDINA function for more details
+###############################################################
+
+# The Q-matrix used in Kuo, et al (2018)
+# The first four columns are for Attributes 1-4
+# The last three columns are for Bugs 1-3
+Q <- matrix(c(1,0,0,0,0,0,0,
+0,1,0,0,0,0,0,
+0,0,1,0,0,0,0,
+0,0,0,1,0,0,0,
+0,0,0,0,1,0,0,
+0,0,0,0,0,1,0,
+0,0,0,0,0,0,1,
+1,0,0,0,1,0,0,
+0,1,0,0,1,0,0,
+0,0,1,0,0,0,1,
+0,0,0,1,0,1,0,
+1,1,0,0,1,0,0,
+1,0,1,0,0,0,1,
+1,0,0,1,0,0,1,
+0,1,1,0,0,0,1,
+0,1,0,1,0,1,1,
+0,0,1,1,0,1,1,
+1,0,1,0,1,1,0,
+1,1,0,1,1,1,0,
+0,1,1,1,1,1,0),ncol = 7,byrow = TRUE)
+
+J <- nrow(Q)
+N <- 500
+gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+
+sim <- simGDINA(N,Q,gs.parm = gs,model = "SISM",no.bugs=3)
+
+# True item success probabilities
+extract(sim,what = "catprob.parm")
+
+# True delta parameters
+extract(sim,what = "delta.parm")
 
 # simulated data
 extract(sim,what = "dat")

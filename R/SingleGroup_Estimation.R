@@ -1,7 +1,7 @@
 #' @include GDINA.R
 
 SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, saturated,
-                att.str, mono.constraint, latent.var, verbose,
+                att.str, mono.constraint, no.bugs, verbose,
                 catprob.parm,loglinear,item.names,solnp_args,item.prior,
                 linkfunc,higher.order, solver,auglag_args,nloptr_args,
                 DesignMatrices,ConstrPairs,control){
@@ -43,15 +43,29 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
 
   model <- model2numeric(model, ncat)
 
+  #     model.char model.num linkf.num linkf.char rule
+  # 1    LOGGDINA        -3         3        log    0
+  # 2  LOGITGDINA        -2         2      logit    0
+  # 3         UDF        -1        -1        UDF   -1
+  # 4       GDINA         0         1   identity    0
+  # 5        DINA         1         1   identity    1
+  # 6        DINO         2         1   identity    2
+  # 7        ACDM         3         1   identity    3
+  # 8         LLM         4         2      logit    3
+  # 9        RRUM         5         3        log    3
+  # 10     MSDINA         6         1   identity    4
+  # 11    BUGDINO         7         1   identity    5
+  # 12       SISM         8         1   identity    6
+
   if (sequential) {
-    if(any(model == 6))
-      stop("MSDINA model and sequential model cannot be estimated together.",call. = FALSE)
+    if(any(model >= 6))
+      stop("The model speicified and sequential model cannot be estimated together.",call. = FALSE)
     dat <- seq_coding(dat, Q)
     Q <- Q[,-c(1, 2)]
     if (is.null(item.names))
       item.names <- paste("Item", originalQ[, 1], "Cat", originalQ[, 2])
 
-  } else if (any(model == 6)) {
+  } else if (any(model == 6)) { #MS-DINA
 
     msQ <- unrestrQ(Q[which(model == 6), ])
     for (j in unique(msQ[, 1])) {
@@ -67,6 +81,8 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
     Q <- Q[,-c(1, 2)]
 
     ncat <- nitems
+  }else if(any(model == 7)){ # BUG-DINO
+    no.bugs <- ncol(Q)
   }
 
 
@@ -146,13 +162,14 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
     control$maxitr <- max(control$maxitr)
   }
 
+  control$nstarts <- ifelse(any(model>6),1L,3L) #if model is SISM or BUGDINO, only one set of starting values is used
 
   set.seed(control$randomseed)
 
 
   # input check
   inputcheck(dat = dat, Q = Q, model = model, sequential = sequential, att.dist = att.dist,
-             latent.var = latent.var, verbose = verbose, catprob.parm = catprob.parm, mono.constraint = mono.constraint,
+             no.bugs = no.bugs, verbose = verbose, catprob.parm = catprob.parm, mono.constraint = mono.constraint,
              att.prior = att.prior, lower.p = control$lower.p,upper.p = control$upper.p, att.str = att.str,
              nstarts = control$nstarts, conv.crit = control$conv.crit, maxitr = control$maxitr)
 
@@ -304,6 +321,9 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
     for(j in seq_len(ncat)) {
       if(model[j] == 6){
         DesignMatrices[[j]] <- designmatrix(model = model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
+      }else if(model[j] %in% c(7,8)){
+        DesignMatrices[[j]] <- designmatrix(model = model[j],Qj = Q[j,],no.bugs=no.bugs)
+
       }else if(rule[j] >= 0 & rule[j]<= 3){
 
         DesignMatrices[[j]] <- designM(Kj[j], rule[j], reduced.LG[[j]])
@@ -321,7 +341,7 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
 
   #print(DesignMatrices)
   if (is.null(catprob.parm)) {
-    item.parm <- initials(Q, control$nstarts, DesignMatrices = DesignMatrices,latent.var=latent.var,att.str = att.str)  #a list with nstarts matrices of size J x 2^Kjmax
+    item.parm <- initials(Q, control$nstarts, DesignMatrices = DesignMatrices,att.str = att.str)  #a list with nstarts matrices of size J x 2^Kjmax
     ###### Multiple starting values
     if (control$nstarts > 1L) {
       neg2LL <- vector("numeric",control$nstarts)
@@ -351,6 +371,7 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
   npar.items <- sapply(DesignMatrices,ncol)
   stru.npar <- 0
   itr <- 0L
+
   delta <- calc_delta(item.parm, DesignMatrices = DesignMatrices, linkfunc = LF.numeric)
 
   parm0 <- list(ip = c(item.parm), prior = c(exp(logprior)), neg2LL = 0, delt = unlist(delta))
@@ -523,7 +544,7 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
                          LC.labels = LC.labels,reduced.LG=reduced.LG,eta = parloc,del.ind=del.ind),
        options = list(dat = originalData, Q = originalQ, Qm = Q, Qcm = Qcm, model = model,
                       itr = itr, dif.LL = dif.parm$neg2LL,dif.p=dif.parm$ip,dif.prior=dif.parm$prior,
-                      att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, latent.var = latent.var,
+                      att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, no.bugs = no.bugs,
                       mono.constraint = mono.constraint, item.names = item.names, group = rep(1,N), gr = gr,
                       att.str= att.str,  seq.dat = dat[raw2unique, ], no.group = 1, group.label = "all",
                       verbose = verbose, catprob.parm = catprob.parm,sequential = sequential,

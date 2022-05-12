@@ -6,7 +6,7 @@ print.GDINA <-
     cat("Call:\n", paste(deparse(extract.GDINA(x,"call")), sep = "\n", collapse = "\n"),
         "\n\n", sep = "")
     packageinfo <- utils::packageDescription("GDINA")
-    cat( paste( "  GDINA version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
+    cat( paste( "GDINA version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
     cat("===============================================\n")
     cat("Data\n")
     cat("-----------------------------------------------\n")
@@ -18,14 +18,11 @@ print.GDINA <-
     # cat("\n-----------------------------------------------\n")
     cat("Model")
     cat("\n-----------------------------------------------\n")
-    lv <- s <- NULL
-    if(extract(x,"latent.var")=="bugs"){
-      lv <- "Bug"
-    }
+    s <- NULL
     if(extract(x,"sequential")){
       s <- "sequential"
     }
-    cat("Fitted model(s)       =", s, lv,unique(extract.GDINA(x,"models")), "\n")
+    cat("Fitted model(s)       =", s, unique(extract.GDINA(x,"models")), "\n")
     cat("Attribute structure   =",extract(x,"att.dist"),"\n")
     if (any(extract.GDINA(x,"att.dist")=="higher.order")) cat("Higher-order model    =",extract(x,"higher.order")$model,"\n")
     tmp <- max(extract.GDINA(x,"Q"))

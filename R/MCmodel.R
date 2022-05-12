@@ -19,6 +19,7 @@
 #' @param conv.type convergence criteria; Can be \code{pr} or \code{LL},
 #'    indicating category response function, or -2 times log-likelihood,respectively.
 #' @param maxitr The maximum iterations allowed.
+#' @param SE logical; estimating standard error of item parameters? Default is \code{FALSE}.
 #' @examples
 #'\dontrun{
 #'  # check the format of the data
@@ -105,7 +106,7 @@
 #'
 #'
 #'
-MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxitr=2000,conv.type="pr",SE=TRUE){
+MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxitr=2000,conv.type="pr",SE=FALSE){
 
   s1 <- Sys.time()
   mcm.call <- match.call()

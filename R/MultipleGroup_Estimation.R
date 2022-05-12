@@ -1,6 +1,6 @@
 #' @include GDINA.R
 MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
-                att.str, mono.constraint, group, latent.var, verbose,
+                att.str, mono.constraint, group, no.bugs, verbose,
                 catprob.parm,loglinear,item.names,solnp_args,item.prior,
                 linkfunc,higher.order, solver,auglag_args,nloptr_args,
                 DesignMatrices,ConstrPairs,control){
@@ -75,6 +75,20 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
   model <- model2numeric(model, ncat)
 
+  #     model.char model.num linkf.num linkf.char rule
+  # 1    LOGGDINA        -3         3        log    0
+  # 2  LOGITGDINA        -2         2      logit    0
+  # 3         UDF        -1        -1        UDF   -1
+  # 4       GDINA         0         1   identity    0
+  # 5        DINA         1         1   identity    1
+  # 6        DINO         2         1   identity    2
+  # 7        ACDM         3         1   identity    3
+  # 8         LLM         4         2      logit    3
+  # 9        RRUM         5         3        log    3
+  # 10     MSDINA         6         1   identity    4
+  # 11    BUGDINO         7         1   identity    5
+  # 12       SISM         8         1   identity    6
+
   if (sequential) {
     if(any(model == 6))
       stop("MSDINA model and sequential model cannot be estimated together.",call. = FALSE)
@@ -100,7 +114,10 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     Q <- Q[,-c(1, 2)]
 
     ncat <- nitems
+  }else if(any(model == 7)){ # BUG-DINO
+    no.bugs <- ncol(Q)
   }
+
 
   if(!is.matrix(Q))
     Q <- as.matrix(Q)
@@ -160,13 +177,14 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   if(control$Cpp)
     warning("No fast implementation is available for multiple-group analysis.",call. = FALSE)
 
+  control$nstarts <- ifelse(any(model>6),1L,3L) #if model is SISM or BUGDINO, only one set of starting values is used
 
   set.seed(control$randomseed)
 
 
   # input check
   inputcheck(dat = dat, Q = Q, model = model, sequential = sequential, att.dist = att.dist,
-             latent.var = latent.var, verbose = verbose, catprob.parm = catprob.parm, mono.constraint = mono.constraint,
+             no.bugs = no.bugs, verbose = verbose, catprob.parm = catprob.parm, mono.constraint = mono.constraint,
              att.prior = att.prior, lower.p = control$lower.p,upper.p = control$upper.p, att.str = att.str,
              nstarts = control$nstarts, conv.crit = control$conv.crit, maxitr = control$maxitr)
 
@@ -365,6 +383,9 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
     for(j in seq_len(ncat)) {
       if(model[j] == 6){
         DesignMatrices[[j]] <- designmatrix(model = model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
+      }else if(model[j] %in% c(7,8)){
+        DesignMatrices[[j]] <- designmatrix(model = model[j],Qj = Q[j,],no.bugs=no.bugs)
+
       }else if(rule[j] >= 0 & rule[j]<= 3){
 
         DesignMatrices[[j]] <- designM(Kj[j], rule[j], reduced.LG[[j]])
@@ -380,9 +401,8 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   #
   #########################################
 
-
   if (is.null(catprob.parm)) {
-    item.parm <- initials(Q, control$nstarts, DesignMatrices = DesignMatrices,latent.var=latent.var)  #a list with nstarts matrices of size J x 2^Kjmax
+    item.parm <- initials(Q, control$nstarts, DesignMatrices = DesignMatrices)  #a list with nstarts matrices of size J x 2^Kjmax
     ###### Multiple starting values
     if (control$nstarts > 1L) {
       neg2LL <- vector("numeric",control$nstarts)
@@ -565,7 +585,7 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
                          LC.labels = LC.labels,reduced.LG=reduced.LG,eta = parloc,del.ind=del.ind),
        options = list(dat = originalData, Q = originalQ, Qm = Q, Qcm = Qcm, model = model,
                       itr = itr, dif.LL = dif.parm$neg2LL,dif.p=dif.parm$ip,dif.prior=dif.parm$prior,
-                      att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, latent.var = latent.var,
+                      att.dist=att.dist, higher.order=higher.order,att.prior = att.prior, no.bugs = no.bugs,
                       mono.constraint = mono.constraint, item.names = item.names,group = ori.group, gr = group,
                       att.str= att.str,  seq.dat = dat, no.group = no.mg, group.label = ori.gr.label,
                       verbose = verbose, catprob.parm = catprob.parm,sequential = sequential,

@@ -1,5 +1,9 @@
-# GDINA 2.8.9
-* Change    - add an argument `SE` for MCmodel function
+# GDINA 2.9.1
+* Added     - add an argument `SE` for MCmodel function
+* Added     - add nloptr for optimization
+* Added     - SISM model is available using the `GDINA` function and `simGDINA` function
+* Change    - BUG-DINO model was revised in the `GDINA` function
+* Change    - examples
 
 # GDINA 2.8.8
 * Change    - update the package to remove the dependence on nloptr package

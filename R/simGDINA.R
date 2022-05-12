@@ -106,6 +106,7 @@
 #'    specifying the mean of multivariate normal distribution; and \code{sigma} is a positive-definite
 #'    symmetric matrix specifying the variance-covariance matrix. \code{cutoffs} is a vector giving the
 #'    cutoff for each attribute. See \code{Examples}.
+#' @param no.bugs the number of bugs (or misconceptions) for the \code{SISM} model. Note that bugs must be given in the last no.bugs columns.
 #' @param digits How many decimal places in each number? The default is 4.
 #' @return an object of class \code{simGDINA}. Elements that can be extracted using method \code{extract}
 #' include:
@@ -482,11 +483,60 @@
 #'
 #'# simulated attributes
 #'extract(sim,what = "attribute")
+#'
+#'
+#' ##############################################################
+#'#                   Example 15
+#'#  reparameterized SISM model (Kuo, Chen, & de la Torre, 2018)
+#'#  see GDINA function for more details
+#'###############################################################
+#'
+#' # The Q-matrix used in Kuo, et al (2018)
+#' # The first four columns are for Attributes 1-4
+#' # The last three columns are for Bugs 1-3
+#' Q <- matrix(c(1,0,0,0,0,0,0,
+#' 0,1,0,0,0,0,0,
+#' 0,0,1,0,0,0,0,
+#' 0,0,0,1,0,0,0,
+#' 0,0,0,0,1,0,0,
+#' 0,0,0,0,0,1,0,
+#' 0,0,0,0,0,0,1,
+#' 1,0,0,0,1,0,0,
+#' 0,1,0,0,1,0,0,
+#' 0,0,1,0,0,0,1,
+#' 0,0,0,1,0,1,0,
+#' 1,1,0,0,1,0,0,
+#' 1,0,1,0,0,0,1,
+#' 1,0,0,1,0,0,1,
+#' 0,1,1,0,0,0,1,
+#' 0,1,0,1,0,1,1,
+#' 0,0,1,1,0,1,1,
+#' 1,0,1,0,1,1,0,
+#' 1,1,0,1,1,1,0,
+#' 0,1,1,1,1,1,0),ncol = 7,byrow = TRUE)
+#'
+#' J <- nrow(Q)
+#' N <- 500
+#'gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+#'
+#'sim <- simGDINA(N,Q,gs.parm = gs,model = "SISM",no.bugs=3)
+#'
+#'# True item success probabilities
+#'extract(sim,what = "catprob.parm")
+#'
+#'# True delta parameters
+#'extract(sim,what = "delta.parm")
+#'
+#'# simulated data
+#'extract(sim,what = "dat")
+#'
+#'# simulated attributes
+#'extract(sim,what = "attribute")
 #'}
 #'
 #'
 simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NULL,
-                     model = "GDINA", sequential = FALSE,
+                     model = "GDINA", sequential = FALSE, no.bugs = 0,
                      gs.args = list(type = "random",mono.constraint = TRUE),
                      delta.args = list(design.matrix = NULL, linkfunc = NULL),
                       attribute = NULL, att.dist = "uniform", item.names = NULL,
@@ -519,6 +569,11 @@ simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NUL
       Q <- Q[-loc, ]
       model <- model[-loc]
     }
+  }else if (any(model==7)){
+    no.bugs <- ncol(Q)
+  }else if (any(model == 8)){
+    if(no.bugs==0)
+      warning("The number of bugs is zero for SISM?",call. = FALSE)
   }
   # rule: 0 -> saturated model; 1 ->DINA; 2 ->DINO; 3 ->additive model; 4 ->MS-DINA; -1 -> UDF
   rule <- model2rule(model)
@@ -557,7 +612,7 @@ if (!is.null(gs.parm)) {
   if (length(gs.args$mono.constraint)==1)  gs.args$mono.constraint <- rep(gs.args$mono.constraint,J)
   if(nrow(gs.parm)!=nrow(Q)) stop("The number of rows in gs is not equal to the number of items (or non-zero categories).",call. = FALSE)
   if(any(1-rowSums(gs.parm)<0)) stop("Data cannot be simulated because 1-s-g<0 for some items - check your parameters or specify parameters using delta.parm or catprob.parm.",call. = FALSE)
-  pd <- gs2p(Q=Q,gs=gs.parm,model=model,type=gs.args$type,mono.constraint=gs.args$mono.constraint,digits=8)
+  pd <- gs2p(Q=Q,gs=gs.parm,model=model,no.bugs=no.bugs,type=gs.args$type,mono.constraint=gs.args$mono.constraint,digits=8)
   delta.parm <- pd$delta.parm
   catprob.parm <- pd$itemprob.parm
   catprob.matrix <- pd$itemprob.matrix

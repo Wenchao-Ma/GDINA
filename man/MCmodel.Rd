@@ -11,7 +11,8 @@ MCmodel(
   key = NULL,
   conv.crit = 0.001,
   maxitr = 2000,
-  conv.type = "pr"
+  conv.type = "pr",
+  SE = FALSE
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ allow to assign examinees uniquely.}
 
 \item{conv.type}{convergence criteria; Can be \code{pr} or \code{LL},
 indicating category response function, or -2 times log-likelihood,respectively.}
+
+\item{SE}{logical; estimating standard error of item parameters? Default is \code{FALSE}.}
 }
 \value{
 an object of class \code{MCmodel} with the following components:

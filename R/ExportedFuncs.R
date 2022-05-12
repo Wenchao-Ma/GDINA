@@ -151,11 +151,11 @@ att.structure <- function(hierarchy.list=NULL,K,Q,att.prob="uniform"){
 #' This function generates the design matrix for an item
 #'
 #' @param Kj Required except for the MS-DINA model; The number of attributes required for item j
-#' @param model the model associated with the design matrix; It can be "GDINA","DINA","DINO", "ACDM" or "MSDINA".
-#'        The default is "GDINA". Note that models "LLM" and "RRUM" have the same design matrix as the ACDM.
-#' @param Qj the Q-matrix for item j; This is required for "MSDINA" model; The number of rows is equal to the number
-#'        of strategies and the number of columns is equal to the number of attributes.
-#'
+#' @param model the model associated with the design matrix; It can be "GDINA","DINA","DINO", "ACDM","LLM", "RRUM", "MSDINA", "BUGDINO", and "SISM".
+#'        The default is "GDINA". Note that models "LLM" and "RRUM" have the same design matrix as the "ACDM".
+#' @param Qj the Q-matrix for item j; This is required for "MSDINA", and "SISM" models; The number of rows is equal to the number
+#'        of strategies for "MSDINA", and the number of columns is equal to the number of attributes.
+#' @param no.bugs the number of bugs (or misconceptions). Note that bugs must be given in the last no.bugs columns.
 #' @return a design matrix (Mj). See de la Torre (2011) for details.
 #' @references
 #'
@@ -175,12 +175,13 @@ att.structure <- function(hierarchy.list=NULL,K,Q,att.prob="uniform"){
 #'
 #'
 #'
-designmatrix <- function(Kj = NULL, model = "GDINA", Qj = NULL) {
+designmatrix <- function(Kj = NULL, model = "GDINA", Qj = NULL,no.bugs = 0) {
 
   cr <- model2rule.j(model)
   if (cr == 4) {
     # MSDINA
     # Kj is not necessary
+
     if (is.null(Qj) || max(Qj) > 1){
       stop("Qj is not correctly specified for the MS-DINA model.", call. = F)
     }else if(nrow(Qj)==1){
@@ -196,6 +197,41 @@ designmatrix <- function(Kj = NULL, model = "GDINA", Qj = NULL) {
 
       D <- matrix(c(rep(1, nrow(patt)), colSums(Qj %*% t(patt) == Ks) > 0), ncol = 2)
     }
+
+  }else if(cr==5){#BUG-DINO
+    if (!is.null(Qj)){
+      Kj <- sum(Qj)
+    }
+
+    D <- designM(Kj, 2)
+    D[,2] <- 1- D[,2]
+  }else if(cr==6){#SISM
+    if (is.null(Qj) || max(Qj) > 1){
+      stop("Qj is not correctly specified for the SISM model.", call. = F)
+    }
+
+    Kj <- sum(Qj)
+    if(no.bugs==0){
+      stop("no.bugs is not correctly specified for the SISM model.", call. = F)
+    }
+
+
+    n.bug.j <- sum(utils::tail(Qj,no.bugs))
+    n.att.j <- Kj - n.bug.j
+    if(n.att.j==0){
+      D <- designmatrix.bug(n.bug.j,2)
+    }else if(n.bug.j==0){
+      D <- designM(n.att.j,1)
+    }else{
+      patt <- attributepattern(Kj)
+      col.att <- col.bug <- rep(0,nrow(patt))
+      col.att[rowMatch(patt[,seq(n.att.j),drop=FALSE],rep(1,n.att.j))$row.no] <- 1
+      col.bug[rowMatch(patt[,-seq(n.att.j),drop=FALSE],rep(0,n.bug.j))$row.no] <- 1
+      D <- as.matrix(data.frame(1,col.att,col.bug,col.att*col.bug))
+
+    }
+
+
 
   }else if(cr!=-1){
     D <- designM(Kj, cr)
