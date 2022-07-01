@@ -1,3 +1,6 @@
+# GDINA 2.9.2
+* Change     - update `simGDINA` to handle CDMs with attribute structures
+
 # GDINA 2.9.1
 * Added     - add an argument `SE` for MCmodel function
 * Added     - add nloptr for optimization

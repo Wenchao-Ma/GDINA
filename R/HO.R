@@ -16,6 +16,8 @@ SG.HO.est <- function(lambda, AlphaPattern, Rl, higher.order)
   npar <- 0
 
       d <- a <- vector("numeric",K)
+
+      ## estimating d
       for(k in seq_len(K)){
 
         d[k] <- rootFinder(f = Lfj_intercept, interval = higher.order$InterceptRange,
@@ -24,6 +26,8 @@ SG.HO.est <- function(lambda, AlphaPattern, Rl, higher.order)
                            sigma = higher.order$InterceptPrior[2])
         npar <- npar + 1
       }
+
+      ## estimating a
       if(higher.order$model=="1PL"){
         a <- rootFinder(f = Lfj_commonslope, interval = higher.order$SlopeRange,
                         d = lambda[,2],theta = Aq,r1 = r1, r0 = r0, n = n,
@@ -45,6 +49,7 @@ SG.HO.est <- function(lambda, AlphaPattern, Rl, higher.order)
       }
       lambda[,1] <- a
       lambda[,2] <- d
+
 
 
     logprior <- logP_AlphaPattern(AlphaPattern, Aq, WAq, lambda[,1], lambda[,2])

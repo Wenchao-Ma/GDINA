@@ -246,9 +246,10 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
   lambda <- NULL
   if(att.dist == "higher.order"){
 
-    myHO <- list(model = "Rasch",nquad = 25L, SlopeRange = c(0.1,5), InterceptRange = c(-4,4), Prior = FALSE,
+    myHO <- list(model = "Rasch",nquad = ifelse(is.null(higher.order) | is.null(higher.order$nquad),25L,higher.order$nquad),
+                 SlopeRange = c(0.1,5), InterceptRange = c(-4,4), Prior = FALSE,
                  SlopePrior = c(0,0.25), InterceptPrior = c(0L,1L), anchor = "all")
-    myHO$QuadNodes = matrix(seq(-4,4,length.out = myHO$nquad),nrow = myHO$nquad,ncol = no.mg)
+    myHO$QuadNodes = matrix(seq(-6,6,length.out = myHO$nquad),nrow = myHO$nquad,ncol = no.mg)
     myHO$QuadWghts = ColNormalize(dnorm(myHO$QuadNodes))
 
     higher.order <- modifyList(myHO,higher.order)

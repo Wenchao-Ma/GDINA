@@ -365,6 +365,8 @@ gs2p <- function(Q,
   )
 }
 
+
+
 # generate which latent class should have a low probability success if monotonicity constraints are conformed
 preloclist <- function(K){
   patt <- t(alpha2(K))

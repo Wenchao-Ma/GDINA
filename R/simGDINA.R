@@ -296,8 +296,6 @@
 #' model <- c("GDINA","GDINA","GDINA","DINA","DINO","GDINA","ACDM","LLM","RRUM","GDINA")
 #' N <- 500
 #' Q <- sim10GDINA$simQ
-#' # When simulating using delta.parm argument, model needs to be
-#' # specified
 #' sim <- simGDINA(N,Q,delta.parm = delta.list, model = model)
 #'
 #'
@@ -538,7 +536,7 @@
 simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NULL,
                      model = "GDINA", sequential = FALSE, no.bugs = 0,
                      gs.args = list(type = "random",mono.constraint = TRUE),
-                     delta.args = list(design.matrix = NULL, linkfunc = NULL),
+                     design.matrix = NULL, linkfunc = NULL,att.str = NULL,
                       attribute = NULL, att.dist = "uniform", item.names = NULL,
                       higher.order.parm=list(theta = NULL, lambda = NULL),
                       mvnorm.parm=list(mean = NULL,sigma = NULL,cutoffs = NULL),
@@ -591,14 +589,28 @@ simGDINA <- function(N, Q, gs.parm = NULL, delta.parm = NULL, catprob.parm = NUL
   }
   J <- nrow(Q)
   K <- ncol(Q)
-  pattern <- attributepattern(Q = Q)
-  pattern.t <- t(pattern)
+  # pattern <- attributepattern(Q = Q)
+  # pattern.t <- t(pattern)
+Q <- as.matrix(Q)
 
-  L <- nrow(pattern)  # the number of latent groups
-  Kj <- rowSums(Q>0)  # The number of attributes for each item
-  Kjmax <- max(Kj) # the maximum attributes required for each item
-  catprob.matrix <- matrix(NA,J,2^Kjmax)
-  par.loc <- eta(as.matrix(Q))
+  if(is.null(att.str)){ # no structure
+    pattern <- as.matrix(att.structure(hierarchy.list = att.str,K = K,Q = Q,att.prob="uniform")$`att.str`)
+    par.loc <- eta(Q)  #J x L
+    reduced.LG <- item_latent_group(Q)
+  }else if(is.matrix(att.str)){
+    pattern <- att.str
+    par.loc <- eta(Q, pattern)  #J x L
+    reduced.LG <- item_latent_group(Q, pattern)
+  }else{
+    pattern <- as.matrix(att.structure(hierarchy.list = att.str,K = K,Q = Q,att.prob="uniform")$`att.str`)
+    par.loc <- eta(Q, pattern)  #J x L
+    reduced.LG <- item_latent_group(Q, pattern)
+  }
+  L <- nrow(pattern)  # The number of latent classes
+  Lj <- sapply(reduced.LG,nrow)
+  Kj <- rowSums(Q > 0)
+  catprob.matrix <- matrix(NA,J,max(Lj))
+
 
 ######################################################################################
   #
@@ -612,24 +624,30 @@ if (!is.null(gs.parm)) {
   if (length(gs.args$mono.constraint)==1)  gs.args$mono.constraint <- rep(gs.args$mono.constraint,J)
   if(nrow(gs.parm)!=nrow(Q)) stop("The number of rows in gs is not equal to the number of items (or non-zero categories).",call. = FALSE)
   if(any(1-rowSums(gs.parm)<0)) stop("Data cannot be simulated because 1-s-g<0 for some items - check your parameters or specify parameters using delta.parm or catprob.parm.",call. = FALSE)
+  if(!is.null(att.str)) stop("delta.parm should be used with models with attribute structures.",call. = FALSE)
   pd <- gs2p(Q=Q,gs=gs.parm,model=model,no.bugs=no.bugs,type=gs.args$type,mono.constraint=gs.args$mono.constraint,digits=8)
   delta.parm <- pd$delta.parm
   catprob.parm <- pd$itemprob.parm
   catprob.matrix <- pd$itemprob.matrix
 }else if(!is.null(delta.parm))
   {
-  myd.args <- list(design.matrix = NULL, linkfunc = NULL)
-  delta.args <- modifyList(myd.args, delta.args)
+  # myd.args <- list(design.matrix = NULL, linkfunc = NULL)
+  # delta.args <- modifyList(myd.args, delta.args)
   catprob.parm <- vector("list",J)
 
   # identitiy link -> 1
   # logit link -> 2
   # log link -> 3
-  LF.numeric <- linkf.numeric(linkfunc = delta.args$linkfunc, model.vector = model)
+  if (is.null(linkfunc)){
+    LF.numeric <- model2linkfunc(model)
+  }else{
+    LF.numeric <- linkfunc
+  }
 
 
-  if(is.null(delta.args$design.matrix)){
-    if(any(model==-1)) stop("design.matrix must be provided for user-defined models.",call. = FALSE)
+
+  if(is.null(design.matrix)){
+    if(any(model==-1)||!is.null(att.str)) stop("design.matrix must be provided for user-defined models.",call. = FALSE)
     design.matrix <-  vector("list",J)
     for(j in seq_len(J)) {
       if(model[j]==6){
@@ -639,19 +657,18 @@ if (!is.null(gs.parm)) {
       }
     }
 
-  }else if(length(delta.args$design.matrix)!=J){
+  }else if(length(design.matrix)!=J){
     stop("length of design matrix is not correctly specified.",call. = FALSE)
-  }else{
-    design.matrix <- delta.args$design.matrix
   }
 
     for (j in 1:J){
       catprob.matrix[j,1:nrow(design.matrix[[j]])] <-
         catprob.parm[[j]] <-
         round(c(Calc_Pj(par = delta.parm[[j]],designMj = design.matrix[[j]], linkfunc = LF.numeric[j])),digits)
-      if(any(catprob.parm[[j]]<0)||any(catprob.parm[[j]]>1)) stop("Calculated success probabilities from delta parameters cross the boundaries.",call. = FALSE)
+      if(any(catprob.parm[[j]]<0)||any(catprob.parm[[j]]>1))
+        stop("Calculated success probabilities from delta parameters cross the boundaries.",call. = FALSE)
 
-      names(catprob.parm[[j]]) <- paste("P(",apply(attributepattern(Kj[j]),1,paste,collapse = ""),")",sep = "")
+      names(catprob.parm[[j]]) <- paste("P(",apply(reduced.LG[[j]],1,paste,collapse = ""),")",sep = "")
     }
   delta.parm <- format_delta(delta.parm,model,Kj,digits=digits)
   }else if(!is.null(catprob.parm)){
@@ -659,9 +676,10 @@ if (!is.null(gs.parm)) {
 
       for (j in 1:J){
         catprob.matrix[j,1:length(catprob.parm[[j]])] <- round(c(catprob.parm[[j]]),digits)
-        Mj <- designmatrix(Kj[j],model[j])
+
+        if(is.null(design.matrix)) Mj <- designmatrix(Kj[j],model[j]) else Mj <- design.matrix[[j]]
         delta.parm[[j]] <- round(c(solve(t(Mj)%*%Mj)%*%t(Mj)%*%c(catprob.parm[[j]])),digits)
-        names(catprob.parm[[j]]) <- paste("P(",apply(attributepattern(Kj[j]),1,function(x){paste(x,collapse = "")}),")",sep = "")
+        names(catprob.parm[[j]]) <- paste("P(",apply(reduced.LG[[j]],1,paste,collapse = ""),")",sep = "")
       }
     delta.parm <- format_delta(delta.parm,model,Kj,digits=digits)
     }
@@ -698,7 +716,7 @@ if (!is.null(gs.parm)) {
       att.group <- matchMatrix(pattern,att)
       # att.group <- apply(att, 1, function(x) which.max(colSums(x==pattern.t)))
     }else if (tolower(att.dist) == "mvnorm"){
-      if (is.null(mvnorm.parm$mean)||is.null(mvnorm.parm$sigma||is.null(mvnorm.parm$cutoffs)))
+      if (is.null(mvnorm.parm$mean)||is.null(mvnorm.parm$sigma)||is.null(mvnorm.parm$cutoffs))
       {
         stop("multivariate normal parameters must be provided.",call. = FALSE)
       }
@@ -707,7 +725,7 @@ if (!is.null(gs.parm)) {
         att <- 1*(atts>matrix(mvnorm.parm$cutoffs,nrow = N,ncol = length(mvnorm.parm$cutoffs),byrow = TRUE))
         # Calculate which latent group each examinee belongs to return a vector
         # of N elements ranging from 1 to 2^K
-        att.group <- apply(att, 1, function(x) which.max(colSums(x==pattern.t)))
+        att.group <- apply(att, 1, function(x) which.max(colSums(x==t(pattern))))
       }else{
         # if Q matrix is polytomous, cutoffs must be a list - each for one attribute
         stop("multivariate normal distribution is only available for dichotomous attributes.",call. = FALSE)
