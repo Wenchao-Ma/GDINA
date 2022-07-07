@@ -106,8 +106,7 @@ Qval <- function(GDINA.obj, method = "PVAF", iter = "none", eps = 0.95,
                     digits = 4, wald.args = list(),
                     iter.args = list(empty.att = FALSE, max.iter = 150, verbose = FALSE)){
 
-  if (class(GDINA.obj) != "GDINA")
-    stop("GDINA.obj must be a GDINA object from GDINA function.", call. = FALSE)
+  stopifnot(isa(GDINA.obj,"GDINA"))
 
   if (!is.null(extract(GDINA.obj, "att.str")))
     stop("Q-matrix validation is not available if attributes are structured.",

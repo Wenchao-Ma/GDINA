@@ -1,7 +1,5 @@
 #'@include GDINA-package.R GDINA.R
 #'@title calculate person (incidental) parameters
-#'
-#'
 #' @description
 #' Function to calculate various person attribute parameters, including \code{"EAP"},
 #' \code{"MAP"}, and \code{"MLE"}, for EAP, MAP and MLE estimates of

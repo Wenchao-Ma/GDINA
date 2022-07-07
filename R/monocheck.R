@@ -27,7 +27,7 @@
 
 
 monocheck <- function(object,strict = FALSE){
-  if(!class(object)=="GDINA")stop("object must be an object of class GDINA.",call. = FALSE)
+  stopifnot(isa(object,"GDINA"))
   ip <- coef(object)
   Q <- extract(object,"Q")
   Kj <- rowSums(Q>0)

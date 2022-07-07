@@ -172,8 +172,7 @@ modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.met
 
 
   }else{
-    if(!class(GDINA.obj)=="GDINA")
-      stop("GDINA.obj must be a GDINA estimate.",call. = FALSE)
+    stopifnot(isa(GDINA.obj,"GDINA"))
     if (!all(toupper(extract(GDINA.obj,"models"))%in%c("GDINA","LOGGDINA","LOGITGDINA")))
       stop ("Implementing the Wald and LR tests for item-level model comparison requires all items to be fitted by the G-DINA model.",call. = FALSE)
     if(!is.null(extract(GDINA.obj,"att.str")))

@@ -16,7 +16,7 @@ missingMsg <- function(x){
 
 
 inputcheck <- function(dat, Q, model, sequential,att.dist,no.bugs,
-                       verbose, catprob.parm,mono.constraint,
+                       verbose, catprob.parm,mono.constraint,loglinear,
                        att.prior, lower.p, upper.p,att.str,
                        nstarts, conv.crit, maxitr){
   if(!is.logical(sequential)) stop("sequential must be logical.",call. = FALSE)
@@ -49,8 +49,14 @@ inputcheck <- function(dat, Q, model, sequential,att.dist,no.bugs,
     if(any(att.dist=="higher.order")) stop("Higher-order structure is not allowed when attributes are structured.",call.=FALSE)
     if(any(att.dist=="independent")) stop("Independent structure is not allowed when attributes are structured.",call.=FALSE)
     if(any(att.dist=="loglinear")) stop("Loglinear structure is not allowed when attributes are structured.",call.=FALSE)
-    }
-
+  }
+  K <- ncol(Q)
+  if(is.matrix(loglinear)){
+    if(nrow(loglinear)!=2^K) stop("The number of rows of the design matrix for the loglinear model must be equal to 2^K.",call. = FALSE)
+    if(ncol(loglinear)>2^K) stop("The number of columns of the design matrix for the loglinear model must not be greater than 2^K.",call. = FALSE)
+  }else{
+    if(loglinear>K | loglinear<1) stop("loglinear must be a positive number less than the number of attributes or a design matrix.",call. = FALSE)
+  }
 
   if(any(lower.p>=upper.p)) stop("lower.p must be less than upper.p.",call. = FALSE)
   if(any(upper.p<0)||any(upper.p>1)) stop("upper.p must range from 0 to 1.",call. = FALSE)
@@ -1077,10 +1083,14 @@ model2character <- function(model,J=1){
   model
 }
 
-linkf.numeric <- function(linkfunc, model.vector){
+linkf.numeric <- function(linkfunc, model.vector=NULL){
 
+  if(!is.null(model.vector)){
+    J <- length(model.vector)
+  }else{
+    J <- 1
+  }
 
-  J <- length(model.vector)
   # identitiy link -> 1
   # logit link -> 2
   # log link -> 3

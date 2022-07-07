@@ -8,7 +8,7 @@ coef.GDINA <-
            withSE = FALSE, SE.type = 2,digits = 4, ...)
   {
 
-    if(!class(object)=="GDINA") stop("object must be a GDINA estimate.",call. = FALSE)
+    if(!isa(object,"GDINA")) stop("object must be a GDINA estimate.",call. = FALSE)
     what <- match.arg(what)
 
     if(tolower(what)=="catprob"){

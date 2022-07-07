@@ -38,7 +38,7 @@ itemparm <- function(object,
 itemparm.GDINA <- function(object,
                            what = c("catprob","gs","delta","rrum","itemprob","LCprob"),
                            withSE = FALSE, SE.type = 2,digits = 4, ...){
-  if(!class(object)=="GDINA") stop("object must be a GDINA estimate.",call. = FALSE)
+  stopifnot(isa(object,"GDINA"))
   .Deprecated("coef", package="GDINA",msg = "'itemparm' is deprecated - use 'coef' instead.")
   what <- match.arg(what)
   if(tolower(what)=="catprob"){

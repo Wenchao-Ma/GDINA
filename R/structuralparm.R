@@ -24,12 +24,14 @@ structural.parm.mg <- function(AlphaPattern,no.mg,logprior,att.dist,att.str,satu
         npar <- npar + length(lambda[[g]]) - 1
       }else if (att.dist[g]=="loglinear"){
         if(!is.null(att.str)) stop("Only att.dist = saturated or fixed is available when attributes have structures.",call. = FALSE)
-        Z <- designM(K,0)
         if(K<2)
           stop("loglinear smoothing is not available when K < 2.",call. = FALSE)
-        if(loglinear[g]>K)
-          stop("Argument 'loglinear' cannot be greater than K.",call. = FALSE)
-        Z <- Z[,seq_len(1+sum(sapply(seq_len(loglinear[g]),choose,n=K)))]
+        if(is.matrix(loglinear)){
+          Z <- loglinear[[g]]
+        }else{
+          Z <- designM(K,0)
+          Z <- Z[,seq_len(1+sum(sapply(seq_len(loglinear[g]),choose,n=K)))]
+        }
         prior[prior[,g]<1e-9,g] <- 1e-9
         lambda[[g]] <- parm <- stats::lm.wfit(x=Z,log(N*prior[,g]),w=N*prior[,g])$coefficients
         logprior[,g] <- c(Z%*%parm)-log(sum(exp(Z%*%parm)))
@@ -87,10 +89,15 @@ structural.parm.sg <- function(AlphaPattern,no.mg = 1,logprior,att.dist,att.str,
     npar <- HO.out$npar
   }else if (att.dist=="loglinear"){
     if(!is.null(att.str)) stop("Only att.dist = saturated or fixed is available when attributes have structures.",call. = FALSE)
-    Z <- designM(K,0)
+
     if(K<2) stop("loglinear smoothing is not available when K < 2.",call. = FALSE)
-    if(loglinear>K) stop("Argument 'loglinear' cannot be greater than K.",call. = FALSE)
-    Z <- Z[,seq_len(1+sum(sapply(seq_len(loglinear),choose,n=K)))]
+    if(is.matrix(loglinear)){
+      Z <- loglinear
+    }else{
+      Z <- designM(K,0)
+      Z <- Z[,seq_len(1+sum(sapply(seq_len(loglinear),choose,n=K)))]
+    }
+
     prior[prior<1e-9] <- 1e-9
     lambda <- parm <- stats::lm.wfit(x=Z,log(N*prior),w=N*prior)$coefficients
     logprior <- c(Z%*%parm)-log(sum(exp(Z%*%parm)))

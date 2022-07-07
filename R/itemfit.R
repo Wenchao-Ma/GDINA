@@ -69,7 +69,7 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "holm",
                     digits = 4,N.resampling = NULL,randomseed=123456){
 
 
-  if(!class(GDINA.obj)=="GDINA") stop("GDINA.obj must be a GDINA estimate.",call. = FALSE)
+  stopifnot(isa(GDINA.obj,"GDINA"))
   if(extract(GDINA.obj,"ngroup")>1) stop("Itemfit is not available for multiple group estimation.",call. = FALSE)
   if (extract(GDINA.obj, "sequential")) stop("Itemfit is not available for sequential models.", call. = FALSE)
   itemfitcall <- match.call()

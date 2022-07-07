@@ -956,3 +956,4 @@ GDINA <-
     class(ret) <- "GDINA"
     invisible(ret)
   }
+

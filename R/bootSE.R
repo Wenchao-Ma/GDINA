@@ -41,7 +41,7 @@ bootSE <- function(GDINA.obj,bootsample=50,type = "nonparametric",randomseed=123
   }
 
   set.seed(randomseed)
-
+  stopifnot(isa(GDINA.obj,"GDINA"))
   Y <- extract(GDINA.obj,"dat")
   Q <- extract(GDINA.obj,"Q")
   N <- nrow(Y)

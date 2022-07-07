@@ -34,7 +34,7 @@ plot.GDINA <-
   function(x, what = "IRF", item = "all", withSE = FALSE, SE.type = 2,
            person = 1, att.names = NULL,...)
   {
-    if(class(x)!="GDINA") stop("x must be of class GDINA.",call. = FALSE)
+    stopifnot(isa(x,"GDINA"))
 
     if(toupper(what)=="IRF"){
       if(extract(x,"sequential")){

@@ -168,7 +168,7 @@ SG.Est <- function(dat, Q, weight=NULL, model, sequential,att.dist, att.prior, s
 
 
   # input check
-  inputcheck(dat = dat, Q = Q, model = model, sequential = sequential, att.dist = att.dist,
+  inputcheck(dat = dat, Q = Q, model = model, sequential = sequential, att.dist = att.dist,loglinear=loglinear,
              no.bugs = no.bugs, verbose = verbose, catprob.parm = catprob.parm, mono.constraint = mono.constraint,
              att.prior = att.prior, lower.p = control$lower.p,upper.p = control$upper.p, att.str = att.str,
              nstarts = control$nstarts, conv.crit = control$conv.crit, maxitr = control$maxitr)
