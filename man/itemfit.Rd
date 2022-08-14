@@ -63,11 +63,11 @@ Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013) and draw heatma
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{extract}: extract various elements from \code{itemfit} objects
+\item \code{extract(itemfit)}: extract various elements from \code{itemfit} objects
 
-\item \code{summary}: print summary information
+\item \code{summary(itemfit)}: print summary information
+
 }}
-
 \examples{
 \dontrun{
 dat <- sim10GDINA$simdat

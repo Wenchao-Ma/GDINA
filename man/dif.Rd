@@ -69,9 +69,9 @@ test (Ma, Terzi, & de la Torre, 2021). The forward anchor item search procedure 
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{summary}: print summary information
-}}
+\item \code{summary(dif)}: print summary information
 
+}}
 \examples{
 \dontrun{
 set.seed(123456)

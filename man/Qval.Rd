@@ -76,11 +76,11 @@ You should always check the mesa plots for further examination.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{extract}: extract various elements from \code{Qval} objects
+\item \code{extract(Qval)}: extract various elements from \code{Qval} objects
 
-\item \code{summary}: print summary information
+\item \code{summary(Qval)}: print summary information
+
 }}
-
 \examples{
 \dontrun{
 ################################

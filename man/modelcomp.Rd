@@ -16,8 +16,8 @@ modelcomp(
   DS = FALSE,
   Wald.args = list(SE.type = 2, varcov = NULL),
   LR.args = list(LR.approx = FALSE),
-  LM.args = list(reducedMDINA = NULL, reducedMDINO = NULL, reducedMACDM = NULL, SE.type
-    = 2)
+  LM.args = list(reducedMDINA = NULL, reducedMDINO = NULL, reducedMACDM = NULL, SE.type =
+    2)
 )
 
 \method{extract}{modelcomp}(
@@ -118,11 +118,11 @@ the best model specified in argument \code{decision.args}:
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{extract}: extract various elements from \code{modelcomp} objects
+\item \code{extract(modelcomp)}: extract various elements from \code{modelcomp} objects
 
-\item \code{summary}: print summary information
+\item \code{summary(modelcomp)}: print summary information
+
 }}
-
 \examples{
 \dontrun{
 dat <- sim10GDINA$simdat

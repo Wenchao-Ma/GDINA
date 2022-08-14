@@ -107,7 +107,7 @@ If different groups have different joint attribute distributions,
 specify \code{att.dist} as a character vector with the same number of elements as the number of groups. However, if a higher-order model is used for any group,
 it must be used for all groups.}
 
-\item{mono.constraint}{logical; \code{TRUE} indicates that \eqn{P(\mathbf{\alpha}_1) <=P(\mathbf{\alpha}_2)} if
+\item{mono.constraint}{logical; \code{TRUE} indicates that \eqn{P(\boldsymbol{\alpha}_1) <=P(\boldsymbol{\alpha}_2)} if
 for all \eqn{k}, \eqn{\alpha_{1k} < \alpha_{2k}}. Can be a vector for each item or nonzero category or a scalar which will be used for all
 items to specify whether monotonicity constraint should be added.}
 
@@ -140,11 +140,8 @@ information for current iteration, or information for all iterations.}
 
 \item{higher.order}{A list specifying the higher-order joint attribute distribution with the following components:
 \itemize{
-  \item \code{model} - a character indicating the IRT model for higher-order joint attribute distribution. Can be
-  \code{"2PL"}, \code{"1PL"} or \code{"Rasch"}, representing two parameter logistic IRT model,
-  one parameter logistic IRT model and Rasch model, respectively. For \code{"1PL"} model, a common slope parameter is
-  estimated. \code{"Rasch"} is the default model when \code{att.dist = "higher.order"}. Note that slope-intercept form
-  is used for parameterizing the higher-order IRT model (see \code{Details}).
+  \item \code{model} - a number indicating the model for higher-order joint attribute distribution. Can be
+  1, 2 or 3, representing the intercept only approach, common slope approach and varied slope approach (see \code{Details}).
   \item \code{nquad} - a scalar specifying the number of integral nodes. Default = 25.
   \item \code{SlopeRange} - a vector of length two specifying the range of slope parameters. Default = [0.1, 5].
   \item \code{InterceptRange} - a vector of length two specifying the range of intercept parameters. Default = [-4, 4].
@@ -154,7 +151,7 @@ information for current iteration, or information for all iterations.}
   }}
 
 \item{loglinear}{the order of loglinear smooth for attribute space. It can be either 1 or 2 indicating the loglinear model with main effect only
-and with main effect and first-order interaction.}
+and with main effect and first-order interaction; It can also be a matrix, representing the design matrix for the loglinear model.}
 
 \item{catprob.parm}{A list of initial success probability parameters for each nonzero category.}
 
@@ -270,31 +267,31 @@ use \code{\link{startGDINA}}.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{anova}: Model comparison using likelihood ratio test
+\item \code{anova(GDINA)}: Model comparison using likelihood ratio test
 
-\item \code{coef}: extract structural parameter estimates
+\item \code{coef(GDINA)}: extract structural parameter estimates
 
-\item \code{extract}: extract various elements of GDINA estimates
+\item \code{extract(GDINA)}: extract various elements of GDINA estimates
 
-\item \code{personparm}: calculate person attribute patterns and higher-order ability
+\item \code{personparm(GDINA)}: calculate person attribute patterns and higher-order ability
 
-\item \code{logLik}: calculate log-likelihood
+\item \code{logLik(GDINA)}: calculate log-likelihood
 
-\item \code{deviance}: calculate deviance
+\item \code{deviance(GDINA)}: calculate deviance
 
-\item \code{nobs}: calculate number of observations
+\item \code{nobs(GDINA)}: calculate number of observations
 
-\item \code{vcov}: calculate covariance-matrix for delta parameters
+\item \code{vcov(GDINA)}: calculate covariance-matrix for delta parameters
 
-\item \code{npar}: calculate the number of parameters
+\item \code{npar(GDINA)}: calculate the number of parameters
 
-\item \code{indlogLik}: extract log-likelihood for each individual
+\item \code{indlogLik(GDINA)}: extract log-likelihood for each individual
 
-\item \code{indlogPost}: extract log posterior for each individual
+\item \code{indlogPost(GDINA)}: extract log posterior for each individual
 
-\item \code{summary}: print summary information
+\item \code{summary(GDINA)}: print summary information
+
 }}
-
 \note{
 anova function does NOT check whether models compared are nested or not.
 }
@@ -308,23 +305,23 @@ attributes, the G-DINA model collapses \eqn{2^K} latent classes into \eqn{2^{K_j
 latent groups with unique success probabilities on item \eqn{j}, where
 \eqn{K_j^*=\sum_{k=1}^{K}q_{jk}}.
 
-Let \eqn{\mathbf{\alpha}_{lj}^*} be the reduced attribute
+Let \eqn{\boldsymbol{\alpha}_{lj}^*} be the reduced attribute
 pattern consisting of the columns of the attributes required by item \eqn{j}, where
 \eqn{l=1,\ldots,2^{K_j^*}}. For example, if only the first and the last attributes are
-required, \eqn{\mathbf{\alpha}_{lj}^*=(\alpha_{l1},\alpha_{lK})}. For notational
+required, \eqn{\boldsymbol{\alpha}_{lj}^*=(\alpha_{l1},\alpha_{lK})}. For notational
 convenience, the first \eqn{K_j^*} attributes can be assumed to be the required attributes
-for item \eqn{j} as in de la Torre (2011). The probability of success \eqn{P(X_{j}=1|\mathbf{\alpha}_{lj}^*)} is denoted
-by \eqn{P(\mathbf{\alpha}_{lj}^*)}. To model this probability of success, different link functions
+for item \eqn{j} as in de la Torre (2011). The probability of success \eqn{P(X_{j}=1|\boldsymbol{\alpha}_{lj}^*)} is denoted
+by \eqn{P(\boldsymbol{\alpha}_{lj}^*)}. To model this probability of success, different link functions
 as in the generalized linear models are used in the G-DINA model. The item response
 function of the G-DINA model using the identity link can be written as
 \deqn{
-f[P(\mathbf{\alpha}_{lj}^*)]=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}+
+f[P(\boldsymbol{\alpha}_{lj}^*)]=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}+
 \sum_{k'=k+1}^{K_j^*}\sum_{k=1}^{K_j^*-1}\delta_{jkk'}\alpha_{lk}\alpha_{lk'}+\cdots+
 \delta_{j12{\cdots}K_j^*}\prod_{k=1}^{K_j^*}\alpha_{lk},
 }
 or in matrix form,
 \deqn{
-f[\mathbf{P}_j]=\mathbf{M}_j\mathbf{\delta}_j,
+f[\boldsymbol{P}_j]=\boldsymbol{M}_j\boldsymbol{\delta}_j,
 }
 where \eqn{\delta_{j0}} is the intercept for item \eqn{j}, \eqn{\delta_{jk}} is the main effect
 due to \eqn{\alpha_{lk}}, \eqn{\delta_{jkk'}} is the interaction effect due to
@@ -354,14 +351,14 @@ de la Torre(2011) for details.
        To obtain the DINA model from the G-DINA model,
        all terms in identity link G-DINA model except \eqn{\delta_0} and \eqn{\delta_{12{\ldots}K_j^*}}
        need to be fixed to zero, that is,
-       \deqn{P(\mathbf{\alpha}_{lj}^*)=
+       \deqn{P(\boldsymbol{\alpha}_{lj}^*)=
        \delta_{j0}+\delta_{j12{\cdots}K_j^*}\prod_{k=1}^{K_j^*}\alpha_{lk}}
        In this parameterization, \eqn{\delta_{j0}=g_j} and \eqn{\delta_{j0}+\delta_{j12{\cdots}K_j^*}=1-s_j}.
    }
 \item{\code{DINO model}}{
        The DINO model can be given by
-       \deqn{P(\mathbf{\alpha}_{lj}^{*})=
-       \delta_{j0}+\delta_{j1}I(\mathbf{\alpha}_{lj}^*\neq \mathbf{0})}
+       \deqn{P(\boldsymbol{\alpha}_{lj}^{*})=
+       \delta_{j0}+\delta_{j1}I(\boldsymbol{\alpha}_{lj}^*\neq \boldsymbol{0})}
 
        where \eqn{I(\cdot)} is an indicator variable. The DINO model is also a constrained identity
        link G-DINA model. As shown by de la Torre (2011), the appropriate constraint is
@@ -371,21 +368,21 @@ de la Torre(2011) for details.
 \item{\code{Additive models with different link functions}}{
        The A-CDM, LLM and R-RUM can be obtained by setting all interactions to be zero in
        identity, logit and log link G-DINA model, respectively. Specifically, the A-CDM can be formulated as
-       \deqn{P(\mathbf{\alpha}_{lj}^*)=
+       \deqn{P(\boldsymbol{\alpha}_{lj}^*)=
        \delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}}
        The item response function for
        LLM can be given by
-       \deqn{ logit[P(\mathbf{\alpha}_{lj}^*)]=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk},}
+       \deqn{ logit[P(\boldsymbol{\alpha}_{lj}^*)]=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk},}
        and lastly, the RRUM, can be written as
-       \deqn{log[P(\mathbf{\alpha}_{lj}^*)]=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}.} It should be
+       \deqn{log[P(\boldsymbol{\alpha}_{lj}^*)]=\delta_{j0}+\sum_{k=1}^{K_j^*}\delta_{jk}\alpha_{lk}.} It should be
        noted that the LLM is equivalent to the compensatory RUM, which is subsumed by the GDM, and that
        the RRUM is a special case of the generalized noisy inputs, deterministic ``And" gate model (G-NIDA).
    }
 \item{\code{Simultaneously identifying skills and misconceptions (SISM)}}{
        The SISM can be can be reformulated as
-       \deqn{P(\mathbf{\alpha}_{lj}^*)=
-       \delta_{j0}+\delta_{j1}I[\text{mastering all skills}]+
-       \delta_{j2}I[\text{having no bugs}]+\delta_{j12}I[\text{mastering all skills and having no bugs}].}
+       \deqn{P(\boldsymbol{\alpha}_{lj}^*)=
+       \delta_{j0}+\delta_{j1}I[{mastering all skills}]+
+       \delta_{j2}I[{having no bugs}]+\delta_{j12}I[{mastering all skills and having no bugs}].}
        As a result,the success probability of students who have mastered all the measured skills and possess
        none of the measured misconceptions (\eqn{h_j} in Equation 4 of Kuo, et al, 2018) is
        \eqn{\delta_{j0}+\delta_{j1}+\delta_{j2}+\delta_{j12}}, the success probability of students who have
@@ -397,7 +394,7 @@ de la Torre(2011) for details.
          \eqn{\delta_{j0}}.
 
          By specifying \code{no.bugs} being equal to the number of attributes, the Bug-DINO is obtained, as in
-         \deqn{P(\mathbf{\alpha}_{lj}^*)=\delta_{j0}+\delta_{j1}I[\text{having no bugs}].}
+         \deqn{P(\boldsymbol{\alpha}_{lj}^*)=\delta_{j0}+\delta_{j1}I[{having no bugs}].}
    }
    }
 }
@@ -408,19 +405,18 @@ de la Torre(2011) for details.
 The joint attribute distribution can be modeled using various methods. This section mainly focuses on the so-called
 higher-order approach, which was originally proposed by de la Torre
 and Douglas (2004) for the DINA model. It has been extended in this package for all condensation rules.
-Particularly, three IRT models are available for the higher-order attribute structure:
-Rasch model (Rasch), one parameter logistic model (1PL) and two parameter logistic model (2PL).
-For the Rasch model, the probability of mastering attribute \eqn{k} for individual \eqn{i} is defined as
+Particularly, three approaches are available for the higher-order attribute structure:
+intercept only approach, common slope approach and varied slope approach.
+For the intercept only approach, the probability of mastering attribute \eqn{k} for individual \eqn{i} is defined as
 \deqn{P(\alpha_k=1|\theta_i,\lambda_{0k})=\frac{exp(\theta_i+\lambda_{0k})}{1+exp(\theta_i+\lambda_{0k})}}
-For the 1PL model, the probability of mastering attribute \eqn{k} for individual \eqn{i} is defined as
+For the common slope approach, the probability of mastering attribute \eqn{k} for individual \eqn{i} is defined as
 \deqn{P(\alpha_k=1|\theta_i,\lambda_{0k},\lambda_{1})=\frac{exp(\lambda_{1}\theta_i+\lambda_{0k})}{1+exp(\lambda_{1}\theta_i+\lambda_{0k})}}
-For the 2PL model, the probability of mastering attribute \eqn{k} for individual \eqn{i} is defined as
+For the varied slope approach, the probability of mastering attribute \eqn{k} for individual \eqn{i} is defined as
 \deqn{P(\alpha_k=1|\theta_i,\lambda_{0k},\lambda_{1k})=\frac{exp(\lambda_{1k}\theta_i+\lambda_{0k})}{1+exp(\lambda_{1k}\theta_i+\lambda_{0k})}}
 where \eqn{\theta_i} is the ability of examinee \eqn{i}. \eqn{\lambda_{0k}} and \eqn{\lambda_{1k}} are the intercept
-and slope parameters for attribute \eqn{k}, respectively. In the Rasch model, \eqn{\lambda_{1k}=1 \forall k};
-whereas in the 1PL model, a common slope parameter \eqn{\lambda_{1}} is estimated.
+and slope parameters for attribute \eqn{k}, respectively.
 The probability of joint attributes can be written as
- \deqn{P(\mathbf{\alpha}|\theta_i,\mathbf{\lambda})=\prod_k P(\alpha_k|\theta_i,\mathbf{\lambda})}.
+ \deqn{P(\boldsymbol{\alpha}|\theta_i,\boldsymbol{\lambda})=\prod_k P(\alpha_k|\theta_i,\boldsymbol{\lambda})}.
 }
 
 \section{Model Estimation}{
@@ -445,8 +441,7 @@ The DINA and DINO model has 2 item parameters for each item;
 if item \eqn{j} is ACDM, LLM or RRUM, it has \eqn{K_j^*+1} item parameters; if it is G-DINA model, it has \eqn{2^{K_j^*}} item parameters.
 Apart from item parameters, the parameters involved in the estimation of joint attribute distribution need to be estimated as well.
 When using the saturated attribute structure, there are \eqn{2^K-1} parameters for joint attribute distribution estimation; when
-using a higher-order attribute structure, there are \eqn{K}, \eqn{K+1}, and \eqn{2\times K} parameters for the Rasch model,
-1PL model and 2PL model, respectively.
+using a higher-order attribute structure, there are \eqn{K}, \eqn{K+1}, and \eqn{2\times K} parameters for the intercept only approach, common slope approach and varied slope approach, respectively.
 For polytomous response data using the sequential G-DINA model, the number of item parameters
 are counted at category level.
 }

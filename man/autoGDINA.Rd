@@ -108,9 +108,9 @@ When \code{modelselectionrule} is \code{simpler}:
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{summary}: print summary information
-}}
+\item \code{summary(autoGDINA)}: print summary information
 
+}}
 \note{
 Returned \code{GDINA1.obj}, \code{GDINA2.obj} and \code{CDM.obj} are objects of class \code{GDINA},
  and all S3 methods suitable for \code{GDINA} objects can be applied. See \code{\link{GDINA}} and \code{\link{extract}}.

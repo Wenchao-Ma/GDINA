@@ -103,7 +103,7 @@ structural.parm.sg <- function(AlphaPattern,no.mg = 1,logprior,att.dist,att.str,
     logprior <- c(Z%*%parm)-log(sum(exp(Z%*%parm)))
     logprior[logprior<log(.Machine$double.eps)] <- log(.Machine$double.eps)
     logprior[logprior>log(1-.Machine$double.eps)] <- log(1-.Machine$double.eps)
-    npar <- length(lambda)
+    npar <- length(lambda)-1
   }else if(att.dist=="independent"){
     if(!is.null(att.str)) stop("Only att.dist = saturated or fixed is available when attributes have structures.",call. = FALSE)
     # print(AlphaPattern)
