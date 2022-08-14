@@ -12,3 +12,4 @@
 \.fsrc$
 \.o$
 \.so$
+^\.github$

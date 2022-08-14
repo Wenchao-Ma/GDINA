@@ -6,8 +6,7 @@
 [![Project Status: Active ? The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/)
-[![Build
-Status](https://travis-ci.org/Wenchao-Ma/GDINA.svg?branch=master)](https://travis-ci.org/Wenchao-Ma/GDINA)
+[![R-CMD-check](https://github.com/Wenchao-Ma/GDINA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Wenchao-Ma/GDINA/actions/workflows/R-CMD-check.yaml)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA)
 [![](https://cranlogs.r-pkg.org/badges/GDINA?color=brightgreen)](https://cran.r-project.org/package=GDINA)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/GDINA?color=green)](https://cran.r-project.org/package=GDINA)
@@ -32,8 +31,8 @@ examples, tutorials and more information.
     to the G-DINA model framework and the use of graphical user
     interface for CDM analyses
 
--   Check [the book chapter by
-    Ma (2019)](https://doi.org/10.1007/978-3-030-05584-4_29) on an
+-   Check [the book chapter by Ma
+    (2019)](https://doi.org/10.1007/978-3-030-05584-4_29) on an
     introduction to the GDINA package
 
 -   Check [de la Torre and Akbay’s (2019) article](https://ejer.com.tr/)
@@ -80,7 +79,7 @@ The stable version of GDINA should be installed from R CRAN at
 
 To install this package from source:
 
-1.  Windows users may need to install the
+1)  Windows users may need to install the
     [Rtools](https://CRAN.R-project.org/bin/windows/Rtools/) and include
     the checkbox option of installing Rtools to their path for easier
     command line usage. Mac users will have to download the necessary
@@ -90,7 +89,7 @@ To install this package from source:
     under Downloads/Components); most Linux distributions should already
     have up to date compilers (or if not they can be updated easily).
 
-2.  Install the `devtools` package (if necessary), and install the
+2)  Install the `devtools` package (if necessary), and install the
     package from the Github source code.
 
 ``` r
