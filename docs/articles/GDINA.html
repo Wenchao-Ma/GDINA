@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/GDINA.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -79,8 +75,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Wenchao-Ma/GDINA/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/Wenchao-Ma/GDINA/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -98,105 +94,140 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>A quick reference to GDINA R package</h1>
-                        <h4 class="author">Wenchao Ma</h4>
+                        <h4 data-toc-skip class="author">Wenchao Ma</h4>
             
-            <h4 class="date">2020-05-23</h4>
+            <h4 data-toc-skip class="date">2022-08-14</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/master/vignettes/GDINA.Rmd"><code>vignettes/GDINA.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/HEAD/vignettes/GDINA.Rmd" class="external-link"><code>vignettes/GDINA.Rmd</code></a></small>
       <div class="hidden name"><code>GDINA.Rmd</code></div>
 
     </div>
 
     
     
-<div id="what-can-this-package-do" class="section level2">
-<h2 class="hasAnchor">
-<a href="#what-can-this-package-do" class="anchor"></a>What can this package do?</h2>
-<p>This package provides a framework for conducting a variety of cognitively diagnostic analyses for dichotomous and polytomous responses.</p>
-<p>For more details, see <a href="https://wenchao-ma.github.io/GDINA/index.html">here</a></p>
-<p>For an example of how to use the package, see <a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html">here</a></p>
+<div class="section level2">
+<h2 id="what-can-this-package-do">What can this package do?<a class="anchor" aria-label="anchor" href="#what-can-this-package-do"></a>
+</h2>
+<p>This package provides a framework for conducting a variety of
+cognitively diagnostic analyses for dichotomous and polytomous
+responses.</p>
+<p>For more details, see <a href="https://wenchao-ma.github.io/GDINA/index.html" class="external-link">here</a></p>
+<p>For an example of how to use the package, see <a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html" class="external-link">here</a></p>
 </div>
-<div id="how-to-use-this-package" class="section level2">
-<h2 class="hasAnchor">
-<a href="#how-to-use-this-package" class="anchor"></a>How to use this package?</h2>
+<div class="section level2">
+<h2 id="how-to-use-this-package">How to use this package?<a class="anchor" aria-label="anchor" href="#how-to-use-this-package"></a>
+</h2>
 <ul>
 <li>To estimate various CDMs, use <strong>GDINA()</strong> function</li>
-<li>To extract item and person parameters from GDINA estimates, use <strong>coef()</strong> and <strong>personparm()</strong> functions, respectively</li>
-<li>To extract other estimation components, use <strong>extract()</strong> function</li>
-<li>To evaluate absolute model fit, use <strong>modelfit()</strong> or <strong>itemfit()</strong> functions</li>
-<li>To evaluate relative model fit, use <strong>AIC()</strong>, <strong>BIC()</strong> or <strong>deviance()</strong> functions</li>
+<li>To extract item and person parameters from GDINA estimates, use
+<strong>coef()</strong> and <strong>personparm()</strong> functions,
+respectively</li>
+<li>To extract other estimation components, use
+<strong>extract()</strong> function</li>
+<li>To evaluate absolute model fit, use <strong>modelfit()</strong> or
+<strong>itemfit()</strong> functions</li>
+<li>To evaluate relative model fit, use <strong>AIC()</strong>,
+<strong>BIC()</strong> or <strong>deviance()</strong> functions</li>
 <li>To validate Q-matrix, use <strong>Qval()</strong> function</li>
-<li>To detect differential item functioning, use <strong>dif()</strong> function</li>
-<li>To run graphical user interface, use <strong>startGDINA()</strong> function</li>
-<li>To simulate data from various CDMs, use <strong>simGDINA()</strong> function</li>
+<li>To detect differential item functioning, use <strong>dif()</strong>
+function</li>
+<li>To run graphical user interface, use <strong>startGDINA()</strong>
+function</li>
+<li>To simulate data from various CDMs, use <strong>simGDINA()</strong>
+function</li>
 </ul>
-<p>Visit <a href="https://wenchao-ma.github.io/GDINA/reference/index.html">here</a> for an online reference</p>
+<p>Visit <a href="https://wenchao-ma.github.io/GDINA/reference/index.html" class="external-link">here</a>
+for an online reference</p>
 </div>
-<div id="a-quick-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#a-quick-example" class="anchor"></a>A quick example</h2>
-<p>Below is an illustration showing some analyses that you could do using the package. You can copy the code, paste and run it in R console. For a more comprehensive example, see <a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html">this tutorial</a>.</p>
+<div class="section level2">
+<h2 id="a-quick-example">A quick example<a class="anchor" aria-label="anchor" href="#a-quick-example"></a>
+</h2>
+<p>Below is an illustration showing some analyses that you could do
+using the package. You can copy the code, paste and run it in R console.
+For a more comprehensive example, see <a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html" class="external-link">this
+tutorial</a>.</p>
 <ol style="list-style-type: decimal">
-<li>Load the package and assume we have the following item response matrix and Q-matrix:</li>
+<li>Load the package and assume we have the following item response
+matrix and Q-matrix:</li>
 </ol>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">GDINA</span>)
-<span class="no">dat</span> <span class="kw">&lt;-</span> <span class="no">sim10GDINA</span>$<span class="no">simdat</span>
-<span class="no">Q</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,
-              <span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,
-              <span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,
-              <span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span>,
-              <span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,
-              <span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,
-              <span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,
-              <span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,
-              <span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,
-              <span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span>),<span class="kw">byrow</span> <span class="kw">=</span> <span class="no">T</span>,<span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">3</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Wenchao-Ma/GDINA" class="external-link">GDINA</a></span><span class="op">)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">sim10GDINA</span><span class="op">$</span><span class="va">simdat</span></span>
+<span><span class="va">Q</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,</span>
+<span>              <span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,</span>
+<span>              <span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,</span>
+<span>              <span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span>,</span>
+<span>              <span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,</span>
+<span>              <span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,</span>
+<span>              <span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,</span>
+<span>              <span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,</span>
+<span>              <span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,</span>
+<span>              <span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>,byrow <span class="op">=</span> <span class="cn">T</span>,ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>Estimate the G-DINA model:</li>
 </ol>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">est</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/GDINA.html">GDINA</a></span>(<span class="kw">dat</span> <span class="kw">=</span> <span class="no">dat</span>, <span class="kw">Q</span> <span class="kw">=</span> <span class="no">Q</span>, <span class="kw">model</span> <span class="kw">=</span> <span class="st">"GDINA"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GDINA.html">GDINA</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">dat</span>, Q <span class="op">=</span> <span class="va">Q</span>, model <span class="op">=</span> <span class="st">"GDINA"</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
-<li>Conduct the Q-matrix validation. By default, it implements de la Torre and Chiu’s (2016) algorithm using a fixed cutoff. This is fast but sometimes suggests too many modifications.</li>
+<li>Conduct the Q-matrix validation. By default, it implements de la
+Torre and Chiu’s (2016) algorithm using a fixed cutoff. This is fast but
+sometimes suggests too many modifications.</li>
 </ol>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">Qv</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/Qval.html">Qval</a></span>(<span class="no">est</span>)
-<span class="no">Qv</span></pre></body></html></div>
-<p>To avoid using fixed cutoffs and also take uncertainty in item parameter estimation into account, you may consider the stepwise method:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">Qv2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/Qval.html">Qval</a></span>(<span class="no">est</span>,<span class="kw">method</span> <span class="kw">=</span> <span class="st">"Wald"</span>)
-<span class="no">Qv2</span></pre></body></html></div>
-<p>To further examine the q-vectors that are suggested to be modified, you can draw mesa plots:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">Qv</span>, <span class="kw">item</span> <span class="kw">=</span> <span class="fl">9</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Qv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Qval.html">Qval</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
+<span><span class="va">Qv</span></span></code></pre></div>
+<p>To avoid using fixed cutoffs and also take uncertainty in item
+parameter estimation into account, you may consider the stepwise
+method:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Qv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Qval.html">Qval</a></span><span class="op">(</span><span class="va">est</span>,method <span class="op">=</span> <span class="st">"Wald"</span><span class="op">)</span></span>
+<span><span class="va">Qv2</span></span></code></pre></div>
+<p>To further examine the q-vectors that are suggested to be modified,
+you can draw mesa plots:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Qv</span>, item <span class="op">=</span> <span class="fl">9</span><span class="op">)</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
-<li>Perform item-level model selection to see if the saturated G-DINA model can be simplified:</li>
+<li>Perform item-level model selection to see if the saturated G-DINA
+model can be simplified:</li>
 </ol>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">mc</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/modelcomp.html">modelcomp</a></span>(<span class="no">est</span>)
-<span class="no">mc</span></pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelcomp.html">modelcomp</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
+<span><span class="va">mc</span></span></code></pre></div>
 <ol start="5" style="list-style-type: decimal">
 <li>Assess model-data fit at test and item levels:</li>
 </ol>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># test level absolute fit</span>
-<span class="no">mft</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/modelfit.html">modelfit</a></span>(<span class="no">est</span>)
-<span class="no">mft</span>
-<span class="co"># item level absolute fit</span>
-<span class="no">ift</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/itemfit.html">itemfit</a></span>(<span class="no">est</span>)
-<span class="no">ift</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">ift</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">ift</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># test level absolute fit</span></span>
+<span><span class="va">mft</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modelfit.html">modelfit</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
+<span><span class="va">mft</span></span>
+<span><span class="co"># item level absolute fit</span></span>
+<span><span class="va">ift</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/itemfit.html">itemfit</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
+<span><span class="va">ift</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ift</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ift</span><span class="op">)</span></span></code></pre></div>
 <ol start="6" style="list-style-type: decimal">
 <li>Calculate classification accuracy</li>
 </ol>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="../reference/CA.html">CA</a></span>(<span class="no">est</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/CA.html">CA</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="more-examples" class="section level2">
-<h2 class="hasAnchor">
-<a href="#more-examples" class="anchor"></a>More Examples</h2>
+<div class="section level2">
+<h2 id="more-examples">More Examples<a class="anchor" aria-label="anchor" href="#more-examples"></a>
+</h2>
 <ul>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html">G-DINA model estimation</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html">Model estimation and diagnostics</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/sGDINA_analysis_example.html">Sequential model estimation and diagnostics</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html">LCDM model estimation</a></li>
-<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.html">Higher-order GDINA model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html" class="external-link">G-DINA
+model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html" class="external-link">Model
+estimation and diagnostics</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/sGDINA_analysis_example.html" class="external-link">Sequential
+model estimation and diagnostics</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html" class="external-link">LCDM
+model estimation</a></li>
+<li><a href="https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.html" class="external-link">Higher-order
+GDINA model estimation</a></li>
 </ul>
-<p>If you would like to contribute an example to this website, please send me your .Rmd file.</p>
+<p>If you would like to contribute an example to this website, please
+send me your .Rmd file.</p>
 </div>
   </div>
 
@@ -211,11 +242,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Wenchao Ma, Jimmy de la Torre.</p>
+  <p></p>
+<p>Developed by Wenchao Ma, Jimmy de la Torre.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -223,6 +256,8 @@
 
   
 
+
+  
 
   </body>
 </html>
