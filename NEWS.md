@@ -1,5 +1,8 @@
+# GDINA 2.9.4
+* Change    - update input check function
+
 # GDINA 2.9.3
-* Change     - update `simGDINA` to handle CDMs with attribute structures
+* Change    - update `simGDINA` to handle CDMs with attribute structures
 * Added     - add an argument `SE` for MCmodel function
 * Added     - add nloptr for optimization
 * Added     - SISM model is available using the `GDINA` function and `simGDINA` function

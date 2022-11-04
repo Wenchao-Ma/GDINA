@@ -51,12 +51,15 @@ inputcheck <- function(dat, Q, model, sequential,att.dist,no.bugs,
     if(any(att.dist=="loglinear")) stop("Loglinear structure is not allowed when attributes are structured.",call.=FALSE)
   }
   K <- ncol(Q)
-  if(is.matrix(loglinear)){
-    if(nrow(loglinear)!=2^K) stop("The number of rows of the design matrix for the loglinear model must be equal to 2^K.",call. = FALSE)
-    if(ncol(loglinear)>2^K) stop("The number of columns of the design matrix for the loglinear model must not be greater than 2^K.",call. = FALSE)
-  }else{
-    if(loglinear>K | loglinear<1) stop("loglinear must be a positive number less than the number of attributes or a design matrix.",call. = FALSE)
+  if(att.dist=="loglinear"){
+    if(is.matrix(loglinear)){
+      if(nrow(loglinear)!=2^K) stop("The number of rows of the design matrix for the loglinear model must be equal to 2^K.",call. = FALSE)
+      if(ncol(loglinear)>2^K) stop("The number of columns of the design matrix for the loglinear model must not be greater than 2^K.",call. = FALSE)
+    }else{
+      if(loglinear>K | loglinear<1) stop("loglinear must be a positive number less than the number of attributes or a design matrix.",call. = FALSE)
+    }
   }
+
 
   if(any(lower.p>=upper.p)) stop("lower.p must be less than upper.p.",call. = FALSE)
   if(any(upper.p<0)||any(upper.p>1)) stop("upper.p must range from 0 to 1.",call. = FALSE)
