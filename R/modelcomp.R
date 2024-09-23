@@ -14,17 +14,16 @@
 #' if at least one reduced model was retained, two diferent rules can be implemented for selecting
 #' the best model specified in argument \code{decision.args}:
 #'
-#' (1) when \code{rule="simpler"}, which is the default,
+#' (1) when \code{rule="simpler"},
 #'
 #'  If (a) the DINA or DINO model
 #'  was one of the retained models, then the DINA or DINO model with the larger p
 #'  value was selected as the best model; but if (b) both DINA and DINO were rejected, the reduced
 #'  model with the largest p value was selected as the best model for this item. Note that
 #'  when the p-values of several reduced models were greater than 0.05, the DINA and DINO models were
-#'  preferred over the A-CDM, LLM, and R-RUM because of their simplicity. This procedure is originally
-#'  proposed by Ma, Iaconangelo, and de la Torre (2016).
+#'  preferred over the A-CDM, LLM, and R-RUM because of their simplicity.
 #'
-#'  (2) When \code{rule="largestp"}:
+#'  (2) When \code{rule="largestp"} (default),
 #'
 #'  The reduced model with the largest p-values is selected as the most appropriate model.
 #'
@@ -138,7 +137,7 @@
 #' @export
 modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.methods = "holm",
                       models=c("DINA","DINO","ACDM","LLM","RRUM"),
-                      decision.args = list(rule = "simpler", alpha.level = 0.05, adjusted = FALSE), DS = FALSE,
+                      decision.args = list(rule = "largestp", alpha.level = 0.05, adjusted = FALSE), DS = FALSE,
                       Wald.args = list(SE.type = 2,varcov = NULL),
                       LR.args = list(LR.approx = FALSE),
                       LM.args = list(reducedMDINA = NULL, reducedMDINO = NULL, reducedMACDM  = NULL, SE.type = 2)){

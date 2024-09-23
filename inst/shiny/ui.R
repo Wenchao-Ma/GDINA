@@ -323,5 +323,6 @@ shinydashboard::tabItem(tabName = "plot",
 shinydashboard::dashboardPage(
   shinydashboard::dashboardHeader(title = "GDINA GUI"),
   sidebar,
-  body
+  body,
+  skin = "red"
 )
