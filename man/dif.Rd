@@ -10,6 +10,7 @@ dif(
   Q,
   group,
   model = "GDINA",
+  sequential = FALSE,
   method = "wald",
   anchor.items = NULL,
   dif.items = "all",
@@ -30,6 +31,8 @@ dif(
 \item{group}{a factor or a vector indicating the group each individual belongs to. Its length must be equal to the number of individuals.}
 
 \item{model}{model for each item.}
+
+\item{sequential}{Logical; whether a sequential model is fit to the data. Default is \code{FALSE}.}
 
 \item{method}{DIF detection method; It can be \code{"wald"} for Hou, de la Torre, and Nandakumar's (2014)
 Wald test method, and \code{"LR"} for likelihood ratio test (Ma, Terzi, Lee,& de la Torre, 2017).}

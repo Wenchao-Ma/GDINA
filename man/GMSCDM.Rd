@@ -22,7 +22,7 @@ the strategy number. See examples.}
 
 \item{model}{CDM used; can be \code{"DINA"},\code{"DINO"},\code{"ACDM"},\code{"LLM"}, and \code{"RRUM"}, representing
 the GMS-DINA, GMS-DINO, GMS-ACDM, GMS-LLM and GMS-RRUM in Ma & Guo (2019), respectively. It can also be \code{"rDINA"} and \code{"rDINO"},
-representing restricted GMS-DINA and GMS-DINO models where delta_{jm1} are equal for all strategies. Note that only a single model can be used
+representing restricted GMS-DINA and GMS-DINO models where \eqn{\delta_{jm1}} are equal for all strategies. Note that only a single model can be used
 for the whole test.}
 
 \item{s}{strategy selection parameter. It is equal to 1 by default.}

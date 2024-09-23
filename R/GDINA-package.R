@@ -43,11 +43,13 @@
 #'
 #' @name GDINA-package
 #' @aliases GDINA-package
-#' @docType package
+#'
 #' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
 #' @seealso \pkg{CDM} for estimating G-DINA model and a set of other CDMs;
 #' \pkg{ACTCD} and \pkg{NPCD}
 #' for nonparametric CDMs; \pkg{dina} for DINA model in Bayesian framework
+"_PACKAGE"
+#'
 #' @references
 #'
 #' Chen, J., & de la Torre, J. (2013). A General Cognitive Diagnosis Model for Expert-Defined Polytomous Attributes.

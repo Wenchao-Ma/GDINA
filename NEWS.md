@@ -1,3 +1,6 @@
+# GDINA 2.9.6
+* Added    - `dif` function can detect differential category functioning for sequential models
+
 # GDINA 2.9.4
 * Change    - update input check function
 
