@@ -457,7 +457,7 @@ Rcpp::List Lik_DTM_MG(arma::mat & mP,
 
   arma::mat updlogPrior = arma::ones<arma::mat>(L,no_mg);
   if(no_mg==1){
-    updlogPrior = log(mean(exp(mlogPost),0)); //updated log priors//N x L --> L x 1
+    updlogPrior.col(0) = arma::trans(log(mean(exp(mlogPost),0))); //updated log priors//N x L --> L x 1
   }else{
     for (int g=0;g<no_mg;g++){
       locg = arma::find(vgroup==g);
