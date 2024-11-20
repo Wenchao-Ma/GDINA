@@ -1,3 +1,6 @@
+# GDINA 2.9.7
+* Added    - `MCmodel` function can handle multiple groups
+
 # GDINA 2.9.6
 * Added    - `dif` function can detect differential category functioning for sequential models
 

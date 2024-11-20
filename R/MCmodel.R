@@ -15,6 +15,8 @@
 #' @param model \code{MCDINA} only currently. Other MC models may be incorporated.
 #' @param key a numeric vector giving the key of each item. See \code{Examples}.
 #'     \code{NULL} by default indicating the coded category requiring the largest number of 1s is the key.
+#' @param group Group membership vector if a multiple group model is considered. It must only contain whole numbers and start from 1. The
+#'     length must be equal to the number of rows of the data.
 #' @param conv.crit The convergence criterion for max absolute change in \code{conv.type} for two consecutive iterations.
 #' @param conv.type convergence criteria; Can be \code{pr} or \code{LL},
 #'    indicating category response function, or -2 times log-likelihood,respectively.
@@ -81,6 +83,15 @@
 #'  est2$prob.parm
 #'  est2$testfit
 #'  est2$attribute
+#'
+#'
+#'  ###############################
+#'  # a multiple group model
+#'  ###############################
+#' est <- MCmodel(sim10MCDINA$simdat, sim10MCDINA$simQ, group = rep(1:2, 1500))
+#' # log posterior of different groups
+#' est$lik$logprior
+#'
 #' }
 #' @return an object of class \code{MCmodel} with the following components:
 #' \describe{
@@ -106,7 +117,8 @@
 #'
 #'
 #'
-MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxitr=2000,conv.type="pr",SE=FALSE){
+MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL,
+                    group = NULL,conv.crit = .001, maxitr=2000, conv.type="pr", SE=FALSE){
 
   s1 <- Sys.time()
   mcm.call <- match.call()
@@ -121,6 +133,7 @@ MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxi
   if(any(is.na(dat)))
     stop("Missing data are not allowed.",call. = FALSE)
 
+
   if(missing(dat)) missingMsg(dat)
   if(missing(Qc)) missingMsg(Qc)
 
@@ -129,6 +142,19 @@ MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxi
   N <- nrow(dat)
 
   J <- ncol(dat)
+
+
+  if(!is.null(group)){
+    g <- unique(group)
+    no.g <- length(g)
+    if(length(group)!=nrow(dat))
+      stop("Length of group must be equal to the sample size in the data.", call. = FALSE)
+  }else{
+    no.g <- 1
+    group <- rep(1,N)
+  }
+
+
   unique.code <- apply(dat,2,unique)
   if(is.list(unique.code)){
     C <- sapply(unique.code,length) # total # of categories including 0
@@ -148,7 +174,9 @@ MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxi
   param <- pl(init, model = model)
   eta <- init$eta
 
-  logprior <- log(rep(1/L,L))
+  logprior <- log(matrix(1/L, nrow=L, ncol = no.g))
+
+
 
   dif <- LL.2 <- 1
   itr <- 0
@@ -161,7 +189,7 @@ MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxi
       stop("some item success probabilities are not between 0 and 1.",call. = FALSE)
     # print(p)
     # calculate likelihood and posterior
-    likepost <- Lik_DTM(as.matrix(p),as.matrix(dat-1),C-1,logprior)
+    likepost <- Lik_DTM_MG(as.matrix(p),as.matrix(dat-1),C-1,logprior,group)
 
     #number of expected examinees getting each score in each latent class - including 0 score
     R1 <- Rljs_DTM(likepost$logpost,dat-1,C-1) #S0 x L
@@ -186,7 +214,7 @@ MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxi
       break
     LL.2 <- LL.1
 
-    logprior <- c(likepost$logprior)
+    logprior <- likepost$logprior
 
   }
 
@@ -195,7 +223,7 @@ MCmodel <- function(dat, Qc, model = "MCDINA", key = NULL, conv.crit = .001,maxi
 
   #---------update posterior
   p <- pl2pm(param,eta)
-  likepost <- Lik_DTM(as.matrix(p),as.matrix(dat-1),C-1,logprior)
+  likepost <- Lik_DTM_MG(as.matrix(p),as.matrix(dat-1),C-1,logprior,group)
 
   #number of expected examinees getting each score in each latent class - including 0 score
   R1 <- Rljs_DTM(likepost$logpost,dat-1,C-1) #S0 x L

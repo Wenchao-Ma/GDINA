@@ -9,6 +9,7 @@ MCmodel(
   Qc,
   model = "MCDINA",
   key = NULL,
+  group = NULL,
   conv.crit = 0.001,
   maxitr = 2000,
   conv.type = "pr",
@@ -32,6 +33,9 @@ allow to assign examinees uniquely.}
 
 \item{key}{a numeric vector giving the key of each item. See \code{Examples}.
 \code{NULL} by default indicating the coded category requiring the largest number of 1s is the key.}
+
+\item{group}{Group membership vector if a multiple group model is considered. It must only contain whole numbers and start from 1. The
+length must be equal to the number of rows of the data.}
 
 \item{conv.crit}{The convergence criterion for max absolute change in \code{conv.type} for two consecutive iterations.}
 
@@ -118,6 +122,15 @@ This function estimates the multiple-choice DINA model (de la Torre, 2009).
  est2$prob.parm
  est2$testfit
  est2$attribute
+
+
+ ###############################
+ # a multiple group model
+ ###############################
+est <- MCmodel(sim10MCDINA$simdat, sim10MCDINA$simQ, group = rep(1:2, 1500))
+# log posterior of different groups
+est$lik$logprior
+
 }
 }
 \references{

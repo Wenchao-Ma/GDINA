@@ -86,6 +86,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Lik_DTM_MG
+Rcpp::List Lik_DTM_MG(arma::mat& mP, arma::mat& mX, arma::vec vC, arma::mat vlogPrior, arma::vec vgroup);
+RcppExport SEXP _GDINA_Lik_DTM_MG(SEXP mPSEXP, SEXP mXSEXP, SEXP vCSEXP, SEXP vlogPriorSEXP, SEXP vgroupSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type mP(mPSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type mX(mXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type vC(vCSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type vlogPrior(vlogPriorSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type vgroup(vgroupSEXP);
+    rcpp_result_gen = Rcpp::wrap(Lik_DTM_MG(mP, mX, vC, vlogPrior, vgroup));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fast_GDINA_EM
 Rcpp::List fast_GDINA_EM(arma::mat mloc, arma::mat& mpar, arma::mat& mX, arma::vec vlogPrior, arma::vec model_numeric, arma::uvec maxitr, arma::vec lP, arma::vec uP, arma::vec smallNcorrection, arma::vec vbeta, bool prior, double crit);
 RcppExport SEXP _GDINA_fast_GDINA_EM(SEXP mlocSEXP, SEXP mparSEXP, SEXP mXSEXP, SEXP vlogPriorSEXP, SEXP model_numericSEXP, SEXP maxitrSEXP, SEXP lPSEXP, SEXP uPSEXP, SEXP smallNcorrectionSEXP, SEXP vbetaSEXP, SEXP priorSEXP, SEXP critSEXP) {
@@ -716,6 +731,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GDINA_LikNR", (DL_FUNC) &_GDINA_LikNR, 7},
     {"_GDINA_LikNR_LC", (DL_FUNC) &_GDINA_LikNR_LC, 6},
     {"_GDINA_Lik_DTM", (DL_FUNC) &_GDINA_Lik_DTM, 4},
+    {"_GDINA_Lik_DTM_MG", (DL_FUNC) &_GDINA_Lik_DTM_MG, 5},
     {"_GDINA_fast_GDINA_EM", (DL_FUNC) &_GDINA_fast_GDINA_EM, 12},
     {"_GDINA_LouisC", (DL_FUNC) &_GDINA_LouisC, 7},
     {"_GDINA_Mord", (DL_FUNC) &_GDINA_Mord, 3},

@@ -21,6 +21,10 @@ Lik_DTM <- function(mP, mX, vC, vlogPrior) {
     .Call('_GDINA_Lik_DTM', PACKAGE = 'GDINA', mP, mX, vC, vlogPrior)
 }
 
+Lik_DTM_MG <- function(mP, mX, vC, vlogPrior, vgroup) {
+    .Call('_GDINA_Lik_DTM_MG', PACKAGE = 'GDINA', mP, mX, vC, vlogPrior, vgroup)
+}
+
 fast_GDINA_EM <- function(mloc, mpar, mX, vlogPrior, model_numeric, maxitr, lP, uP, smallNcorrection, vbeta, prior = FALSE, crit = 0.0001) {
     .Call('_GDINA_fast_GDINA_EM', PACKAGE = 'GDINA', mloc, mpar, mX, vlogPrior, model_numeric, maxitr, lP, uP, smallNcorrection, vbeta, prior, crit)
 }
