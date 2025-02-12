@@ -15,7 +15,7 @@
 #' \item{\code{Q}}{The \eqn{28 \times 3} Q-matrix.}
 #' }
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 #' @references
 #'
 #' Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.

@@ -98,7 +98,7 @@ This function estimates the multiple-choice DINA model (de la Torre, 2009).
  # Note item 1 below: category 1 is the key (as indicated in the key argument below)
  # The distractor (category 4) involves an attribute not included by the key option
 
- Qc <- matrix(c(1,	1,	1,	1,	0,
+ Qc <- matrix(c(1,	1,	0,	1,	1,
                 1,	2,	0,	1,	0,
                 1,	3,	1,	0,	0,
                 1,	4,	1,	0,	1,
@@ -142,5 +142,5 @@ Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Mo
 \code{\link{GDINA}} for G-DINA model
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 }

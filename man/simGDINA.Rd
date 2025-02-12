@@ -614,5 +614,6 @@ Templin, J. L., & Henson, R. A. (2006). Measurement of psychological disorders u
 \emph{Psychological Methods, 11}, 287-305.
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
+Jimmy de la Torre, The University of Hong Kong
 }

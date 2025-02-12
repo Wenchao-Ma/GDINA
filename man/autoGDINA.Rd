@@ -171,5 +171,5 @@ Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity, model selec
 \code{\link{GDINA}}, \code{\link{modelcomp}}, \code{\link{Qval}}
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 }

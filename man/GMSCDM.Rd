@@ -131,5 +131,5 @@ Ma, W., & Guo, W. (2019). Cognitive Diagnosis Models for Multiple Strategies. \e
 and \code{\link{DTM}} for diagnostic tree model for multiple strategies in polytomous response data
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 }

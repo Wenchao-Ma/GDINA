@@ -66,7 +66,7 @@
 #' \item{CDM.obj}{Final CDM calibration of class \code{GDINA}}
 #' }
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 #'
 #' @references
 #'

@@ -59,7 +59,7 @@
 #'  # Note item 1 below: category 1 is the key (as indicated in the key argument below)
 #'  # The distractor (category 4) involves an attribute not included by the key option
 #'
-#'  Qc <- matrix(c(1,	1,	1,	1,	0,
+#'  Qc <- matrix(c(1,	1,	0,	1,	1,
 #'                 1,	2,	0,	1,	0,
 #'                 1,	3,	1,	0,	0,
 #'                 1,	4,	1,	0,	1,
@@ -110,7 +110,7 @@
 #'
 #' Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 #'
 #' @seealso \code{\link{GDINA}} for G-DINA model
 #' @export
@@ -319,7 +319,7 @@ eta.mcm <- function(Qc, model = "MCDINA",no.options = 4, key = NULL){
 
       Qj <- Q[which(item.no==j),,drop=FALSE]
       Kj <- rowSums(Qj)
-      kj.order <- order(Kj,decreasing = TRUE)
+      kj.order <- order(rank(Kj,ties.method = "random"),decreasing = TRUE)
       coded.cat.no.j <- coded.cat.no[which(item.no==j)]
       if(any(duplicated(coded.cat.no.j))||any(Kj==0))
         stop("Q-matrix for item",j,"is not correctly specified.",call. = FALSE)

@@ -62,7 +62,9 @@
 #' \item{df}{degrees of freedom}
 #' \item{DS}{dissimilarity between G-DINA and other CDMs}
 #' }
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Miguel A. Sorrel, Universidad Autonoma de Madrid \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
+#' Miguel A. Sorrel, Universidad Autonoma de Madrid
+#' Jimmy de la Torre, The University of Hong Kong
 #'
 #' @seealso \code{\link{GDINA}}, \code{\link{autoGDINA}}
 #'

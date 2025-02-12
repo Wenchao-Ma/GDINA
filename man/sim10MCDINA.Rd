@@ -21,6 +21,6 @@ Simulated data, Q-matrix and item parameters for a 10-item test measuring 3 attr
 Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. \emph{Journal of Statistical Software, 93(14)}, 1-26.
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 }
 \keyword{datasets}

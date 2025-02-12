@@ -16,7 +16,7 @@
 #' \item{CCM}{Conditional classification matrix, see Iaconangelo (2017, p. 13)}
 #' }
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 #' @references
 #'
 #' Iaconangelo, C.(2017). \emph{Uses of Classification Error Probabilities in the Three-Step Approach to Estimating Cognitive Diagnosis Models.} (Unpublished doctoral dissertation). New Brunswick, NJ: Rutgers University.

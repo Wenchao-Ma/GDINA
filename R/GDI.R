@@ -36,7 +36,9 @@
 #' }
 #'
 #' @include GDINA.R
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}, \cr Miguel A. Sorrel, Universidad Autónoma de Madrid, \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
+#'  Miguel A. Sorrel, Universidad Autónoma de Madrid
+#'  Jimmy de la Torre, The University of Hong Kong
 #' @references
 #' de la Torre, J. & Chiu, C-Y. (2016). A General Method of Empirical Q-matrix Validation. \emph{Psychometrika, 81}, 253-273.
 #'

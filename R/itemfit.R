@@ -22,7 +22,8 @@
 #' \item{maxitemfit}{the maximum proportion correct, transformed correlation, and log-odds ratio for each item with associated item-level adjusted p-values}
 #' }
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
+#' Jimmy de la Torre, The University of Hong Kong
 #' @export
 #' @references
 #' Chen, J., de la Torre, J., & Zhang, Z. (2013). Relative and Absolute Fit Evaluation in Cognitive Diagnosis Modeling.

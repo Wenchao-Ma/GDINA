@@ -34,6 +34,6 @@ Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Mo
 Tatsuoka, C. (2002). Data analytic methods for latent partially ordered classification models. \emph{Journal of the Royal Statistical Society, Series C, Applied Statistics, 51}, 337-350.
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 }
 \keyword{datasets}

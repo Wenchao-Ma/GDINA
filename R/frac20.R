@@ -8,7 +8,7 @@
 #' \item{\code{Q}}{The \eqn{20 \times 8} Q-matrix}
 #' }
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 #' @examples
 #' \dontrun{
 #' mod1 <- GDINA(frac20$dat,frac20$Q,model="DINA")

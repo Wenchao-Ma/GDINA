@@ -9,7 +9,7 @@
 #' @param CI numeric value from 0 to 1 indicating the range of the confidence interval for RMSEA. Default returns the 90\% interval.
 #' @param ItemOnly should joint attribute distribution parameters be considered? Default = FALSE. See Ma (2019).
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 #' @export
 #' @references
 #'

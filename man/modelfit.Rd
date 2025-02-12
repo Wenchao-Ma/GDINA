@@ -40,5 +40,5 @@ Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Mo
 Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. \emph{Measurement, 11}, 71-101.
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 }

@@ -28,5 +28,5 @@ ILCA(sim10GDINA$simdat, sim10GDINA$simQ)
 Jiang, Z. (2019). Using the iterative latent-class analysis approach to improve attribute accuracy in diagnostic classification models. \emph{Behavior research methods}, 1-10.
 }
 \author{
-{Zhehan Jiang, The University of Alabama}
+Zhehan Jiang, Peking University
 }

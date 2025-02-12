@@ -112,5 +112,6 @@ Ma, W., Terzi, R., & de la Torre, J. (2021). Detecting differential item functio
 \code{\link{GDINA}}
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
+ Jimmy de la Torre, The University of Hong Kong
 }

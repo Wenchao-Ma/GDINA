@@ -43,5 +43,5 @@ Wang, W., Song, L., Chen, P., Meng, Y., & Ding, S. (2015). Attribute-Level and P
 \emph{Journal of Educational Measurement, 52} , 457-476.
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 }

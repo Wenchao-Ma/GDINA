@@ -2,7 +2,7 @@
 #'
 #' An interactive Shiny application for running GDINA function. See Ma and de la Torre (2019) and de la Torre and Akbay (2019) for tutorials.
 #'
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 #' @references
 #'
 #' de la Torre, J & Akbay, L. (2019). Implementation of Cognitive Diagnosis Modeling using the GDINA R Package. \emph{Eurasian Journal of Educational Research, 80}, 171-192.

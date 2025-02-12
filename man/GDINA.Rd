@@ -1061,5 +1061,6 @@ and \code{\link{DTM}} for diagnostic tree model for multiple strategies in polyt
 Also see \code{gdina} in \pkg{CDM} package for the G-DINA model estimation.
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
+Jimmy de la Torre, The University of Hong Kong
 }

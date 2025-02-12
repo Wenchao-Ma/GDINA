@@ -68,5 +68,5 @@ Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple St
 and \code{\link{GMSCDM}} for generalized multiple strategies CDMs for dichotomous response data
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu}}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 }

@@ -53,5 +53,6 @@ To use the graphical user interface, check \code{\link{startGDINA}}.
 for nonparametric CDMs; \pkg{dina} for DINA model in Bayesian framework
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Jimmy de la Torre, The University of Hong Kong}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
+Jimmy de la Torre, The University of Hong Kong
 }

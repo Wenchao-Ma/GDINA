@@ -192,5 +192,7 @@ Sorrel, M. A., de la Torre, J., Abad, F. J., & Olea, J. (2017). Two-Step Likelih
 \code{\link{GDINA}}, \code{\link{autoGDINA}}
 }
 \author{
-{Wenchao Ma, The University of Alabama, \email{wenchao.ma@ua.edu} \cr Miguel A. Sorrel, Universidad Autonoma de Madrid \cr Jimmy de la Torre, The University of Hong Kong}
+Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
+Miguel A. Sorrel, Universidad Autonoma de Madrid
+Jimmy de la Torre, The University of Hong Kong
 }

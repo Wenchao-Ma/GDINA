@@ -24,7 +24,7 @@
 #' \item{pjmc}{Probability of adopting each strategy on each item for each latent class}
 #' \item{sprv}{Strategy pravelence}
 #' }
-#' @author {Wenchao Ma, The University of Alabama, \email{wenchao.ma@@ua.edu}}
+#' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
 #'
 #' @seealso \code{\link{GDINA}} for MS-DINA model and single strategy CDMs,
 #' and \code{\link{DTM}} for diagnostic tree model for multiple strategies in polytomous response data

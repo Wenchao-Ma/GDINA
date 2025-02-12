@@ -7,7 +7,7 @@
 #' @param seed.num seed number; Default = 5.
 #' @return Estimated attribute profiles.
 #'
-#' @author {Zhehan Jiang, The University of Alabama}
+#' @author Zhehan Jiang, Peking University
 #' @references
 #' Jiang, Z. (2019). Using the iterative latent-class analysis approach to improve attribute accuracy in diagnostic classification models. \emph{Behavior research methods}, 1-10.
 #' @export
