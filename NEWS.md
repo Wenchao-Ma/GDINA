@@ -1,7 +1,8 @@
-# GDINA 2.9.8
+# GDINA 2.9.9
 * Added    - `MCmodel` function can handle multiple groups
 * Change   - `MCmodel` will randomly assign students into equivalent groups
 * Added    - `dif` function can detect differential category functioning for sequential models
+* Added    - `tan2023`,`tan2023p25` and `tan2023p50` datasets
 
 # GDINA 2.9.4
 * Change    - update input check function

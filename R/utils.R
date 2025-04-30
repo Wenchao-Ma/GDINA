@@ -709,7 +709,7 @@ Rmatrix.att <- function(K){
 
 
 
-crossprod.na <- function(x, y, val=0) {
+crossprod_na <- function(x, y, val=0) {
   crossprod(replace(x, is.na(x), val),
             replace(y, is.na(y), val)
   )
