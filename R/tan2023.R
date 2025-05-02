@@ -2,7 +2,7 @@
 #'
 #' Mental health data used in Tan, et al. (2023).
 #'
-#' The data consists of dichotomized responses of 719 college students (34.6% men, 83.9% White, and 16.3% first-year students)
+#' The data consists of dichotomized responses of 719 college students (34.6\% men, 83.9\% White, and 16.3\% first-year students)
 #' to 40 items that measure four attributes.
 #'
 #'

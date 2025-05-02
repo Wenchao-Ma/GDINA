@@ -1,3 +1,6 @@
+# GDINA 2.9.10
+* Change.  - `DTM` can handle various other polytomous response CDMs
+
 # GDINA 2.9.9
 * Added    - `MCmodel` function can handle multiple groups
 * Change   - `MCmodel` will randomly assign students into equivalent groups

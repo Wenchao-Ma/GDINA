@@ -18,7 +18,7 @@ tan2023p25
 Mental health data used in Tan, et al. (2023).
 }
 \details{
-The data consists of polytomous responses of 719 college students (34.6% men, 83.9% White, and 16.3% first-year students)
+The data consists of polytomous responses of 719 college students (34.6\% men, 83.9\% White, and 16.3\% first-year students)
 to 40 items that measure four attributes. The item categories were collapsed to make sure each category has at least 25 responses if possible.
 }
 \examples{
@@ -35,6 +35,6 @@ Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Mo
 Tan, Z., de la Torre, J., Ma, W., Huh, D., Larimer, M. E., & Mun, E. Y. (2023). A Tutorial on Cognitive Diagnosis Modeling for Characterizing Mental Health Symptom Profiles Using Existing Item Responses. \emph{Prevention science : the official journal of the Society for Prevention Research, 24}, 480–492. https://doi.org/10.1007/s11121-022-01346-8
 }
 \seealso{
-[tan2023] for binary version of the data and [tan2023p50] for polytomous data with each cateogry having 50 or more responses, when possible.
+\code{tan2023} for binary version of the data and \code{tan2023p50} for polytomous data with each cateogry having 50 or more responses, when possible.
 }
 \keyword{datasets}

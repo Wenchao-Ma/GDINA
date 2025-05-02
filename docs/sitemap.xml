@@ -1,183 +1,66 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/GDINA.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/OnlineExercises/CDMAnalysis_example.html</loc>
-  </url>
-  <url>
-    <loc>/articles/OnlineExercises/GDINA_example.html</loc>
-  </url>
-  <url>
-    <loc>/articles/OnlineExercises/HOGDINA_example.html</loc>
-  </url>
-  <url>
-    <loc>/articles/OnlineExercises/LCDM_example.html</loc>
-  </url>
-  <url>
-    <loc>/articles/OnlineExercises/sGDINA_analysis_example.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/att.structure.html</loc>
-  </url>
-  <url>
-    <loc>/reference/attributepattern.html</loc>
-  </url>
-  <url>
-    <loc>/reference/autoGDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/bdiagMatrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/bootSE.html</loc>
-  </url>
-  <url>
-    <loc>/reference/CA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cjoint.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ClassRate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/designmatrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dif.html</loc>
-  </url>
-  <url>
-    <loc>/reference/DTM.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ecpe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/extract.html</loc>
-  </url>
-  <url>
-    <loc>/reference/frac20.html</loc>
-  </url>
-  <url>
-    <loc>/reference/GDINA-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/GDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/GMSCDM.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ILCA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/indlogLik.html</loc>
-  </url>
-  <url>
-    <loc>/reference/indlogPost.html</loc>
-  </url>
-  <url>
-    <loc>/reference/itemfit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/itemparm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/LC2LG.html</loc>
-  </url>
-  <url>
-    <loc>/reference/MCmodel.html</loc>
-  </url>
-  <url>
-    <loc>/reference/modelcomp.html</loc>
-  </url>
-  <url>
-    <loc>/reference/modelfit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/monocheck.html</loc>
-  </url>
-  <url>
-    <loc>/reference/npar.html</loc>
-  </url>
-  <url>
-    <loc>/reference/personparm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.GDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.itemfit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.Qval.html</loc>
-  </url>
-  <url>
-    <loc>/reference/Qval.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rowMatch.html</loc>
-  </url>
-  <url>
-    <loc>/reference/score.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim10GDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim10MCDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim10MCDINA2.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim20seqGDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim21seqDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim30DINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim30GDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim30pGDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/simDTM.html</loc>
-  </url>
-  <url>
-    <loc>/reference/simGDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/startGDINA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/unique_only.html</loc>
-  </url>
-  <url>
-    <loc>/reference/unrestrQ.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/articles/GDINA.html</loc></url>
+<url><loc>/articles/OnlineExercises/CDMAnalysis_example.html</loc></url>
+<url><loc>/articles/OnlineExercises/GDINA_example.html</loc></url>
+<url><loc>/articles/OnlineExercises/HOGDINA_example.html</loc></url>
+<url><loc>/articles/OnlineExercises/LCDM_example.html</loc></url>
+<url><loc>/articles/OnlineExercises/sGDINA_analysis_example.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/CA.html</loc></url>
+<url><loc>/reference/ClassRate.html</loc></url>
+<url><loc>/reference/DTM.html</loc></url>
+<url><loc>/reference/GDINA-package.html</loc></url>
+<url><loc>/reference/GDINA.html</loc></url>
+<url><loc>/reference/GMSCDM.html</loc></url>
+<url><loc>/reference/ILCA.html</loc></url>
+<url><loc>/reference/LC2LG.html</loc></url>
+<url><loc>/reference/MCmodel.html</loc></url>
+<url><loc>/reference/Qval.html</loc></url>
+<url><loc>/reference/att.structure.html</loc></url>
+<url><loc>/reference/attributepattern.html</loc></url>
+<url><loc>/reference/autoGDINA.html</loc></url>
+<url><loc>/reference/bdiagMatrix.html</loc></url>
+<url><loc>/reference/bootSE.html</loc></url>
+<url><loc>/reference/cjoint.html</loc></url>
+<url><loc>/reference/designmatrix.html</loc></url>
+<url><loc>/reference/dif.html</loc></url>
+<url><loc>/reference/ecpe.html</loc></url>
+<url><loc>/reference/extract.html</loc></url>
+<url><loc>/reference/frac20.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/indlogLik.html</loc></url>
+<url><loc>/reference/indlogPost.html</loc></url>
+<url><loc>/reference/itemfit.html</loc></url>
+<url><loc>/reference/itemparm.html</loc></url>
+<url><loc>/reference/modelcomp.html</loc></url>
+<url><loc>/reference/modelfit.html</loc></url>
+<url><loc>/reference/monocheck.html</loc></url>
+<url><loc>/reference/npar.html</loc></url>
+<url><loc>/reference/personparm.html</loc></url>
+<url><loc>/reference/plot.GDINA.html</loc></url>
+<url><loc>/reference/plot.Qval.html</loc></url>
+<url><loc>/reference/plot.itemfit.html</loc></url>
+<url><loc>/reference/rowMatch.html</loc></url>
+<url><loc>/reference/score.html</loc></url>
+<url><loc>/reference/sim10GDINA.html</loc></url>
+<url><loc>/reference/sim10MCDINA.html</loc></url>
+<url><loc>/reference/sim10MCDINA2.html</loc></url>
+<url><loc>/reference/sim20seqGDINA.html</loc></url>
+<url><loc>/reference/sim21seqDINA.html</loc></url>
+<url><loc>/reference/sim30DINA.html</loc></url>
+<url><loc>/reference/sim30GDINA.html</loc></url>
+<url><loc>/reference/sim30pGDINA.html</loc></url>
+<url><loc>/reference/simDTM.html</loc></url>
+<url><loc>/reference/simGDINA.html</loc></url>
+<url><loc>/reference/startGDINA.html</loc></url>
+<url><loc>/reference/tan2023.html</loc></url>
+<url><loc>/reference/tan2023p25.html</loc></url>
+<url><loc>/reference/tan2023p50.html</loc></url>
+<url><loc>/reference/unique_only.html</loc></url>
+<url><loc>/reference/unrestrQ.html</loc></url>
 </urlset>
+

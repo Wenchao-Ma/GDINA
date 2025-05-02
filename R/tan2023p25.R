@@ -2,7 +2,7 @@
 #'
 #' Mental health data used in Tan, et al. (2023).
 #'
-#' The data consists of polytomous responses of 719 college students (34.6% men, 83.9% White, and 16.3% first-year students)
+#' The data consists of polytomous responses of 719 college students (34.6\% men, 83.9\% White, and 16.3\% first-year students)
 #' to 40 items that measure four attributes. The item categories were collapsed to make sure each category has at least 25 responses if possible.
 #'
 #'
@@ -12,7 +12,7 @@
 #' \item{\code{Qc}}{The Qc-matrix.}
 #' }
 #'
-#' @seealso [tan2023] for binary version of the data and [tan2023p50] for polytomous data with each cateogry having 50 or more responses, when possible.
+#' @seealso \code{tan2023} for binary version of the data and \code{tan2023p50} for polytomous data with each cateogry having 50 or more responses, when possible.
 #'
 #' @references
 #'

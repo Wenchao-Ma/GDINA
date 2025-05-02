@@ -2,11 +2,14 @@
 % Please edit documentation in R/DTM.R
 \name{DTM}
 \alias{DTM}
-\title{Experimental function for diagnostic multiple-strategy CDMs}
+\title{Diagnostic multiple-strategy CDMs}
 \usage{
 DTM(
   dat,
   Qc,
+  type = "tree",
+  linkfunc = "logit",
+  eq.const = FALSE,
   delta = NULL,
   Tmatrix = NULL,
   conv.crit = 0.001,
@@ -24,6 +27,12 @@ number of attributes. Entry 1 indicates that the attribute is
 measured by the item, and 0 otherwise. The first column gives the item number, which must
 be numeric and match the number of column in the data. The second column indicates the category number.}
 
+\item{type}{what type of model is to be fit; can be \code{'tree'},\code{'sequential'},or \code{'adjacent'}.}
+
+\item{linkfunc}{link function used; \code{'logit'} is the default.}
+
+\item{eq.const}{whether effects are constrained to be equal across categories; \code{FALSE} is the default.}
+
 \item{delta}{initial item parameters}
 
 \item{Tmatrix}{The mapping matrix showing the relation between the OBSERVED responses (rows) and the PSEDUO items (columns);
@@ -37,10 +46,29 @@ indicating category response function, log-likelihood and delta parameters,respe
 \item{maxitr}{The maximum iterations allowed.}
 }
 \description{
-This function estimates the diagnostic tree model (Ma, 2018) for polytomous responses with multiple strategies. It is an experimental function, and will be further optimized.
+This function estimates the diagnostic tree model (Ma, 2018) for polytomous responses with multiple strategies.
+It can also handle various polytomous models discussed in Gao, et al. (2021).
 }
 \examples{
 \dontrun{
+
+####################################
+#        Example 1.                #
+#     sequential G-DINA model.     #
+#                                  #
+####################################
+
+dat <- sim20seqGDINA$simdat
+Qc <- sim20seqGDINA$simQ
+fit=DTM(sim20seqGDINA$simdat,Qc,type="sequential")
+fit
+fit$testfit$AIC
+
+####################################
+#        Example 2.                #
+#        Tree model                #
+#                                  #
+####################################
 K=5
 g=0.2
 item.no <- rep(1:6,each=4)
@@ -61,6 +89,7 @@ est <- DTM(dat=sim$dat,Qc=Qc,Tmatrix = Tmatrix)
 }
 }
 \references{
+Gao, X., Ma, W., Wang, D., Cai, Y., & Tu, D. (2021). A class of cognitive diagnosis models for polytomous data. \emph{Journal of Educational and Behavioral Statistics, 46}, 297-322.
 Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
 }
 \seealso{

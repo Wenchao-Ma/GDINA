@@ -1,7 +1,7 @@
-#' Experimental function for diagnostic multiple-strategy CDMs
+#' Diagnostic multiple-strategy CDMs
 #'
-#' This function estimates the diagnostic tree model (Ma, 2018) for polytomous responses with multiple strategies. It is an experimental function, and will be further optimized.
-#'
+#' This function estimates the diagnostic tree model (Ma, 2018) for polytomous responses with multiple strategies.
+#' It can also handle various polytomous models discussed in Gao, et al. (2021).
 #'
 #' @param dat A required \eqn{N \times J} data matrix of N examinees to J items. Missing
 #'    values are currently not allowed.
@@ -10,6 +10,9 @@
 #'     number of attributes. Entry 1 indicates that the attribute is
 #'     measured by the item, and 0 otherwise. The first column gives the item number, which must
 #'     be numeric and match the number of column in the data. The second column indicates the category number.
+#' @param type what type of model is to be fit; can be \code{'tree'},\code{'sequential'},or \code{'adjacent'}.
+#' @param linkfunc link function used; \code{'logit'} is the default.
+#' @param eq.const whether effects are constrained to be equal across categories; \code{FALSE} is the default.
 #' @param delta initial item parameters
 #' @param conv.crit The convergence criterion for max absolute change in item parameters.
 #' @param conv.type convergence criteria; Can be \code{pr},\code{LL} and \code{delta},
@@ -19,6 +22,24 @@
 #' The first column gives the observed responses.
 #' @examples
 #'\dontrun{
+#'
+#'####################################
+#'#        Example 1.                #
+#'#     sequential G-DINA model.     #
+#'#                                  #
+#'####################################
+#'
+#' dat <- sim20seqGDINA$simdat
+#' Qc <- sim20seqGDINA$simQ
+#' fit=DTM(sim20seqGDINA$simdat,Qc,type="sequential")
+#' fit
+#' fit$testfit$AIC
+#'
+#'####################################
+#'#        Example 2.                #
+#'#        Tree model                #
+#'#                                  #
+#'####################################
 #' K=5
 #' g=0.2
 #' item.no <- rep(1:6,each=4)
@@ -38,7 +59,7 @@
 #' est <- DTM(dat=sim$dat,Qc=Qc,Tmatrix = Tmatrix)
 #' }
 #' @references
-#'
+#' Gao, X., Ma, W., Wang, D., Cai, Y., & Tu, D. (2021). A class of cognitive diagnosis models for polytomous data. \emph{Journal of Educational and Behavioral Statistics, 46}, 297-322.
 #' Ma, W. (2018). A Diagnostic Tree Model for Polytomous Responses with Multiple Strategies. \emph{British Journal of Mathematical and Statistical Psychology.}
 #'
 #' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
@@ -46,7 +67,8 @@
 #' @seealso \code{\link{GDINA}} for MS-DINA model and single strategy CDMs,
 #' and \code{\link{GMSCDM}} for generalized multiple strategies CDMs for dichotomous response data
 #' @export
-DTM <- function(dat, Qc, delta = NULL, Tmatrix = NULL, conv.crit = 0.001, conv.type = "pr",maxitr = 1000){
+DTM <- function(dat, Qc,type = "tree", linkfunc = "logit", eq.const = FALSE,
+                delta = NULL, Tmatrix = NULL, conv.crit = 0.001, conv.type = "pr",maxitr = 1000){
 
   s1 <- Sys.time()
   DTMcall <- match.call()
@@ -58,9 +80,9 @@ DTM <- function(dat, Qc, delta = NULL, Tmatrix = NULL, conv.crit = 0.001, conv.t
   }
   if(missing(dat)) missingMsg(dat)
   if(missing(Qc)) missingMsg(Qc)
-  type <- "tree"
-  eq.const <- FALSE
-  linkfunc <- "logit"
+
+
+
 
   Q <- Qc[,-c(1:2)]
 
