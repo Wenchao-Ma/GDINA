@@ -4,7 +4,13 @@
 \alias{bootSE}
 \title{Calculating standard errors and variance-covariance matrix using bootstrap methods}
 \usage{
-bootSE(GDINA.obj, bootsample = 50, type = "nonparametric", randomseed = 12345)
+bootSE(
+  GDINA.obj,
+  bootsample = 50,
+  type = "nonparametric",
+  cores = 1,
+  seed = 12345
+)
 }
 \arguments{
 \item{GDINA.obj}{an object of class GDINA}
@@ -13,7 +19,9 @@ bootSE(GDINA.obj, bootsample = 50, type = "nonparametric", randomseed = 12345)
 
 \item{type}{type of bootstrap method. Can be \code{parametric} or \code{nonparametric}}
 
-\item{randomseed}{random seed for resampling}
+\item{cores}{number of cores to be used for calculation; Default = 1; if \code{cores>1}, bootstrap will run in parallel with \code{foreach} package.}
+
+\item{seed}{random seed for resampling}
 }
 \value{
 itemparm.se standard errors for item probability of success in list format
@@ -36,7 +44,7 @@ Parametric bootstrap is only applicable to single group models.
 dat <- sim30GDINA$simdat
 Q <- sim30GDINA$simQ
 fit <- GDINA(dat = dat, Q = Q, model = "GDINA",att.dist = "higher.order")
-boot.fit <- bootSE(fit,bootsample = 5,randomseed=123)
+boot.fit <- bootSE(fit,bootsample = 5,seed=123)
 boot.fit$delta.se
 boot.fit$lambda.se
 }

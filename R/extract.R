@@ -209,6 +209,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 att.str=object$options$att.str,
                 BIC = object$testfit$BIC,
                 CAIC = object$testfit$CAIC,
+                AICc= object$testfit$AICc,
                 catprob.cov = {var <- OPG_p(object, SE.type = SE.type);list(cov = var$cov, index = var$ind)},
                 catprob.matrix = object$catprob.matrix,
                 catprob.parm = object$catprob.parm,

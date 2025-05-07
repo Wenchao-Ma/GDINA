@@ -1,4 +1,4 @@
-#' @include GDINA.R autoGDINA.R modelcomp.R itemfit.R GDI.R dif.R s3GDINA.R MCmodel.R
+#' @include GDINA.R autoGDINA.R modelcomp.R itemfit.R GDI.R dif.R s3GDINA.R MCmodel.R itemfitPD.R
 #' @export
 print.GDINA <-
   function(x, ...)
@@ -222,6 +222,8 @@ print.summary.GDINA <- function(x,...){
   # cat("Deviance      =", formatC(x$Deviance,digits = 2, format = "f"), "\n")
   cat("AIC    =", formatC(x$AIC,digits = 2, format = "f"),
       " | penalty [2 * p]  =",formatC(x$`AIC penalty`,digits = 2, format = "f"),"\n")
+  cat("AICc   =", formatC(x$AICc,digits = 2, format = "f"),
+      " | penalty [2 * p * (p+1) / (n - p - 1)]  =",formatC(x$`CAIC penalty`,digits = 2, format = "f"),"\n")
   cat("BIC    =", formatC(x$BIC,digits = 2, format = "f"),
       " | penalty [log(n) * p]  =",formatC(x$`BIC penalty`,digits = 2, format = "f"),"\n")
   cat("CAIC   =", formatC(x$CAIC,digits = 2, format = "f"),
@@ -279,7 +281,7 @@ print.anova.GDINA <- function(x,...){
      if(LR$chisq[m]<0) LR$df[m] <- LR$pvalue[m] <- ""
    }
    out <- cbind(x$IC,LR)
-   colnames(out) <- c("#par","logLik","Deviance","AIC","BIC","CAIC","SABIC","chisq","df","p-value")
+   colnames(out) <- c("#par","logLik","Deviance","AIC","AICc","BIC","CAIC","SABIC","chisq","df","p-value")
    print(out)
   if(nrow(x$IC)>2) cat("\nNotes: In LR tests, models were tested against",rownames(x$IC)[which.max(x$IC$npar)],"\n       LR test(s) do NOT check whether models are nested or not.")
 }
@@ -311,4 +313,26 @@ print.npar.GDINA <- function(x,...){
   cat("No. of free item parameters =",x$`No. of estimated item parameters`,"\n")
   cat("No. of fixed item parameters =",x$`No. of fixed item parameters`,"\n")
 
+}
+
+#'@export
+print.itemfitPD <- function(x,...){
+
+  cat("======================================================\n")
+  cat("Item fit indices from the power-divergence (PD) family\n")
+  cat("======================================================\n")
+  cat("Bootstrapping =",x$options$bootstrap)
+  if(x$options$bootstrap){
+    cat("\n  Stone's method =",x$options$Stone)
+    cat("\n  # of bootstrapped samples =",x$options$R)
+    cat("\n  # of cores used =",x$options$cores)
+  }
+  cat("\nTime used =",x$time)
+  cat("\np-value adjustment method =", x$options$p.adjust.method)
+
+  cat("\n-------------------------------------")
+  cat("\nAt .05 nominal level, items flagged according to...", "\n")
+  cat("  X2 = ", paste0(which(x$X2$adjp < 0.05), collapse = ", "), "\n")
+  cat("  G2 = ", paste0(which(x$G2$adjp < 0.05), collapse = ", "), "\n")
+  cat("  PD = ", paste0(which(x$PD$adjp < 0.05), collapse = ", "), "\n")
 }

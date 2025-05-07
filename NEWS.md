@@ -1,5 +1,8 @@
 # GDINA 2.9.10
-* Change.  - `DTM` can handle various other polytomous response CDMs
+* Change   - `DTM` can handle various other polytomous response CDMs
+* Added    - AICc for GDINA estimates
+* Added.   - `itemfitPD` for PD family fit statistics
+* Change.  - parallel computing for `itemfitPD` and `bootSE` functions
 
 # GDINA 2.9.9
 * Added    - `MCmodel` function can handle multiple groups
