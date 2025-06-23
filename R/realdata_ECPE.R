@@ -22,11 +22,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' mod1 <- GDINA(ecpe$dat,ecpe$Q)
+#' mod1 <- GDINA(realdata_ECPE$dat,realdata_ECPE$Q)
 #' mod1
 #' summary(mod1)
 #'
-#' mod2 <- GDINA(ecpe$dat,ecpe$Q,model="RRUM")
+#' mod2 <- GDINA(realdata_ECPE$dat,realdata_ECPE$Q,model="RRUM")
 #' mod2
 #' anova(mod1,mod2)
 #' # You may compare the following results with Feng, Habing, and Huebner (2014)
@@ -36,7 +36,7 @@
 #' # see Templin & Bradshaw, 2014
 #' ast <- att.structure(list(c(3,2),c(2,1)),K=3)
 #'
-#' est.gdina2 <- GDINA(ecpe$dat,ecpe$Q,model = "GDINA",
+#' est.gdina2 <- GDINA(realdata_ECPE$dat,realdata_ECPE$Q,model = "GDINA",
 #'                    control = list(conv.crit = 1e-6),
 #'                    att.str = list(c(3,2),c(2,1)))
 #' # see Table 7 in Templin & Bradshaw, 2014
@@ -52,4 +52,4 @@
 #' Templin, J., & Bradshaw, L. (2014). Hierarchical diagnostic classification models: A family of models for estimating and testing attribute hierarchies. \emph{Psychometrika, 79}, 317-339.
 #'
 #' Templin, J., & Hoffman, L. (2013). Obtaining diagnostic classification model estimates using Mplus. \emph{Educational Measurement: Issues and Practice, 32}, 37-50.
-"ecpe"
+"realdata_ECPE"

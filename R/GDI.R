@@ -236,6 +236,7 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
     it <- 1
     while(loop&&it<K){
       difset <- setdiff(fullset,currentset)
+      cat("difset =",difset)
       add.a <- NULL
       #********************************************************************Second round eval. Wald forward
       Rm <- Rmatrix.att(length(currentset)+1)
@@ -298,8 +299,8 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
       }
       # iteras <- rbind(iteras,cbind(j,it,add.new))
       if(verbose){
-        cat("\nItem",j,"Att",k,"\n")
-        info <- cbind(add.new,remove.new)
+        cat("\nItem = ",j," Current attributes = ",currentset,"\n")
+        info <- round(cbind(add.new,remove.new),3)
         colnames(info) <- c("att","p(att)","GDI-largest att","GDI-largest vec",paste0("p-A",currentset))
         print(info)
       }
@@ -307,8 +308,8 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
 
       #*********************************************************If additional elements should be added
       if (any(add.new[,2]<alpha.level)){ # Yes - sig some attributes should be required
-        add.new <- add.new[which(add.new[,2]<alpha.level),,drop=FALSE] # which should be added
         remove.new <- remove.new[which(add.new[,2]<alpha.level),,drop=FALSE]
+        add.new <- add.new[which(add.new[,2]<alpha.level),,drop=FALSE] # which should be added
         loc.a <- which.max(add.new[,2+GDI])
         add.a <- add.new[loc.a,1]
         remove.a <- remove.new[loc.a,] # pvalues for all current attributes in the q-vector

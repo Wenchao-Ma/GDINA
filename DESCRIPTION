@@ -2,7 +2,7 @@ Package: GDINA
 Type: Package
 Title: The Generalized DINA Model Framework
 Version: 2.9.11
-Date: 2025-05-07
+Date: 2025-06-23
 Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre", "cph"),email = "wma@umn.edu"),person(given = "Jimmy", family = "de la Torre", role = c("aut","cph")), person(given="Miguel",family = "Sorrel",role = "ctb"), person(given="Zhehan",family = "Jiang",role = "ctb"),person(given="Pablo",family = "Najera",role = "ctb"))
 Description: A set of psychometric tools for cognitive diagnosis modeling based on the generalized deterministic inputs, noisy and gate (G-DINA) model by de la Torre (2011) <DOI:10.1007/s11336-011-9207-7> and its extensions, including the sequential G-DINA model by Ma and de la Torre (2016) <DOI:10.1111/bmsp.12070> for polytomous responses, and the polytomous G-DINA model by Chen and de la Torre <DOI:10.1177/0146621613479818> for polytomous attributes. Joint attribute distribution can be independent, saturated, higher-order, loglinear smoothed or structured. Q-matrix validation, item and model fit statistics, model comparison at test and item level and differential item functioning can also be conducted. A graphical user interface is also provided. For tutorials, please check Ma and de la Torre (2020) <DOI:10.18637/jss.v093.i14>, Ma and de la Torre (2019) <DOI:10.1111/emip.12262>, Ma (2019) <DOI:10.1007/978-3-030-05584-4_29> and de la Torre and Akbay (2019). 
 License: GPL-3
@@ -44,12 +44,10 @@ Collate:
     'bootSE.R'
     'coef.R'
     'dif.R'
-    'ecpe.R'
     'simGDINA.R'
     'itemfit.R'
     'modelcomp.R'
     'extract.R'
-    'frac20.R'
     'itemfitPD.R'
     'itemparm.GDINA.R'
     'monocheck.R'
@@ -57,6 +55,8 @@ Collate:
     'plotIRF.GDINA.R'
     's3GDINA.R'
     'print.GDINA.R'
+    'realdata_ECPE.R'
+    'realdata_Tatsuoka1990.R'
     'score.R'
     'sim10GDINA.R'
     'sim10MCDINA.R'
@@ -69,8 +69,5 @@ Collate:
     'startGDINA.R'
     'structuralparm.R'
     'summary.GDINA.R'
-    'tan2023.R'
-    'tan2023p25.R'
-    'tan2023p50.R'
     'utils.R'
     'zzz.R'

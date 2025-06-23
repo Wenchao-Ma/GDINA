@@ -1,14 +1,14 @@
-# GDINA 2.9.10
-* Change   - `DTM` can handle various other polytomous response CDMs
+# GDINA 2.9.11
+* Change   - a bug in `Qval` for stepwise method was fixed 
 * Added    - AICc for GDINA estimates
 * Added.   - `itemfitPD` for PD family fit statistics
 * Change.  - parallel computing for `itemfitPD` and `bootSE` functions
+* Change.  - rename all real data to have consistent names
 
 # GDINA 2.9.9
 * Added    - `MCmodel` function can handle multiple groups
 * Change   - `MCmodel` will randomly assign students into equivalent groups
 * Added    - `dif` function can detect differential category functioning for sequential models
-* Added    - `tan2023`,`tan2023p25` and `tan2023p50` datasets
 
 # GDINA 2.9.4
 * Change    - update input check function
