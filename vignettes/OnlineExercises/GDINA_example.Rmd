@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Introduction
 
-This tutorial is created using R [markdown](https://rmarkdown.rstudio.com/) and [knitr](https://yihui.name/knitr/). It illustrates how to use the GDINA R pacakge (version `r packageVersion("GDINA")`) to estimate the G-DINA model.
+This tutorial is created using R [markdown](https://rmarkdown.rstudio.com/) and [knitr](https://yihui.name/knitr/). It illustrates how to use the GDINA R package (version `r packageVersion("GDINA")`) to estimate the G-DINA model.
 
 ### Model Estimation
 
@@ -88,6 +88,11 @@ ift
 summary(ift)
 ```
 
+*itemfitPD* can be used to obtain PD family statistics for item fit evaluation:
+
+```{r}
+itemfitPD(est)
+```
 ### Model Parameters
 
 ```{r}

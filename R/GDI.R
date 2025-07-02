@@ -236,7 +236,7 @@ Qval_wald <- function(GDINA.obj, SE.type = 2,
     it <- 1
     while(loop&&it<K){
       difset <- setdiff(fullset,currentset)
-      cat("difset =",difset)
+      #cat("difset =",difset)
       add.a <- NULL
       #********************************************************************Second round eval. Wald forward
       Rm <- Rmatrix.att(length(currentset)+1)

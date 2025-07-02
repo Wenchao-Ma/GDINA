@@ -1,7 +1,7 @@
 #'@title Calculate classification accuracy
 #'
 #' @description
-#' This function calculate test-, pattern- and attribute-level classification accuracy indices based on GDINA estimates from
+#' This function calculates test-, pattern- and attribute-level classification accuracy indices based on GDINA estimates from
 #' the \code{GDINA} function using approaches in Iaconangelo (2017) and Wang, Song, Chen, Meng, and Ding (2015).
 #' It is only applicable for dichotomous attributes.
 #'
