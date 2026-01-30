@@ -175,6 +175,7 @@ calc_delta <- function(item.parm,DesignMatrices,linkfunc){
   }
   delta <- vector("list",length(item.parm))
   for (j in 1:length(item.parm)){
+    #cat("\n j=",j)
     delta[[j]] <- c(Calc_Dj(item.parm[[j]], designMj = DesignMatrices[[j]], linkfunc = linkfunc[j]))
 }
   return(delta)
@@ -659,7 +660,7 @@ bdiag <- function(mlist,fill=0){
     if(any(null_idx)) mlist <- mlist[!null_idx]
   }
   if(length(mlist) == 0) return(matrix(fill, 0, 0))
-  
+
   # Calculate dimensions more efficiently
   dims <- vapply(mlist, function(m) c(nrow(m), ncol(m)), integer(2L))
   out <- matrix(fill, sum(dims[1L,]), sum(dims[2L,]))

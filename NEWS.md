@@ -1,5 +1,6 @@
 # GDINA 2.9.13
 * Change. - `itemfit` function can be used for sequential models
+* Change. - `dif` function can handle attributes with hierarchical structures
 
 # GDINA 2.9.12
 * Change   - a bug in `Qval` for stepwise method was fixed 

@@ -402,7 +402,7 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   #########################################
 
   if (is.null(catprob.parm)) {
-    item.parm <- initials(Q, control$nstarts, DesignMatrices = DesignMatrices)  #a list with nstarts matrices of size J x 2^Kjmax
+    item.parm <- initials(Q, control$nstarts, DesignMatrices = DesignMatrices,att.str = att.str)  #a list with nstarts matrices of size J x 2^Kjmax
     ###### Multiple starting values
     if (control$nstarts > 1L) {
       neg2LL <- vector("numeric",control$nstarts)
