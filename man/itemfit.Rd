@@ -11,6 +11,7 @@ itemfit(
   person.sim = "post",
   p.adjust.methods = "holm",
   cor.use = "pairwise.complete.obs",
+  seq.cut = 0,
   digits = 4,
   N.resampling = NULL,
   randomseed = 123456
@@ -25,13 +26,15 @@ itemfit(
 
 \item{person.sim}{Simulate expected responses from the posterior or based on EAP, MAP and MLE estimates.}
 
-\item{p.adjust.methods}{p-values for the proportion correct, transformed correlation, and log-odds ratio
+\item{p.adjust.methods}{p-values for the proportion correct (mean response), transformed correlation, and log-odds ratio
 can be adjusted for multiple comparisons at test and item level. This is conducted using \code{p.adjust} function in \pkg{stats},
 and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
 for more details. \code{"holm"} is the default.}
 
 \item{cor.use}{how to deal with missing values when calculating correlations? This argument will be passed to \code{use} when calling \code{stats::cor}.}
+
+\item{seq.cut}{the cutoff for dichotomizing the data for sequential models (default=0). A response that is great than \code{seq.cut} is converted to 1; otherwise 0.}
 
 \item{digits}{How many decimal places in each number? The default is 4.}
 
@@ -52,14 +55,15 @@ It can be \code{"p"} for proportion correct statistics,
 an object of class \code{itemfit} consisting of several elements that can be extracted using
  method \code{extract}. Components that can be extracted include:
 \describe{
-\item{p}{the proportion correct statistics, adjusted and unadjusted p values for each item}
+\item{p}{the proportion correct (mean) statistics, adjusted and unadjusted p values for each item}
 \item{r}{the transformed correlations, adjusted and unadjusted p values for each item pair}
 \item{logOR}{the log odds ratios, adjusted and unadjusted p values for each item pair}
 \item{maxitemfit}{the maximum proportion correct, transformed correlation, and log-odds ratio for each item with associated item-level adjusted p-values}
 }
 }
 \description{
-Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013) and draw heatmap plot for item pairs
+Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013) and draw heatmap plot for item pairs. For polytomous response data and sequential models,
+the log odds is calculated by dichotomizing the data by a cutoff (default:>0), transformed correlation is based on the raw data.
 }
 \section{Methods (by generic)}{
 \itemize{

@@ -22,16 +22,19 @@ arma::mat varsigma(arma::mat mloc, //L-1 x J
     //wp.print();
     for(int q=0;q<Q;++q){//each possible q-vector
       arma::vec locq = mloc.col(q);
-      arma::vec reducedp = arma::zeros<arma::vec>(max(locq)+1);
-      arma::vec reducedw = arma::zeros<arma::vec>(max(locq)+1);
+      // Optimized: compute max once instead of multiple times
+      int max_locq = static_cast<int>(arma::max(locq));
+      arma::vec reducedp = arma::zeros<arma::vec>(max_locq+1);
+      arma::vec reducedw = arma::zeros<arma::vec>(max_locq+1);
 
-      for (int l=0;l<=max(locq);++l){//latent groups
-
+      for (int l=0;l<=max_locq;++l){//latent groups
         arma::uvec q1 = arma::find(locq==l);
-        reducedw(l) = arma::accu(vw.elem(q1));
-        //if (reducedw(l)>0.000001) {
-          reducedp(l) = arma::accu(wp.elem(q1))/reducedw(l);
-        //}
+        if(q1.n_elem > 0){ // Avoid division by zero
+          reducedw(l) = arma::accu(vw.elem(q1));
+          if(reducedw(l) > 0.0){
+            reducedp(l) = arma::accu(wp.elem(q1))/reducedw(l);
+          }
+        }
       }
       //reducedp.print();
       //reducedw.print();

@@ -38,15 +38,23 @@ Rcpp::List fitstats(arma::mat & mX,
       Y = Xfit.col(c2);
       if(na||na2){
         arma::uvec nonna = arma::intersect(arma::find_finite(x),arma::find_finite(y));
-        n11 = dot(x.elem(nonna),y.elem(nonna));
-        n00 = dot(1-x.elem(nonna),1-y.elem(nonna));
-        n10 = dot(x.elem(nonna),1-y.elem(nonna));
-        n01 = dot(1-x.elem(nonna),y.elem(nonna));
+        arma::vec x_clean = x.elem(nonna);
+        arma::vec y_clean = y.elem(nonna);
+        // Optimized: compute 1-x and 1-y once
+        arma::vec x_comp = 1 - x_clean;
+        arma::vec y_comp = 1 - y_clean;
+        n11 = dot(x_clean, y_clean);
+        n00 = dot(x_comp, y_comp);
+        n10 = dot(x_clean, y_comp);
+        n01 = dot(x_comp, y_clean);
       }else{
-        n11 = dot(x,y);
-        n00 = dot(1-x,1-y);
-        n10 = dot(x,1-y);
-        n01 = dot(1-x,y);
+        // Optimized: compute 1-x and 1-y once
+        arma::vec x_comp = 1 - x;
+        arma::vec y_comp = 1 - y;
+        n11 = dot(x, y);
+        n00 = dot(x_comp, y_comp);
+        n10 = dot(x, y_comp);
+        n01 = dot(x_comp, y);
       }
 
       N11 = dot(X,Y);
@@ -89,15 +97,9 @@ Rcpp::List fitstats2(arma::mat & mX,
   int NE = mX.n_rows;//N
   int rep = attgroup.n_elem/NE;
 
-  arma::mat Xfit(nr,nc, arma::fill::zeros);
+  // Optimized: vectorized comparison instead of nested loops
   arma::mat unif = arma::randu<arma::mat>(nr,nc);
-  for (int nc1=0;nc1<nc;nc1++){
-    for (int nr1=0;nr1<nr;nr1++){
-      if(fullLC(nr1,nc1)>unif(nr1,nc1)){
-        Xfit(nr1,nc1) = 1;
-      }
-    }
-  }
+  arma::mat Xfit = arma::conv_to<arma::mat>::from(fullLC > unif);
 
 
   //correlation

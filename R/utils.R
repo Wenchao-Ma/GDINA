@@ -534,9 +534,10 @@ gs2p.DTM <- function(Q,
 
 #list to matrix transformation
 # modified from http://stackoverflow.com/questions/3699405/how-to-cbind-or-rbind-different-lengths-vectors-without-repeating-the-elements-o
-l2m <- function(l, len=max(sapply(l,length)))
+# Optimized: use vapply for better performance
+l2m <- function(l, len=max(vapply(l, length, integer(1L))))
 {
-  t(sapply(l, 'length<-', value=len))
+  t(vapply(l, function(x) `length<-`(x, len), numeric(len)))
 }
 
 m2l <- function(m,remove=NA){
@@ -601,11 +602,11 @@ vec_mat_match <- function(v,m,dim){
 
 
 # # of latent classes
+# Optimized: use vapply instead of apply for better performance
 no_LC <- function(Q){
-  prod(apply(Q, 2, function(x)
-  {
-    max(length(unique(x)),2)
-  }))
+  prod(vapply(seq_len(ncol(Q)), function(j) {
+    max(length(unique(Q[, j])), 2L)
+  }, integer(1L)))
 }
 
 which.max.randomtie <- function(x,na.rm=TRUE){
@@ -652,14 +653,23 @@ seq_coding <- function(dat,Qc=NULL,Kj=NULL){
 
 bdiag <- function(mlist,fill=0){
   len <- length(mlist)
-  for(r in len:1) if(is.null(mlist[[r]])) mlist[r] <- NULL
-  loc <- sapply(mlist,dim)
-  out <- matrix(fill,rowSums(loc)[1],rowSums(loc)[2])
-  cr <- cc <- 1
-  for(i in 1:length(mlist)){
-    out[cr:(cr+nrow(mlist[[i]])-1),cc:(cc+ncol(mlist[[i]])-1)] <- mlist[[i]]
-    cr <- cr + nrow(mlist[[i]])
-    cc <- cc + ncol(mlist[[i]])
+  # Remove NULL elements efficiently
+  if(len > 0){
+    null_idx <- vapply(seq_len(len), function(i) is.null(mlist[[i]]), logical(1L))
+    if(any(null_idx)) mlist <- mlist[!null_idx]
+  }
+  if(length(mlist) == 0) return(matrix(fill, 0, 0))
+  
+  # Calculate dimensions more efficiently
+  dims <- vapply(mlist, function(m) c(nrow(m), ncol(m)), integer(2L))
+  out <- matrix(fill, sum(dims[1L,]), sum(dims[2L,]))
+  cr <- cc <- 1L
+  for(i in seq_along(mlist)){
+    nr <- dims[1L, i]
+    nc <- dims[2L, i]
+    out[cr:(cr+nr-1L), cc:(cc+nc-1L)] <- mlist[[i]]
+    cr <- cr + nr
+    cc <- cc + nc
   }
   out
 }
@@ -710,9 +720,16 @@ Rmatrix.att <- function(K){
 
 
 crossprod_na <- function(x, y, val=0) {
-  crossprod(replace(x, is.na(x), val),
-            replace(y, is.na(y), val)
-  )
+  # Optimized: avoid creating full copies when possible
+  if(any(is.na(x)) || any(is.na(y))){
+    x_clean <- x
+    y_clean <- y
+    x_clean[is.na(x)] <- val
+    y_clean[is.na(y)] <- val
+    crossprod(x_clean, y_clean)
+  } else {
+    crossprod(x, y)
+  }
 }
 
 
@@ -1188,13 +1205,8 @@ initials <- function(Q,nstarts=1,DesignMatrices,att.str=NULL){
 # GMS CDMs
 #
 ##############
-which.max.randomtie <- function(x,na.rm=TRUE){
-  loc <- which(x==max(x,na.rm = na.rm))
-  if(length(loc)>1){
-    loc <- sample(loc,1)
-  }
-  return(loc)
-}
+# Note: which.max.randomtie is defined earlier in this file (line ~611)
+# This duplicate definition has been removed to avoid confusion
 p2p <- function(v,r){
   sum(v^(r+1))/sum(v^r)
 }

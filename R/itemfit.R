@@ -1,22 +1,24 @@
 #' Item fit statistics
 #'
-#' Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013) and draw heatmap plot for item pairs
+#' Calculate item fit statistics (Chen, de la Torre, & Zhang, 2013) and draw heatmap plot for item pairs. For polytomous response data and sequential models,
+#' the log odds is calculated by dichotomizing the data by a cutoff (default:>0), transformed correlation is based on the raw data.
 #'
 #' @param GDINA.obj An estimated model object of class \code{GDINA}
 #' @param person.sim Simulate expected responses from the posterior or based on EAP, MAP and MLE estimates.
-#' @param p.adjust.methods p-values for the proportion correct, transformed correlation, and log-odds ratio
+#' @param p.adjust.methods p-values for the proportion correct (mean response), transformed correlation, and log-odds ratio
 #'  can be adjusted for multiple comparisons at test and item level. This is conducted using \code{p.adjust} function in \pkg{stats},
 #'  and therefore all adjustment methods supported by \code{p.adjust} can be used, including \code{"holm"},
 #'  \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"} and \code{"BY"}. See \code{p.adjust}
 #'  for more details. \code{"holm"} is the default.
 #' @param N.resampling the sample size of resampling. By default, it is the maximum of 1e+5 and ten times of current sample size.
+#' @param seq.cut the cutoff for dichotomizing the data for sequential models (default=0). A response that is great than \code{seq.cut} is converted to 1; otherwise 0.
 #' @param randomseed random seed; This is used to make sure the results are replicable. The default random seed is 123456.
 #' @param cor.use how to deal with missing values when calculating correlations? This argument will be passed to \code{use} when calling \code{stats::cor}.
 #' @param digits How many decimal places in each number? The default is 4.
 #' @return an object of class \code{itemfit} consisting of several elements that can be extracted using
 #'  method \code{extract}. Components that can be extracted include:
 #' \describe{
-#' \item{p}{the proportion correct statistics, adjusted and unadjusted p values for each item}
+#' \item{p}{the proportion correct (mean) statistics, adjusted and unadjusted p values for each item}
 #' \item{r}{the transformed correlations, adjusted and unadjusted p values for each item pair}
 #' \item{logOR}{the log odds ratios, adjusted and unadjusted p values for each item pair}
 #' \item{maxitemfit}{the maximum proportion correct, transformed correlation, and log-odds ratio for each item with associated item-level adjusted p-values}
@@ -66,13 +68,13 @@
 
 
 itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "holm",
-                    cor.use = "pairwise.complete.obs",
+                    cor.use = "pairwise.complete.obs",seq.cut = 0,
                     digits = 4,N.resampling = NULL,randomseed=123456){
 
 
   stopifnot(isa(GDINA.obj,"GDINA"))
   if(extract(GDINA.obj,"ngroup")>1) stop("Itemfit is not available for multiple group estimation.",call. = FALSE)
-  if (extract(GDINA.obj, "sequential")) stop("Itemfit is not available for sequential models.", call. = FALSE)
+  if (extract(GDINA.obj, "sequential")) message("Itemfit function is experimental for sequential models.")
   itemfitcall <- match.call()
   if (exists(".Random.seed", .GlobalEnv))
     oldseed <- .GlobalEnv$.Random.seed
@@ -118,16 +120,41 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "holm",
   }
 
 
-
-  Yfit <- Pr[att_group, ] > matrix(runif(length(att_group) * J), ncol = J)
-
-  if(any(is.na(dat))){
-    fitstat <- fitstats(dat,Yfit,FALSE)
+  if(extract(GDINA.obj, "sequential")){
+    C <- table(Qc[,1])
+    S <- length(unique(Qc[,1]))
+    LC.Prob <- sequP(as.matrix(extract(GDINA.obj,"eta")),as.matrix(extract(GDINA.obj,"catprob.matrix")),C)
+    # c.LC.Prob <- LC.Prob$cPr
+    u.LC.Prob <- LC.Prob$uPr
+    LC.Prob <- t(u.LC.Prob) #L x S0
+    if(any(LC.Prob>1)||any(LC.Prob<0)) stop("Some success probabilities are greater than 1 or less than 0.",call. = FALSE)
+    att.Prob <- LC.Prob[att_group, ]  #N x J
+    C1 <- C + 1
+    C0 <- NULL
+    ###C0:Item number for expended Qmatrix where 0 category is included
+    for(j in 1:S)  C0 <- c(C0,rep(j,C1[j]))
+    Yfit <- matrix(0,length(att_group),S)
+    for (j in 1:S){ #for each item
+      #Pj <- P(0),P(1),...,P(h)
+      Pj <- att.Prob[,which(C0==j)]
+      Yfit[,j] <- apply(Pj,1,function(x){sample(c(0:C[j]),1,prob=x)})
+    }
+    fitstat <- fitstats(dat>0,Yfit>0,FALSE)
     fitstat$r <- cor(dat, use = cor.use)
     fitstat$rfit <- cor(Yfit, use = cor.use)
+
+
   }else{
-     fitstat <- fitstats(dat,Yfit,TRUE)
+    Yfit <- Pr[att_group, ] > matrix(runif(length(att_group) * J), ncol = J)
+    if(any(is.na(dat))){
+      fitstat <- fitstats(dat,Yfit,FALSE)
+      fitstat$r <- cor(dat, use = cor.use)
+      fitstat$rfit <- cor(Yfit, use = cor.use)
+    }else{
+      fitstat <- fitstats(dat,Yfit,TRUE)
+    }
   }
+
 
   itempair <- NULL
   for (i in 1:(J - 1)) {
@@ -194,7 +221,7 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "holm",
       "pvalue.max[z.logOR]",
       "adj.pvalue.max[z.logOR]"
     )
-  rownames(max.itemlevel.fit) <- extract(GDINA.obj,"item.names")
+  rownames(max.itemlevel.fit) <- paste("Item",1:J)
   r.pairs <-
     data.frame(item.pair.1 = itempair[, 1],
                item.pair.2 = itempair[, 2],
@@ -203,7 +230,7 @@ itemfit <- function(GDINA.obj,person.sim = "post",p.adjust.methods = "holm",
     data.frame(item.pair.1 = itempair[, 1],
                item.pair.2 = itempair[, 2],
                round(l.pairs, digits))
-  p <- data.frame(item = 1:J, round(p, digits),row.names = extract(GDINA.obj,"item.names"))
+  p <- data.frame(item = 1:J, round(p, digits),row.names = paste("Item",1:J))
 
   if (!is.null(oldseed))
     .GlobalEnv$.Random.seed <- oldseed

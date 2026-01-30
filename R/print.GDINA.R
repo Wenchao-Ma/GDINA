@@ -110,7 +110,7 @@ print.itemfit <-
                                         max(logOR$zstat[is.finite(logOR$zstat)],na.rm = TRUE),
                                         logOR$unadj.pvalue[which(logOR$zstat==max(logOR$zstat[is.finite(logOR$zstat)],na.rm = TRUE))],
                                         logOR$test.adj.pvalue[which(logOR$zstat==max(logOR$zstat[is.finite(logOR$zstat)],na.rm = TRUE))]))
-    colnames(testlevel.itemfit) <- c("Proportion correct","Transformed correlation","Log odds ratio")
+    colnames(testlevel.itemfit) <- c("Item mean score","Transformed correlation","Log odds ratio")
     rownames(testlevel.itemfit) <- c("mean[stats]","max[stats]",
                                      "max[z.stats]","p-value","adj.p-value")
     print(t(round(testlevel.itemfit,extract.itemfit(x,"digits"))))

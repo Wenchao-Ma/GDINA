@@ -34,7 +34,7 @@
 #'   \email{wma@umn.edu}
 #' @export
 #' @references
-#' Najera, P., Ma, W., Sorrel, M. A. and Abad, F. J. (Under review). Assessing Item-Level Fit for the Sequential G-DINA Model.
+#' Najera, P., Ma, W., Sorrel, M. A. and Abad, F. J. (2025). Assessing Item-Level Fit for the Sequential G-DINA Model.\emph{Behaviormetrika}.
 #'
 #' @examples
 #' \dontrun{
