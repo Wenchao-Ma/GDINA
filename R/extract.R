@@ -290,7 +290,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 gr = object$options$gr,
                 group.label = object$options$group.label,
                 higher.order = object$options$higher.order,
-                initial.catprob = object$technical$initial.parm,
+                initial.catprob = object$technicals$initial.parm,
                 itemprob.parm = {
                   if(object$options$sequential){
                     itemparm <- object$catprob.matrix
