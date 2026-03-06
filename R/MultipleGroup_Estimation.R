@@ -132,54 +132,7 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   #
   ##################################
 
-
-  myControl <- list(
-    maxitr = 2000,
-    conv.crit = 1e-4,
-    conv.type = c("ip","mp"),
-    nstarts = 3L,
-    lower.p = 1e-4,
-    upper.p = 1 - 1e-4,
-    lower.prior = .Machine$double.eps,
-    randomseed = 123456,
-    smallNcorrection = c(.0005, .001),
-    MstepMessage = FALSE,
-    Cpp = FALSE,
-    countitemparm = 0 # if an item parameter is fixed, it will not count as a parameter
-  )
-
-
-  control <- utils::modifyList(myControl,control)
-
-
-  if (length(control$lower.p) == 1) {
-    control$lower.p <- rep(control$lower.p, ncat)
-  } else {
-    if (length(control$lower.p) != ncat)
-      stop("lower.p must have length of 1 or number of nonzero categories", call. = FALSE)
-  }
-  if (length(control$upper.p) == 1) {
-    control$upper.p <- rep(control$upper.p, ncat)
-  } else {
-    if (length(control$upper.p) != ncat)
-      stop("upper.p must have length of 1 or number of nonzero categories", call. = FALSE)
-  }
-
-  if(length(control$maxitr)==1L) {
-    control$vmaxitr <- rep(control$maxitr,ncat)
-  }else if(length(control$maxitr)!=ncat){
-    warning("Length of maxitr must be equal to 1 or the number of nonzero categories.",call. = FALSE)
-  }else{
-    control$vmaxitr <- control$maxitr
-    control$maxitr <- max(control$maxitr)
-  }
-
-  if(control$Cpp)
-    warning("No fast implementation is available for multiple-group analysis.",call. = FALSE)
-
-  control$nstarts <- ifelse(any(model>6),1L,3L) #if model is SISM or BUGDINO, only one set of starting values is used
-
-  set.seed(control$randomseed)
+  control <- init_control(control, ncat, model, is_mg = TRUE)
 
 
   # input check
@@ -219,28 +172,12 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   #
   ##################################
 
+  solver_init <- init_solver_args(auglag_args, solnp_args, nloptr_args)
+  auglag_args <- solver_init$auglag_args
+  solnp_args <- solver_init$solnp_args
+  nloptr_args <- solver_init$nloptr_args
 
-  myAuglag_args <-
-    list(control.outer = list(
-      trace = FALSE,
-      method = "nlminb",
-      kkt2.check = FALSE,
-      eps = 1e-6
-    ))
-  auglag_args <- modifyList(myAuglag_args, auglag_args)
-  mySolnp_args <- list(trace = 0)
-  solnp_args <- modifyList(mySolnp_args, solnp_args)
-  Mynloptr_args <- list(xtol_rel = 1e-4)
-  nloptr_args <- modifyList(Mynloptr_args, nloptr_args)
-
-  if(is.null(solver)){
-    solver <- rep("auto", ncat)
-  }else if (length(solver) == 1) {
-    solver <- rep(solver, ncat)
-  } else {
-    if (length(solver) != ncat)
-      stop("solver must have length of 1 or number of items.", call. = FALSE)
-  }
+  solver <- init_solver(solver, ncat)
 
 
   #########################################
@@ -494,22 +431,13 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
 
     parm0 <- parm1
     itr <- itr + 1
-    maxchg <- 0
-    if(any(tolower(control$conv.type)=="ip"))  maxchg <- max(maxchg,dif.parm$ip)
-    if(any(tolower(control$conv.type)=="delta"))  maxchg <- max(maxchg,dif.parm$delt)
-    if(any(tolower(control$conv.type)=="mp"))  maxchg <- max(maxchg,dif.parm$prior)
-    if(any(tolower(control$conv.type)=="neg2ll"))  maxchg <- max(maxchg,abs(dif.parm$neg2LL))
-    if(any(tolower(control$conv.type)=="relneg2ll"))  maxchg <- max(maxchg,abs(dif.parm$neg2LL)/parm0$neg2LL)
+    conv_check <- check_em_convergence(dif_parm = dif.parm, conv_type = control$conv.type,
+                                       conv_crit = control$conv.crit, neg2LL_current = parm0$neg2LL)
+    maxchg <- conv_check$maxchg
 
-    if(verbose==1L) {
-      cat('\rIter =',itr,' Max. abs. change =',formatC(maxchg,digits = 5, format = "f"),
-          ' Deviance  =',formatC(-2 * estep$LL,digits = 2, format = "f"),'                                                                                 ')
-    }else if (verbose==2L) {
-      cat('Iter =',itr,' Max. abs. change =',formatC(maxchg,digits = 5, format = "f"),
-          ' Deviance  =',formatC(-2 * estep$LL,digits = 2, format = "f"),'                                                                                \n')
-    }
+    print_em_progress(itr = itr, maxchg = maxchg, neg2LL = -2 * estep$LL, verbose = verbose)
 
-    if(maxchg < control$conv.crit) break
+    if(conv_check$converged) break
   }
 
   logprior0 <- logprior # old log priors
