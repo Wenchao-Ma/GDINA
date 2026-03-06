@@ -120,3 +120,59 @@ init_solver <- function(solver, ncat) {
   }
   solver
 }
+
+
+#' Check EM convergence
+#' 
+#' Calculates maximum change across convergence criteria and checks 
+#' whether convergence has been achieved.
+#' 
+#' @param dif_parm List with convergence differences: ip, prior, neg2LL, delt
+#' @param conv_type Character vector of convergence types to check
+#' @param conv_crit Numeric convergence criterion
+#' @param neg2LL_current Current deviance value
+#' @return List with maxchg and converged flag
+#' @keywords internal
+check_em_convergence <- function(dif_parm, conv_type, conv_crit, neg2LL_current) {
+  maxchg <- 0
+  
+  if (any(tolower(conv_type) == "ip")) {
+    maxchg <- max(maxchg, dif_parm$ip)
+  }
+  if (any(tolower(conv_type) == "delta")) {
+    maxchg <- max(maxchg, dif_parm$delt)
+  }
+  if (any(tolower(conv_type) == "mp")) {
+    maxchg <- max(maxchg, dif_parm$prior)
+  }
+  if (any(tolower(conv_type) == "neg2ll")) {
+    maxchg <- max(maxchg, abs(dif_parm$neg2LL))
+  }
+  if (any(tolower(conv_type) == "relneg2ll")) {
+    maxchg <- max(maxchg, abs(dif_parm$neg2LL) / neg2LL_current)
+  }
+  
+  list(maxchg = maxchg, converged = maxchg < conv_crit)
+}
+
+
+#' Print EM iteration progress
+#' 
+#' Prints iteration information with appropriate formatting.
+#' 
+#' @param itr Iteration number
+#' @param maxchg Maximum change
+#' @param neg2LL Current deviance
+#' @param verbose Verbosity level (1 = inline, 2 = newline)
+#' @keywords internal
+print_em_progress <- function(itr, maxchg, neg2LL, verbose) {
+  if (verbose == 1L) {
+    cat('\rIter =', itr, ' Max. abs. change =', formatC(maxchg, digits = 5, format = "f"),
+        ' Deviance  =', formatC(neg2LL, digits = 2, format = "f"),
+        '                                                                                 ')
+  } else if (verbose == 2L) {
+    cat('Iter =', itr, ' Max. abs. change =', formatC(maxchg, digits = 5, format = "f"),
+        ' Deviance  =', formatC(neg2LL, digits = 2, format = "f"),
+        '                                                                                \n')
+  }
+}
