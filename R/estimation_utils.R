@@ -176,3 +176,74 @@ print_em_progress <- function(itr, maxchg, neg2LL, verbose) {
         '                                                                                \n')
   }
 }
+
+
+#' Initialize constraint matrices
+#' 
+#' Creates constraint matrices for monotonicity constraints across items.
+#' 
+#' @param ncat Number of categories
+#' @param mono.constraint Vector of logicals indicating which items have monotonicity constraints
+#' @param Kj Vector of attribute counts per item
+#' @param reduced.LG List of reduced latent group matrices
+#' @param ConstrPairs Optional pre-specified constraint pairs
+#' @return List with ConstrType vector and ConstrMatrix list
+#' @keywords internal
+init_constraint_matrices <- function(ncat, mono.constraint, Kj, reduced.LG, ConstrPairs = NULL) {
+  ConstrType <- rep(1, ncat)
+  ConstrMatrix <- vector("list", ncat)
+  
+  if (is.null(ConstrPairs)) {
+    ConstrPairs <- vector("list", ncat)
+    for (j in seq_len(ncat)) {
+      if (mono.constraint[[j]]) {
+        ConstrType[j] <- 3
+        ConstrPairs[[j]] <- partial_order2(Kj[j], reduced.LG[[j]])
+        nctj <- nrow(ConstrPairs[[j]])
+        tmp <- matrix(0, nctj, nrow(reduced.LG[[j]]))
+        tmp[matrix(c(seq_len(nctj), ConstrPairs[[j]][, 1]), ncol = 2)] <- 1
+        tmp[matrix(c(seq_len(nctj), ConstrPairs[[j]][, 2]), ncol = 2)] <- -1
+        ConstrMatrix[[j]] <- tmp
+      }
+    }
+  }
+  
+  list(ConstrType = ConstrType, ConstrMatrix = ConstrMatrix, ConstrPairs = ConstrPairs)
+}
+
+
+#' Initialize design matrices
+#' 
+#' Creates design matrices for all items based on model type and Q-matrix.
+#' 
+#' @param ncat Number of categories
+#' @param model Vector of model codes
+#' @param rule Vector of condensation rules
+#' @param Kj Vector of attribute counts per item
+#' @param reduced.LG List of reduced latent group matrices
+#' @param Q Q-matrix (attributes only, no item/category columns)
+#' @param originalQ Original Q-matrix with item/category columns for MS-DINA
+#' @param no.bugs Number of bugs for BUGDINO model
+#' @return List of design matrices
+#' @keywords internal
+init_design_matrices <- function(ncat, model, rule, Kj, reduced.LG, Q, originalQ, no.bugs = NULL) {
+  if (any(model == -1)) {
+    stop("design.matrix must be provided for user-defined models.", call. = FALSE)
+  }
+  
+  DesignMatrices <- vector("list", ncat)
+  for (j in seq_len(ncat)) {
+    if (model[j] == 6) {  # MS-DINA
+      DesignMatrices[[j]] <- designmatrix(
+        model = model[j],
+        Qj = originalQ[which(originalQ[, 1] == j), -c(1:2), drop = FALSE]
+      )
+    } else if (model[j] %in% c(7, 8)) {  # BUGDINO, SISM
+      DesignMatrices[[j]] <- designmatrix(model = model[j], Qj = Q[j, ], no.bugs = no.bugs)
+    } else if (rule[j] >= 0 && rule[j] <= 3) {
+      DesignMatrices[[j]] <- designM(Kj[j], rule[j], reduced.LG[[j]])
+    }
+  }
+  
+  DesignMatrices
+}
