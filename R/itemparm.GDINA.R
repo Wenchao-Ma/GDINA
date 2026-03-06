@@ -40,15 +40,9 @@ itemparm.GDINA <- function(object,
                            withSE = FALSE, SE.type = 2,digits = 4, ...){
   stopifnot(isa(object,"GDINA"))
   .Deprecated("coef", package="GDINA",msg = "'itemparm' is deprecated - use 'coef' instead.")
-  what <- match.arg(what)
-  if(tolower(what)=="catprob"){
-    if(withSE){
-      out <- mapply(rbind,extract(object,what = "catprob.parm"),
-                    extract(object,what = "catprob.se", SE.type = SE.type),SIMPLIFY = F)
-      out <- lapply(out,function(x){rownames(x) <- c("Est.","S.E.");round(x,digits)})
-    }else{
-      out <- lapply(extract(object,what = "catprob.parm"),round,digits)
-    }
+  # Delegate to coef.GDINA after mapping deprecated parameter names
+  coef(object, what = what, withSE = withSE, SE.type = SE.type, digits = digits, ...)
+}
   }else if(tolower(what)=="itemprob"){
     if(withSE&!extract(object,what = "sequential")){
         out <- mapply(rbind,extract(object,what = "itemprob.parm"),
