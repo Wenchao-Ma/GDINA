@@ -294,40 +294,13 @@ MG.Est <- function(dat, Q, model, sequential,att.dist, att.prior,saturated,
   #
   #########################################
 
+  constr_init <- init_constraint_matrices(ncat, mono.constraint, Kj, reduced.LG, ConstrPairs)
+  ConstrType <- constr_init$ConstrType
+  ConstrMatrix <- constr_init$ConstrMatrix
+  ConstrPairs <- constr_init$ConstrPairs
 
-
-  ConstrType <- rep(1, ncat)
-  ConstrMatrix <- vector("list", ncat)
-  if(is.null(ConstrPairs)){
-    ConstrPairs <- vector("list", ncat)
-    for(j in seq_len(ncat)){
-      if(mono.constraint[[j]]){
-        ConstrType[j] <- 3
-        ConstrPairs[[j]] <- partial_order2(Kj[j],reduced.LG[[j]])
-        nctj <- nrow(ConstrPairs[[j]])
-        tmp <- matrix(0,nctj,Lj[j])
-        tmp[matrix(c(seq_len(nctj),ConstrPairs[[j]][,1]),ncol = 2)] <- 1
-        tmp[matrix(c(seq_len(nctj),ConstrPairs[[j]][,2]),ncol = 2)] <- -1
-        ConstrMatrix[[j]] <- tmp
-      }
-    }
-  }
-
-  if(is.null(DesignMatrices)){
-    if(any(model == -1))
-      stop("design.matrix must be provided for user-defined models.",call. = FALSE)
-    DesignMatrices <-  vector("list", ncat)
-    for(j in seq_len(ncat)) {
-      if(model[j] == 6){
-        DesignMatrices[[j]] <- designmatrix(model = model[j],Qj = originalQ[which(originalQ[,1]==j),-c(1:2),drop=FALSE])
-      }else if(model[j] %in% c(7,8)){
-        DesignMatrices[[j]] <- designmatrix(model = model[j],Qj = Q[j,],no.bugs=no.bugs)
-
-      }else if(rule[j] >= 0 & rule[j]<= 3){
-
-        DesignMatrices[[j]] <- designM(Kj[j], rule[j], reduced.LG[[j]])
-      }
-    }
+  if (is.null(DesignMatrices)) {
+    DesignMatrices <- init_design_matrices(ncat, model, rule, Kj, reduced.LG, Q, originalQ, no.bugs)
   }
 
 
