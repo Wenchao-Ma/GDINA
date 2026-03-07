@@ -3,6 +3,7 @@ doc
 .Rproj.user
 .Rhistory
 .RData
+..RCheck
 src/*.o
 src/*.so
 src/*.dll
