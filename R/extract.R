@@ -290,7 +290,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                 gr = object$options$gr,
                 group.label = object$options$group.label,
                 higher.order = object$options$higher.order,
-                initial.catprob = object$technical$initial.parm,
+                initial.catprob = object$technicals$initial.parm,
                 itemprob.parm = {
                   if(object$options$sequential){
                     itemparm <- object$catprob.matrix
@@ -298,7 +298,7 @@ extract.GDINA <- function(object,what,SE.type = 2,...){
                     Qc <- extract(object,"Qc")
                     for (j in 1:extract(object,"nitem")){
                       Qj <- Qc[which(Qc[,1]==j),-c(1:2),drop=FALSE]
-                      itemparj <- itemparm[which(Q[,1]==j),,drop=FALSE]
+                      itemparj <- itemparm[which(Qc[,1]==j),,drop=FALSE]
                       colj <- which(colSums(Qj)>0)
                       Kj <- length(colj)
                       if(nrow(Qj)>1){ # polytomous items
