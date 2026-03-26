@@ -50,8 +50,7 @@ init_control <- function(control, ncat, model, is_mg = FALSE) {
   if (length(control$maxitr) == 1L) {
     control$vmaxitr <- rep(control$maxitr, ncat)
   } else if (length(control$maxitr) != ncat) {
-    warning("Length of maxitr must be equal to 1 or the number of nonzero categories.",
-            call. = FALSE)
+    stop("maxitr must have length of 1 or number of nonzero categories", call. = FALSE)
   } else {
     control$vmaxitr <- control$maxitr
     control$maxitr <- max(control$maxitr)
