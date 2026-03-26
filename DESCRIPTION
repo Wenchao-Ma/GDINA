@@ -38,6 +38,7 @@ Collate:
     'Mstep_DTM.R'
     'MultipleGroup_Estimation.R'
     'RcppExports.R'
+    'estimation_utils.R'
     'SingleGroup_Estimation.R'
     'anova.GDINA.R'
     'autoGDINA.R'
