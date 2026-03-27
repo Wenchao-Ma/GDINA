@@ -115,7 +115,7 @@ init_solver <- function(solver, ncat) {
   } else if (length(solver) == 1) {
     solver <- rep(solver, ncat)
   } else if (length(solver) != ncat) {
-    stop("solver must have length of 1 or number of items.", call. = FALSE)
+    stop("solver must have length 1 or length equal to ncat (number of categories).", call. = FALSE)
   }
   solver
 }
