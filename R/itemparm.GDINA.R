@@ -8,7 +8,7 @@
 #' @param what what to show.
 #' @param withSE show standard errors or not?
 #' @param SE.type Type of standard errors.
-#' @param digits how many decimal places for the ouput?
+#' @param digits how many decimal places for the output?
 #' @param ... additional arguments
 #'
 #' @examples
