@@ -19,7 +19,7 @@
 #' # deprecated
 #' itemparm(fit)
 #' coef(fit)
-#' #'}
+#' }
 #'
 #' @references
 #'
