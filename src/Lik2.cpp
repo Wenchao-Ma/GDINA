@@ -60,7 +60,7 @@ Rcpp::List fast_GDINA_EM(arma::mat  mloc,
 
   // calculate mP L x J matrix P(Xij=1|alpha_c)
   int Ljmax = mloc.max();
-  //arma::mat mloc_copy = mloc;
+  arma::mat mloc1 = mloc; // keep 1-based copy for uP2 (avoids mloc+1 temporary each iteration)
   mloc--; //indictor-1: c++ style
   int J = mloc.n_rows;
   int N = mX.n_rows;
@@ -69,32 +69,42 @@ Rcpp::List fast_GDINA_EM(arma::mat  mloc,
   arma::mat msdPost;
   arma::mat mPost;
   arma::uvec locg;
-  arma::mat mX0; //missing->0
-  arma::mat mX1; //missing->1
-  arma::mat mXMissing; //missing index: missing ->0; nonmissing ->1
   arma::mat expR;
   arma::mat expN;
   arma::mat Ng;
   arma::mat Rg;
   arma::mat mP;
   arma::vec vlogPrior0;
+
+  // Hoist missing-data mask: mX never changes across EM iterations so compute once
+  bool has_missing = mX.has_nan();
+  arma::mat mX0, mX1, mXMissing;
+  if (has_missing) {
+    mX0 = mX; mX1 = mX; mXMissing = mX;
+    arma::uvec missingloc = arma::find_nonfinite(mX);
+    mX0.elem(missingloc).zeros();    //missing - 0
+    mX1.elem(missingloc).ones();     //missing - 1
+    mXMissing.elem(missingloc).zeros();
+    mXMissing.elem(arma::find_finite(mX)).ones();
+  }
+
+  // Precompute per-item, per-category column indices in mloc (0-based, fixed throughout)
+  std::vector<std::vector<arma::uvec>> item_cat_locs(J);
+  for (int j = 0; j < J; ++j) {
+    int Kjmax_j = (int)mloc.row(j).max() + 1;
+    item_cat_locs[j].resize(Kjmax_j);
+    for (int k = 0; k < Kjmax_j; ++k) {
+      item_cat_locs[j][k] = arma::find(mloc.row(j) == k);
+    }
+  }
+
   arma::uword itr = 0;
   arma::uword maxmaxitr = arma::max(maxitr);
   while(itr < maxmaxitr){
     vlogPrior0 = vlogPrior;
-     mP = uP2(mloc+1, mpar);
+    mP = uP2(mloc1, mpar); // use pre-saved 1-based copy
 
-    //mP.print("mP=");
-
-    if(mX.has_nan()){
-      mX0 = mX;
-      mX1 = mX;
-      mXMissing = mX;
-      arma::uvec missingloc = arma::find_nonfinite(mX);
-      mX0.elem( missingloc ).zeros(); //missing - 0
-      mX1.elem( missingloc ).ones(); //missing - 1
-      mXMissing.elem(missingloc).zeros();
-      mXMissing.elem(arma::find_finite(mX)).ones();
+    if(has_missing){
       mlogLik = mX0*log(mP) + (1-mX1)*log(1-mP); //N x L
     }else{
       mlogLik = mX*log(mP) + (1-mX)*log(1-mP); //N x L
@@ -115,14 +125,15 @@ Rcpp::List fast_GDINA_EM(arma::mat  mloc,
     Rg = arma::zeros<arma::mat>(J,Ljmax);
 
 
-    if(mX.has_nan()){
+    if(has_missing){
       //missing values -> 0
       expR = arma::trans(mX0)*msdPost;//JxN * NxL -> JxL
       expN = arma::trans(mXMissing)*msdPost;//JxN * NxL -> JxL
     }else{
       expR = arma::trans(mX)*msdPost;//JxN * NxL -> JxL
-      expN = arma::ones<arma::mat>(J,N)*msdPost;//JxN * NxL -> JxL
-
+      // Without missing data every row of expN is sum(msdPost,0); use repmat
+      // instead of an expensive J*N ones-matrix multiply.
+      expN = arma::repmat(arma::sum(msdPost, 0), J, 1);//JxL
     }
     //expR.print();
     arma::mat mpar0 = mpar;
@@ -137,8 +148,9 @@ Rcpp::List fast_GDINA_EM(arma::mat  mloc,
         int Kjmax = mloc.row(j).max()+1;
         if(prior==false){
           for (int k=0;k<Kjmax;++k){
-            Ng(j,k) = arma::accu(expNj.elem(arma::find(mloc.row(j)==k)));
-            Rg(j,k) = arma::accu(expRj.elem(arma::find(mloc.row(j)==k)));
+            const arma::uvec & kloc = item_cat_locs[j][k]; // precomputed index
+            Ng(j,k) = arma::accu(expNj.elem(kloc));
+            Rg(j,k) = arma::accu(expRj.elem(kloc));
             if(model_numeric(j) == 0){ //G-DINA
               mpar(j,k) = (Rg(j,k) + smallNcorrection(0))/(Ng(j,k) + smallNcorrection(1));
               if(mpar(j,k)<lP(j)){
@@ -200,8 +212,9 @@ Rcpp::List fast_GDINA_EM(arma::mat  mloc,
           }
         }else{
           for (int k=0;k<Kjmax;++k){
-            Ng(j,k) = arma::accu(expNj.elem(arma::find(mloc.row(j)==k)));
-            Rg(j,k) = arma::accu(expRj.elem(arma::find(mloc.row(j)==k)));
+            const arma::uvec & kloc = item_cat_locs[j][k]; // precomputed index
+            Ng(j,k) = arma::accu(expNj.elem(kloc));
+            Rg(j,k) = arma::accu(expRj.elem(kloc));
             if(model_numeric(j) == 0){ //G-DINA
               mpar(j,k) = (Rg(j,k) + vbeta(0) - 1)/(Ng(j,k) + arma::accu(vbeta) - 2);
               if(mpar(j,k)<lP(j)){
