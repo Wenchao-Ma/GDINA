@@ -13,6 +13,15 @@ Rcpp::List Mord(arma::vec item_no, //first col in Qc matrix
   arma::vec unique_item_no = arma::unique(item_no);
   int nitem = unique_item_no.n_elem;
   arma::rowvec post = prior.t();
+
+  // Precompute per-item LCprob row slices once.  The inner loops in Xi21 and
+  // Xi22 are O(nitem^3) and O(nitem^4) respectively; without caching, each
+  // iteration re-runs find() over the full item_no vector.
+  std::vector<arma::mat> lc(nitem);
+  for (int i = 0; i < nitem; ++i) {
+    lc[i] = LCprob.rows(arma::find(item_no == (i+1)));
+  }
+
   // matrices for final asymptotic covariance matrix
   arma::mat Xi11 = arma::zeros<arma::mat>(nitem,nitem);
   arma::mat Xi21 = arma::zeros<arma::mat>(nitem*(nitem-1)/2,nitem);
@@ -24,7 +33,7 @@ Rcpp::List Mord(arma::vec item_no, //first col in Qc matrix
 
   // E[Yi]
   for (int i = 0;i < nitem; ++i){ //item i
-    arma::mat lci = LCprob.rows(arma::find(item_no==(i+1))); //Si x L
+    const arma::mat & lci = lc[i]; //Si x L
     double mp = 0;
     for (arma::uword si = 0;si < lci.n_rows; si++){ // sum over all categories si
       mp += arma::accu(lci.row(si)%post)*(si+1); //\sum_c(si+1)P(Yi=si+1|alpha_c)p(alpha_c)
@@ -33,10 +42,10 @@ Rcpp::List Mord(arma::vec item_no, //first col in Qc matrix
   }
 
   for (int j = 0;j < nitem; ++j){ //item j
-    arma::mat lcj = LCprob.rows(arma::find(item_no==(j+1))); //Sj x L
+    const arma::mat & lcj = lc[j]; //Sj x L
     for (int k = 0; k < nitem; ++k){ //item k
       double bmp = 0;
-      arma::mat lck = LCprob.rows(arma::find(item_no==(k+1))); //Sk x L
+      const arma::mat & lck = lc[k]; //Sk x L
       if(j==k){
         for (arma::uword sk = 0;sk < lck.n_rows; sk++){ //category sk
           bmp += arma::accu(lck.row(sk)%post)*(sk+1)*(sk+1);
@@ -66,13 +75,13 @@ Rcpp::List Mord(arma::vec item_no, //first col in Qc matrix
   // calculating Xi12
   int ind1 = 0;
   for (int i = 0; i < nitem - 1; ++i){
-    arma::mat lci = LCprob.rows(arma::find(item_no==(i+1))); //Si x L
+    const arma::mat & lci = lc[i]; //Si x L
     int ir = lci.n_rows;
     for (int j = i + 1; j < nitem; ++j){
-      arma::mat lcj = LCprob.rows(arma::find(item_no==(j+1))); //Sj x L
+      const arma::mat & lcj = lc[j]; //Sj x L
       int jr = lcj.n_rows;
       for (int k = 0; k < nitem; ++k){
-        arma::mat lck = LCprob.rows(arma::find(item_no==(k+1))); //Sk x L
+        const arma::mat & lck = lc[k]; //Sk x L
         int kr = lck.n_rows;
         double tmp=0;
         if(i==k){
@@ -106,18 +115,18 @@ Rcpp::List Mord(arma::vec item_no, //first col in Qc matrix
   // calculating Xi22---------------------------
   int ind2 = 0;
   for (int i = 0; i < nitem - 1; ++i){
-    arma::mat lci = LCprob.rows(arma::find(item_no==(i+1))); //Si x L
+    const arma::mat & lci = lc[i]; //Si x L
     int ir = lci.n_rows;
     for (int j = i + 1; j < nitem; ++j){
-      arma::mat lcj = LCprob.rows(arma::find(item_no==(j+1))); //Sj x L
+      const arma::mat & lcj = lc[j]; //Sj x L
       int jr = lcj.n_rows;
       int ind3 = 0;
       while(ind3<=ind2){
         for (int k = 0; k < nitem - 1; ++k){
-          arma::mat lck = LCprob.rows(arma::find(item_no==(k+1))); //Sk x L
+          const arma::mat & lck = lc[k]; //Sk x L
           int kr = lck.n_rows;
           for (int l = k + 1; l < nitem; ++l){
-            arma::mat lcl = LCprob.rows(arma::find(item_no==(l+1))); //Sm x L
+            const arma::mat & lcl = lc[l]; //Sm x L
             int lr = lcl.n_rows;
             double tmp=0;
 
@@ -188,4 +197,3 @@ Rcpp::List Mord(arma::vec item_no, //first col in Qc matrix
                             Rcpp::Named("Xi21") = Xi21,
                             Rcpp::Named("Xi22") = Xi22);
 }
-
