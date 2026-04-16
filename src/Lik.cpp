@@ -164,7 +164,9 @@ Rcpp::List LikNR(const arma::mat & mpar,
     expN = arma::trans(mXMissing)*msdPost;//JxN * NxL -> JxL
   }else{
     expR = arma::trans(mX)*msdPost;//JxN * NxL -> JxL
-    expN = arma::ones<arma::mat>(J,N)*msdPost;//JxN * NxL -> JxL
+    // Without missing data every row of expN is sum(msdPost,0); use repmat
+    // instead of an expensive J*N ones-matrix multiply.
+    expN = arma::repmat(arma::sum(msdPost, 0), J, 1);//JxL
 
   }
   for (int j=0;j<J;++j){ //for each item
@@ -257,7 +259,9 @@ Rcpp::List LikNR_LC(const arma::mat & mP,//J x L
     expN = arma::trans(mXMissing)*msdPost;//JxN * NxL -> JxL
   }else{
     expR = arma::trans(mX)*msdPost;//JxN * NxL -> JxL
-    expN = arma::ones<arma::mat>(J,N)*msdPost;//JxN * NxL -> JxL
+    // Without missing data every row of expN is sum(msdPost,0); use repmat
+    // instead of an expensive J*N ones-matrix multiply.
+    expN = arma::repmat(arma::sum(msdPost, 0), J, 1);//JxL
 
   }
 
