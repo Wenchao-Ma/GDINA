@@ -54,12 +54,45 @@ print.simGDINA <-
 print.CA <-
   function(x, ...)
   {
-    cat("Classification Accuracy \n")
-    cat("\nTest level accuracy = ", round(x$tau,4), "\n")
-    cat("\nPattern level accuracy: \n\n")
-    print(round(x$tau_l,4))
-    cat("\nAttribute level accuracy: \n\n")
-    print(round(x$tau_k,4))
+    cat("Classification Reliability (Accuracy and Consistency)\n")
+    cat("=================================================\n\n")
+
+    test.summary <- data.frame(
+      Measure = c("Accuracy", "Consistency"),
+      Estimate = round(c(x$tau, x$gamma), 4),
+      row.names = NULL
+    )
+    cat("Overall pattern-level accuracy (tau) = ", round(x$tau,4),"\n")
+    cat("Overall pattern-level consistency (gamma) = ", round(x$gamma,4),"\n")
+    cat("-----------------------------------------------\n")
+    if(length(x$tau_l)<=2^6){
+      pattern.summary <- data.frame(
+        Pattern = names(x$tau_l),
+        Accuracy = round(x$tau_l, 4),
+        "Class size" = round(as.vector(extract(x$GDINA.obj,"posterior.prob")),4),
+        row.names = NULL
+      )
+      print(pattern.summary, row.names = FALSE)
+    }
+
+
+    attribute.ac <- data.frame(
+      Attribute = names(x$tau_k),
+      Prevelence = round(as.vector(extract(x$GDINA.obj,"prevalence")$all[,2]),4),
+      tau_k = round(x$tau_k, 4),
+      gamma_k = round(x$gamma_k, 4),row.names = NULL
+      )
+
+    colnames(attribute.ac) <- c("Attribute", "Prevelence", "Accuracy (tau_k)",
+                                "Consistency (gamma_k)")
+
+    cat("\nAttribute level:\n")
+    cat("-----------------------------------------------\n")
+    print(attribute.ac, row.names = FALSE)
+
+
+
+    invisible(x)
   }
 #' @export
 print.modelcomp <- function(x, ...)

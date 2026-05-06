@@ -12,7 +12,7 @@ A list of responses and Q-matrix with components:
 }
 }
 \usage{
-realdata_ECPE
+data(realdata_ECPE)
 }
 \description{
 Examination for the Certificate of Proficiency in English (ECPE) data (the grammar section) has been used

@@ -12,7 +12,7 @@ A list of responses and Q-matrix with components:
 }
 }
 \usage{
-realdata_Tatsuoka1990
+data(realdata_Tatsuoka1990)
 }
 \description{
 Fraction Subtraction data (Tatsuoka, 1990, 2002) consists of responses of 536 examinees to 20 items measuring 8 attributes.

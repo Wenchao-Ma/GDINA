@@ -12,7 +12,7 @@ A list with components:
 }
 }
 \usage{
-sim10MCDINA
+data(sim10MCDINA)
 }
 \description{
 Simulated data, Q-matrix and item parameters for a 10-item test measuring 3 attributes.

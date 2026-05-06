@@ -13,7 +13,7 @@ A list with components:
 }
 }
 \usage{
-sim30DINA
+data(sim30DINA)
 }
 \description{
 Simulated data, Q-matrix and item parameters for a 30-item test measuring 5 attributes.

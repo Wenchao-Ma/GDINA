@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">GDINA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.10.0</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
       <h1 data-toc-skip>Higher-order GDINA Estimation</h1>
                         <h4 data-toc-skip class="author">Wenchao</h4>
             
-            <h4 data-toc-skip class="date">2025-05-02</h4>
+            <h4 data-toc-skip class="date">2026-05-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Wenchao-Ma/GDINA/blob/HEAD/vignettes/OnlineExercises/HOGDINA_example.Rmd" class="external-link"><code>vignettes/OnlineExercises/HOGDINA_example.Rmd</code></a></small>
       <div class="hidden name"><code>HOGDINA_example.Rmd</code></div>
@@ -108,7 +108,7 @@
 <h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h3>
 <p>This tutorial is created using R <a href="https://rmarkdown.rstudio.com/" class="external-link">markdown</a> and <a href="https://yihui.name/knitr/" class="external-link">knitr</a>. It illustrates how to use
-the GDINA R pacakge (version 2.9.10) to estimate the higher-order G-DINA
+the GDINA R pacakge (version 2.10.0) to estimate the higher-order G-DINA
 model.</p>
 </div>
 <div class="section level3">
@@ -117,7 +117,7 @@ model.</p>
 <p>The following code estimates the higher-order G-DINA model.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Wenchao-Ma/GDINA" class="external-link">GDINA</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## GDINA R Package (version 2.9.10; 2025-05-02)</span></span>
+<pre><code><span><span class="co">## GDINA R Package (version 2.10.0; 2026-05-06)</span></span>
 <span><span class="co">## For tutorials, see https://wenchao-ma.github.io/GDINA</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># A simulated data in GDINA package</span></span>
@@ -145,7 +145,7 @@ GDINA estimates.</p>
 <span><span class="co">## GDINA(dat = dat, Q = Q, model = "GDINA", att.dist = "higher.order", </span></span>
 <span><span class="co">##     higher.order = list(model = "2PL"))</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## GDINA version 2.9.10 (2025-05-02) </span></span>
+<span><span class="co">## GDINA version 2.10.0 (2026-05-06) </span></span>
 <span><span class="co">## ===============================================</span></span>
 <span><span class="co">## Data</span></span>
 <span><span class="co">## -----------------------------------------------</span></span>
@@ -169,7 +169,7 @@ GDINA estimates.</p>
 <span><span class="co">##   Change in -2 log-likelihood          = 0.0018 </span></span>
 <span><span class="co">##   Converged?                           = TRUE </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Time used             = 0.0566 secs</span></span></code></pre>
+<span><span class="co">## Time used             = 0.06156 secs</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># summary information</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></code></pre></div>
@@ -179,6 +179,7 @@ GDINA estimates.</p>
 <span><span class="co">## Loglik = -5920.30 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## AIC    = 11928.60  | penalty [2 * p]  = 88.00 </span></span>
+<span><span class="co">## AICc   = 11844.75  | penalty [2 * p * (p+1) / (n - p - 1)]  = 347.94 </span></span>
 <span><span class="co">## BIC    = 12144.54  | penalty [log(n) * p]  = 303.94 </span></span>
 <span><span class="co">## CAIC   = 12188.54  | penalty [(log(n) + 1) * p]  = 347.94 </span></span>
 <span><span class="co">## SABIC  = 12004.80  | penalty [log((n + 2)/24) * p]  = 164.19 </span></span>
@@ -217,7 +218,7 @@ GDINA estimates.</p>
 <pre><code><span><span class="co">## [1] 1000</span></span></code></pre>
 <p>You can use <em>extract</em> with argument <em>discrim</em> to
 extract discrimination indices. The first column gives
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P(1)-P(0)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P(1)-P(0)</annotation></semantics></math>
 and the second column gives the GDINA discrimination index.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># discrimination indices</span></span>
@@ -437,9 +438,9 @@ classes with standard errors.</p>
 <span><span class="co">## Est. 0.1723 -0.0232 0.1143 0.2106 0.2346 0.1388 0.1746 -0.1310</span></span>
 <span><span class="co">## S.E. 0.0456  0.0759 0.0759 0.0760 0.1232 0.1173 0.1113  0.1693</span></span></code></pre>
 <p>The following code gives
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P(0)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P(0)</annotation></semantics></math>
 and
-1-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">P(0)</annotation></semantics></math>,
+1-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P(0)</annotation></semantics></math>,
 which is guessing and slipping parameters.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">est</span>, what <span class="op">=</span> <span class="st">"gs"</span><span class="op">)</span> <span class="co"># guessing and slip parameters</span></span></code></pre></div>
@@ -552,23 +553,31 @@ the first six individuals).</p>
 <p>The following code gives item response functions of item 10.</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est</span>, item <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
+<p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="700"></p>
 <p>The following code gives item response functions of item 10 with
 error bars.</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est</span>, item <span class="op">=</span> <span class="fl">10</span>, withSE <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># with error bars</span></span></code></pre></div>
-<p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
+<p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="700"></p>
 <p>The following code plots mastery probabilities of three attributes
 for individuals 1,20 and 50.</p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#plot mastery probability for individuals 1, 20 and 50</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est</span>, what <span class="op">=</span> <span class="st">"mp"</span>, person <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">20</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+<pre><code><span><span class="co">## Warning: `aes_string()` was deprecated in ggplot2 3.0.0.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please use tidy evaluation idioms with `aes()`.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> See also `vignette("ggplot2-in-packages")` for more information.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">GDINA</span> package.</span></span>
+<span><span class="co">##   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/Wenchao-Ma/GDINA/issues&gt;</span>.</span></span>
+<span><span class="co">## <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">## <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">## <span style="color: #555555;">generated.</span></span></span></code></pre>
+<p><img src="HOGDINA_example_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="advanced-topics">Advanced Topics<a class="anchor" aria-label="anchor" href="#advanced-topics"></a>
 </h3>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#####################################</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co">#      Advanced elements</span></span>
@@ -590,7 +599,7 @@ for individuals 1,20 and 50.</p>
 <span><span class="co">## [4,]  -7.822446  -4.940081</span></span>
 <span><span class="co">## [5,] -10.933919 -14.661851</span></span>
 <span><span class="co">## [6,] -14.300850 -13.826351</span></span></code></pre>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../../reference/indlogPost.html">indlogPost</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span><span class="op">)</span> <span class="co"># individual log-posterior</span></span></code></pre></div>
 <pre><code><span><span class="co">##              000       100        010          001        110        101</span></span>
 <span><span class="co">## [1,] -11.8567382 -4.942598 -10.567736  -5.66443809  -4.240265 -0.1256323</span></span>
@@ -606,7 +615,7 @@ for individuals 1,20 and 50.</p>
 <span><span class="co">## [4,] -3.2008066  -0.31145302</span></span>
 <span><span class="co">## [5,] -7.3764129 -11.09735712</span></span>
 <span><span class="co">## [6,] -8.7031189  -8.22163173</span></span></code></pre>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">est</span>,<span class="st">"designmatrix"</span><span class="op">)</span> <span class="co">#design matrix</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span>
 <span><span class="co">##      [,1] [,2]</span></span>
@@ -675,19 +684,19 @@ for individuals 1,20 and 50.</p>
 <span><span class="co">## [6,]    1    1    0    1    0    1    0    0</span></span>
 <span><span class="co">## [7,]    1    0    1    1    0    0    1    0</span></span>
 <span><span class="co">## [8,]    1    1    1    1    1    1    1    1</span></span></code></pre>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">est</span>,<span class="st">"linkfunc"</span><span class="op">)</span> <span class="co">#link functions</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "identity" "identity" "identity" "identity" "identity" "identity"</span></span>
 <span><span class="co">##  [7] "identity" "identity" "identity" "identity"</span></span></code></pre>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.5.0 (2025-04-11)</span></span>
-<span><span class="co">## Platform: aarch64-apple-darwin20</span></span>
-<span><span class="co">## Running under: macOS Sequoia 15.4.1</span></span>
+<pre><code><span><span class="co">## R version 4.6.0 (2026-04-24)</span></span>
+<span><span class="co">## Platform: aarch64-apple-darwin23</span></span>
+<span><span class="co">## Running under: macOS Tahoe 26.4.1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib </span></span>
-<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1</span></span>
+<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib </span></span>
+<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
 <span><span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
@@ -699,29 +708,32 @@ for individuals 1,20 and 50.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] GDINA_2.9.10</span></span>
+<span><span class="co">## [1] GDINA_2.10.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] sass_0.4.10          generics_0.1.3       digest_0.6.37       </span></span>
-<span><span class="co">##  [4] magrittr_2.0.3       evaluate_1.0.3       grid_4.5.0          </span></span>
-<span><span class="co">##  [7] fastmap_1.2.0        jsonlite_2.0.0       promises_1.3.2      </span></span>
-<span><span class="co">## [10] scales_1.3.0         truncnorm_1.0-9      numDeriv_2016.8-1.1 </span></span>
-<span><span class="co">## [13] textshaping_1.0.0    jquerylib_0.1.4      shinydashboard_0.7.2</span></span>
-<span><span class="co">## [16] cli_3.6.4            shiny_1.10.0         rlang_1.1.6         </span></span>
-<span><span class="co">## [19] munsell_0.5.1        withr_3.0.2          cachem_1.1.0        </span></span>
-<span><span class="co">## [22] yaml_2.3.10          tools_4.5.0          parallel_4.5.0      </span></span>
-<span><span class="co">## [25] nloptr_2.2.1         dplyr_1.1.4          colorspace_2.1-1    </span></span>
-<span><span class="co">## [28] ggplot2_3.5.2        httpuv_1.6.15        vctrs_0.6.5         </span></span>
-<span><span class="co">## [31] R6_2.6.1             mime_0.13            lifecycle_1.0.4     </span></span>
-<span><span class="co">## [34] fs_1.6.6             htmlwidgets_1.6.4    MASS_7.3-65         </span></span>
-<span><span class="co">## [37] Rsolnp_1.16          ragg_1.4.0           pkgconfig_2.0.3     </span></span>
-<span><span class="co">## [40] desc_1.4.3           pkgdown_2.1.2        bslib_0.9.0         </span></span>
-<span><span class="co">## [43] pillar_1.10.2        later_1.4.2          gtable_0.3.6        </span></span>
-<span><span class="co">## [46] glue_1.8.0           Rcpp_1.0.14          systemfonts_1.2.2   </span></span>
-<span><span class="co">## [49] xfun_0.52            tibble_3.2.1         tidyselect_1.2.1    </span></span>
-<span><span class="co">## [52] rstudioapi_0.17.1    knitr_1.50           farver_2.1.2        </span></span>
-<span><span class="co">## [55] xtable_1.8-4         htmltools_0.5.8.1    rmarkdown_2.29      </span></span>
-<span><span class="co">## [58] labeling_0.4.3       compiler_4.5.0       alabama_2023.1.0</span></span></code></pre>
+<span><span class="co">##  [1] generics_0.1.4       sass_0.4.10          future_1.70.0       </span></span>
+<span><span class="co">##  [4] listenv_0.10.1       digest_0.6.39        magrittr_2.0.5      </span></span>
+<span><span class="co">##  [7] RColorBrewer_1.1-3   evaluate_1.0.5       grid_4.6.0          </span></span>
+<span><span class="co">## [10] iterators_1.0.14     fastmap_1.2.0        foreach_1.5.2       </span></span>
+<span><span class="co">## [13] jsonlite_2.0.0       promises_1.5.0       scales_1.4.0        </span></span>
+<span><span class="co">## [16] truncnorm_1.0-9      codetools_0.2-20     numDeriv_2016.8-1.1 </span></span>
+<span><span class="co">## [19] textshaping_1.0.5    jquerylib_0.1.4      shinydashboard_0.7.3</span></span>
+<span><span class="co">## [22] cli_3.6.6            shiny_1.13.0         rlang_1.2.0         </span></span>
+<span><span class="co">## [25] parallelly_1.47.0    future.apply_1.20.2  withr_3.0.2         </span></span>
+<span><span class="co">## [28] cachem_1.1.0         yaml_2.3.12          otel_0.2.0          </span></span>
+<span><span class="co">## [31] tools_4.6.0          parallel_4.6.0       nloptr_2.2.1        </span></span>
+<span><span class="co">## [34] dplyr_1.2.1          ggplot2_4.0.3        httpuv_1.6.17       </span></span>
+<span><span class="co">## [37] globals_0.19.1       vctrs_0.7.3          R6_2.6.1            </span></span>
+<span><span class="co">## [40] mime_0.13            stats4_4.6.0         lifecycle_1.0.5     </span></span>
+<span><span class="co">## [43] fs_2.1.0             htmlwidgets_1.6.4    MASS_7.3-65         </span></span>
+<span><span class="co">## [46] Rsolnp_2.0.1         ragg_1.5.2           pkgconfig_2.0.3     </span></span>
+<span><span class="co">## [49] desc_1.4.3           pillar_1.11.1        pkgdown_2.2.0       </span></span>
+<span><span class="co">## [52] bslib_0.10.0         later_1.4.8          gtable_0.3.6        </span></span>
+<span><span class="co">## [55] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   </span></span>
+<span><span class="co">## [58] tidyselect_1.2.1     tibble_3.3.1         xfun_0.57           </span></span>
+<span><span class="co">## [61] knitr_1.51           farver_2.1.2         xtable_1.8-8        </span></span>
+<span><span class="co">## [64] htmltools_0.5.9      labeling_0.4.3       rmarkdown_2.31      </span></span>
+<span><span class="co">## [67] compiler_4.6.0       S7_0.2.2             alabama_2025.1.0</span></span></code></pre>
 </div>
   </div>
 
@@ -740,7 +752,7 @@ for individuals 1,20 and 50.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

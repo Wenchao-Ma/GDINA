@@ -2,7 +2,7 @@ test_that("checking alpha patterns", {
 
   ret <- matrix(c(0,1,0,0,1,1,0,1,0,0,1,0,1,0,1,1,0,0,0,1,0,1,1,1),ncol = 3)
 
-  expect_equivalent(attributepattern(K = 3), ret)
+  expect_equivalent(GDINA::attributepattern(K = 3), ret)
 
 })
 
@@ -12,7 +12,7 @@ test_that("checking alpha patterns v2", {
 
   Q <- ret[1:3,]
 
-  expect_equivalent(attributepattern(Q = Q), ret)
+  expect_equivalent(GDINA::attributepattern(Q = Q), ret)
 
 })
 
@@ -24,6 +24,6 @@ test_that("checking polytomous alpha patterns", {
                  2,1,1,
                  2,1,2),ncol = 3,byrow = TRUE)
 
-  expect_equivalent(attributepattern(Q = Q), ret)
+  expect_equivalent(GDINA::attributepattern(Q = Q), ret)
 
 })

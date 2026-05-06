@@ -10,10 +10,12 @@
 #'
 #' @return a list with elements
 #' \describe{
-#' \item{tau}{estimated test-level classification accuracy, see Iaconangelo (2017, Eq 2.2)}
-#' \item{tau_l}{estimated pattern-level classification accuracy, see Iaconangelo (2017, p. 13)}
-#' \item{tau_k}{estimated attribute-level classification accuracy, see Wang, et al (2015, p. 461 Eq 6)}
-#' \item{CCM}{Conditional classification matrix, see Iaconangelo (2017, p. 13)}
+#' \item{tau}{estimated overall pattern-level classification accuracy, see Iaconangelo (2017)}
+#' \item{tau_l}{estimated pattern-level classification accuracy, see Iaconangelo (2017)}
+#' \item{tau_k}{estimated attribute-level classification accuracy, see Wang, et al (2015)}
+#' \item{CCM}{Conditional classification matrix, see Iaconangelo (2017)}
+#' \item{gamma_k}{Wang et al.'s (2015) attribute-level classification consistency estimator}
+#' \item{gamma}{estimated overall pattern-level classification consistency}
 #' }
 #'
 #' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
@@ -29,11 +31,14 @@
 #'
 #' @examples
 #'\dontrun{
-#' dat <- sim10GDINA$simdat
-#' Q <- sim10GDINA$simQ
+#' dat <- realdata_ECPE$dat
+#' Q <- realdata_ECPE$Q
 #' fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
 #' fit
 #' CA(fit)
+#'
+#'
+#'
 #' }
 #'@export
 
@@ -50,21 +55,28 @@ CA <- function(GDINA.obj,what="MAP"){
     if(any(pp[,ncol(pp)])) warning(paste0(what," estimates for some individuals have multiple modes.",collapse = ""),call. = FALSE)
     pp <- as.matrix(pp[,-ncol(pp)])
   }
-  mp <- personparm(GDINA.obj,what = "mp")
+  mp <- personparm(GDINA.obj,what = "mp",digits = 15)
   patt <- extract(GDINA.obj,"attributepattern")
   gr <- matchMatrix(patt,pp)
-  pseudo.gr <- setdiff(seq(nrow(patt)),unique(gr))
+  pseudo.gr <- setdiff(seq_len(nrow(patt)),unique(gr))
   gr <- c(gr,pseudo.gr)
   lab <- apply(patt,1,paste0,collapse="")
   # conditional classification matrix
   # row: true; col: estimated
-  post <- cbind(exp(t(indlogPost(GDINA.obj))),matrix(0,nrow(patt),length(pseudo.gr)))
+  indp <- exp(indlogPost(GDINA.obj))
+  post <- cbind(t(indp),matrix(0,nrow(patt),length(pseudo.gr)))
   CCM <- aggregateCol(post,gr)/c(extract(GDINA.obj,"nobs")*p_c)
   tau_c <- diag(CCM)
   tau <- sum(tau_c*c(p_c))
   tau_k <- colMeans(pp*mp+(1-pp)*(1-mp))
   names(tau_c) <- rownames(CCM) <- colnames(CCM) <- lab
-  ret <- list(tau=tau,tau_l=tau_c,tau_k=tau_k,CCM = CCM)
+
+
+  #consistency indices - Wang et al
+  gamma_k <- colMeans(mp * mp + (1-mp) * (1-mp))
+  gamma <- sum(indp * indp)/nrow(indp)
+  ret <- list(tau=tau,tau_l=tau_c,tau_k=tau_k,CCM = CCM,
+              gamma_k=gamma_k,gamma=gamma,GDINA.obj=GDINA.obj)
   class(ret) <- "CA"
   return(ret)
 }

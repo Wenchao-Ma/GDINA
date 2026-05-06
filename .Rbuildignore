@@ -13,3 +13,5 @@
 \.o$
 \.so$
 ^\.github$
+^\.positai$
+^\.claude$

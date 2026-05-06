@@ -35,6 +35,7 @@
 <url><loc>/reference/indlogLik.html</loc></url>
 <url><loc>/reference/indlogPost.html</loc></url>
 <url><loc>/reference/itemfit.html</loc></url>
+<url><loc>/reference/itemfitPD.html</loc></url>
 <url><loc>/reference/itemparm.html</loc></url>
 <url><loc>/reference/modelcomp.html</loc></url>
 <url><loc>/reference/modelfit.html</loc></url>
@@ -44,6 +45,8 @@
 <url><loc>/reference/plot.GDINA.html</loc></url>
 <url><loc>/reference/plot.Qval.html</loc></url>
 <url><loc>/reference/plot.itemfit.html</loc></url>
+<url><loc>/reference/realdata_ECPE.html</loc></url>
+<url><loc>/reference/realdata_Tatsuoka1990.html</loc></url>
 <url><loc>/reference/rowMatch.html</loc></url>
 <url><loc>/reference/score.html</loc></url>
 <url><loc>/reference/sim10GDINA.html</loc></url>

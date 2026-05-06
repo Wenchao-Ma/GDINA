@@ -14,10 +14,12 @@ CA(GDINA.obj, what = "MAP")
 \value{
 a list with elements
 \describe{
-\item{tau}{estimated test-level classification accuracy, see Iaconangelo (2017, Eq 2.2)}
-\item{tau_l}{estimated pattern-level classification accuracy, see Iaconangelo (2017, p. 13)}
-\item{tau_k}{estimated attribute-level classification accuracy, see Wang, et al (2015, p. 461 Eq 6)}
-\item{CCM}{Conditional classification matrix, see Iaconangelo (2017, p. 13)}
+\item{tau}{estimated overall pattern-level classification accuracy, see Iaconangelo (2017)}
+\item{tau_l}{estimated pattern-level classification accuracy, see Iaconangelo (2017)}
+\item{tau_k}{estimated attribute-level classification accuracy, see Wang, et al (2015)}
+\item{CCM}{Conditional classification matrix, see Iaconangelo (2017)}
+\item{gamma_k}{Wang et al.'s (2015) attribute-level classification consistency estimator}
+\item{gamma}{estimated overall pattern-level classification consistency}
 }
 }
 \description{
@@ -27,11 +29,14 @@ It is only applicable for dichotomous attributes.
 }
 \examples{
 \dontrun{
-dat <- sim10GDINA$simdat
-Q <- sim10GDINA$simQ
+dat <- realdata_ECPE$dat
+Q <- realdata_ECPE$Q
 fit <- GDINA(dat = dat, Q = Q, model = "GDINA")
 fit
 CA(fit)
+
+
+
 }
 }
 \references{

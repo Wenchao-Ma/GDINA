@@ -11,4 +11,9 @@ src-i386
 src-x64
 *.pdf
 research
-tests
+tests/*
+!tests/testthat/
+!tests/testthat/*.R
+.positai
+/doc/
+/Meta/
