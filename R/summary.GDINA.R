@@ -80,12 +80,12 @@ output <- list(fit=fit,Qval=object$Qval.obj,finalmodel=object$CDM.obj)
  summary.dif <-
    function(object, ...)
    {
-     cat("\nItem success probabilities for two groups\n")
-     out <- mapply(rbind,extract(object$CDM1,what = "catprob.parm"),
-                   extract(object$CDM2,what = "catprob.parm"),SIMPLIFY = F)
-     out <- lapply(out,function(x){rownames(x) <- c("Group1.Est.","Group2.Est.");x})
-     print(out)
-     invisible(out)
+     cat("\nDIF Analysis Results\n")
+     cat("\nWald statistics and p-values:\n")
+     print(object$test)
+     if(!is.null(object$p.adjust.methods))
+       cat("\np-value adjustment method:", object$p.adjust.methods, "\n")
+     invisible(object$test)
    }
 
  #' @export

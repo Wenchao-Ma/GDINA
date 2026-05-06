@@ -155,7 +155,6 @@ GNLOptim <- function(par,fn,gr=NULL,hin=NULL,hin.gr=NULL,optimizer=NULL,
     if(length(op)==1&&op=="error"){
       ret$convergence <- -1
     }else{
-      print(op$pars)
       ret$delta <- op$pars
       ret$opt <- op
       ret$phat <- c(Calc_Pj(c(op$pars),designMj,linkfunc,FALSE))

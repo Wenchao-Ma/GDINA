@@ -161,7 +161,7 @@ modelcomp <- function(GDINA.obj=NULL,method = "Wald",items = "all", p.adjust.met
         dat <- reducedMDINO$options$dat
         Q <- reducedMDINO$options$Q
         J <- nrow(Q)
-        item.names <- extract(reducedMACDM,"item.names")
+        item.names <- extract(reducedMDINO,"item.names")
       }else{
         dat <- reducedMACDM$options$dat
         Q <- reducedMACDM$options$Q
