@@ -56,22 +56,13 @@ CA <- function(GDINA.obj,what="MAP"){
     pp <- as.matrix(pp[,-ncol(pp)])
   }
   mp <- personparm(GDINA.obj,what = "mp",digits = 15)
-  patt <- extract(GDINA.obj,"attributepattern")
-  gr <- matchMatrix(patt,pp)
-  pseudo.gr <- setdiff(seq_len(nrow(patt)),unique(gr))
-  gr <- c(gr,pseudo.gr)
-  lab <- apply(patt,1,paste0,collapse="")
-  # conditional classification matrix
-  # row: true; col: estimated
-  indp <- exp(indlogPost(GDINA.obj))
-  post <- cbind(t(indp),matrix(0,nrow(patt),length(pseudo.gr)))
-  CCM <- aggregateCol(post,gr)/c(extract(GDINA.obj,"nobs")*p_c)
+  CCM<- CM(GDINA.obj,classification = what,matrixtype = "profile")$profile_classification
   tau_c <- diag(CCM)
   tau <- sum(tau_c*c(p_c))
   tau_k <- colMeans(pp*mp+(1-pp)*(1-mp))
-  names(tau_c) <- rownames(CCM) <- colnames(CCM) <- lab
+  names(tau_c) <- rownames(CCM)
 
-
+  indp <- exp(indlogPost(GDINA.obj))
   #consistency indices - Wang et al
   gamma_k <- colMeans(mp * mp + (1-mp) * (1-mp))
   gamma <- sum(indp * indp)/nrow(indp)

@@ -26,6 +26,7 @@ For an example of how to use the package, see [here](https://wenchao-ma.github.i
 * To evaluate relative model fit, use **AIC()**, **BIC()** or **deviance()** function
 * To validate Q-matrix, use **Qval()** function
 * To detect differential item functioning, use **dif()** function
+* To regress estimated attribute or profile classifications on covariates with three-step ML correction, use **ThreeStepCov()**
 * To run graphical user interface, use **startGDINA()** function
 * To simulate data from various CDMs, use **simGDINA()** function
 
@@ -96,6 +97,45 @@ plot(ift)
 ```{r,eval=FALSE}
 CA(est)
 ```
+
+7. Regress estimated classifications on user covariates using the three-step ML correction.
+
+The bundled real-data examples do not include respondent-level covariates, so in the code below the covariates are just placeholders for user-supplied background variables collected outside the response matrix. The GDINA fit is real, based on the ECPE data, while the covariate frame `Z` is only used to illustrate the `ThreeStepCov()` workflow.
+
+```{r,eval=FALSE}
+dat <- realdata_ECPE$dat
+Q <- realdata_ECPE$Q
+ecpe_fit <- GDINA(dat, Q, model = "GDINA")
+
+set.seed(123)
+N <- nrow(dat)
+Z <- data.frame(
+  age = round(rnorm(N, mean = 21, sd = 3)),
+  female = rbinom(N, 1, 0.55),
+  program = factor(sample(c("intensive", "regular", "self-study"), N, replace = TRUE))
+)
+
+# Attribute-level regression with the three-step correction
+att_reg <- ThreeStepCov(
+  ecpe_fit,
+  ~ age + female + program,
+  data = Z,
+  level = "attribute"
+)
+att_reg$results[[1]]$corrected$table
+att_reg$results[[1]]$naive$table
+
+# Profile-level regression for the estimated latent classes
+profile_reg <- ThreeStepCov(
+  ecpe_fit,
+  ~ age + female + program,
+  data = Z,
+  level = "profile"
+)
+head(profile_reg$results$corrected$table)
+```
+
+At the attribute level, each element of `att_reg$results` contains both the naive logistic regression and the corrected regression for one attribute. At the profile level, `profile_reg$results$corrected$table` returns the multinomial logit coefficients relative to the reference latent profile.
 
 ## More Examples
 

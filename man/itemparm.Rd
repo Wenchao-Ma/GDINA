@@ -32,7 +32,7 @@ itemparm(
 
 \item{SE.type}{Type of standard errors.}
 
-\item{digits}{how many decimal places for the ouput?}
+\item{digits}{how many decimal places for the output?}
 
 \item{...}{additional arguments}
 }
