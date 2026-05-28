@@ -44,6 +44,8 @@ profile-level regression. Supported values are \code{"last"}
 \code{level = "attribute"}.}
 
 \item{conf.level}{Confidence level used for Wald intervals.}
+
+\item{na.action}{See \code{\link{na.action}} for details on handling missing data.}
 }
 \value{
 A list containing the corrected and naive regression fits. For

@@ -27,6 +27,7 @@
 #'   (default) and \code{"first"}. Ignored when
 #'   \code{level = "attribute"}.
 #' @param conf.level Confidence level used for Wald intervals.
+#' @param na.action See \code{\link{na.action}} for details on handling missing data.
 #'
 #' @details
 #' With notations from Vermunt (2010), let \eqn{W} denote the estimated class,
