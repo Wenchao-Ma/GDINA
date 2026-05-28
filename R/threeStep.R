@@ -107,7 +107,8 @@ ThreeStepCov <- function(object,
                          attribute = NULL,
                          classification = "MAP",
                          reference = c("last", "first"),
-                         conf.level = 0.95) {
+                         conf.level = 0.95,
+                         na.action = getOption("na.action")) {
   if (!inherits(object, "GDINA")) {
     stop("object must be a GDINA object.", call. = FALSE)
   }
@@ -115,12 +116,18 @@ ThreeStepCov <- function(object,
   level <- match.arg(level)
   reference <- match.arg(reference)
 
-  design <- .three_step_design_matrix(
+  design_info <- .three_step_design_matrix(
     formula = formula,
     data = data,
-    nobs = extract(object, "nobs")
+    nobs = extract(object, "nobs"),
+    na.action = na.action
   )
+  design <- design_info$design
   class_info <- .three_step_classification(object, classification)
+  if (length(design_info$keep) != nrow(class_info$hard_pattern)) {
+    class_info$hard_pattern <- class_info$hard_pattern[design_info$keep, , drop = FALSE]
+    class_info$hard_class <- class_info$hard_class[design_info$keep]
+  }
 
   if (any(class_info$hard_pattern > 1)) {
     stop("ThreeStepCov is currently only available for binary attributes.", call. = FALSE)
@@ -205,6 +212,7 @@ ThreeStepCov <- function(object,
     level = level,
     classification = classification,
     reference = if (level == "profile") reference else NULL,
+    na.action = design_info$na.action,
     design = design,
     results = results
   )
@@ -253,26 +261,38 @@ print.ThreeStepCov <- function(x, ...) {
 }
 
 
-.three_step_design_matrix <- function(formula, data, nobs) {
+.three_step_design_matrix <- function(formula,
+                                      data,
+                                      nobs,
+                                      na.action = getOption("na.action")) {
   if (missing(formula) || !inherits(formula, "formula")) {
     stop("formula must be a one-sided or two-sided formula.", call. = FALSE)
   }
   if (missing(data) || !is.data.frame(data)) {
     stop("data must be a data.frame.", call. = FALSE)
   }
+  if (nrow(data) != nobs) {
+    stop("data must have one row per respondent in object.", call. = FALSE)
+  }
 
   terms_obj <- stats::terms(formula, data = data)
   if (attr(terms_obj, "response") > 0L) {
     terms_obj <- stats::delete.response(terms_obj)
   }
-  mf <- stats::model.frame(terms_obj, data = data, na.action = stats::na.fail)
+  mf <- stats::model.frame(terms_obj, data = data, na.action = na.action)
   design <- stats::model.matrix(terms_obj, data = mf)
+  omitted <- attr(mf, "na.action")
+  keep <- if (is.null(omitted)) seq_len(nobs) else setdiff(seq_len(nobs), as.integer(omitted))
 
-  if (nrow(design) != nobs) {
-    stop("data must have one row per respondent in object.", call. = FALSE)
+  if (nrow(design) != length(keep)) {
+    stop("Failed to align design matrix rows with retained respondents.", call. = FALSE)
   }
 
-  design
+  list(
+    design = design,
+    keep = keep,
+    na.action = omitted
+  )
 }
 
 .three_step_classification <- function(object, classification) {

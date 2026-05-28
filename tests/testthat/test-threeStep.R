@@ -147,6 +147,66 @@ test_that("threeStep runs profile-level regression with one observed class per r
   expect_equal(colnames(result_first$results$corrected$fitted), class_labels)
 })
 
+test_that("ThreeStepCov follows glm-style na.action handling for missing covariates", {
+  skip_on_cran()
+  set.seed(2026)
+
+  N <- 300
+  Z <- data.frame(
+    z_cont = rnorm(N),
+    z_bin = rbinom(N, 1, 0.4),
+    z_cat = factor(sample(c("A", "B", "C"), N, replace = TRUE))
+  )
+  missing_rows <- c(5, 12, 90)
+  Z$z_cont[missing_rows] <- NA_real_
+
+  p1 <- plogis(-0.3 + 0.7 * replace(Z$z_cont, missing_rows, 0) + 0.5 * Z$z_bin)
+  p2 <- plogis(0.2 - 0.6 * replace(Z$z_cont, missing_rows, 0) + 0.4 * (Z$z_cat == "B"))
+  alpha <- cbind(rbinom(N, 1, p1), rbinom(N, 1, p2))
+
+  Q <- matrix(c(
+    1, 0,
+    1, 0,
+    1, 0,
+    1, 0,
+    0, 1,
+    0, 1,
+    0, 1,
+    0, 1,
+    1, 1,
+    1, 1
+  ), byrow = TRUE, ncol = 2)
+  gs <- data.frame(guess = rep(0.2, nrow(Q)), slip = rep(0.2, nrow(Q)))
+
+  sim <- simGDINA(N, Q, gs.parm = gs, model = "DINA", attribute = alpha)
+  fit <- GDINA(sim$dat, sim$Q, model = "DINA", verbose = 0)
+
+  result_omit <- ThreeStepCov(
+    fit,
+    ~ z_cont + z_bin + z_cat,
+    data = Z,
+    level = "attribute",
+    attribute = 1,
+    na.action = stats::na.omit
+  )
+
+  expect_equal(nrow(result_omit$design), N - length(missing_rows))
+  expect_equal(length(result_omit$results[[1]]$observed), N - length(missing_rows))
+  expect_equal(as.integer(result_omit$na.action), missing_rows)
+
+  expect_error(
+    ThreeStepCov(
+      fit,
+      ~ z_cont + z_bin + z_cat,
+      data = Z,
+      level = "attribute",
+      attribute = 1,
+      na.action = stats::na.fail
+    ),
+    "missing values"
+  )
+})
+
 test_that("print.ThreeStepCov prints corrected coefficient tables", {
   skip_on_cran()
   set.seed(1618)

@@ -12,7 +12,8 @@ ThreeStepCov(
   attribute = NULL,
   classification = "MAP",
   reference = c("last", "first"),
-  conf.level = 0.95
+  conf.level = 0.95,
+  na.action = getOption("na.action")
 )
 }
 \arguments{
