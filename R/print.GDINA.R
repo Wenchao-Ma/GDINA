@@ -364,8 +364,12 @@ print.itemfitPD <- function(x,...){
   cat("\np-value adjustment method =", x$options$p.adjust.method)
 
   cat("\n-------------------------------------")
-  cat("\nAt .05 nominal level, items flagged according to...", "\n")
-  cat("  X2 = ", paste0(which(x$X2$adjp < 0.05), collapse = ", "), "\n")
-  cat("  G2 = ", paste0(which(x$G2$adjp < 0.05), collapse = ", "), "\n")
-  cat("  PD = ", paste0(which(x$PD$adjp < 0.05), collapse = ", "), "\n")
+  if(any(x$X2$adjp < 0.05, na.rm = TRUE) | any(x$G2$adjp < 0.05, na.rm = TRUE) | any(x$PD$adjp < 0.05, na.rm = TRUE)){
+    cat("\nItems flagged for misfit (at .05 nominal level):\n")
+  cat("  Based on X2: ", paste0(which(x$X2$adjp < 0.05), collapse = ", "), "\n")
+  cat("  Based on G2: ", paste0(which(x$G2$adjp < 0.05), collapse = ", "), "\n")
+  cat("  Based on PD: ", paste0(which(x$PD$adjp < 0.05), collapse = ", "), "\n")
+  }else{
+    cat("\nNo items flagged for misfit (at .05 nominal level).\n")
+  }
 }

@@ -27,6 +27,7 @@ shinyServer(function(input, output) {
   ##################
 
   est.result <- eventReactive(input$goButton, {
+    req(input$file1, input$file2)
     withProgress(message = 'Model Estimating', value = 0.9, {
     inFile1 <- input$file1
     dat <- read.csv(inFile1$datapath, header = input$header,
@@ -83,7 +84,7 @@ shinyServer(function(input, output) {
     if (input$goButton == 0)
       return()
     shinydashboard::sidebarMenu(
-      shinydashboard::menuItem("Model Fit", icon = icon("check-square-o"), tabName = "fit")
+      shinydashboard::menuItem("Model Fit", icon = icon("arrow-up-right-dots"), tabName = "fit")
     )
   })
   output$par <- shinydashboard::renderMenu({
@@ -211,6 +212,27 @@ shinyServer(function(input, output) {
     itf()
   })
 
+  itfpd <- shiny::reactive({
+    if (input$goButton == 0)
+      return()
+
+    withProgress(message = "Calculating itemfitPD", value = 0.9, {
+      itemfitPD(
+        est.result(),
+        bootstrap = isTRUE(input$itemfitPD_bootstrap),
+        Stone = isTRUE(input$itemfitPD_bootstrap) && isTRUE(input$itemfitPD_stone),
+        seed = input$itemfitPD_seed,
+        R = input$Bootstrap_samples
+        )
+    })
+  })
+
+  output$itemfitPD_output <- shiny::renderPrint({
+    if (input$goButton == 0)
+      return()
+    print(itfpd())
+  })
+
   itfplot <- shiny::reactive({
     itemfit(est.result())
   })
@@ -266,10 +288,6 @@ shinyServer(function(input, output) {
   output$pv <- shiny::renderPrint({
     if (input$modelsel == 0)  return()
     extract(m(),what = "pvalues")
-  })
-  output$ws <- shiny::renderPrint({
-    if (input$modelsel == 0)  return()
-    extract(m(),what = "stats")
   })
   output$ss <- shiny::renderPrint({
     if (input$modelsel == 0)  return()

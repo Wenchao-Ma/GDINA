@@ -161,6 +161,19 @@ shinydashboard::tabItem(tabName = "fit",
           shinydashboard::box(
             title = "Heatmap plots", width = 8, solidHeader = TRUE, collapsible = TRUE, status = "primary",
             shiny::plotOutput("heatplot")
+          )),
+        shiny::fluidRow(shinydashboard::box(
+          title = "Item-fit power-divergence specifications", width = 4, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+          shiny::numericInput("itemfitPD_seed",label = "Seed (0-9999)",
+                       value = 1234, min = 1,max = 9999, step = 1),
+          shiny::checkboxInput("itemfitPD_bootstrap", label = "Bootstrap?", value = FALSE),
+          shiny::checkboxInput("itemfitPD_stone", label = "Use Stone's method?", value = FALSE),
+          shiny::numericInput("Bootstrap_samples",label = "Number of bootstrap samples (50-1000)",
+                       value = 50, min = 50,max = 1000, step = 50),
+        ),
+          shinydashboard::box(
+            title = "Item-fit power-divergence results", width = 8, solidHeader = TRUE, collapsible = TRUE, status = "primary",
+            shiny::verbatimTextOutput('itemfitPD_output')
           ))),
 shinydashboard::tabItem(tabName = "par",
         shiny::h2("Parameter estimation"),

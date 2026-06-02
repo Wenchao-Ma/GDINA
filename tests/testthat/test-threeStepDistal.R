@@ -246,6 +246,140 @@ test_that("threeStepDistal fits categorical profile distal outcomes", {
   expect_equal(sort(unique(out$results$ML$table$outcome_level)), c("low", "medium"))
 })
 
+test_that("threeStepDistal naive binary attribute fit matches glm with observed covariates", {
+  skip_on_cran()
+  set.seed(2029)
+
+  Q <- matrix(c(
+    1, 0, 0,
+    1, 0, 0,
+    0, 1, 0,
+    0, 1, 0,
+    0, 0, 1,
+    0, 0, 1,
+    1, 1, 0,
+    1, 0, 1,
+    0, 1, 1,
+    1, 1, 1
+  ), byrow = TRUE, ncol = 3)
+  gs <- data.frame(guess = rep(0.28, nrow(Q)), slip = rep(0.22, nrow(Q)))
+  sim <- simGDINA(450, Q, gs.parm = gs, model = "GDINA")
+  fit <- GDINA(sim$dat, sim$Q, verbose = 0)
+  alpha <- extract(sim, "attribute")
+  att_map <- extract(fit, "attributepattern")[max.col(extract(fit, "logposterior.i")), , drop = FALSE]
+
+  Z <- data.frame(
+    gender = factor(sample(c("female", "male"), 450, replace = TRUE)),
+    ses = ordered(sample(c("low", "medium", "high"), 450, replace = TRUE),
+      levels = c("low", "medium", "high")
+    ),
+    age = rnorm(450)
+  )
+
+  y_binary <- rbinom(
+    450,
+    1,
+    plogis(-0.6 + 0.9 * alpha[, 1] - 0.7 * alpha[, 2] + 0.45 * (Z$gender == "male") +
+      0.3 * as.numeric(Z$ses) + 0.2 * Z$age)
+  )
+
+  out <- ThreeStepDistal(
+    fit,
+    y_binary,
+    formula = ~ gender + ses + age,
+    data = Z,
+    level = "attribute",
+    attribute = 1:2,
+    method = "ML"
+  )
+  truth <- glm(
+    y_binary ~ A1 + A2 + gender + ses_num + age,
+    family = binomial(),
+    data = data.frame(
+      y_binary = y_binary,
+      A1 = att_map[, 1],
+      A2 = att_map[, 2],
+      gender = Z$gender,
+      ses_num = as.numeric(Z$ses),
+      age = Z$age
+    )
+  )
+
+  expect_equal(unname(out$results$naive$coefficients), unname(stats::coef(truth)), tolerance = 1e-6)
+  expect_equal(colnames(out$covariate_design), c("gendermale", "ses", "age"))
+})
+
+test_that("threeStepDistal naive ordinal profile fit matches polr with observed covariates", {
+  skip_on_cran()
+  set.seed(2030)
+
+  Q <- matrix(c(
+    1, 0, 0,
+    1, 0, 0,
+    0, 1, 0,
+    0, 1, 0,
+    0, 0, 1,
+    0, 0, 1,
+    1, 1, 0,
+    1, 0, 1,
+    0, 1, 1,
+    1, 1, 1
+  ), byrow = TRUE, ncol = 3)
+  gs <- data.frame(guess = rep(0.27, nrow(Q)), slip = rep(0.21, nrow(Q)))
+  sim <- simGDINA(420, Q, gs.parm = gs, model = "GDINA")
+  fit <- GDINA(sim$dat, sim$Q, verbose = 0)
+  alpha <- extract(sim, "attribute")
+  pattern <- extract(fit, "attributepattern")
+  profile_labels <- apply(pattern, 1, paste, collapse = "")
+  profile_map <- factor(
+    apply(pattern[max.col(extract(fit, "logposterior.i")), , drop = FALSE], 1, paste, collapse = ""),
+    levels = profile_labels
+  )
+  profile_map <- stats::relevel(profile_map, ref = tail(profile_labels, 1))
+
+  Z <- data.frame(
+    gender = factor(sample(c("female", "male"), 420, replace = TRUE)),
+    ses = ordered(sample(c("low", "medium", "high"), 420, replace = TRUE),
+      levels = c("low", "medium", "high")
+    ),
+    age = rnorm(420)
+  )
+
+  eta <- -0.5 + 0.9 * alpha[, 1] - 0.8 * alpha[, 2] + 0.6 * alpha[, 3] +
+    0.35 * (Z$gender == "male") + 0.25 * as.numeric(Z$ses) + 0.15 * Z$age
+  p_low <- stats::plogis(0.1 - eta)
+  p_medium <- stats::plogis(1.1 - eta) - p_low
+  u <- runif(420)
+  y_ordinal <- ordered(
+    ifelse(u < p_low, "low", ifelse(u < p_low + p_medium, "medium", "high")),
+    levels = c("low", "medium", "high")
+  )
+
+  out <- ThreeStepDistal(
+    fit,
+    y_ordinal,
+    formula = ~ gender + ses + age,
+    data = Z,
+    level = "profile",
+    method = "ML"
+  )
+  truth <- MASS::polr(
+    y_ordinal ~ profile_map + gender + ses_num + age,
+    method = "logistic",
+    Hess = TRUE,
+    data = data.frame(
+      y_ordinal = y_ordinal,
+      profile_map = profile_map,
+      gender = Z$gender,
+      ses_num = as.numeric(Z$ses),
+      age = Z$age
+    )
+  )
+
+  expect_equal(unname(out$results$naive$coefficients), unname(stats::coef(truth)), tolerance = 1e-4)
+  expect_equal(unname(out$results$naive$thresholds), unname(truth$zeta), tolerance = 1e-4)
+})
+
 test_that("print.ThreeStepDistal prints coefficient tables", {
   skip_on_cran()
   set.seed(2028)

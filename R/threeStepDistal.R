@@ -12,6 +12,13 @@
 #' @param outcome A distal outcome with one value per respondent. Supported
 #'   outcomes are binary, ordinal, nominal categorical, and continuous
 #'   outcomes.
+#' @param formula Optional one-sided or two-sided formula specifying observed
+#'   covariates to include additively in the distal outcome regression. Only
+#'   the right-hand side is used.
+#' @param data Optional data frame containing the covariates in
+#'   \code{formula}. It must contain one row per respondent in \code{object}.
+#'   Ordered factors are converted to numeric scores in level order so they
+#'   enter the regression with a single linear effect.
 #' @param level A character string specifying whether the corrected analysis is
 #'   carried out at the attribute level (\code{"attribute"}) or the latent
 #'   profile level (\code{"profile"}).
@@ -26,24 +33,31 @@
 #' @param method A character vector specifying which corrected distal analyses
 #'   to return. Supported values are \code{"ML"} and \code{"BCH"}.
 #' @param outcome_type A character string specifying the outcome type.
-#'   Supported values are \code{"binary"},
-#'   \code{"ordinal"}, \code{"nominal"}), and \code{"continuous"}.
+#'   Supported values are \code{"auto"}, \code{"binary"},
+#'   \code{"ordinal"}, \code{"categorical"}, \code{"nominal"}, and
+#'   \code{"continuous"}. The value \code{"nominal"} is treated as an
+#'   alias for \code{"categorical"}.
 #' @param reference A character string specifying the reference class for
 #'   profile-level models. Supported values are \code{"last"} (default) and
 #'   \code{"first"}. Ignored when \code{level = "attribute"}.
 #' @param conf.level Confidence level used for Wald intervals.
 #' @param maxit Maximum number of optimization iterations.
+#' @param na.action See \code{\link{na.action}} for handling missing values in
+#'   observed covariates.
 #'
 #' @details
 #' Let \eqn{W} denote the estimated latent class, \eqn{X} the unobserved true
-#' class, and \eqn{Y} the distal outcome. The ML correction is based on the
+#' class, \eqn{Y} the distal outcome, and \eqn{Z} the observed covariates. The
+#' ML correction is based on the
 #' mixture likelihood
-#' \deqn{\sum_i \log\left\{\sum_t P(W_i=s_i\mid X_i=t)P(X_i=t)f(Y_i\mid X_i=t)\right\}.}
-#' For binary distal outcomes, \eqn{f(Y_i\mid X_i=t)} is Bernoulli with a logit
-#' link; for continuous outcomes it is Gaussian with class-specific means and a
-#' common residual standard deviation; for ordinal outcomes it is a cumulative
-#' logit model with proportional odds; for nominal categorical outcomes it is a
-#' multinomial logit model over the distal categories.
+#' \deqn{\sum_i \log\left\{\sum_t P(W_i=s_i\mid X_i=t)P(X_i=t)f(Y_i\mid X_i=t, Z_i)\right\}.}
+#' Observed covariates enter additively in the distal outcome model together
+#' with the selected latent attributes or profiles. For binary distal outcomes,
+#' \eqn{f(Y_i\mid X_i=t, Z_i)} is Bernoulli with a logit link; for continuous
+#' outcomes it is Gaussian with state-specific means plus additive covariate
+#' effects and a common residual standard deviation; for ordinal outcomes it is
+#' a cumulative logit model with proportional odds; for nominal categorical
+#' outcomes it is a multinomial logit model over the distal categories.
 #'
 #' The BCH correction replaces the full mixture likelihood with BCH weights
 #' derived from the inverse misclassification matrix. Both the naive analysis
@@ -57,7 +71,8 @@
 #' contains the requested distal outcome analysis for the selected attribute or
 #' profile states. Each fit includes coefficient estimates, Wald summaries,
 #' fitted class-specific outcome summaries, threshold estimates for ordinal
-#' outcomes, and the correction objects used for estimation.
+#' outcomes, any observed-covariate terms included in the model, and the
+#' correction objects used for estimation.
 #'
 #' @references
 #' Bakk, Z., & Kuha, J. (2021). Relating latent class membership to external
@@ -98,6 +113,32 @@
 #' )
 #' distal_cont
 #'
+#' # Binary distal outcome with observed covariates. Ordered factors enter as
+#' # numeric scores in level order to mimic a single linear effect.
+#' covariates <- data.frame(
+#'   gender = factor(sample(c("female", "male"), N, replace = TRUE)),
+#'   ses = ordered(sample(c("low", "medium", "high"), N, replace = TRUE),
+#'     levels = c("low", "medium", "high")
+#'   ),
+#'   age = rnorm(N)
+#' )
+#' y_cov <- rbinom(
+#'   N,
+#'   1,
+#'   plogis(-0.4 + 0.8 * alpha[, 1] - 0.5 * alpha[, 2] + 0.5 * (covariates$gender == "male") +
+#'     0.35 * as.numeric(covariates$ses) + 0.2 * covariates$age)
+#' )
+#' distal_cov <- ThreeStepDistal(
+#'   fit,
+#'   y_cov,
+#'   formula = ~ gender + ses + age,
+#'   data = covariates,
+#'   level = "attribute",
+#'   attribute = 1:3,
+#'   method = c("ML", "BCH")
+#' )
+#' distal_cov
+#'
 #' # Ordinal distal outcome at the attribute level
 #' latent_score <- -0.4 + 1.1 * alpha[, 1] - 0.8 * alpha[, 2] + 0.5 * alpha[, 3] + rnorm(N, sd = 0.8)
 #' cuts <- quantile(latent_score, probs = c(1 / 3, 2 / 3))
@@ -117,6 +158,8 @@
 #' @export
 ThreeStepDistal <- function(object,
                             outcome,
+                            formula = NULL,
+                            data = NULL,
                             level = c("attribute", "profile"),
                             attribute = NULL,
                             classification = "MAP",
@@ -124,11 +167,20 @@ ThreeStepDistal <- function(object,
                             outcome_type = c("auto", "binary", "ordinal", "categorical", "nominal", "continuous"),
                             reference = c("last", "first"),
                             conf.level = 0.95,
-                            maxit = 1000) {
+                            maxit = 1000,
+                            na.action = getOption("na.action")) {
   level <- match.arg(level)
   method <- unique(match.arg(method, c("ML", "BCH"), several.ok = TRUE))
   reference <- match.arg(reference)
-  inputs <- .distal_prepare_inputs(object, outcome, outcome_type, classification)
+  inputs <- .distal_prepare_inputs(
+    object = object,
+    outcome = outcome,
+    outcome_type = outcome_type,
+    classification = classification,
+    formula = formula,
+    data = data,
+    na.action = na.action
+  )
 
   if (level == "attribute") {
     natt <- ncol(inputs$classification$hard_pattern)
@@ -156,6 +208,7 @@ ThreeStepDistal <- function(object,
     fits <- .distal_fit_bundle(
       outcome_info = inputs$outcome,
       state_design = design_info$design,
+      covariate_design = inputs$covariates$design,
       observed_state = state_info$hard_class,
       misclassification = state_info$misclassification,
       prior = state_info$prior,
@@ -170,8 +223,9 @@ ThreeStepDistal <- function(object,
       baseline = design_info$baseline,
       prior = stats::setNames(state_info$prior, design_info$state_labels),
       misclassification = state_info$misclassification,
-      predictor_labels = colnames(design_info$design)[-1L],
-      state_labels = design_info$state_labels
+      predictor_labels = .distal_predictor_term_names(design_info$design, inputs$covariates$design),
+      state_labels = design_info$state_labels,
+      covariate_terms = colnames(inputs$covariates$design)
     ), fits)
   } else {
     misclassification <- CM(
@@ -192,6 +246,7 @@ ThreeStepDistal <- function(object,
     fits <- .distal_fit_bundle(
       outcome_info = inputs$outcome,
       state_design = design_info$design,
+      covariate_design = inputs$covariates$design,
       observed_state = inputs$classification$hard_class,
       misclassification = misclassification,
       prior = colMeans(inputs$posterior),
@@ -206,18 +261,22 @@ ThreeStepDistal <- function(object,
       baseline = design_info$baseline,
       prior = stats::setNames(colMeans(inputs$posterior), design_info$state_labels),
       misclassification = misclassification,
-      predictor_labels = design_info$state_labels,
-      reference = reference
+      predictor_labels = .distal_predictor_term_names(design_info$design, inputs$covariates$design),
+      reference = reference,
+      covariate_terms = colnames(inputs$covariates$design)
     ), fits)
   }
 
   ret <- list(
     call = match.call(),
+    formula = formula,
     level = level,
     classification = classification,
     method = method,
     outcome_type = inputs$outcome$type,
     outcome_levels = inputs$outcome$levels,
+    na.action = inputs$covariates$na.action,
+    covariate_design = inputs$covariates$design,
     results = results
   )
   class(ret) <- c("ThreeStepDistal", "threeStepDistal")
@@ -253,6 +312,10 @@ print.ThreeStepDistal <- function(x, ...) {
     cat("Attributes in regression:", paste0("Attribute ", x$results$attribute, collapse = ", "), "\n")
   } else {
     cat("Reference profile:", x$results$baseline, "\n")
+  }
+
+  if (!is.null(x$formula)) {
+    cat("Observed covariates:", paste(attr(stats::terms(x$formula), "term.labels"), collapse = ", "), "\n")
   }
 
   if (!is.null(fit$table)) {
@@ -324,6 +387,105 @@ print.ThreeStepDistal <- function(x, ...) {
   state_design[, -1L, drop = FALSE]
 }
 
+.distal_predictor_term_names <- function(state_design,
+                                         covariate_design = NULL,
+                                         ordinal = FALSE) {
+  state_terms <- colnames(state_design)
+  if (ordinal) {
+    state_terms <- state_terms[-1L]
+  }
+  covariate_terms <- if (is.null(covariate_design) || ncol(covariate_design) == 0L) {
+    character(0)
+  } else {
+    colnames(covariate_design)
+  }
+
+  c(state_terms, covariate_terms)
+}
+
+.distal_observed_predictor_design <- function(state_design,
+                                              observed_state,
+                                              covariate_design = NULL,
+                                              ordinal = FALSE) {
+  observed_design <- state_design[observed_state, , drop = FALSE]
+  if (ordinal) {
+    observed_design <- observed_design[, -1L, drop = FALSE]
+  }
+  if (!is.null(covariate_design) && ncol(covariate_design) > 0L) {
+    observed_design <- cbind(observed_design, covariate_design)
+  }
+  observed_design
+}
+
+.distal_covariate_linear_predictor <- function(covariate_design, beta_covariate, n_obs, n_states) {
+  if (is.null(covariate_design) || ncol(covariate_design) == 0L || length(beta_covariate) == 0L) {
+    return(matrix(0, nrow = n_obs, ncol = n_states))
+  }
+
+  covariate_eta <- drop(covariate_design %*% beta_covariate)
+  matrix(covariate_eta, nrow = n_obs, ncol = n_states)
+}
+
+.distal_state_linear_predictor <- function(state_design, beta_state, n_obs) {
+  state_eta <- drop(state_design %*% beta_state)
+  matrix(state_eta, nrow = n_obs, ncol = nrow(state_design), byrow = TRUE)
+}
+
+.distal_ordered_to_numeric <- function(data) {
+  data_converted <- data
+  ordered_columns <- vapply(data_converted, is.ordered, logical(1L))
+  if (any(ordered_columns)) {
+    data_converted[ordered_columns] <- lapply(data_converted[ordered_columns], as.numeric)
+  }
+  data_converted
+}
+
+.distal_covariate_design <- function(formula,
+                                     data,
+                                     nobs,
+                                     na.action = getOption("na.action")) {
+  if (is.null(formula) && is.null(data)) {
+    return(list(
+      design = matrix(numeric(0), nrow = nobs, ncol = 0L),
+      keep = seq_len(nobs),
+      na.action = NULL
+    ))
+  }
+
+  if (is.null(formula) || !inherits(formula, "formula")) {
+    stop("formula must be NULL or a one-sided/two-sided formula.", call. = FALSE)
+  }
+  if (is.null(data) || !is.data.frame(data)) {
+    stop("data must be supplied as a data.frame when formula is used.", call. = FALSE)
+  }
+  if (nrow(data) != nobs) {
+    stop("data must have one row per respondent in object.", call. = FALSE)
+  }
+
+  data_converted <- .distal_ordered_to_numeric(data)
+  terms_obj <- stats::terms(formula, data = data_converted)
+  if (attr(terms_obj, "response") > 0L) {
+    terms_obj <- stats::delete.response(terms_obj)
+  }
+  mf <- stats::model.frame(terms_obj, data = data_converted, na.action = na.action)
+  design <- stats::model.matrix(terms_obj, data = mf)
+  if ("(Intercept)" %in% colnames(design)) {
+    design <- design[, colnames(design) != "(Intercept)", drop = FALSE]
+  }
+  omitted <- attr(mf, "na.action")
+  keep <- if (is.null(omitted)) seq_len(nobs) else setdiff(seq_len(nobs), as.integer(omitted))
+
+  if (nrow(design) != length(keep)) {
+    stop("Failed to align observed covariate rows with retained respondents.", call. = FALSE)
+  }
+
+  list(
+    design = design,
+    keep = keep,
+    na.action = omitted
+  )
+}
+
 .distal_ordinal_decode_thresholds <- function(raw_thresholds) {
   if (length(raw_thresholds) == 0L) {
     return(numeric(0))
@@ -341,11 +503,14 @@ print.ThreeStepDistal <- function(x, ...) {
   c(thresholds[1L], if (length(thresholds) > 1L) log(diff(thresholds)) else numeric(0))
 }
 
-.distal_ordinal_parameters <- function(theta, outcome_info, state_design) {
+.distal_ordinal_parameters <- function(theta,
+                                       outcome_info,
+                                       state_design,
+                                       covariate_design = NULL) {
   n_thresholds <- length(outcome_info$levels) - 1L
   raw_thresholds <- theta[seq_len(n_thresholds)]
   thresholds <- .distal_ordinal_decode_thresholds(raw_thresholds)
-  predictor_terms <- colnames(.distal_ordinal_predictor_design(state_design))
+  predictor_terms <- .distal_predictor_term_names(state_design, covariate_design, ordinal = TRUE)
   beta <- theta[-seq_len(n_thresholds)]
 
   names(thresholds) <- .distal_ordinal_threshold_names(outcome_info$levels)
@@ -359,8 +524,7 @@ print.ThreeStepDistal <- function(x, ...) {
   )
 }
 
-.distal_ordinal_start <- function(outcome_info, state_design) {
-  predictor_design <- .distal_ordinal_predictor_design(state_design)
+.distal_ordinal_start <- function(outcome_info, predictor_design) {
   y <- ordered(outcome_info$levels[outcome_info$y], levels = outcome_info$levels)
   n_thresholds <- length(outcome_info$levels) - 1L
   threshold_names <- .distal_ordinal_threshold_names(outcome_info$levels)
@@ -376,7 +540,11 @@ print.ThreeStepDistal <- function(x, ...) {
     )), silent = TRUE)
 
     if (!inherits(start_fit, "try-error")) {
-      beta <- unname(stats::coef(start_fit))
+      beta_fit <- stats::coef(start_fit)
+      if (length(beta_fit) > 0L) {
+        beta_index <- as.integer(sub("^x", "", names(beta_fit)))
+        beta[beta_index] <- unname(beta_fit)
+      }
       thresholds <- unname(start_fit$zeta)
       theta <- c(.distal_ordinal_encode_thresholds(thresholds), beta)
       names(theta) <- c(threshold_names, colnames(predictor_design))
@@ -651,7 +819,10 @@ print.ThreeStepDistal <- function(x, ...) {
 .distal_prepare_inputs <- function(object,
                                    outcome,
                                    outcome_type = c("auto", "binary", "ordinal", "categorical", "nominal", "continuous"),
-                                   classification = "MAP") {
+                                   classification = "MAP",
+                                   formula = NULL,
+                                   data = NULL,
+                                   na.action = getOption("na.action")) {
   if (!inherits(object, "GDINA")) {
     stop("object must be a GDINA object.", call. = FALSE)
   }
@@ -661,27 +832,45 @@ print.ThreeStepDistal <- function(x, ...) {
     stop("threeStepDistal currently supports only binary attributes.", call. = FALSE)
   }
 
+  nobs <- extract(object, "nobs")
+  covariates <- .distal_covariate_design(
+    formula = formula,
+    data = data,
+    nobs = nobs,
+    na.action = na.action
+  )
+  keep <- covariates$keep
+
   outcome_type <- .distal_detect_outcome_type(outcome, outcome_type)
-  outcome_info <- .distal_normalize_outcome(outcome, outcome_type)
-  if (length(outcome_info$y) != extract(object, "nobs")) {
+  if (length(outcome) != nobs) {
     stop("outcome must have one value per respondent in object.", call. = FALSE)
   }
+  outcome <- outcome[keep]
+  outcome_info <- .distal_normalize_outcome(outcome, outcome_type)
 
   posterior <- exp(indlogPost(object))
   posterior <- posterior / rowSums(posterior)
+  posterior <- posterior[keep, , drop = FALSE]
+  classification_info <- .three_step_classification(object, classification)
+  classification_info$hard_pattern <- classification_info$hard_pattern[keep, , drop = FALSE]
+  classification_info$hard_class <- classification_info$hard_class[keep]
 
   list(
     outcome = outcome_info,
     posterior = posterior,
-    classification = .three_step_classification(object, classification),
+    classification = classification_info,
     pattern = pattern,
-    mp = personparm(object, what = "mp")
+    mp = personparm(object, what = "mp")[keep, , drop = FALSE],
+    covariates = covariates
   )
 }
 
-.distal_initial_theta <- function(outcome_info, state_design, observed_state) {
-  observed_design <- state_design[observed_state, , drop = FALSE]
-  p <- ncol(state_design)
+.distal_initial_theta <- function(outcome_info,
+                                  state_design,
+                                  observed_state,
+                                  covariate_design = NULL) {
+  observed_design <- .distal_observed_predictor_design(state_design, observed_state, covariate_design)
+  p <- ncol(observed_design)
 
   if (outcome_info$type == "binary") {
     fit <- suppressWarnings(stats::glm.fit(
@@ -708,7 +897,13 @@ print.ThreeStepDistal <- function(x, ...) {
   }
 
   if (outcome_info$type == "ordinal") {
-    return(.distal_ordinal_start(outcome_info, observed_design))
+    observed_ordinal_design <- .distal_observed_predictor_design(
+      state_design = state_design,
+      observed_state = observed_state,
+      covariate_design = covariate_design,
+      ordinal = TRUE
+    )
+    return(.distal_ordinal_start(outcome_info, observed_ordinal_design))
   }
 
   n_outcome <- length(outcome_info$levels)
@@ -721,33 +916,42 @@ print.ThreeStepDistal <- function(x, ...) {
   theta
 }
 
-.distal_likelihood_matrix <- function(theta, outcome_info, state_design) {
+.distal_likelihood_matrix <- function(theta,
+                                      outcome_info,
+                                      state_design,
+                                      covariate_design = NULL) {
   n_obs <- length(outcome_info$y)
   n_states <- nrow(state_design)
   eps <- .Machine$double.eps
+  n_state_terms <- ncol(state_design)
+  n_covariates <- if (is.null(covariate_design)) 0L else ncol(covariate_design)
 
   if (outcome_info$type == "binary") {
-    eta <- drop(state_design %*% theta)
-    prob <- pmin(pmax(stats::plogis(eta), eps), 1 - eps)
-    prob_mat <- matrix(prob, nrow = n_obs, ncol = n_states, byrow = TRUE)
+    beta_state <- theta[seq_len(n_state_terms)]
+    beta_covariate <- if (n_covariates > 0L) theta[n_state_terms + seq_len(n_covariates)] else numeric(0)
+    eta <- .distal_state_linear_predictor(state_design, beta_state, n_obs) +
+      .distal_covariate_linear_predictor(covariate_design, beta_covariate, n_obs, n_states)
+    prob_mat <- pmin(pmax(stats::plogis(eta), eps), 1 - eps)
     like <- ifelse(matrix(outcome_info$y, nrow = n_obs, ncol = n_states) == 1, prob_mat, 1 - prob_mat)
 
     return(list(
       like = pmax(like, eps),
-      state_fitted = prob,
-      state_summary = data.frame(state = seq_len(n_states), event_probability = prob)
+      state_fitted = if (n_covariates == 0L) prob_mat[1L, ] else prob_mat,
+      state_summary = data.frame(state = seq_len(n_states), event_probability = colMeans(prob_mat))
     ))
   }
 
   if (outcome_info$type == "continuous") {
-    beta <- theta[seq_len(ncol(state_design))]
+    beta_state <- theta[seq_len(n_state_terms)]
+    beta_covariate <- if (n_covariates > 0L) theta[n_state_terms + seq_len(n_covariates)] else numeric(0)
     sigma <- exp(theta[length(theta)])
     sigma <- max(sigma, eps)
-    mu <- drop(state_design %*% beta)
+    mu <- .distal_state_linear_predictor(state_design, beta_state, n_obs) +
+      .distal_covariate_linear_predictor(covariate_design, beta_covariate, n_obs, n_states)
     like <- matrix(
       stats::dnorm(
         x = rep(outcome_info$y, each = n_states),
-        mean = rep(mu, times = n_obs),
+        mean = c(t(mu)),
         sd = sigma
       ),
       nrow = n_obs,
@@ -756,68 +960,98 @@ print.ThreeStepDistal <- function(x, ...) {
 
     return(list(
       like = pmax(like, eps),
-      state_fitted = mu,
-      state_summary = data.frame(state = seq_len(n_states), mean = mu, sigma = sigma)
+      state_fitted = if (n_covariates == 0L) mu[1L, ] else mu,
+      state_summary = data.frame(state = seq_len(n_states), mean = colMeans(mu), sigma = sigma)
     ))
   }
 
   if (outcome_info$type == "ordinal") {
-    ordinal_par <- .distal_ordinal_parameters(theta, outcome_info, state_design)
-    eta <- drop(.distal_ordinal_predictor_design(state_design) %*% ordinal_par$beta)
-    cumulative <- stats::plogis(outer(eta, ordinal_par$thresholds, function(e, z) z - e))
-    cumulative <- cbind(0, cumulative, 1)
-    prob <- cumulative[, -1L, drop = FALSE] - cumulative[, -ncol(cumulative), drop = FALSE]
-    prob <- pmin(pmax(prob, eps), 1 - eps)
-    prob <- prob / rowSums(prob)
-    colnames(prob) <- outcome_info$levels
-    like <- t(prob[, outcome_info$y, drop = FALSE])
+    ordinal_par <- .distal_ordinal_parameters(theta, outcome_info, state_design, covariate_design)
+    n_state_predictors <- ncol(.distal_ordinal_predictor_design(state_design))
+    beta_state <- if (n_state_predictors > 0L) ordinal_par$beta[seq_len(n_state_predictors)] else numeric(0)
+    beta_covariate <- if (n_covariates > 0L) ordinal_par$beta[n_state_predictors + seq_len(n_covariates)] else numeric(0)
+    state_predictor <- if (n_state_predictors > 0L) {
+      .distal_state_linear_predictor(.distal_ordinal_predictor_design(state_design), beta_state, n_obs)
+    } else {
+      matrix(0, nrow = n_obs, ncol = n_states)
+    }
+    eta <- state_predictor + .distal_covariate_linear_predictor(covariate_design, beta_covariate, n_obs, n_states)
+    prob_array <- array(NA_real_, dim = c(n_obs, n_states, length(outcome_info$levels)))
+    like <- matrix(NA_real_, nrow = n_obs, ncol = n_states)
+    for (state_index in seq_len(n_states)) {
+      cumulative <- stats::plogis(outer(eta[, state_index], ordinal_par$thresholds, function(e, z) z - e))
+      cumulative <- cbind(0, cumulative, 1)
+      prob <- cumulative[, -1L, drop = FALSE] - cumulative[, -ncol(cumulative), drop = FALSE]
+      prob <- pmin(pmax(prob, eps), 1 - eps)
+      prob <- prob / rowSums(prob)
+      colnames(prob) <- outcome_info$levels
+      prob_array[, state_index, ] <- prob
+      like[, state_index] <- prob[cbind(seq_len(n_obs), outcome_info$y)]
+    }
 
     return(list(
       like = pmax(like, eps),
-      state_fitted = prob,
-      state_summary = stats::setNames(as.data.frame(prob), outcome_info$levels),
+      state_fitted = if (n_covariates == 0L) prob_array[1L, , , drop = FALSE][1L, , ] else prob_array,
+      state_summary = stats::setNames(as.data.frame(apply(prob_array, c(2, 3), mean)), outcome_info$levels),
       thresholds = ordinal_par$thresholds,
       raw_thresholds = ordinal_par$raw_thresholds
     ))
   }
 
   n_outcome <- length(outcome_info$levels)
-  coef_mat <- matrix(theta, nrow = ncol(state_design), ncol = n_outcome - 1L)
-  eta <- cbind(state_design %*% coef_mat, 0)
-  eta <- eta - apply(eta, 1, max)
-  prob <- exp(eta)
-  prob <- prob / rowSums(prob)
-  like <- t(prob[, outcome_info$y, drop = FALSE])
-  colnames(prob) <- outcome_info$levels
+  coef_mat <- matrix(theta, nrow = n_state_terms + n_covariates, ncol = n_outcome - 1L)
+  eta <- array(0, dim = c(n_obs, n_states, n_outcome))
+  for (outcome_index in seq_len(n_outcome - 1L)) {
+    beta_state <- coef_mat[seq_len(n_state_terms), outcome_index]
+    beta_covariate <- if (n_covariates > 0L) coef_mat[n_state_terms + seq_len(n_covariates), outcome_index] else numeric(0)
+    eta[, , outcome_index] <- .distal_state_linear_predictor(state_design, beta_state, n_obs) +
+      .distal_covariate_linear_predictor(covariate_design, beta_covariate, n_obs, n_states)
+  }
+  eta <- sweep(eta, c(1, 2), apply(eta, c(1, 2), max), FUN = "-")
+  prob_array <- exp(eta)
+  prob_array <- sweep(prob_array, c(1, 2), apply(prob_array, c(1, 2), sum), FUN = "/")
+  like <- matrix(NA_real_, nrow = n_obs, ncol = n_states)
+  for (state_index in seq_len(n_states)) {
+    like[, state_index] <- prob_array[cbind(seq_len(n_obs), rep(state_index, n_obs), outcome_info$y)]
+  }
 
   list(
     like = pmax(like, eps),
-    state_fitted = prob,
-    state_summary = stats::setNames(as.data.frame(prob), outcome_info$levels)
+    state_fitted = if (n_covariates == 0L) prob_array[1L, , , drop = FALSE][1L, , ] else prob_array,
+    state_summary = stats::setNames(as.data.frame(apply(prob_array, c(2, 3), mean)), outcome_info$levels)
   )
 }
 
-.distal_unpack_coefficients <- function(theta, outcome_info, state_design) {
+.distal_unpack_coefficients <- function(theta,
+                                        outcome_info,
+                                        state_design,
+                                        covariate_design = NULL) {
+  term_names <- .distal_predictor_term_names(state_design, covariate_design)
   if (outcome_info$type == "categorical") {
-    coef_mat <- matrix(theta, nrow = ncol(state_design), ncol = length(outcome_info$levels) - 1L)
-    rownames(coef_mat) <- colnames(state_design)
+    coef_mat <- matrix(theta, nrow = length(term_names), ncol = length(outcome_info$levels) - 1L)
+    rownames(coef_mat) <- term_names
     colnames(coef_mat) <- outcome_info$levels[-length(outcome_info$levels)]
     return(coef_mat)
   }
 
   if (outcome_info$type == "ordinal") {
-    return(.distal_ordinal_parameters(theta, outcome_info, state_design)$beta)
+    return(.distal_ordinal_parameters(theta, outcome_info, state_design, covariate_design)$beta)
   }
 
-  theta[seq_len(ncol(state_design))]
+  theta[seq_len(length(term_names))]
 }
 
-.distal_table_components <- function(theta, vcov, outcome_info, state_design) {
+.distal_table_components <- function(theta,
+                                     vcov,
+                                     outcome_info,
+                                     state_design,
+                                     covariate_design = NULL) {
+  term_names <- .distal_predictor_term_names(state_design, covariate_design)
   if (outcome_info$type == "categorical") {
     return(list(
       coefficients = theta,
       vcov = vcov,
-      term_names = colnames(state_design)
+      term_names = term_names
     ))
   }
 
@@ -827,15 +1061,15 @@ print.ThreeStepDistal <- function(x, ...) {
     return(list(
       coefficients = theta[beta_index],
       vcov = vcov[beta_index, beta_index, drop = FALSE],
-      term_names = colnames(state_design)[-1L]
+      term_names = .distal_predictor_term_names(state_design, covariate_design, ordinal = TRUE)
     ))
   }
 
-  beta_index <- seq_len(ncol(state_design))
+  beta_index <- seq_len(length(term_names))
   list(
     coefficients = theta[beta_index],
     vcov = vcov[beta_index, beta_index, drop = FALSE],
-    term_names = colnames(state_design)
+    term_names = term_names
   )
 }
 
@@ -849,6 +1083,7 @@ print.ThreeStepDistal <- function(x, ...) {
 
 .distal_ml_fit_core <- function(outcome_info,
                                 state_design,
+                                covariate_design,
                                 observed_state,
                                 misclassification,
                                 prior,
@@ -861,11 +1096,11 @@ print.ThreeStepDistal <- function(x, ...) {
   prior <- prior / sum(prior)
 
   if (is.null(start)) {
-    start <- .distal_initial_theta(outcome_info, state_design, observed_state)
+    start <- .distal_initial_theta(outcome_info, state_design, observed_state, covariate_design)
   }
 
   objective <- function(par) {
-    like <- .distal_likelihood_matrix(par, outcome_info, state_design)$like
+    like <- .distal_likelihood_matrix(par, outcome_info, state_design, covariate_design)$like
     state_weight <- t(misclassification[, observed_state, drop = FALSE])
     state_weight <- state_weight * matrix(prior, nrow = nrow(like), ncol = ncol(like), byrow = TRUE)
     mixture <- rowSums(state_weight * like)
@@ -881,10 +1116,10 @@ print.ThreeStepDistal <- function(x, ...) {
 
   hessian <- stats::optimHess(opt$par, objective)
   vcov <- .three_step_safe_inverse(hessian)
-  like <- .distal_likelihood_matrix(opt$par, outcome_info, state_design)
+  like <- .distal_likelihood_matrix(opt$par, outcome_info, state_design, covariate_design)
   posterior <- .distal_posterior(prior, misclassification, observed_state, like$like)
-  coefficient_object <- .distal_unpack_coefficients(opt$par, outcome_info, state_design)
-  table_components <- .distal_table_components(opt$par, vcov, outcome_info, state_design)
+  coefficient_object <- .distal_unpack_coefficients(opt$par, outcome_info, state_design, covariate_design)
+  table_components <- .distal_table_components(opt$par, vcov, outcome_info, state_design, covariate_design)
   threshold_vcov <- NULL
 
   if (outcome_info$type == "ordinal") {
@@ -937,6 +1172,7 @@ print.ThreeStepDistal <- function(x, ...) {
 
 .distal_bch_fit_core <- function(outcome_info,
                                  state_design,
+                                 covariate_design,
                                  bch_weights,
                                  conf.level = 0.95,
                                  maxit = 1000,
@@ -946,11 +1182,11 @@ print.ThreeStepDistal <- function(x, ...) {
     if (is.null(observed_state)) {
       stop("observed_state is required when start is not supplied.", call. = FALSE)
     }
-    start <- .distal_initial_theta(outcome_info, state_design, observed_state)
+    start <- .distal_initial_theta(outcome_info, state_design, observed_state, covariate_design)
   }
 
   objective <- function(par) {
-    like <- .distal_likelihood_matrix(par, outcome_info, state_design)$like
+    like <- .distal_likelihood_matrix(par, outcome_info, state_design, covariate_design)$like
     -sum(bch_weights * log(pmax(like, .Machine$double.eps)))
   }
 
@@ -963,9 +1199,9 @@ print.ThreeStepDistal <- function(x, ...) {
 
   hessian <- stats::optimHess(opt$par, objective)
   vcov <- .three_step_safe_inverse(hessian)
-  like <- .distal_likelihood_matrix(opt$par, outcome_info, state_design)
-  coefficient_object <- .distal_unpack_coefficients(opt$par, outcome_info, state_design)
-  table_components <- .distal_table_components(opt$par, vcov, outcome_info, state_design)
+  like <- .distal_likelihood_matrix(opt$par, outcome_info, state_design, covariate_design)
+  coefficient_object <- .distal_unpack_coefficients(opt$par, outcome_info, state_design, covariate_design)
+  table_components <- .distal_table_components(opt$par, vcov, outcome_info, state_design, covariate_design)
   threshold_vcov <- NULL
 
   if (outcome_info$type == "ordinal") {
@@ -1005,6 +1241,7 @@ print.ThreeStepDistal <- function(x, ...) {
 
 .distal_fit_bundle <- function(outcome_info,
                                state_design,
+                               covariate_design,
                                observed_state,
                                misclassification,
                                prior,
@@ -1014,6 +1251,7 @@ print.ThreeStepDistal <- function(x, ...) {
   naive_fit <- .distal_ml_fit_core(
     outcome_info = outcome_info,
     state_design = state_design,
+    covariate_design = covariate_design,
     observed_state = observed_state,
     misclassification = diag(nrow(misclassification)),
     prior = rep(1 / nrow(misclassification), nrow(misclassification)),
@@ -1027,6 +1265,7 @@ print.ThreeStepDistal <- function(x, ...) {
     out$ML <- .distal_ml_fit_core(
       outcome_info = outcome_info,
       state_design = state_design,
+      covariate_design = covariate_design,
       observed_state = observed_state,
       misclassification = misclassification,
       prior = prior,
@@ -1041,6 +1280,7 @@ print.ThreeStepDistal <- function(x, ...) {
     out$BCH <- .distal_bch_fit_core(
       outcome_info = outcome_info,
       state_design = state_design,
+      covariate_design = covariate_design,
       bch_weights = bch$weights,
       start = naive_fit$raw_coefficients,
       observed_state = observed_state,

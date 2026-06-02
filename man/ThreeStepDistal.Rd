@@ -7,6 +7,8 @@
 ThreeStepDistal(
   object,
   outcome,
+  formula = NULL,
+  data = NULL,
   level = c("attribute", "profile"),
   attribute = NULL,
   classification = "MAP",
@@ -14,7 +16,8 @@ ThreeStepDistal(
   outcome_type = c("auto", "binary", "ordinal", "categorical", "nominal", "continuous"),
   reference = c("last", "first"),
   conf.level = 0.95,
-  maxit = 1000
+  maxit = 1000,
+  na.action = getOption("na.action")
 )
 }
 \arguments{
@@ -24,6 +27,15 @@ ThreeStepDistal(
 \item{outcome}{A distal outcome with one value per respondent. Supported
 outcomes are binary, ordinal, nominal categorical, and continuous
 outcomes.}
+
+\item{formula}{Optional one-sided or two-sided formula specifying observed
+covariates to include additively in the distal outcome regression. Only
+the right-hand side is used.}
+
+\item{data}{Optional data frame containing the covariates in
+\code{formula}. It must contain one row per respondent in \code{object}.
+Ordered factors are converted to numeric scores in level order so they
+enter the regression with a single linear effect.}
 
 \item{level}{A character string specifying whether the corrected analysis is
 carried out at the attribute level (\code{"attribute"}) or the latent
@@ -43,8 +55,10 @@ with one row per respondent and one column per attribute.}
 to return. Supported values are \code{"ML"} and \code{"BCH"}.}
 
 \item{outcome_type}{A character string specifying the outcome type.
-Supported values are \code{"binary"},
-\code{"ordinal"}, \code{"nominal"}), and \code{"continuous"}.}
+Supported values are \code{"auto"}, \code{"binary"},
+\code{"ordinal"}, \code{"categorical"}, \code{"nominal"}, and
+\code{"continuous"}. The value \code{"nominal"} is treated as an
+alias for \code{"categorical"}.}
 
 \item{reference}{A character string specifying the reference class for
 profile-level models. Supported values are \code{"last"} (default) and
@@ -53,13 +67,17 @@ profile-level models. Supported values are \code{"last"} (default) and
 \item{conf.level}{Confidence level used for Wald intervals.}
 
 \item{maxit}{Maximum number of optimization iterations.}
+
+\item{na.action}{See \code{\link{na.action}} for handling missing values in
+observed covariates.}
 }
 \value{
 A list containing the fitted distal outcome analyses. \code{results}
 contains the requested distal outcome analysis for the selected attribute or
 profile states. Each fit includes coefficient estimates, Wald summaries,
 fitted class-specific outcome summaries, threshold estimates for ordinal
-outcomes, and the correction objects used for estimation.
+outcomes, any observed-covariate terms included in the model, and the
+correction objects used for estimation.
 }
 \description{
 Regress distal outcome on attribute classifications or latent
@@ -70,14 +88,17 @@ be fit by maximum likelihood (ML) and/or the BCH weighting approach.
 }
 \details{
 Let \eqn{W} denote the estimated latent class, \eqn{X} the unobserved true
-class, and \eqn{Y} the distal outcome. The ML correction is based on the
+class, \eqn{Y} the distal outcome, and \eqn{Z} the observed covariates. The
+ML correction is based on the
 mixture likelihood
-\deqn{\sum_i \log\left\{\sum_t P(W_i=s_i\mid X_i=t)P(X_i=t)f(Y_i\mid X_i=t)\right\}.}
-For binary distal outcomes, \eqn{f(Y_i\mid X_i=t)} is Bernoulli with a logit
-link; for continuous outcomes it is Gaussian with class-specific means and a
-common residual standard deviation; for ordinal outcomes it is a cumulative
-logit model with proportional odds; for nominal categorical outcomes it is a
-multinomial logit model over the distal categories.
+\deqn{\sum_i \log\left\{\sum_t P(W_i=s_i\mid X_i=t)P(X_i=t)f(Y_i\mid X_i=t, Z_i)\right\}.}
+Observed covariates enter additively in the distal outcome model together
+with the selected latent attributes or profiles. For binary distal outcomes,
+\eqn{f(Y_i\mid X_i=t, Z_i)} is Bernoulli with a logit link; for continuous
+outcomes it is Gaussian with state-specific means plus additive covariate
+effects and a common residual standard deviation; for ordinal outcomes it is
+a cumulative logit model with proportional odds; for nominal categorical
+outcomes it is a multinomial logit model over the distal categories.
 
 The BCH correction replaces the full mixture likelihood with BCH weights
 derived from the inverse misclassification matrix. Both the naive analysis
@@ -112,6 +133,32 @@ distal_cont <- ThreeStepDistal(
   reference = "first"
 )
 distal_cont
+
+# Binary distal outcome with observed covariates. Ordered factors enter as
+# numeric scores in level order to mimic a single linear effect.
+covariates <- data.frame(
+  gender = factor(sample(c("female", "male"), N, replace = TRUE)),
+  ses = ordered(sample(c("low", "medium", "high"), N, replace = TRUE),
+    levels = c("low", "medium", "high")
+  ),
+  age = rnorm(N)
+)
+y_cov <- rbinom(
+  N,
+  1,
+  plogis(-0.4 + 0.8 * alpha[, 1] - 0.5 * alpha[, 2] + 0.5 * (covariates$gender == "male") +
+    0.35 * as.numeric(covariates$ses) + 0.2 * covariates$age)
+)
+distal_cov <- ThreeStepDistal(
+  fit,
+  y_cov,
+  formula = ~ gender + ses + age,
+  data = covariates,
+  level = "attribute",
+  attribute = 1:3,
+  method = c("ML", "BCH")
+)
+distal_cov
 
 # Ordinal distal outcome at the attribute level
 latent_score <- -0.4 + 1.1 * alpha[, 1] - 0.8 * alpha[, 2] + 0.5 * alpha[, 3] + rnorm(N, sd = 0.8)
