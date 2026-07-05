@@ -24,7 +24,7 @@ dif(
 \method{summary}{dif}(object, ...)
 }
 \arguments{
-\item{dat}{item responses from two groups; missing data need to be coded as \code{NA}}
+\item{dat}{item responses from two or more groups; missing data need to be coded as \code{NA}}
 
 \item{Q}{Q-matrix specifying the association between items and attributes}
 
@@ -68,7 +68,7 @@ A data frame giving the Wald statistics and associated p-values.
 }
 \description{
 This function is used to detect differential item functioning using the Wald test (Hou, de la Torre, & Nandakumar, 2014; Ma, Terzi, & de la Torre, 2021) and the likelihood ratio
-test (Ma, Terzi, & de la Torre, 2021). The forward anchor item search procedure developed in Ma, Terzi, and de la Torre (2021) was implemented. Note that it can only detect DIF for two groups currently.
+test (Ma, Terzi, & de la Torre, 2021). The forward anchor item search procedure developed in Ma, Terzi, and de la Torre (2021) was implemented.
 }
 \section{Methods (by generic)}{
 \itemize{
@@ -77,6 +77,12 @@ test (Ma, Terzi, & de la Torre, 2021). The forward anchor item search procedure 
 }}
 \examples{
 \dontrun{
+
+####################################
+#          Example 1.              #
+#        two-group DIF             #
+####################################
+
 set.seed(123456)
 N <- 3000
 Q <- sim30GDINA$simQ
@@ -100,6 +106,62 @@ dif.wald.FS
 # DIF using LR test + forward search algorithm
 dif.LR.FS <- dif(dat, Q, group=gr, method = "LR", FS.args = list(on = TRUE, verbose = TRUE))
 dif.LR.FS
+
+####################################
+#          Example 2.              #
+#        two-group DIF             #
+#    with attribute structure.     #
+####################################
+# --- User-specified attribute structure ----#
+Q <- sim30GDINA$simQ
+K <- ncol(Q)
+# linear structure A1->A2->A3->A4->A5
+linear <- list(c(1,2),
+               c(2,3),
+               c(3,4),
+               c(4,5))
+struc <- att.structure(linear,K)
+set.seed(123)
+# data simulation
+N <- 1000
+true.lc <- sample(c(1:2^K),N,replace=TRUE,prob=struc$att.prob)
+table(true.lc) #check the sample
+true.att <- attributepattern(K)[true.lc,]
+ gs <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
+ # data simulation
+ simD <- simGDINA(N,Q,gs.parm = gs, model = "ACDM",attribute = true.att)
+ dat <- extract(simD,"dat")
+gr <- rep(1:2,each=N/2)
+dif.wald <- dif(dat, Q, group=gr, method = "Wald",
+                att.str = diverg, att.dist = "saturated")
+dif.wald
+
+
+####################################
+#          Example 3.              #
+#        Three-group DIF           #
+####################################
+
+set.seed(123456)
+N <- 500
+Q <- sim30GDINA$simQ
+gs <- matrix(.2,ncol = 2, nrow = nrow(Q))
+# By default, individuals are simulated from uniform distribution
+# and deltas are simulated randomly
+sim1 <- simGDINA(N,Q,gs.parm = gs,model="DINA")
+sim2 <- simGDINA(N,Q,gs.parm = gs,model=c(rep("DINA",nrow(Q)-1),"DINO"))
+sim3 <- simGDINA(N,Q,gs.parm = gs,model="DINA")
+dat <- rbind(extract(sim1,"dat"),extract(sim2,"dat"),extract(sim3,"dat"))
+gr <- rep(c("G1","G2","G3"),each=N)
+
+# DIF using Wald test - omnibus test
+dif.wald <- dif(dat, Q, group=gr, method = "Wald")
+dif.wald
+# pairwise comparison between all pair of groups
+dif.pair = pairwiseDIF(dif.wald)
+dif.pair
+# draw plot to show the DIF
+plot(dif.pair, withSE = TRUE)
 }
 }
 \references{

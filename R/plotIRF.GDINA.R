@@ -118,6 +118,96 @@ plot.GDINA <-
 
   }
 
+#' Grouped bar plots for pairwise DIF posthoc analysis
+#'
+#' Create grouped bar charts of group-specific item/category response probabilities
+#' for DIF items identified by \code{pairwiseDIF()}.
+#'
+#' @param x model object of class \code{\link{pairwiseDIF}}
+#' @param item A scalar or vector specifying the DIF item(s) to plot.
+#' @param withSE logical; Add error bar (estimate - SE, estimate + SE) to the plots?
+#' @param SE.type How is SE estimated. By default, it's based on OPG using incomplete information.
+#' @param ... additional arguments
+#' @seealso \code{\link{pairwiseDIF}}, \code{\link{dif}}
+#' @export
+plot.pairwiseDIF <- function(x, item = "all", withSE = FALSE, SE.type = 2, ...){
+  lc <- p <- upper <- lower <- group <- NULL
+
+  stopifnot(inherits(x, "pairwiseDIF"))
+
+  if(length(x$dif.items) == 0L || is.null(x$posthoc.fit))
+    stop("No DIF items are available for plotting.", call. = FALSE)
+
+  if(is.null(x$posthoc.config) || is.null(x$item.names))
+    stop("The supplied pairwiseDIF object does not contain the stored plotting metadata. Refit pairwiseDIF() with the current version first.", call. = FALSE)
+
+  if(length(item) == 1L && is.character(item) && tolower(item) == "all")
+    item <- x$dif.items
+
+  if(any(!is.numeric(item)) || any(!item %in% x$dif.items))
+    stop("item must be 'all' or a numeric vector of DIF items in the pairwiseDIF object.", call. = FALSE)
+
+  item <- unique(as.integer(item))
+
+  if(isTRUE(x$sequential)){
+    tit <- "Group-specific processing functions"
+    ylab <- "Probability"
+  }else{
+    tit <- "Group-specific item success probabilities"
+    ylab <- "Probability of success"
+  }
+
+  ip <- extract(x$posthoc.fit, what = "catprob.parm")
+  if(withSE)
+    se <- extract(x$posthoc.fit, what = "catprob.se", SE.type = SE.type)
+
+  for (j in item){
+    item.loc <- which(x$posthoc.config$item == j & x$posthoc.config$group > 0L)
+    item.loc <- item.loc[order(x$posthoc.config$group[item.loc])]
+    plot.dat <- vector("list", length(item.loc))
+
+    for(k in seq_along(item.loc)){
+      loc <- item.loc[k]
+      tmp.obj <- ip[[loc]]
+      tmp.name <- gsub("P\\(", "", names(tmp.obj))
+      tmp.name <- gsub("\\)", "", tmp.name)
+      tmp.group <- as.character(x$group.labels[x$posthoc.config$group[loc]])
+
+      if(withSE){
+        lower <- tmp.obj - se[[loc]]
+        lower[lower < 0] <- 0
+        upper <- tmp.obj + se[[loc]]
+        upper[upper > 1] <- 1
+        plot.dat[[k]] <- data.frame(lc = tmp.name, p = tmp.obj, lower = lower,
+                                    upper = upper, group = tmp.group)
+      }else{
+        plot.dat[[k]] <- data.frame(lc = tmp.name, p = tmp.obj, group = tmp.group)
+      }
+    }
+
+    plot.dat <- do.call(rbind, plot.dat)
+    plot.dat$lc <- factor(plot.dat$lc, levels = unique(plot.dat$lc))
+    plot.dat$group <- factor(plot.dat$group, levels = as.character(x$group.labels))
+
+    g <- ggplot2::ggplot(data = plot.dat, ggplot2::aes(x = lc, y = p, fill = group)) +
+      ggplot2::geom_bar(stat = "identity", position = "dodge") +
+      ggplot2::ylim(0, 1) +
+      ggplot2::labs(x = "Latent group", y = ylab,
+                    fill = "Group",
+                    title = paste(tit, "for", x$item.names[j]))
+
+    if(withSE){
+      g <- g + ggplot2::geom_errorbar(ggplot2::aes(ymin = lower, ymax = upper),
+                                      position = ggplot2::position_dodge(width = 0.9),
+                                      width = 0.15)
+    }
+
+    print(g)
+  }
+
+  invisible(x)
+}
+
 
 #' Item fit plots
 #'

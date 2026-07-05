@@ -107,14 +107,14 @@ score_p <- function(object){
   lik <- exp(indlogLik(object))
 
   if(extract(object,"ngroup")>1){
-
-    for(g in sort(unique(extract(object,"group")))){
-      tmp <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob")[g,])*t(lik)))[,-1]
+    gset <- sort(unique(extract(object,"group")))
+    for(gg in 1:length(gset)){
+      tmp <- ((lik-lik[,1])/colSums(c(extract(object,"posterior.prob")[gg,])*t(lik)))[,-1]
       l <- length(score)+1
       # print(l)
       score[[l]] <- tmp
-      score[[l]][which(extract(object,"group")!=g),] <- 0
-      names(score)[l] <- paste0("G",g)
+      score[[l]][which(extract(object,"group")!=gset[gg]),] <- 0
+      names(score)[l] <- paste0("G",gg)
     }
   }else{
     if(any(extract(object,"att.dist")=="saturated")){

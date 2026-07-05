@@ -1,7 +1,8 @@
-# GDINA 2.10.0
+# GDINA 2.12.0
 * Change. - `itemfit` function can be used for sequential models
 * Change. - `dif` function can handle attributes with hierarchical structures
-* Change. - `CA` function report accua
+* Change. - `dif` and `pairwiseDIF` functions can handle more than two groups
+* Change. - `CA` function report consistency
 
 # GDINA 2.9.12
 * Change   - a bug in `Qval` for stepwise method was fixed 

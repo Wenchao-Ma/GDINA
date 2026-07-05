@@ -60,6 +60,112 @@ test_that("0d: summary.dif prints test results without error", {
   expect_true("p.value" %in% colnames(s))
 })
 
+test_that("0d1: dif supports multi-group Wald with observed factor levels", {
+  set.seed(54321)
+  Q <- matrix(c(1,0,
+                0,1,
+                1,1), ncol = 2, byrow = TRUE)
+  gs1 <- data.frame(guess = c(0.2, 0.2, 0.2), slip = c(0.2, 0.2, 0.2))
+  gs2 <- data.frame(guess = c(0.2, 0.25, 0.35), slip = c(0.2, 0.2, 0.15))
+  gs3 <- data.frame(guess = c(0.25, 0.2, 0.25), slip = c(0.15, 0.2, 0.2))
+
+  sim1 <- simGDINA(120, Q, gs.parm = gs1, model = "DINA")
+  sim2 <- simGDINA(120, Q, gs.parm = gs2, model = "DINA")
+  sim3 <- simGDINA(120, Q, gs.parm = gs3, model = "DINA")
+  dat <- rbind(extract(sim1, "dat"), extract(sim2, "dat"), extract(sim3, "dat"))
+  gr <- factor(rep(c("G1", "G2", "G3"), each = 120),
+               levels = c("G1", "G2", "G3", "G4"))
+
+  d <- expect_no_error(dif(dat, Q, group = gr, method = "wald"))
+
+  expect_s3_class(d, "dif")
+  expect_equal(nrow(d$test), nrow(Q))
+  expect_equal(colnames(d$test), c("Wald stat.", "df", "p.value", "adj.pvalue"))
+})
+
+test_that("0d2: dif supports multi-group LR with observed factor levels", {
+  set.seed(54321)
+  Q <- matrix(c(1,0,
+                0,1,
+                1,1), ncol = 2, byrow = TRUE)
+  gs <- data.frame(guess = c(0.2, 0.2, 0.2), slip = c(0.2, 0.2, 0.2))
+
+  sim1 <- simGDINA(80, Q, gs.parm = gs, model = "DINA")
+  sim2 <- simGDINA(80, Q, gs.parm = gs, model = "DINA")
+  sim3 <- simGDINA(80, Q, gs.parm = gs, model = "DINA")
+  dat <- rbind(extract(sim1, "dat"), extract(sim2, "dat"), extract(sim3, "dat"))
+  gr <- factor(rep(c("G1", "G2", "G3"), each = 80),
+               levels = c("G1", "G2", "G3", "G4"))
+
+  d <- expect_no_error(dif(dat, Q, group = gr, method = "LR"))
+
+  expect_s3_class(d, "dif")
+  expect_equal(nrow(d$test), nrow(Q))
+  expect_equal(colnames(d$test), c("neg2LL", "LRstat", "df", "p.value", "adj.pvalue"))
+})
+
+test_that("0d3: pairwiseDIF reuses dif object inputs for post hoc tests", {
+  set.seed(54321)
+  Q <- matrix(c(1,0,
+                0,1,
+                1,1), ncol = 2, byrow = TRUE)
+  gs1 <- data.frame(guess = c(0.2, 0.2, 0.2), slip = c(0.2, 0.2, 0.2))
+  gs2 <- data.frame(guess = c(0.2, 0.2, 0.45), slip = c(0.2, 0.2, 0.1))
+  gs3 <- data.frame(guess = c(0.25, 0.2, 0.25), slip = c(0.15, 0.2, 0.2))
+
+  sim1 <- simGDINA(120, Q, gs.parm = gs1, model = "DINA")
+  sim2 <- simGDINA(120, Q, gs.parm = gs2, model = "DINA")
+  sim3 <- simGDINA(120, Q, gs.parm = gs3, model = "DINA")
+  dat <- rbind(extract(sim1, "dat"), extract(sim2, "dat"), extract(sim3, "dat"))
+  gr <- factor(rep(c("G1", "G2", "G3"), each = 120),
+               levels = c("G1", "G2", "G3", "G4"))
+
+  d <- expect_no_error(dif(dat, Q, group = gr, method = "LR"))
+
+  expect_true(is.list(d$input))
+  expect_equal(d$input$gr.label, c("G1", "G2", "G3"))
+
+  pw <- expect_no_error(pairwiseDIF(d, alpha.level = 1))
+
+  expect_s3_class(pw, "pairwiseDIF")
+  expect_equal(nrow(pw$test), nrow(Q) * choose(3, 2))
+  expect_equal(colnames(pw$test), c("item", "group1", "group2", "Wald stat.", "df", "p.value", "adj.pvalue"))
+  expect_no_error(print(pw))
+})
+
+test_that("0d4: pairwiseDIF supports manual mode and empty object-mode follow-up", {
+  set.seed(54321)
+  Q <- matrix(c(1,0,
+                0,1,
+                1,1), ncol = 2, byrow = TRUE)
+  gs1 <- data.frame(guess = c(0.2, 0.2, 0.2), slip = c(0.2, 0.2, 0.2))
+  gs2 <- data.frame(guess = c(0.2, 0.2, 0.45), slip = c(0.2, 0.2, 0.1))
+  gs3 <- data.frame(guess = c(0.25, 0.2, 0.25), slip = c(0.15, 0.2, 0.2))
+
+  sim1 <- simGDINA(120, Q, gs.parm = gs1, model = "DINA")
+  sim2 <- simGDINA(120, Q, gs.parm = gs2, model = "DINA")
+  sim3 <- simGDINA(120, Q, gs.parm = gs3, model = "DINA")
+  dat <- rbind(extract(sim1, "dat"), extract(sim2, "dat"), extract(sim3, "dat"))
+  gr <- factor(rep(c("G1", "G2", "G3"), each = 120),
+               levels = c("G1", "G2", "G3", "G4"))
+
+  d <- expect_no_error(dif(dat, Q, group = gr, method = "LR"))
+
+  empty_pw <- expect_warning(pairwiseDIF(d, alpha.level = 0),
+                             "No items were flagged for DIF for pairwise follow-up")
+  expect_s3_class(empty_pw, "pairwiseDIF")
+  expect_equal(nrow(empty_pw$test), 0)
+
+  manual_pw <- expect_no_error(pairwiseDIF(dat = dat, Q = Q, group = gr,
+                                           model = "DINA", dif.items = 3,
+                                           anchor.items = 1:2))
+
+  expect_s3_class(manual_pw, "pairwiseDIF")
+  expect_equal(nrow(manual_pw$test), choose(3, 2))
+  expect_true(all(manual_pw$test$item == "Item 3"))
+  expect_no_error(plot(manual_pw, item = 3))
+})
+
 test_that("0e: modelcomp LM with only reducedMDINO extracts item names correctly", {
   dat <- sim10GDINA$simdat
   Q <- sim10GDINA$simQ

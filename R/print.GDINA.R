@@ -188,6 +188,24 @@ cat("\nNote: adjusted pvalues are based on the",x$p.adjust.methods,"correction.\
   }
 
 #' @export
+print.pairwiseDIF <-
+  function(x, ...)
+  {
+    cat("\nPairwise Post Hoc DIF Analysis\n")
+    if (nrow(x$test) == 0L) {
+      cat("\nNo items were flagged for pairwise DIF follow-up.\n")
+    } else {
+      out <- x$test
+      numeric.col <- vapply(out, is.numeric, logical(1))
+      out[numeric.col] <- lapply(out[numeric.col], round, 4)
+      print(out)
+    }
+    cat("\nNote: adjusted pvalues are based on the", x$p.adjust.methods,
+        "correction within each item.\n")
+    invisible(x)
+  }
+
+#' @export
 print.modelfit <-
   function(x, ...)
   {
