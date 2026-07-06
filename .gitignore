@@ -18,3 +18,8 @@ tests/*
 .positai
 /doc/
 /Meta/
+
+# OS-generated files
+.DS_Store
+**/.DS_Store
+._*
