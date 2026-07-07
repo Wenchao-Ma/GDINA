@@ -1,0 +1,244 @@
+# GDINA Package for Cognitively Diagnostic Analyses
+
+[![Project Status: Active ? The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/)
+[![R-CMD-check](https://github.com/Wenchao-Ma/GDINA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Wenchao-Ma/GDINA/actions/workflows/R-CMD-check.yaml)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA)
+[![CRAN monthly
+downloads](https://cranlogs.r-pkg.org/badges/GDINA?color=brightgreen)](https://cran.r-project.org/package=GDINA)
+[![CRAN total
+downloads](http://cranlogs.r-pkg.org/badges/grand-total/GDINA?color=green)](https://cran.r-project.org/package=GDINA)
+
+## How to cite the package
+
+Ma, W. & de la Torre, J. (2020). GDINA: An R Package for Cognitive
+Diagnosis Modeling. Journal of Statistical Software, 93(14), 1-26.
+<https://doi.org/10.18637/jss.v093.i14>
+
+Visit the package website <https://wenchao-ma.github.io/GDINA/> for
+examples, tutorials and more information.
+
+## Learning resources
+
+- Watch [Ma and de la Torre’s (2019) NCME digital module
+  5](https://ncme.elevate.commpartners.com/) on a gentle introduction to
+  the G-DINA model framework and the use of graphical user interface for
+  CDM analyses
+
+- Check [the book chapter by Ma
+  (2019)](https://doi.org/10.1007/978-3-030-05584-4_29) on an
+  introduction to the GDINA package
+
+- Check [de la Torre and Akbay’s (2019) article](https://ejer.com.tr/)
+  on how to conduct various CDM analyses using the graphical user
+  interface
+
+- Check [Shi, et al (2021)](https://doi.org/10.3390/psych3040052) on how
+  to use this package, along with other R packages for CDM analyses
+
+## Features of the package
+
+- Estimating G-DINA model and a variety of widely-used models subsumed
+  by the G-DINA model, including the DINA model, DINO model,
+  additive-CDM (A-CDM), linear logistic model (LLM), reduced
+  reparametrized unified model (RRUM), multiple-strategy DINA model for
+  dichotomous responses
+- Estimating models within the G-DINA model framework using
+  user-specified design matrix and link functions
+- Estimating Bugs-DINA, DINO and G-DINA models for dichotomous responses
+- Estimating sequential G-DINA model for ordinal and nominal responses
+- Estimating the generalized multiple-strategy cognitive diagnosis
+  models (experimental)
+- Estimating the diagnostic tree model (experimental)
+- Estimating multiple-choice models
+- Modelling independent, saturated, higher-order, loglinear smoothed,
+  and structured joint attribute distribution
+- Accommodating multiple-group model analysis
+- Imposing monotonic constrained success probabilities
+- Accommodating binary and polytomous attributes
+- Validating Q-matrix under the general model framework
+- Evaluating absolute and relative item and model fit
+- Comparing models at the test and item levels
+- Detecting differential item functioning using Wald and likelihood
+  ratio test
+- Simulating data based on all aforementioned CDMs
+- Providing graphical user interface for users less familiar with R
+
+## Installation
+
+The stable version of GDINA should be installed from R CRAN at
+[here](https://CRAN.R-project.org/package=GDINA)
+
+To install this package from source:
+
+1.  Windows users may need to install the
+    [Rtools](https://CRAN.R-project.org/bin/windows/Rtools/) and include
+    the checkbox option of installing Rtools to their path for easier
+    command line usage. Mac users will have to download the necessary
+    tools from the
+    [Xcode](https://apps.apple.com/ca/app/xcode/id497799835?mt=12) and
+    its related command line tools (found within Xcode’s Preference Pane
+    under Downloads/Components); most Linux distributions should already
+    have up to date compilers (or if not they can be updated easily).
+
+2.  Install the `devtools` package (if necessary), and install the
+    package from the Github source code. Note that the version on Github
+    is the development version, which may contain new features and bug
+    fixes that are not yet available on CRAN and the API may change.
+
+``` r
+# install.packages("devtools")
+devtools::install_github("Wenchao-Ma/GDINA")
+```
+
+# Package index
+
+## All functions
+
+- [`CA()`](https://wenchao-ma.github.io/GDINA/reference/CA.md) :
+  Calculate classification accuracy
+- [`CM()`](https://wenchao-ma.github.io/GDINA/reference/CM.md) :
+  Calculate Misclassification Matrices
+- [`ClassRate()`](https://wenchao-ma.github.io/GDINA/reference/ClassRate.md)
+  : Classification Rate Evaluation
+- [`DTM()`](https://wenchao-ma.github.io/GDINA/reference/DTM.md) :
+  Diagnostic multiple-strategy CDMs
+- [`GDINA-package`](https://wenchao-ma.github.io/GDINA/reference/GDINA-package.md)
+  : The Generalized DINA Model Framework
+- [`GDINA()`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`anova(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`coef(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`extract(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`personparm(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`logLik(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`deviance(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`nobs(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`vcov(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`npar(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`indlogLik(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`indlogPost(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  [`summary(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  : CDM calibration under the G-DINA model framework
+- [`GMSCDM()`](https://wenchao-ma.github.io/GDINA/reference/GMSCDM.md) :
+  Estimating multiple-strategy cognitive diagnosis models
+- [`ILCA()`](https://wenchao-ma.github.io/GDINA/reference/ILCA.md) :
+  Iterative latent-class analysis
+- [`LC2LG()`](https://wenchao-ma.github.io/GDINA/reference/LC2LG.md) :
+  Transformation between latent classes and latent groups
+- [`MCmodel()`](https://wenchao-ma.github.io/GDINA/reference/MCmodel.md)
+  : Multiple-choice models
+- [`Qval()`](https://wenchao-ma.github.io/GDINA/reference/Qval.md)
+  [`extract(`*`<Qval>`*`)`](https://wenchao-ma.github.io/GDINA/reference/Qval.md)
+  [`summary(`*`<Qval>`*`)`](https://wenchao-ma.github.io/GDINA/reference/Qval.md)
+  : Q-matrix validation
+- [`att.structure()`](https://wenchao-ma.github.io/GDINA/reference/att.structure.md)
+  : Generate hierarchical attribute structures
+- [`attributepattern()`](https://wenchao-ma.github.io/GDINA/reference/attributepattern.md)
+  : Generate all possible attribute patterns
+- [`autoGDINA()`](https://wenchao-ma.github.io/GDINA/reference/autoGDINA.md)
+  [`summary(`*`<autoGDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/autoGDINA.md)
+  : Q-matrix validation, model selection and calibration in one run
+- [`bdiagMatrix()`](https://wenchao-ma.github.io/GDINA/reference/bdiagMatrix.md)
+  : Create a block diagonal matrix
+- [`bootSE()`](https://wenchao-ma.github.io/GDINA/reference/bootSE.md) :
+  Calculating standard errors and variance-covariance matrix using
+  bootstrap methods
+- [`cjoint()`](https://wenchao-ma.github.io/GDINA/reference/cjoint.md) :
+  Combine R Objects by Columns
+- [`designmatrix()`](https://wenchao-ma.github.io/GDINA/reference/designmatrix.md)
+  : Generate design matrix
+- [`dif()`](https://wenchao-ma.github.io/GDINA/reference/dif.md)
+  [`summary(`*`<dif>`*`)`](https://wenchao-ma.github.io/GDINA/reference/dif.md)
+  : Differential item functioning for cognitive diagnosis models
+- [`extract()`](https://wenchao-ma.github.io/GDINA/reference/extract.md)
+  : extract elements from objects of various classes
+- [`indlogLik()`](https://wenchao-ma.github.io/GDINA/reference/indlogLik.md)
+  : Extract log-likelihood for each individual
+- [`indlogPost()`](https://wenchao-ma.github.io/GDINA/reference/indlogPost.md)
+  : Extract log posterior for each individual
+- [`itemfit()`](https://wenchao-ma.github.io/GDINA/reference/itemfit.md)
+  [`extract(`*`<itemfit>`*`)`](https://wenchao-ma.github.io/GDINA/reference/itemfit.md)
+  [`summary(`*`<itemfit>`*`)`](https://wenchao-ma.github.io/GDINA/reference/itemfit.md)
+  : Item fit statistics
+- [`itemfitPD()`](https://wenchao-ma.github.io/GDINA/reference/itemfitPD.md)
+  : Item fit statistics from the power-divergence family
+- [`itemparm()`](https://wenchao-ma.github.io/GDINA/reference/itemparm.md)
+  : extract item parameters (deprecated)
+- [`modelcomp()`](https://wenchao-ma.github.io/GDINA/reference/modelcomp.md)
+  [`extract(`*`<modelcomp>`*`)`](https://wenchao-ma.github.io/GDINA/reference/modelcomp.md)
+  [`summary(`*`<modelcomp>`*`)`](https://wenchao-ma.github.io/GDINA/reference/modelcomp.md)
+  : Item-level model comparison using Wald, LR or LM tests
+- [`modelfit()`](https://wenchao-ma.github.io/GDINA/reference/modelfit.md)
+  : Model fit statistics
+- [`monocheck()`](https://wenchao-ma.github.io/GDINA/reference/monocheck.md)
+  : This function checks if monotonicity is violated
+- [`npar()`](https://wenchao-ma.github.io/GDINA/reference/npar.md) :
+  Calculate the number of parameters
+- [`pairwiseDIF()`](https://wenchao-ma.github.io/GDINA/reference/pairwiseDIF.md)
+  : Pairwise post hoc DIF analysis
+- [`personparm()`](https://wenchao-ma.github.io/GDINA/reference/personparm.md)
+  : calculate person (incidental) parameters
+- [`plot(`*`<GDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/plot.GDINA.md)
+  : Create plots for GDINA estimates
+- [`plot(`*`<Qval>`*`)`](https://wenchao-ma.github.io/GDINA/reference/plot.Qval.md)
+  : Mesa plot for Q-matrix validation
+- [`plot(`*`<itemfit>`*`)`](https://wenchao-ma.github.io/GDINA/reference/plot.itemfit.md)
+  : Item fit plots
+- [`plot(`*`<pairwiseDIF>`*`)`](https://wenchao-ma.github.io/GDINA/reference/plot.pairwiseDIF.md)
+  : Grouped bar plots for pairwise DIF posthoc analysis
+- [`realdata_ECPE`](https://wenchao-ma.github.io/GDINA/reference/realdata_ECPE.md)
+  : Examination for the Certificate of Proficiency in English (ECPE)
+  data
+- [`realdata_Tatsuoka1990`](https://wenchao-ma.github.io/GDINA/reference/realdata_Tatsuoka1990.md)
+  : Tatsuoka's fraction subtraction data
+- [`rowMatch()`](https://wenchao-ma.github.io/GDINA/reference/rowMatch.md)
+  : Count the frequency of a row vector in a data frame
+- [`score()`](https://wenchao-ma.github.io/GDINA/reference/score.md) :
+  Score function
+- [`sim10GDINA`](https://wenchao-ma.github.io/GDINA/reference/sim10GDINA.md)
+  : Simulated data (10 items, G-DINA model)
+- [`sim10MCDINA`](https://wenchao-ma.github.io/GDINA/reference/sim10MCDINA.md)
+  : Simulated data (10 items, MC-DINA model)
+- [`sim10MCDINA2`](https://wenchao-ma.github.io/GDINA/reference/sim10MCDINA2.md)
+  : Simulated data (10 items, MC-DINA model)
+- [`sim20seqGDINA`](https://wenchao-ma.github.io/GDINA/reference/sim20seqGDINA.md)
+  : Simulated data (20 items, sequential G-DINA model)
+- [`sim21seqDINA`](https://wenchao-ma.github.io/GDINA/reference/sim21seqDINA.md)
+  : Simulated data (21 items, sequential DINA model)
+- [`sim30DINA`](https://wenchao-ma.github.io/GDINA/reference/sim30DINA.md)
+  : Simulated data (30 items, DINA model)
+- [`sim30GDINA`](https://wenchao-ma.github.io/GDINA/reference/sim30GDINA.md)
+  : Simulated data (30 items, G-DINA model)
+- [`sim30pGDINA`](https://wenchao-ma.github.io/GDINA/reference/sim30pGDINA.md)
+  : Simulated data (30 items, polytomous G-DINA model)
+- [`simDTM()`](https://wenchao-ma.github.io/GDINA/reference/simDTM.md) :
+  Simulating data for diagnostic tree model
+- [`simGDINA()`](https://wenchao-ma.github.io/GDINA/reference/simGDINA.md)
+  [`extract(`*`<simGDINA>`*`)`](https://wenchao-ma.github.io/GDINA/reference/simGDINA.md)
+  : Data simulation based on the G-DINA models
+- [`startGDINA()`](https://wenchao-ma.github.io/GDINA/reference/startGDINA.md)
+  : Graphical user interface of the GDINA function
+- [`unique_only()`](https://wenchao-ma.github.io/GDINA/reference/unique_only.md)
+  : Unique values in a vector
+- [`unrestrQ()`](https://wenchao-ma.github.io/GDINA/reference/unrestrQ.md)
+  : Generate unrestricted Qc matrix from an restricted Qc matrix
+
+# Articles
+
+### All vignettes
+
+- [Model Estimation and Model
+  Diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.md):
+- [GDINA
+  Estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.md):
+- [A quick reference to GDINA R
+  package](https://wenchao-ma.github.io/GDINA/articles/GDINA.md):
+- [Higher-order GDINA
+  Estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.md):
+- [LCDM
+  Estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.md):
+- [Model-data
+  fit](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/modelfit.md):
+- [Sequential G-DINA: Model Estimation and Model
+  Diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/sGDINA_analysis_example.md):

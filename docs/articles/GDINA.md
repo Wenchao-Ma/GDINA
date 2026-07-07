@@ -1,0 +1,133 @@
+# A quick reference to GDINA R package
+
+## What can this package do?
+
+This package provides a framework for conducting a series of cognitive
+diagnosis analysis for dichotomous and polytomous responses.
+
+For more details, see
+[here](https://wenchao-ma.github.io/GDINA/index.html)
+
+For an example of how to use the package, see
+[here](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html)
+
+## How to use this package?
+
+- To estimate various CDMs, use **GDINA()** function
+- To extract item and person parameters from GDINA estimates, use
+  **coef()** and **personparm()** functions, respectively
+- To extract other estimation components, use **extract()** function
+- To evaluate absolute model fit, use **modelfit()**, **itemfit()** or
+  **itemfitPD()** function
+- To evaluate relative model fit, use **AIC()**, **BIC()** or
+  **deviance()** function
+- To validate Q-matrix, use **Qval()** function
+- To detect differential item functioning, use **dif()** function
+- To run graphical user interface, use **startGDINA()** function
+- To simulate data from various CDMs, use **simGDINA()** function
+
+Visit [here](https://wenchao-ma.github.io/GDINA/reference/index.html)
+for an online reference
+
+## A quick example
+
+Below is an illustration showing some analyses that you could do using
+the package. You can copy the code, paste and run it in R console. For a
+more comprehensive example, see [this
+tutorial](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html).
+
+1.  Load the package and assume we have the following item response
+    matrix and Q-matrix:
+
+``` r
+library(GDINA)
+dat <- sim10GDINA$simdat
+Q <- matrix(c(1,0,0,
+              0,1,0,
+              0,0,1,
+              1,0,1,
+              0,1,1,
+              1,1,0,
+              0,0,1,
+              1,0,0,
+              1,1,1,
+              1,0,1),byrow = T,ncol = 3)
+```
+
+2.  Estimate the G-DINA model:
+
+``` r
+est <- GDINA(dat = dat, Q = Q, model = "GDINA")
+```
+
+3.  Conduct the Q-matrix validation. By default, it implements de la
+    Torre and Chiu’s (2016) algorithm using a fixed cutoff. This is fast
+    but sometimes suggests too many modifications.
+
+``` r
+Qv <- Qval(est)
+Qv
+```
+
+To avoid using fixed cutoffs and also take uncertainty in item parameter
+estimation into account, you may consider the stepwise method:
+
+``` r
+Qv2 <- Qval(est,method = "Wald")
+Qv2
+```
+
+To further examine the q-vectors that are suggested to be modified, you
+can draw mesa plots:
+
+``` r
+plot(Qv, item = 9)
+```
+
+4.  Perform item-level model selection to see if the saturated G-DINA
+    model can be simplified:
+
+``` r
+mc <- modelcomp(est)
+mc
+```
+
+5.  Assess model-data fit at test and item levels:
+
+``` r
+# test level absolute fit
+mft <- modelfit(est)
+mft
+# item level absolute fit
+ift <- itemfit(est)
+ift
+summary(ift)
+plot(ift)
+
+pdft<- itemfitPD(est)
+pdft
+```
+
+6.  Calculate classification accuracy
+
+``` r
+CA(est)
+```
+
+## More Examples
+
+- [G-DINA model
+  estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html)
+- [Model estimation and
+  diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html)
+- [Model data fit
+  evaluation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/modelfit.html)
+- [Sequential model estimation and
+  diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/sGDINA_analysis_example.html)
+- [LCDM model
+  estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html)
+- [Higher-order GDINA model
+  estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.html)
+
+If you would like to contribute an example to this website, please send
+me your .Rmd file.

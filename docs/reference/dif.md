@@ -1,0 +1,233 @@
+# Differential item functioning for cognitive diagnosis models
+
+This function is used to detect differential item functioning using the
+Wald test (Hou, de la Torre, & Nandakumar, 2014; Ma, Terzi, & de la
+Torre, 2021) and the likelihood ratio test (Ma, Terzi, & de la Torre,
+2021). The forward anchor item search procedure developed in Ma, Terzi,
+and de la Torre (2021) was implemented.
+
+## Usage
+
+``` r
+dif(
+  dat,
+  Q,
+  group,
+  model = "GDINA",
+  sequential = FALSE,
+  method = "wald",
+  anchor.items = NULL,
+  dif.items = "all",
+  p.adjust.methods = "holm",
+  approx = FALSE,
+  SE.type = 2,
+  FS.args = list(on = FALSE, alpha.level = 0.05, maxit = 10, verbose = FALSE),
+  ...
+)
+
+# S3 method for class 'dif'
+summary(object, ...)
+```
+
+## Arguments
+
+- dat:
+
+  item responses from two or more groups; missing data need to be coded
+  as `NA`
+
+- Q:
+
+  Q-matrix specifying the association between items and attributes
+
+- group:
+
+  a factor or a vector indicating the group each individual belongs to.
+  Its length must be equal to the number of individuals.
+
+- model:
+
+  model for each item.
+
+- sequential:
+
+  Logical; whether a sequential model is fit to the data. Default is
+  `FALSE`.
+
+- method:
+
+  DIF detection method; It can be `"wald"` for Hou, de la Torre, and
+  Nandakumar's (2014) Wald test method, and `"LR"` for likelihood ratio
+  test (Ma, Terzi, Lee,& de la Torre, 2017).
+
+- anchor.items:
+
+  which items will be used as anchors? Default is `NULL`, which means
+  none of the items are used as anchors. For LR method, it can also be
+  an integer vector giving the item numbers for anchors or `"all"`,
+  which means all items are treated as anchor items.
+
+- dif.items:
+
+  which items are subject to DIF detection? Default is `"all"`. It can
+  also be an integer vector giving the item numbers.
+
+- p.adjust.methods:
+
+  adjusted p-values for multiple hypothesis tests. This is conducted
+  using `p.adjust` function in stats, and therefore all adjustment
+  methods supported by `p.adjust` can be used, including `"holm"`,
+  `"hochberg"`, `"hommel"`, `"bonferroni"`, `"BH"` and `"BY"`. See
+  `p.adjust` for more details. `"holm"` is the default.
+
+- approx:
+
+  Whether an approximated LR test is implemented? If TRUE, parameters of
+  items except the studied one will not be re-estimated.
+
+- SE.type:
+
+  Type of standard error estimation methods for the Wald test.
+
+- FS.args:
+
+  arguments for the forward anchor item search procedure developed in
+  Ma, Terzi, and de la Torre (2021). A list with the following elements:
+
+  - `on` - logical; `TRUE` if activate the forward anchor item search
+    procedure. Default = `FALSE`.
+
+  - `alpha.level` - nominal level for Wald or LR test. Default = .05.
+
+  - `maxit` - maximum number of iterations allowed. Default = 10.
+
+  - `verbose` - logical; print information for each iteration or not?
+    Default = `FALSE`.
+
+- ...:
+
+  arguments passed to GDINA function for model calibration
+
+- object:
+
+  dif object for S3 method
+
+## Value
+
+A data frame giving the Wald statistics and associated p-values.
+
+## Methods (by generic)
+
+- `summary(dif)`: print summary information
+
+## References
+
+Hou, L., de la Torre, J., & Nandakumar, R. (2014). Differential item
+functioning assessment in cognitive diagnostic modeling: Application of
+the Wald test to investigate DIF in the DINA model. *Journal of
+Educational Measurement, 51*, 98-125.
+
+Ma, W., Terzi, R., & de la Torre, J. (2021). Detecting differential item
+functioning using multiple-group cognitive diagnosis models. *Applied
+Psychological Measurement*.
+
+## See also
+
+[`GDINA`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+
+## Author
+
+Wenchao Ma, The University of Minnesota, <wma@umn.edu> Jimmy de la
+Torre, The University of Hong Kong
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+
+####################################
+#          Example 1.              #
+#        two-group DIF             #
+####################################
+
+set.seed(123456)
+N <- 3000
+Q <- sim30GDINA$simQ
+gs <- matrix(.2,ncol = 2, nrow = nrow(Q))
+# By default, individuals are simulated from uniform distribution
+# and deltas are simulated randomly
+sim1 <- simGDINA(N,Q,gs.parm = gs,model="DINA")
+sim2 <- simGDINA(N,Q,gs.parm = gs,model=c(rep("DINA",nrow(Q)-1),"DINO"))
+dat <- rbind(extract(sim1,"dat"),extract(sim2,"dat"))
+gr <- rep(c("G1","G2"),each=N)
+
+# DIF using Wald test
+dif.wald <- dif(dat, Q, group=gr, method = "Wald")
+dif.wald
+# DIF using LR test
+dif.LR <- dif(dat, Q, group=gr, method="LR")
+dif.LR
+# DIF using Wald test + forward search algorithm
+dif.wald.FS <- dif(dat, Q, group=gr, method = "Wald", FS.args = list(on = TRUE, verbose = TRUE))
+dif.wald.FS
+# DIF using LR test + forward search algorithm
+dif.LR.FS <- dif(dat, Q, group=gr, method = "LR", FS.args = list(on = TRUE, verbose = TRUE))
+dif.LR.FS
+
+####################################
+#          Example 2.              #
+#        two-group DIF             #
+#    with attribute structure.     #
+####################################
+# --- User-specified attribute structure ----#
+Q <- sim30GDINA$simQ
+K <- ncol(Q)
+# linear structure A1->A2->A3->A4->A5
+linear <- list(c(1,2),
+               c(2,3),
+               c(3,4),
+               c(4,5))
+struc <- att.structure(linear,K)
+set.seed(123)
+# data simulation
+N <- 1000
+true.lc <- sample(c(1:2^K),N,replace=TRUE,prob=struc$att.prob)
+table(true.lc) #check the sample
+true.att <- attributepattern(K)[true.lc,]
+ gs <- matrix(rep(0.1,2*nrow(Q)),ncol=2)
+ # data simulation
+ simD <- simGDINA(N,Q,gs.parm = gs, model = "ACDM",attribute = true.att)
+ dat <- extract(simD,"dat")
+gr <- rep(1:2,each=N/2)
+dif.wald <- dif(dat, Q, group=gr, method = "Wald",
+                att.str = diverg, att.dist = "saturated")
+dif.wald
+
+
+####################################
+#          Example 3.              #
+#        Three-group DIF           #
+####################################
+
+set.seed(123456)
+N <- 500
+Q <- sim30GDINA$simQ
+gs <- matrix(.2,ncol = 2, nrow = nrow(Q))
+# By default, individuals are simulated from uniform distribution
+# and deltas are simulated randomly
+sim1 <- simGDINA(N,Q,gs.parm = gs,model="DINA")
+sim2 <- simGDINA(N,Q,gs.parm = gs,model=c(rep("DINA",nrow(Q)-1),"DINO"))
+sim3 <- simGDINA(N,Q,gs.parm = gs,model="DINA")
+dat <- rbind(extract(sim1,"dat"),extract(sim2,"dat"),extract(sim3,"dat"))
+gr <- rep(c("G1","G2","G3"),each=N)
+
+# DIF using Wald test - omnibus test
+dif.wald <- dif(dat, Q, group=gr, method = "Wald")
+dif.wald
+# pairwise comparison between all pair of groups
+dif.pair = pairwiseDIF(dif.wald)
+dif.pair
+# draw plot to show the DIF
+plot(dif.pair, withSE = TRUE)
+} # }
+```

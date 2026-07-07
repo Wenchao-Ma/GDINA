@@ -1,0 +1,137 @@
+# Diagnostic multiple-strategy CDMs
+
+This function estimates the diagnostic tree model (Ma, 2018) for
+polytomous responses with multiple strategies. It can also handle
+various polytomous models discussed in Gao, et al. (2021).
+
+## Usage
+
+``` r
+DTM(
+  dat,
+  Qc,
+  type = "tree",
+  linkfunc = "logit",
+  eq.const = FALSE,
+  delta = NULL,
+  Tmatrix = NULL,
+  conv.crit = 0.001,
+  conv.type = "pr",
+  maxitr = 1000
+)
+```
+
+## Arguments
+
+- dat:
+
+  A required \\N \times J\\ data matrix of N examinees to J items.
+  Missing values are currently not allowed.
+
+- Qc:
+
+  A required \\J \times K+2\\ category and attribute association matrix,
+  where J represents the number of items or nonzero categories and K
+  represents the number of attributes. Entry 1 indicates that the
+  attribute is measured by the item, and 0 otherwise. The first column
+  gives the item number, which must be numeric and match the number of
+  column in the data. The second column indicates the category number.
+
+- type:
+
+  what type of model is to be fit; can be `'tree'`,`'sequential'`,or
+  `'adjacent'`.
+
+- linkfunc:
+
+  link function used; `'logit'` is the default.
+
+- eq.const:
+
+  whether effects are constrained to be equal across categories; `FALSE`
+  is the default.
+
+- delta:
+
+  initial item parameters
+
+- Tmatrix:
+
+  The mapping matrix showing the relation between the OBSERVED responses
+  (rows) and the PSEDUO items (columns); The first column gives the
+  observed responses.
+
+- conv.crit:
+
+  The convergence criterion for max absolute change in item parameters.
+
+- conv.type:
+
+  convergence criteria; Can be `pr`,`LL` and `delta`, indicating
+  category response function, log-likelihood and delta
+  parameters,respectively.
+
+- maxitr:
+
+  The maximum iterations allowed.
+
+## References
+
+Gao, X., Ma, W., Wang, D., Cai, Y., & Tu, D. (2021). A class of
+cognitive diagnosis models for polytomous data. *Journal of Educational
+and Behavioral Statistics, 46*, 297-322. Ma, W. (2018). A Diagnostic
+Tree Model for Polytomous Responses with Multiple Strategies. *British
+Journal of Mathematical and Statistical Psychology.*
+
+## See also
+
+[`GDINA`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md) for
+MS-DINA model and single strategy CDMs, and
+[`GMSCDM`](https://wenchao-ma.github.io/GDINA/reference/GMSCDM.md) for
+generalized multiple strategies CDMs for dichotomous response data
+
+## Author
+
+Wenchao Ma, The University of Minnesota, <wma@umn.edu>
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+
+####################################
+#        Example 1.                #
+#     sequential G-DINA model.     #
+#                                  #
+####################################
+
+dat <- sim20seqGDINA$simdat
+Qc <- sim20seqGDINA$simQ
+fit=DTM(sim20seqGDINA$simdat,Qc,type="sequential")
+fit
+fit$testfit$AIC
+
+####################################
+#        Example 2.                #
+#        Tree model                #
+#                                  #
+####################################
+K=5
+g=0.2
+item.no <- rep(1:6,each=4)
+# the first node has three response categories: 0, 1 and 2
+node.no <- rep(c(1,1,2,3),6)
+Q1 <- matrix(0,length(item.no),K)
+Q2 <- cbind(7:(7+K-1),rep(1,K),diag(K))
+for(j in 1:length(item.no)) {
+  Q1[j,sample(1:K,sample(3,1))] <- 1
+}
+Qc <- rbind(cbind(item.no,node.no,Q1),Q2)
+Tmatrix.set <- list(cbind(c(0,1,2,3,3),c(0,1,2,1,2),c(NA,0,NA,1,NA),c(NA,NA,0,NA,1)),
+cbind(c(0,1,2,3,4),c(0,1,2,1,2),c(NA,0,NA,1,NA),c(NA,NA,0,NA,1)),
+cbind(c(0,1),c(0,1)))
+Tmatrix <- Tmatrix.set[c(1,1,1,1,1,1,rep(3,K))]
+sim <- simDTM(N=2000,Qc=Qc,gs.parm=matrix(0.2,nrow(Qc),2),Tmatrix=Tmatrix)
+est <- DTM(dat=sim$dat,Qc=Qc,Tmatrix = Tmatrix)
+} # }
+```

@@ -90,6 +90,9 @@ ift <- itemfit(est)
 ift
 summary(ift)
 plot(ift)
+
+pdft<- itemfitPD(est)
+pdft
 ```
 
 6. Calculate classification accuracy
@@ -101,6 +104,7 @@ CA(est)
 
 * [G-DINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/GDINA_example.html)
 * [Model estimation and diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/CDMAnalysis_example.html) 
+* [Model data fit evaluation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/modelfit.html) 
 * [Sequential model estimation and diagnostics](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/sGDINA_analysis_example.html)
 * [LCDM model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/LCDM_example.html) 
 * [Higher-order GDINA model estimation](https://wenchao-ma.github.io/GDINA/articles/OnlineExercises/HOGDINA_example.html)  

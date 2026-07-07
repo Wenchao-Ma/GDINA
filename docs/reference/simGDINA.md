@@ -1,0 +1,754 @@
+# Data simulation based on the G-DINA models
+
+Simulate responses based on the G-DINA model (de la Torre, 2011) and
+sequential G-DINA model (Ma & de la Torre, 2016), or CDMs subsumed by
+them, including the DINA model, DINO model, ACDM, LLM and R-RUM.
+Attributes can be simulated from uniform, higher-order or multivariate
+normal distributions, or be supplied by users. See `Examples` and
+`Details` for how item parameter specifications. See the help page of
+[`GDINA`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md) for
+model parameterizations.
+
+## Usage
+
+``` r
+simGDINA(
+  N,
+  Q,
+  gs.parm = NULL,
+  delta.parm = NULL,
+  catprob.parm = NULL,
+  model = "GDINA",
+  sequential = FALSE,
+  no.bugs = 0,
+  gs.args = list(type = "random", mono.constraint = TRUE),
+  design.matrix = NULL,
+  linkfunc = NULL,
+  att.str = NULL,
+  attribute = NULL,
+  att.dist = "uniform",
+  item.names = NULL,
+  higher.order.parm = list(theta = NULL, lambda = NULL),
+  mvnorm.parm = list(mean = NULL, sigma = NULL, cutoffs = NULL),
+  att.prior = NULL,
+  digits = 4
+)
+
+# S3 method for class 'simGDINA'
+extract(
+  object,
+  what = c("dat", "Q", "attribute", "catprob.parm", "delta.parm", "higher.order.parm",
+    "mvnorm.parm", "LCprob.parm"),
+  ...
+)
+```
+
+## Arguments
+
+- N:
+
+  Sample size.
+
+- Q:
+
+  A required matrix; The number of rows occupied by a single-strategy
+  dichotomous item is 1, by a polytomous item is the number of nonzero
+  categories, and by a mutiple-strategy dichotomous item is the number
+  of strategies. The number of column is equal to the number of
+  attributes if all items are single-strategy dichotomous items, but the
+  number of attributes + 2 if any items are polytomous or have multiple
+  strategies. For a polytomous item, the first column represents the
+  item number and the second column indicates the nonzero category
+  number. For a multiple-strategy dichotomous item, the first column
+  represents the item number and the second column indicates the
+  strategy number. For binary attributes, 1 denotes the attributes are
+  measured by the items and 0 means the attributes are not measured. For
+  polytomous attributes, non-zero elements indicate which level of
+  attributes are needed. See `Examples`.
+
+- gs.parm:
+
+  A matrix or data frame for guessing and slip parameters. The number of
+  rows occupied by a dichotomous item is 1, and by a polytomous item is
+  the number of nonzero categories. The number of columns must be 2,
+  where the first column represents the guessing parameters (or
+  \\P(0)\\), and the second column represents slip parameters (or
+  \\1-P(1)\\). This may need to be used in conjunction with the argument
+  `gs.args`.
+
+- delta.parm:
+
+  A list of delta parameters of each latent group for each item or
+  category. This may need to be used in conjunction with the argument
+  `delta.args`.
+
+- catprob.parm:
+
+  A list of success probabilities of each latent group for each non-zero
+  category of each item. See `Examples` and `Details` for more
+  information.
+
+- model:
+
+  A character vector for each item or nonzero category, or a scalar
+  which will be used for all items or nonzero categories to specify the
+  CDMs. The possible options include
+  `"GDINA"`,`"DINA"`,`"DINO"`,`"ACDM"`,`"LLM"`, `"RRUM"`, `"MSDINA"` and
+  `"UDF"`. When `"UDF"`, indicating user defined function, is specified
+  for any item, `delta.parm` must be specified, as well as options
+  `design.matrix` and `linkfunc` in argument `delta.args`.
+
+- sequential:
+
+  logical; `TRUE` if the sequential model is used for polytomous
+  responses simulation, and `FALSE` if there is no polytomously scored
+  items.
+
+- no.bugs:
+
+  the number of bugs (or misconceptions) for the `SISM` model. Note that
+  bugs must be given in the last no.bugs columns.
+
+- gs.args:
+
+  a list of options when `gs.parm` is specified. It consists of two
+  components:
+
+  - `type` How are the delta parameters for ACDM, LLM, RRUM generated?
+    It can be either `"random"` or `"equal"`. `"random"` means the delta
+    parameters are simulated randomly, while `"equal"` means that each
+    required attribute contributes equally to the probability of success
+    (P), logit(P) or log(P) for ACDM, LLM and RRUM, respectively. See
+    `Details` for more information.
+
+  - `mono.constraint` A vector for each item/category or a scalar which
+    will be used for all items/categories to specify whether
+    monotonicity constraints should be satisfied if the generating model
+    is the G-DINA model. Note that this is applicable only for the
+    G-DINA model when `gs.parm` is used. For ACDM, LLM and RRUM,
+    monotonicity constraints are always satisfied and therefore this
+    argument is ignored.
+
+- design.matrix:
+
+  a list of design matrices; Its length must be equal to the number of
+  items (or nonzero categories for sequential models).
+
+- linkfunc:
+
+  a vector of link functions for each item/category; It can be
+  `"identity"`,`"log"` or `"logit"`. Only applicable when when
+  `delta.parm` or `catprob.parm` are provided.
+
+- att.str:
+
+  attribute structure. `NULL`, by default, means there is no structure.
+  Attribute structure needs be specified as a list - which will be
+  internally handled by `att.structure` function. It can also be a
+  matrix giving all permissible attribute profiles.
+
+- attribute:
+
+  optional user-specified person attributes. It is a \\N\times K\\
+  matrix or data frame. If this is not supplied, attributes are
+  simulated from a distribution specified in `att.dist`.
+
+- att.dist:
+
+  A string indicating the distribution for attribute simulation. It can
+  be `"uniform"`, `"higher.order"`, `"mvnorm"` or `"categorical"` for
+  uniform, higher-order, multivariate normal and categorical
+  distributions, respectively. The default is the uniform distribution.
+  To specify structural parameters for the higher-order and multivariate
+  normal distributions, see `higher.order.parm` and `mvnorm.parm`,
+  respectively. To specify the probabilities for the categorical
+  distribution, use `att.prior` argument.
+
+- item.names:
+
+  A vector giving the name of items or categories. If it is `NULL`
+  (default), items are named as "Item 1", "Item 2", etc.
+
+- higher.order.parm:
+
+  A list specifying parameters for higher-order distribution for
+  attributes if `att.dist=higher.order`. Particularly, `theta` is a
+  vector of length \\N\\ representing the higher-order ability for each
+  examinee. and `lambda` is a \\K \times 2\\ matrix. Column 1 gives the
+  slopes for the higher-order model and column 2 gives the intercepts.
+  See [`GDINA`](https://wenchao-ma.github.io/GDINA/reference/GDINA.md)
+  for the formulations of the higher-order models.
+
+- mvnorm.parm:
+
+  a list of parameters for multivariate normal attribute distribution.
+  `mean` is a vector of length \\K\\ specifying the mean of multivariate
+  normal distribution; and `sigma` is a positive-definite symmetric
+  matrix specifying the variance-covariance matrix. `cutoffs` is a
+  vector giving the cutoff for each attribute. See `Examples`.
+
+- att.prior:
+
+  probability for each attribute pattern. Order is the same as that
+  returned from `attributepattern(Q = Q)`. This is only applicable when
+  `att.dist="categorical"`.
+
+- digits:
+
+  How many decimal places in each number? The default is 4.
+
+- object:
+
+  object of class `simGDINA` for method `extract`
+
+- what:
+
+  argument for S3 method `extract` indicating what to extract
+
+- ...:
+
+  additional arguments
+
+## Value
+
+an object of class `simGDINA`. Elements that can be extracted using
+method `extract` include:
+
+- dat:
+
+  simulated item response matrix
+
+- Q:
+
+  Q-matrix
+
+- attribute:
+
+  A \\N \times K\\ matrix for inviduals' attribute patterns
+
+- catprob.parm:
+
+  a list of non-zero category success probabilities for each latent
+  group
+
+- delta.parm:
+
+  a list of delta parameters
+
+- higher.order.parm:
+
+  Higher-order parameters
+
+- mvnorm.parm:
+
+  multivariate normal distribution parameters
+
+- LCprob.parm:
+
+  A matrix of item/category success probabilities for each latent class
+
+## Details
+
+Item parameter specifications in `simGDINA`:
+
+Item parameters can be specified in one of three different ways.
+
+The first and probably the easiest way is to specify the guessing and
+slip parameters for each item or nonzero category using `gs.parm`, which
+is a matrix or data frame for \\P(\bm{\alpha}\_{lj}^\*=0)\\ and
+\\1-P(\bm{\alpha}\_{lj}^\*=1)\\ for all items for dichotomous items and
+\\S(\bm{\alpha}\_{ljh}^\*=0)\\ and \\1-S(\bm{\alpha}\_{ljh}^\*=1)\\ for
+all nonzero categories for polytomous items. Note that
+\\1-P(\bm{\alpha}\_{lj}^\*=0)-P(\bm{\alpha}\_{lj}^\*=1)\\ or
+\\1-S(\bm{\alpha}\_{lj}^\*=0)-S(\bm{\alpha}\_{lj}^\*=1)\\ must be
+greater than 0. For generating ACDM, LLM, and RRUM, delta parameters are
+generated randomly if `type="random"`, or in a way that each required
+attribute contributes equally, as in Ma, Iaconangelo, & de la Torre
+(2016) if `type="equal"`. For ACDM, LLM and RRUM, generated delta
+parameters are always positive, which implies that monotonicity
+constraints are always satisfied. If the generating model is the G-DINA
+model, `mono.constraint` can be used to specify whether monotonicity
+constraints should be satisfied.
+
+The second way of simulating responses is to specify success
+probabilities (i.e., \\P(\bm{\alpha}\_{lj}^\*)\\ or
+\\S(\bm{\alpha}\_{ljh}^\*)\\) for each nonzero category of each item
+directly using the argument `catprob.parm`. If an item or category
+requires \\K_j^\*\\ attributes, \\2^{K_j^\*}\\ success probabilities
+need to be provided. `catprob.parm` must be a list, where each element
+gives the success probabilities for nonzero category of each item. Note
+that success probabilities cannot be negative or greater than one.
+
+The third way is to specify delta parameters for data simulation. For
+DINA and DINO model, each nonzero category requires two delta
+parameters. For ACDM, LLM and RRUM, if a nonzero category requires
+\\K_j^\*\\ attributes, \\K_j^\*+1\\ delta parameters need to be
+specified. For the G-DINA model, a nonzero category requiring \\K_j^\*\\
+attributes has \\2^{K_j^\*}\\ delta parameters. It should be noted that
+specifying delta parameters needs to ascertain the derived success
+probabilities are within the \\\[0,1\]\\ interval.
+
+Please note that you need to specify item parameters in ONLY one of
+these three ways. If `gs.parm` is specified, it will be used regardless
+of the inputs in `catprob.parm` and `delta.parm`. If `gs.parm` is not
+specified, `simGDINA` will check if `delta.parm` is specified; if yes,
+it will be used for data generation. if both `gs.parm` and `delta.parm`
+are not specified, `catprob.parm` is used for data generation.
+
+## References
+
+Chiu, C.-Y., Douglas, J. A., & Li, X. (2009). Cluster analysis for
+cognitive diagnosis: Theory and applications. *Psychometrika, 74*,
+633-665.
+
+de la Torre, J. (2011). The generalized DINA model framework.
+*Psychometrika, 76*, 179-199.
+
+de la Torre, J., & Douglas, J. A. (2004). Higher-order latent trait
+models for cognitive diagnosis. *Psychometrika, 69*, 333-353.
+
+Haertel, E. H. (1989). Using restricted latent class models to map the
+skill structure of achievement items. *Journal of Educational
+Measurement, 26*, 301-321.
+
+Hartz, S. M. (2002). A bayesian framework for the unified model for
+assessing cognitive abilities: Blending theory with practicality
+(Unpublished doctoral dissertation). University of Illinois at
+Urbana-Champaign.
+
+Junker, B. W., & Sijtsma, K. (2001). Cognitive assessment models with
+few assumptions, and connections with nonparametric item response
+theory. *Applied Psychological Measurement, 25*, 258-272.
+
+Ma, W., & de la Torre, J. (2016). A sequential cognitive diagnosis model
+for polytomous responses. *British Journal of Mathematical and
+Statistical Psychology. 69,* 253-275.
+
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive
+Diagnosis Modeling. *Journal of Statistical Software, 93(14)*, 1-26.
+
+Ma, W., Iaconangelo, C., & de la Torre, J. (2016). Model similarity,
+model selection and attribute classification. *Applied Psychological
+Measurement, 40*, 200-217.
+
+Maris, E. (1999). Estimating multiple classification latent class
+models. *Psychometrika, 64*, 187-212.
+
+Templin, J. L., & Henson, R. A. (2006). Measurement of psychological
+disorders using cognitive diagnosis models. *Psychological Methods, 11*,
+287-305.
+
+## Author
+
+Wenchao Ma, The University of Minnesota, <wma@umn.edu> Jimmy de la
+Torre, The University of Hong Kong
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+####################################################
+#                     Example 1                    #
+#             Data simulation (DINA)               #
+####################################################
+N <- 500
+Q <- sim30GDINA$simQ
+J <- nrow(Q)
+gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+
+# Simulated DINA model; to simulate G-DINA model
+# and other CDMs, change model argument accordingly
+
+sim <- simGDINA(N,Q,gs.parm = gs,model = "DINA")
+
+# True item success probabilities
+extract(sim,what = "catprob.parm")
+
+# True delta parameters
+extract(sim,what = "delta.parm")
+
+# simulated data
+extract(sim,what = "dat")
+
+# simulated attributes
+extract(sim,what = "attribute")
+
+####################################################
+#                     Example 2                    #
+#             Data simulation (RRUM)               #
+####################################################
+N <- 500
+Q <- sim30GDINA$simQ
+J <- nrow(Q)
+gs <- data.frame(guess=rep(0.2,J),slip=rep(0.2,J))
+# Simulated RRUM
+# deltas except delta0 for each item will be simulated
+# randomly subject to the constraints of RRUM
+sim <- simGDINA(N,Q,gs.parm = gs,model = "RRUM")
+
+# simulated data
+extract(sim,what = "dat")
+
+# simulated attributes
+extract(sim,what = "attribute")
+
+####################################################
+#                     Example 3                    #
+#             Data simulation (LLM)                #
+####################################################
+N <- 500
+Q <- sim30GDINA$simQ
+J <- nrow(Q)
+gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+# Simulated LLM
+# By specifying type="equal", each required attribute is
+# assumed to contribute to logit(P) equally
+sim <- simGDINA(N,Q,gs.parm = gs,model = "LLM",gs.args = list (type="equal"))
+#check below for what the equal contribution means
+extract(sim,what = "delta.parm")
+
+# simulated data
+extract(sim,what = "dat")
+
+# simulated attributes
+extract(sim,what = "attribute")
+
+####################################################
+#                   Example 4                      #
+#          Data simulation (all CDMs)              #
+####################################################
+
+set.seed(12345)
+
+N <- 500
+Q <- sim10GDINA$simQ
+J <- nrow(Q)
+gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+# Simulated different CDMs for different items
+models <- c("GDINA","DINO","DINA","ACDM","LLM","RRUM","GDINA","LLM","RRUM","DINA")
+sim <- simGDINA(N,Q,gs.parm = gs,model = models,gs.args = list(type="random"))
+
+# simulated data
+extract(sim,what = "dat")
+
+# simulated attributes
+extract(sim,what = "attribute")
+
+####################################################
+#                   Example 5a                     #
+#          Data simulation (all CDMs)              #
+#  using probability of success in list format     #
+####################################################
+
+# success probabilities for each item need to be provided in list format as follows:
+# if item j requires Kj attributes, 2^Kj success probabilities
+# need to be specified
+# e.g., item 1 only requires 1 attribute
+# therefore P(0) and P(1) should be specified;
+# similarly, item 10 requires 3 attributes,
+# P(000),P(100),P(010)...,P(111) should be specified;
+# the latent class represented by each element can be obtained
+# by calling attributepattern(Kj)
+itemparm.list <- list(item1=c(0.2,0.9),
+                    item2=c(0.1,0.8),
+                    item3=c(0.1,0.9),
+                    item4=c(0.1,0.3,0.5,0.9),
+                    item5=c(0.1,0.1,0.1,0.8),
+                    item6=c(0.2,0.9,0.9,0.9),
+                    item7=c(0.1,0.45,0.45,0.8),
+                    item8=c(0.1,0.28,0.28,0.8),
+                    item9=c(0.1,0.4,0.4,0.8),
+                    item10=c(0.1,0.2,0.3,0.4,0.4,0.5,0.7,0.9))
+set.seed(12345)
+N <- 500
+Q <- sim10GDINA$simQ
+# When simulating data using catprob.parm argument,
+# it is not necessary to specify model and type
+sim <- simGDINA(N,Q,catprob.parm = itemparm.list)
+
+####################################################
+#                   Example 5b                     #
+#          Data simulation (all CDMs)              #
+#  using probability of success in list format     #
+#  attribute has a linear structure                #
+####################################################
+
+est <- GDINA(sim10GDINA$simdat,sim10GDINA$simQ,att.str = list(c(1,2),c(2,3)))
+# design matrix
+# link function
+# item probabilities
+ip <- extract(est,"itemprob.parm")
+sim <- simGDINA(N=500,sim10GDINA$simQ,catprob.parm = ip,
+design.matrix = dm,linkfunc = lf,att.str = list(c(1,2),c(2,3)))
+
+
+####################################################
+#                   Example 6a                     #
+#            Data simulation (all CDMs)            #
+#      using delta parameters in list format       #
+####################################################
+
+delta.list <- list(c(0.2,0.7),
+                    c(0.1,0.7),
+                    c(0.1,0.8),
+                    c(0.1,0.7),
+                    c(0.1,0.8),
+                    c(0.2,0.3,0.2,0.1),
+                    c(0.1,0.35,0.35),
+                    c(-1.386294,0.9808293,1.791759),
+                    c(-1.609438,0.6931472,0.6),
+                    c(0.1,0.1,0.2,0.3,0.0,0.0,0.1,0.1))
+
+model <- c("GDINA","GDINA","GDINA","DINA","DINO","GDINA","ACDM","LLM","RRUM","GDINA")
+N <- 500
+Q <- sim10GDINA$simQ
+sim <- simGDINA(N,Q,delta.parm = delta.list, model = model)
+####################################################
+#                   Example 6b                     #
+#          Data simulation (all CDMs)              #
+#  using delta parameters in list format           #
+#  attribute has a linear structure                #
+####################################################
+
+est <- GDINA(sim10GDINA$simdat,sim10GDINA$simQ,att.str = list(c(1,2),c(2,3)))
+# design matrix
+# link function
+# item probabilities
+ip <- extract(est,"delta.parm")
+sim <- simGDINA(N=500,sim10GDINA$simQ,delta.parm =  d,
+design.matrix = dm,linkfunc = lf,att.str = list(c(1,2),c(2,3)))
+
+####################################################
+#                   Example 7                      #
+#      Data simulation (higher order DINA model)   #
+####################################################
+
+Q <- sim30GDINA$simQ
+gs <- matrix(0.1,nrow(Q),2)
+N <- 500
+set.seed(12345)
+theta <- rnorm(N)
+K <- ncol(Q)
+lambda <- data.frame(a=rep(1,K),b=seq(-2,2,length.out=K))
+sim <- simGDINA(N,Q,gs.parm = gs, model="DINA", att.dist = "higher.order",
+                 higher.order.parm = list(theta = theta,lambda = lambda))
+
+####################################################
+#                   Example 8                      #
+#      Data simulation (higher-order CDMs)         #
+####################################################
+
+Q <- sim30GDINA$simQ
+gs <- matrix(0.1,nrow(Q),2)
+models <- c(rep("GDINA",5),
+            rep("DINO",5),
+            rep("DINA",5),
+            rep("ACDM",5),
+            rep("LLM",5),
+            rep("RRUM",5))
+N <- 500
+set.seed(12345)
+theta <- rnorm(N)
+K <- ncol(Q)
+lambda <- data.frame(a=runif(K,0.7,1.3),b=seq(-2,2,length.out=K))
+sim <- simGDINA(N,Q,gs.parm = gs, model=models, att.dist = "higher.order",
+                 higher.order.parm = list(theta = theta,lambda = lambda))
+
+
+####################################################
+#                   Example 9                      #
+#      Data simulation (higher-order model)        #
+#  using the multivariate normal threshold model   #
+####################################################
+
+
+# See Chiu et al., (2009)
+
+N <- 500
+Q <- sim10GDINA$simQ
+K <- ncol(Q)
+gs <- matrix(0.1,nrow(Q),2)
+cutoffs <- qnorm(c(1:K)/(K+1))
+m <- rep(0,K)
+vcov <- matrix(0.5,K,K)
+diag(vcov) <- 1
+simMV <- simGDINA(N,Q,gs.parm = gs, att.dist = "mvnorm",
+                 mvnorm.parm=list(mean = m, sigma = vcov,cutoffs = cutoffs))
+
+####################################
+#          Example 10              #
+#        Simulation using          #
+#      user-specified att structure#
+####################################
+
+# --- User-specified attribute structure ----#
+Q <- sim30GDINA$simQ
+K <- ncol(Q)
+# divergent structure A1->A2->A3;A1->A4->A5;A1->A4->A6
+diverg <- list(c(1,2),
+               c(2,3),
+               c(1,4),
+               c(4,5))
+struc <- att.structure(diverg,K)
+
+# data simulation
+N <- 1000
+# data simulation
+gs <- matrix(0.1,nrow(Q),2)
+simD <- simGDINA(N,Q,gs.parm = gs,
+                   model = "DINA",att.dist = "categorical",att.prior = struc$att.prob)
+
+
+####################################################
+#                   Example 11                     #
+#                Data simulation                   #
+#  (GDINA with monotonicity constraints)           #
+####################################################
+
+set.seed(12345)
+
+N <- 500
+Q <- sim30GDINA$simQ
+J <- nrow(Q)
+gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+# Simulated different CDMs for different items
+sim <- simGDINA(N,Q,gs.parm = gs,model = "GDINA",gs.args=list(mono.constraint=TRUE))
+
+# True item success probabilities
+extract(sim,what = "catprob.parm")
+
+# True delta parameters
+extract(sim,what = "delta.parm")
+
+# simulated data
+extract(sim,what = "dat")
+
+# simulated attributes
+extract(sim,what = "attribute")
+
+####################################################
+#                   Example 12                     #
+#                Data simulation                   #
+# (Sequential G-DINA model - polytomous responses) #
+####################################################
+
+set.seed(12345)
+
+N <- 2000
+# restricted Qc matrix
+Qc <- sim20seqGDINA$simQ
+#total number of categories
+J <- nrow(Qc)
+gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+# simulate sequential DINA model
+simseq <- simGDINA(N, Qc, sequential = TRUE, gs.parm = gs, model = "GDINA")
+
+# True item success probabilities
+extract(simseq,what = "catprob.parm")
+
+# True delta parameters
+extract(simseq,what = "delta.parm")
+
+# simulated data
+extract(simseq,what = "dat")
+
+# simulated attributes
+extract(simseq,what = "attribute")
+
+
+####################################################
+#                   Example 13
+#         DINA model Attribute generated using
+#             categorical distribution
+####################################################
+
+Q <- sim10GDINA$simQ
+gs <- matrix(0.1,nrow(Q),2)
+N <- 5000
+set.seed(12345)
+prior <- c(0.1,0.2,0,0,0.2,0,0,0.5)
+sim <- simGDINA(N,Q,gs.parm = gs, model="DINA", att.dist = "categorical",att.prior = prior)
+# check latent class sizes
+table(sim$att.group)/N
+
+####################################################
+#                   Example 14
+#                  MS-DINA model
+####################################################
+
+
+Q <- matrix(c(1,1,1,1,0,
+1,2,0,1,1,
+2,1,1,0,0,
+3,1,0,1,0,
+4,1,0,0,1,
+5,1,1,0,0,
+5,2,0,0,1),ncol = 5,byrow = TRUE)
+d <- list(
+  item1=c(0.2,0.7),
+  item2=c(0.1,0.6),
+  item3=c(0.2,0.6),
+  item4=c(0.2,0.7),
+  item5=c(0.1,0.8))
+
+  set.seed(12345)
+sim <- simGDINA(N=1000,Q = Q, delta.parm = d,
+               model = c("MSDINA","MSDINA","DINA","DINA","DINA","MSDINA","MSDINA"))
+
+# simulated data
+extract(sim,what = "dat")
+
+# simulated attributes
+extract(sim,what = "attribute")
+
+
+##############################################################
+#                   Example 15
+#  reparameterized SISM model (Kuo, Chen, & de la Torre, 2018)
+#  see GDINA function for more details
+###############################################################
+
+# The Q-matrix used in Kuo, et al (2018)
+# The first four columns are for Attributes 1-4
+# The last three columns are for Bugs 1-3
+Q <- matrix(c(1,0,0,0,0,0,0,
+0,1,0,0,0,0,0,
+0,0,1,0,0,0,0,
+0,0,0,1,0,0,0,
+0,0,0,0,1,0,0,
+0,0,0,0,0,1,0,
+0,0,0,0,0,0,1,
+1,0,0,0,1,0,0,
+0,1,0,0,1,0,0,
+0,0,1,0,0,0,1,
+0,0,0,1,0,1,0,
+1,1,0,0,1,0,0,
+1,0,1,0,0,0,1,
+1,0,0,1,0,0,1,
+0,1,1,0,0,0,1,
+0,1,0,1,0,1,1,
+0,0,1,1,0,1,1,
+1,0,1,0,1,1,0,
+1,1,0,1,1,1,0,
+0,1,1,1,1,1,0),ncol = 7,byrow = TRUE)
+
+J <- nrow(Q)
+N <- 500
+gs <- data.frame(guess=rep(0.1,J),slip=rep(0.1,J))
+
+sim <- simGDINA(N,Q,gs.parm = gs,model = "SISM",no.bugs=3)
+
+# True item success probabilities
+extract(sim,what = "catprob.parm")
+
+# True delta parameters
+extract(sim,what = "delta.parm")
+
+# simulated data
+extract(sim,what = "dat")
+
+# simulated attributes
+extract(sim,what = "attribute")
+} # }
+
+```

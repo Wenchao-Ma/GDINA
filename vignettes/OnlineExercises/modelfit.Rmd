@@ -1,0 +1,104 @@
+---
+title: "Model-data fit"
+author: "Wenchao Ma"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Introduction
+
+This tutorial is created using R [markdown](https://rmarkdown.rstudio.com/) and [knitr](https://yihui.name/knitr/). It illustrates how to use the GDINA R package (version `r packageVersion("GDINA")`) for model-data fit evaluation.
+
+We use the ECPE data for illustration and fit the GDINA model to the data first.
+
+### Model Estimation
+
+The following code estimates the G-DINA model.
+```{r}
+library(GDINA)
+
+dat <- realdata_ECPE$dat
+Q <- realdata_ECPE$Q
+
+# Estimating GDINA model
+est <- GDINA(dat = dat, Q = Q, model = "GDINA", mono.constraint = TRUE)
+```
+
+### Model fit at test-level
+
+The model-data fit at test level can be obtained using `modelfit()` function.
+This function calculates $M_2$ statistic for G-DINA model with dichotmous responses (Liu, Tian, & Xin, 2016; Hansen, Cai, Monroe, & Li, 2016) and for sequential G-DINA model with graded responses (Ma, 2020). It also calculates SRMSR and RMSEA2.
+
+
+```{r}
+modelfit(est)
+```
+Interestingly,  `itemfit()` also provide model-data fit at test level. By default,
+it prints the maximum z statistics for transformed correlation and log odds ratio
+for item-pairs, which quantify the "worst" fit.
+```{r}
+itemfit(est)
+```
+
+## Model-data fit at item-pair level
+
+`itemfit()` also provide model-data fit at item-pair level. The heatmap plots for
+transformed correlation and log odds ratio show the p-values of test statistics for
+all item pairs. A significant (red) test statistic indicates some misfit.
+
+```{r}
+ift <- itemfit(est)
+plot(ift)
+```
+
+### Model data fit at item level
+
+Model data fit can also be evaluated at item level. The code below gives the maximum
+z statistics for transformed correlation and log odds ratio at item level and thus can 
+be viewed as the "worst" fit for item pairs related to that specific item.
+```{r}
+ift <- itemfit(est)
+ift$max.itemlevel.fit
+```
+
+Item fit can also be evaluated using `itemfitPD()` function. This function calculate item fit statistics from the power-divergence family (Najera, Ma, Sorrel and Abad, 2025).
+This function can use bootstrap methods with Stone correction. Parallel computing is supported
+on computers with multiple cores.
+
+```{r cache=TRUE}
+ipd <- itemfitPD(est, bootstrap = TRUE, Stone = TRUE, R = 1000, cores=10)
+ipd
+```
+
+To find the test statistics and p-value, the following code can be used:
+```{r}
+ipd$PD
+```
+
+```{r}
+sessionInfo()
+```
+
+
+### References
+
+Chen, J., de la Torre, J., & Zhang, Z. (2013). Relative and Absolute Fit Evaluation in Cognitive Diagnosis Modeling. Journal of Educational Measurement, 50, 123-140.
+
+Hansen, M., Cai, L., Monroe, S., & Li, Z. (2016). Limited-information goodness-of-fit testing of diagnostic classification item response models. British Journal of Mathematical and Statistical Psychology. 69, 225–252.
+
+Liu, Y., Tian, W., & Xin, T. (2016). An Application of M2 Statistic to Evaluate the Fit of Cognitive Diagnostic Models. Journal of Educational and Behavioral Statistics, 41, 3-26.
+
+Ma, W. (2020). Evaluating the fit of sequential G-DINA model using limited-information measures. Applied Psychological Measurement, 44, 167-181.
+
+Ma, W., & de la Torre, J. (2020). GDINA: An R Package for Cognitive Diagnosis Modeling. Journal of Statistical Software, 93(14), 1-26.
+
+Maydeu-Olivares, A. (2013). Goodness-of-Fit Assessment of Item Response Theory Models. Measurement, 11, 71-101.
+
+Nájera, P., Ma, W., Sorrel, M.A. et al. Assessing item-level fit for the sequential G-DINA model. Behaviormetrika (2025). https://doi.org/10.1007/s41237-025-00263-8
+

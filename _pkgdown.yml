@@ -1,0 +1,5 @@
+url: https://wenchao-ma.github.io/GDINA/
+
+template:
+  bootstrap: 5
+  bootswatch: sandstone

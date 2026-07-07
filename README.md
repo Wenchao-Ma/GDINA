@@ -8,8 +8,10 @@ state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/)
 [![R-CMD-check](https://github.com/Wenchao-Ma/GDINA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Wenchao-Ma/GDINA/actions/workflows/R-CMD-check.yaml)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/GDINA)](https://cran.r-project.org/package=GDINA)
-[![](https://cranlogs.r-pkg.org/badges/GDINA?color=brightgreen)](https://cran.r-project.org/package=GDINA)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/GDINA?color=green)](https://cran.r-project.org/package=GDINA)
+[![CRAN monthly
+downloads](https://cranlogs.r-pkg.org/badges/GDINA?color=brightgreen)](https://cran.r-project.org/package=GDINA)
+[![CRAN total
+downloads](http://cranlogs.r-pkg.org/badges/grand-total/GDINA?color=green)](https://cran.r-project.org/package=GDINA)
 
 ## How to cite the package
 
@@ -22,51 +24,49 @@ examples, tutorials and more information.
 
 ## Learning resources
 
--   Watch [Ma and de la Torre’s (2019) NCME digital module
-    5](https://ncme.elevate.commpartners.com/) on a gentle introduction
-    to the G-DINA model framework and the use of graphical user
-    interface for CDM analyses
+- Watch [Ma and de la Torre’s (2019) NCME digital module
+  5](https://ncme.elevate.commpartners.com/) on a gentle introduction to
+  the G-DINA model framework and the use of graphical user interface for
+  CDM analyses
 
--   Check [the book chapter by Ma
-    (2019)](https://doi.org/10.1007/978-3-030-05584-4_29) on an
-    introduction to the GDINA package
+- Check [the book chapter by Ma
+  (2019)](https://doi.org/10.1007/978-3-030-05584-4_29) on an
+  introduction to the GDINA package
 
--   Check [de la Torre and Akbay’s (2019) article](https://ejer.com.tr/)
-    on how to conduct various CDM analyses using the graphical user
-    interface
+- Check [de la Torre and Akbay’s (2019) article](https://ejer.com.tr/)
+  on how to conduct various CDM analyses using the graphical user
+  interface
 
--   Check [Shi, et al (2021)](https://doi.org/10.3390/psych3040052) on
-    how to use this package, along with other R packages for CDM
-    analyses
+- Check [Shi, et al (2021)](https://doi.org/10.3390/psych3040052) on how
+  to use this package, along with other R packages for CDM analyses
 
 ## Features of the package
 
--   Estimating G-DINA model and a variety of widely-used models subsumed
-    by the G-DINA model, including the DINA model, DINO model,
-    additive-CDM (A-CDM), linear logistic model (LLM), reduced
-    reparametrized unified model (RRUM), multiple-strategy DINA model
-    for dichotomous responses
--   Estimating models within the G-DINA model framework using
-    user-specified design matrix and link functions
--   Estimating Bugs-DINA, DINO and G-DINA models for dichotomous
-    responses
--   Estimating sequential G-DINA model for ordinal and nominal responses
--   Estimating the generalized multiple-strategy cognitive diagnosis
-    models (experimental)
--   Estimating the diagnostic tree model (experimental)
--   Estimating multiple-choice models
--   Modelling independent, saturated, higher-order, loglinear smoothed,
-    and structured joint attribute distribution
--   Accommodating multiple-group model analysis
--   Imposing monotonic constrained success probabilities
--   Accommodating binary and polytomous attributes
--   Validating Q-matrix under the general model framework
--   Evaluating absolute and relative item and model fit
--   Comparing models at the test and item levels
--   Detecting differential item functioning using Wald and likelihood
-    ratio test
--   Simulating data based on all aforementioned CDMs
--   Providing graphical user interface for users less familiar with R
+- Estimating G-DINA model and a variety of widely-used models subsumed
+  by the G-DINA model, including the DINA model, DINO model,
+  additive-CDM (A-CDM), linear logistic model (LLM), reduced
+  reparametrized unified model (RRUM), multiple-strategy DINA model for
+  dichotomous responses
+- Estimating models within the G-DINA model framework using
+  user-specified design matrix and link functions
+- Estimating Bugs-DINA, DINO and G-DINA models for dichotomous responses
+- Estimating sequential G-DINA model for ordinal and nominal responses
+- Estimating the generalized multiple-strategy cognitive diagnosis
+  models (experimental)
+- Estimating the diagnostic tree model (experimental)
+- Estimating multiple-choice models
+- Modelling independent, saturated, higher-order, loglinear smoothed,
+  and structured joint attribute distribution
+- Accommodating multiple-group model analysis
+- Imposing monotonic constrained success probabilities
+- Accommodating binary and polytomous attributes
+- Validating Q-matrix under the general model framework
+- Evaluating absolute and relative item and model fit
+- Comparing models at the test and item levels
+- Detecting differential item functioning using Wald and likelihood
+  ratio test
+- Simulating data based on all aforementioned CDMs
+- Providing graphical user interface for users less familiar with R
 
 ## Installation
 
@@ -86,7 +86,9 @@ To install this package from source:
     have up to date compilers (or if not they can be updated easily).
 
 2)  Install the `devtools` package (if necessary), and install the
-    package from the Github source code.
+    package from the Github source code. Note that the version on Github
+    is the development version, which may contain new features and bug
+    fixes that are not yet available on CRAN and the API may change.
 
 ``` r
 # install.packages("devtools")
