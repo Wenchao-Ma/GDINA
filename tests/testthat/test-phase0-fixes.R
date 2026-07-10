@@ -130,6 +130,11 @@ test_that("0d3: pairwiseDIF reuses dif object inputs for post hoc tests", {
   expect_s3_class(pw, "pairwiseDIF")
   expect_equal(nrow(pw$test), nrow(Q) * choose(3, 2))
   expect_equal(colnames(pw$test), c("item", "group1", "group2", "Wald stat.", "df", "p.value", "adj.pvalue"))
+  expect_equal(colnames(pw$posthoc.rearrangement),
+               c("refit.item", "original.item", "item.label", "item.type", "group.no", "group.label"))
+  expect_equal(nrow(pw$posthoc.rearrangement), nrow(Q) * 3)
+  expect_true(all(pw$posthoc.rearrangement$original.item %in% seq_len(nrow(Q))))
+  expect_true(all(pw$posthoc.rearrangement$group.no %in% 1:3))
   expect_no_error(print(pw))
 })
 
@@ -163,6 +168,9 @@ test_that("0d4: pairwiseDIF supports manual mode and empty object-mode follow-up
   expect_s3_class(manual_pw, "pairwiseDIF")
   expect_equal(nrow(manual_pw$test), choose(3, 2))
   expect_true(all(manual_pw$test$item == "Item 3"))
+  expect_equal(manual_pw$posthoc.rearrangement$original.item, c(1L, 2L, 3L, 3L, 3L))
+  expect_equal(manual_pw$posthoc.rearrangement$group.label,
+               c("shared", "shared", "G1", "G2", "G3"))
   expect_no_error(plot(manual_pw, item = 3))
 })
 

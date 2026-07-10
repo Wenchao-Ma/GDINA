@@ -3,8 +3,8 @@
 print.GDINA <-
   function(x, ...)
   {
-    cat("Call:\n", paste(deparse(extract.GDINA(x,"call")), sep = "\n", collapse = "\n"),
-        "\n\n", sep = "")
+    #cat("Call:\n", paste(deparse(extract.GDINA(x,"call")), sep = "\n", collapse = "\n"),
+    #    "\n\n", sep = "")
     packageinfo <- utils::packageDescription("GDINA")
     cat( paste( "GDINA version " , packageinfo$Version , " (" , packageinfo$Date , ")" , sep="") , "\n" )
     cat("===============================================\n")

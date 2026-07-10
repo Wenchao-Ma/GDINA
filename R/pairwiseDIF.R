@@ -1,11 +1,28 @@
 #' @title Pairwise post hoc DIF analysis
 #'
 #' @description Conduct pairwise Wald follow-up tests after omnibus DIF analysis
-#' with three or more groups.
+#' with three or more groups. This function can also be used for DIF detection
+#' based on the Wald test by specifying the studied (potentially DIF) items and anchor items
+#' manually.
+#'
 #' The input can be a \code{dif} object returned by \code{dif()}, in which case
 #' DIF items are selected using adjusted omnibus p-values, or raw data plus
-#' user-specified DIF items and optional anchor items. \code{plot()} function
-#' can be used to draw grouped bar chart for DIF items.
+#' user-specified DIF items and anchor items.
+#'
+#' For DIF detection, the data are rearranged so that anchor items appear once and
+#' DIF items are duplicated once for each observed group. For example, if Item 3
+#' is flagged as DIF in a three-group analysis and Items 1 and 2 are not, the
+#' refit is arranged as Item 1, Item 2, Item 3 (Group 1), Item 3 (Group 2),
+#' and Item 3 (Group 3).
+#'
+#' The Wald test is used for comparison of item parameters across all pairs of groups
+#' for each DIF item. The p-values are adjusted for multiple comparisons.
+#'
+#' The returned object stores this mapping in
+#' \code{posthoc.rearrangement}, which records the refit position, original
+#' item number, item label, item type, and group label for each row of the posthoc
+#' GDINA calibration. \code{plot()} function can be used to draw grouped bar chart for DIF items.
+#'
 #'
 #' @param object an object returned by \code{dif()}.
 #' @param dat item responses from two or more groups; missing data need to be coded as \code{NA}.
@@ -19,7 +36,25 @@
 #' @param p.adjust.methods adjusted p-values for pairwise Wald tests within each item.
 #' @param SE.type Type of standard error estimation methods for the Wald test.
 #' @param ... arguments passed to \code{GDINA()} for the final post hoc refit.
-#' @return A \code{pairwiseDIF} object containing the pairwise Wald test table and final post hoc fit.
+#' @return A \code{pairwiseDIF} object with key elements including:
+#' \itemize{
+#'   \item \code{test}: a data frame of pairwise Wald test results with columns
+#'   for item, group pair, Wald statistic, degrees of freedom, raw p-value, and
+#'   adjusted p-value.
+#'   \item \code{dif.items}: numeric indices of items included in pairwise DIF
+#'   follow-up.
+#'   \item \code{anchor.items}: numeric indices of items treated as shared
+#'   (non-DIF) in the final post hoc refit.
+#'   \item \code{group.labels}: observed group labels used in pairwise
+#'   comparisons.
+#'   \item \code{posthoc.rearrangement}: a data frame describing how original
+#'   items were rearranged for refit (refit position, original item number, item
+#'   label, item type, and group information).
+#'   \item \code{posthoc.fit}: the fitted GDINA object from the final post hoc
+#'   calibration.
+#'   \item \code{posthoc.config}: the internal item/group configuration aligned
+#'   with the refit design matrix.
+#' }
 #' @seealso \code{\link{dif}}
 #'
 #' @author Wenchao Ma, The University of Minnesota, \email{wma@umn.edu}
@@ -124,7 +159,7 @@ pairwiseDIF <- function(object = NULL, dat = NULL, Q = NULL, group = NULL, model
     warning("No items were flagged for DIF for pairwise follow-up.", call. = FALSE)
     output <- list(test = data.frame(), dif.items = integer(0), anchor.items = seq_len(J),
                    group.labels = gr.label, p.adjust.methods = p.adjust.methods,
-                   posthoc.fit = NULL, posthoc.config = NULL,
+                   posthoc.fit = NULL, posthoc.config = NULL, posthoc.rearrangement = NULL,
                    item.names = all.item.names, sequential = sequential,
                    source = if(object.mode) "dif" else "manual")
     class(output) <- "pairwiseDIF"
@@ -146,9 +181,14 @@ pairwiseDIF <- function(object = NULL, dat = NULL, Q = NULL, group = NULL, model
 
   fit.call <- c(list(dat = dat, Q = Q, group = group, gr.label = gr.label,
                      model = model, shared.items = shared.items,
-                     variant.items = dif.items),
+             variant.items = dif.items,
+             item.names = all.item.names),
                 fit.args)
   posthoc.fit <- do.call(fit_lr_model, fit.call)
+
+    rearrangement <- posthoc.fit$config[, c("refit.item", "original.item", "item.label",
+                        "item.type", "group.no", "group.label"),
+                      drop = FALSE]
 
   output <- list(test = build_pairwise_wald_table(est = posthoc.fit$est,
                                                   config = posthoc.fit$config,
@@ -163,6 +203,7 @@ pairwiseDIF <- function(object = NULL, dat = NULL, Q = NULL, group = NULL, model
                  p.adjust.methods = p.adjust.methods,
                  posthoc.fit = posthoc.fit$est,
                  posthoc.config = posthoc.fit$config,
+                 posthoc.rearrangement = rearrangement,
                  item.names = all.item.names,
                  sequential = sequential,
                  source = if(object.mode) "dif" else "manual")

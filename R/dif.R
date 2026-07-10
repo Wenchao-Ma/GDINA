@@ -114,7 +114,7 @@
 #' gr <- rep(c("G1","G2","G3"),each=N)
 #'
 #' # DIF using Wald test - omnibus test
-#' dif.wald <- dif(dat, Q, group=gr, method = "Wald")
+#' dif.wald <- dif(dat, Q, group=gr, method = "Wald", FS.args = list(on = TRUE, verbose = TRUE))
 #' dif.wald
 #' # pairwise comparison between all pair of groups
 #' dif.pair = pairwiseDIF(dif.wald)
@@ -319,16 +319,42 @@ build_group_specific_index <- function(items, ngroup){
   rep(items, ngroup)
 }
 
-build_lr_item_config <- function(shared.items, variant.items, ngroup){
+build_lr_item_config <- function(shared.items, variant.items, ngroup,
+                                 gr.label = NULL, item.names = NULL){
   shared.items <- if(is.null(shared.items)) integer(0) else shared.items
   variant.items <- if(is.null(variant.items)) integer(0) else variant.items
 
-  data.frame(item = c(shared.items, rep(variant.items, ngroup)),
-             group = c(rep(0L, length(shared.items)),
-                       rep(seq_len(ngroup), each = length(variant.items))))
+  config <- data.frame(item = c(shared.items, rep(variant.items, ngroup)),
+                       group = c(rep(0L, length(shared.items)),
+                                 rep(seq_len(ngroup), each = length(variant.items))))
+
+  config$refit.item <- seq_len(nrow(config))
+  config$original.item <- config$item
+  config$item.type <- ifelse(config$group == 0L, "shared", "group-specific DIF")
+
+  group.no <- config$group
+  group.no[group.no == 0L] <- NA_integer_
+  config$group.no <- group.no
+
+  if(is.null(gr.label)){
+    config$group.label <- "shared"
+    config$group.label[config$group > 0L] <- as.character(config$group[config$group > 0L])
+  }else{
+    config$group.label <- rep("shared", nrow(config))
+    config$group.label[config$group > 0L] <- as.character(gr.label[config$group[config$group > 0L]])
+  }
+
+  if(is.null(item.names)){
+    config$item.label <- paste("Item", config$item)
+  }else{
+    config$item.label <- as.character(item.names[config$item])
+  }
+
+  config
 }
 
-build_lr_model_frame <- function(dat, Q, group, gr.label, model, shared.items, variant.items){
+build_lr_model_frame <- function(dat, Q, group, gr.label, model, shared.items, variant.items,
+                                 item.names = NULL){
   ngroup <- length(gr.label)
   if(length(model) == 1)
     model <- rep(model, nrow(Q))
@@ -353,7 +379,9 @@ build_lr_model_frame <- function(dat, Q, group, gr.label, model, shared.items, v
        model = model[item.index],
        config = build_lr_item_config(shared.items = shared.items,
                                      variant.items = variant.items,
-                                     ngroup = ngroup))
+                  ngroup = ngroup,
+                  gr.label = gr.label,
+                  item.names = item.names))
 }
 
 map_lr_init_params <- function(source.item.parm, source.config, target.config){
@@ -375,10 +403,12 @@ map_lr_init_params <- function(source.item.parm, source.config, target.config){
 }
 
 fit_lr_model <- function(dat, Q, group, gr.label, model, shared.items, variant.items,
+          item.names = NULL,
                          init.parm = NULL, att.prior = NULL, control.maxitr = NULL, ...){
   frame <- build_lr_model_frame(dat = dat, Q = Q, group = group, gr.label = gr.label,
                                 model = model, shared.items = shared.items,
-                                variant.items = variant.items)
+            variant.items = variant.items,
+            item.names = item.names)
 
   fit.args <- list(dat = frame$dat,
                    Q = frame$Q,
