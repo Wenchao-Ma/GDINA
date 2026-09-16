@@ -47,39 +47,47 @@ pairwiseDIF(
 \value{
 A \code{pairwiseDIF} object with key elements including:
 \itemize{
-\item \code{test}: a data frame of pairwise Wald test results with columns
-for item, group pair, Wald statistic, degrees of freedom, raw p-value, and
-adjusted p-value.
-\item \code{dif.items}: numeric indices of items included in pairwise DIF
-follow-up.
-\item \code{anchor.items}: numeric indices of items treated as shared
-(non-DIF) in the final post hoc refit.
-\item \code{group.labels}: observed group labels used in pairwise
-comparisons.
-\item \code{posthoc.rearrangement}: a data frame describing how original
-items were rearranged for refit (refit position, original item number, item
-label, item type, and group information).
-\item \code{posthoc.fit}: the fitted GDINA object from the final post hoc
-calibration.
-\item \code{posthoc.config}: the internal item/group configuration aligned
-with the refit design matrix.
+  \item \code{test}: a data frame of pairwise Wald test results with columns
+  for item, group pair, Wald statistic, degrees of freedom, raw p-value, and
+  adjusted p-value.
+  \item \code{dif.items}: numeric indices of items included in pairwise DIF
+  follow-up.
+  \item \code{anchor.items}: numeric indices of items treated as shared
+  (non-DIF) in the final post hoc refit.
+  \item \code{group.labels}: observed group labels used in pairwise
+  comparisons.
+  \item \code{posthoc.rearrangement}: a data frame describing how original
+  items were rearranged for refit (refit position, original item number, item
+  label, item type, and group information).
+  \item \code{posthoc.fit}: the fitted GDINA object from the final post hoc
+  calibration.
+  \item \code{posthoc.config}: the internal item/group configuration aligned
+  with the refit design matrix.
 }
 }
 \description{
 Conduct pairwise Wald follow-up tests after omnibus DIF analysis
-with three or more groups.
+with three or more groups. This function can also be used for DIF detection
+based on the Wald test by specifying the studied (potentially DIF) items and anchor items
+manually.
+
 The input can be a \code{dif} object returned by \code{dif()}, in which case
 DIF items are selected using adjusted omnibus p-values, or raw data plus
-user-specified DIF items and optional anchor items. For the final post hoc
-refit, items are rearranged so that shared items appear once and DIF items are
-duplicated once for each observed group. For example, if Item 3 is flagged as
-DIF in a three-group analysis and Items 1 and 2 are shared, the refit is
-arranged as Item 1, Item 2, Item 3 (Group 1), Item 3 (Group 2), and Item 3
-(Group 3). The returned object stores this mapping in
-\code{posthoc.rearrangement}, which records the refit position, original item
-number, item label, item type, and group label for each row of the post hoc
-GDINA calibration. \code{plot()} function can be used to draw grouped bar
-chart for DIF items.
+user-specified DIF items and anchor items.
+
+For DIF detection, the data are rearranged so that anchor items appear once and
+DIF items are duplicated once for each observed group. For example, if Item 3
+is flagged as DIF in a three-group analysis and Items 1 and 2 are not, the
+refit is arranged as Item 1, Item 2, Item 3 (Group 1), Item 3 (Group 2),
+and Item 3 (Group 3).
+
+The Wald test is used for comparison of item parameters across all pairs of groups
+for each DIF item. The p-values are adjusted for multiple comparisons.
+
+The returned object stores this mapping in
+\code{posthoc.rearrangement}, which records the refit position, original
+item number, item label, item type, and group label for each row of the posthoc
+GDINA calibration. \code{plot()} function can be used to draw grouped bar chart for DIF items.
 }
 \examples{
 \dontrun{

@@ -1,4 +1,4 @@
-# GDINA 2.12.3
+# GDINA 2.13.0
 * Change. - `itemfit` function can be used for sequential models
 * Change. - `dif` function can handle attributes with hierarchical structures
 * Change. - `dif` and `pairwiseDIF` functions can handle more than two groups

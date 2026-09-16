@@ -1,8 +1,8 @@
 Package: GDINA
 Type: Package
 Title: The Generalized DINA Model Framework
-Version: 2.12.3
-Date: 2026-07-10
+Version: 2.13.0
+Date: 2026-09-15
 Authors@R: c(person(given = "Wenchao",family = "Ma", role = c("aut", "cre", "cph"),email = "wma@umn.edu"),
              person(given = "Jimmy", family = "de la Torre", role = c("aut","cph")), 
              person(given="Samuel",family = "Huang",role = "ctb"), 

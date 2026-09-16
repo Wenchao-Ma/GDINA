@@ -155,7 +155,7 @@ dat <- rbind(extract(sim1,"dat"),extract(sim2,"dat"),extract(sim3,"dat"))
 gr <- rep(c("G1","G2","G3"),each=N)
 
 # DIF using Wald test - omnibus test
-dif.wald <- dif(dat, Q, group=gr, method = "Wald")
+dif.wald <- dif(dat, Q, group=gr, method = "Wald", FS.args = list(on = TRUE, verbose = TRUE))
 dif.wald
 # pairwise comparison between all pair of groups
 dif.pair = pairwiseDIF(dif.wald)
