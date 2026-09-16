@@ -79,9 +79,8 @@ To install this package from source:
     [Rtools](https://CRAN.R-project.org/bin/windows/Rtools/) and include
     the checkbox option of installing Rtools to their path for easier
     command line usage. Mac users will have to download the necessary
-    tools from the
-    [Xcode](https://apps.apple.com/ca/app/xcode/id497799835?mt=12) and
-    its related command line tools (found within Xcode’s Preference Pane
+    tools from the [Xcode](https://developer.apple.com/xcode/) and its
+    related command line tools (found within Xcode’s Preference Pane
     under Downloads/Components); most Linux distributions should already
     have up to date compilers (or if not they can be updated easily).
 
