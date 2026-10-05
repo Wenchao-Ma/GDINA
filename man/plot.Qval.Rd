@@ -11,7 +11,7 @@
   no.qvector = 10,
   data.label = TRUE,
   eps = "auto",
-  original.q.label = FALSE,
+  original.q.label = TRUE,
   auto.ylim = TRUE,
   ...
 )

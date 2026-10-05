@@ -1,8 +1,4 @@
-#' Shared utility functions for estimation
-#' 
-#' This file contains helper functions shared between SingleGroup_Estimation.R
-#' and MultipleGroup_Estimation.R to reduce code duplication.
-
+# Shared utility functions for estimation.
 
 #' Initialize control parameters for EM estimation
 #' 
@@ -14,7 +10,7 @@
 #' @param model Numeric model vector
 #' @param is_mg Logical: is this multiple-group estimation?
 #' @return Modified control list with defaults applied
-#' @keywords internal
+#' @noRd
 init_control <- function(control, ncat, model, is_mg = FALSE) {
   myControl <- list(
     maxitr = 2000,
@@ -79,7 +75,7 @@ init_control <- function(control, ncat, model, is_mg = FALSE) {
 #' @param solnp_args User-provided solnp arguments  
 #' @param nloptr_args User-provided nloptr arguments
 #' @return List containing initialized solver arguments
-#' @keywords internal
+#' @noRd
 init_solver_args <- function(auglag_args, solnp_args, nloptr_args) {
   myAuglag_args <- list(
     control.outer = list(
@@ -108,7 +104,7 @@ init_solver_args <- function(auglag_args, solnp_args, nloptr_args) {
 #' @param solver Character string or vector specifying solver
 #' @param ncat Number of categories
 #' @return Character vector of length ncat
-#' @keywords internal
+#' @noRd
 init_solver <- function(solver, ncat) {
   if (is.null(solver)) {
     solver <- rep("auto", ncat)
@@ -131,7 +127,7 @@ init_solver <- function(solver, ncat) {
 #' @param conv_crit Numeric convergence criterion
 #' @param neg2LL_current Current deviance value
 #' @return List with maxchg and converged flag
-#' @keywords internal
+#' @noRd
 check_em_convergence <- function(dif_parm, conv_type, conv_crit, neg2LL_current) {
   maxchg <- 0
   
@@ -163,7 +159,7 @@ check_em_convergence <- function(dif_parm, conv_type, conv_crit, neg2LL_current)
 #' @param maxchg Maximum change
 #' @param neg2LL Current deviance
 #' @param verbose Verbosity level (1 = inline, 2 = newline)
-#' @keywords internal
+#' @noRd
 print_em_progress <- function(itr, maxchg, neg2LL, verbose) {
   if (verbose == 1L) {
     cat('\rIter =', itr, ' Max. abs. change =', formatC(maxchg, digits = 5, format = "f"),
@@ -187,7 +183,7 @@ print_em_progress <- function(itr, maxchg, neg2LL, verbose) {
 #' @param reduced.LG List of reduced latent group matrices
 #' @param ConstrPairs Optional pre-specified constraint pairs
 #' @return List with ConstrType vector and ConstrMatrix list
-#' @keywords internal
+#' @noRd
 init_constraint_matrices <- function(ncat, mono.constraint, Kj, reduced.LG, ConstrPairs = NULL) {
   ConstrType <- rep(1, ncat)
   ConstrMatrix <- vector("list", ncat)
@@ -224,7 +220,7 @@ init_constraint_matrices <- function(ncat, mono.constraint, Kj, reduced.LG, Cons
 #' @param originalQ Original Q-matrix with item/category columns for MS-DINA
 #' @param no.bugs Number of bugs for BUGDINO model
 #' @return List of design matrices
-#' @keywords internal
+#' @noRd
 init_design_matrices <- function(ncat, model, rule, Kj, reduced.LG, Q, originalQ, no.bugs = NULL) {
   if (any(model == -1)) {
     stop("design.matrix must be provided for user-defined models.", call. = FALSE)

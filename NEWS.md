@@ -1,4 +1,5 @@
-# GDINA 2.13.0
+# GDINA 2.13.2
+* Fixed - `plot.Qval` no longer fails when rendering mesa plots with ggplot2.
 * Change. - `itemfit` function can be used for sequential models
 * Change. - `dif` function can handle attributes with hierarchical structures
 * Change. - `dif` and `pairwiseDIF` functions can handle more than two groups

@@ -86,28 +86,41 @@ importFrom(MASS,ginv)
 importFrom(Rcpp,sourceCpp)
 importFrom(Rsolnp,solnp)
 importFrom(alabama,auglag)
-importFrom(foreach,"%dopar%")
-importFrom(foreach,foreach)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,geom_bar)
-importFrom(ggplot2,geom_errorbar)
-importFrom(ggplot2,geom_tile)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,scale_fill_gradient)
-importFrom(ggplot2,theme_bw)
-importFrom(ggplot2,ylim)
-importFrom(graphics,abline)
-importFrom(graphics,axis)
-importFrom(graphics,plot)
-importFrom(graphics,points)
-importFrom(graphics,text)
-importFrom(nloptr,nl.grad)
-importFrom(nloptr,nl.jacobian)
-importFrom(nloptr,nloptr)
-importFrom(nloptr,slsqp)
-importFrom(numDeriv,hessian)
-importFrom(numDeriv,jacobian)
-importFrom(utils,combn)
-importFrom(utils,modifyList)
+importFrom(foreach,
+  "%dopar%",
+  foreach
+)
+importFrom(ggplot2,
+  aes,
+  geom_bar,
+  geom_errorbar,
+  geom_tile,
+  ggplot,
+  labs,
+  scale_fill_gradient,
+  theme_bw,
+  ylim
+)
+importFrom(graphics,
+  abline,
+  axis,
+  plot,
+  points,
+  text
+)
+importFrom(nloptr,
+  nl.grad,
+  nl.jacobian,
+  nloptr,
+  slsqp
+)
+importFrom(numDeriv,
+  hessian,
+  jacobian
+)
+importFrom(rlang,.data)
+importFrom(utils,
+  combn,
+  modifyList
+)
 useDynLib(GDINA)

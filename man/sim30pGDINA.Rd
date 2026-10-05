@@ -13,7 +13,7 @@ A list with components:
 }
 }
 \usage{
-data(sim30pGDINA)
+sim30pGDINA
 }
 \description{
 Simulated data, Q-matrix and item parameters for a 30-item test measuring 5 attributes.

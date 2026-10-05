@@ -12,7 +12,7 @@ A list with components:
 }
 }
 \usage{
-data(sim21seqDINA)
+sim21seqDINA
 }
 \description{
 Simulated data, and Qc-matrix for a 21-item test measuring 5 attributes.

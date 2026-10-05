@@ -42,5 +42,9 @@ test_that("checking GDI calculation", {
 
   expect_equivalent(calc,as.matrix(z$varsigma))
 
+  expect_invisible(plot(z, item = 1, type = "best"))
+  expect_invisible(plot(z, item = 1, type = "all", no.qvector = 3,
+                        data.label = FALSE, original.q.label = TRUE))
+
 })
 

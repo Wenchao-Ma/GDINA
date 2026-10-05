@@ -333,11 +333,12 @@ plot.itemfit <- function(x,type="all",adjusted=TRUE,...){
 #' de la Torre, J., & Ma, W. (2016, August). Cognitive diagnosis modeling: A general framework approach and its implementation in R. A Short Course at the Fourth Conference on Statistical Methods in Psychometrics, Columbia University, New York.
 #'
 
+#' @importFrom rlang .data
 #' @export
 plot.Qval <-
   function(x, item, type = "best", no.qvector = 10,
            data.label = TRUE,eps = "auto",
-           original.q.label = FALSE,auto.ylim = TRUE,...)
+           original.q.label = TRUE,auto.ylim = TRUE,...)
   {
     type <- match.arg(tolower(type), c("best", "all"))
     if (identical(eps, "auto")) eps <- round(x$eps, 2)
@@ -399,7 +400,7 @@ plot.Qval <-
         lower <- 0
       }
 
-      g <- ggplot2::ggplot(plot.dat, ggplot2::aes(x = ggplot2::.data$rank, y = ggplot2::.data$PVAF)) +
+      g <- ggplot2::ggplot(plot.dat, ggplot2::aes(x = .data$rank, y = .data$PVAF)) +
         ggplot2::geom_line(color = "#3B536D", linewidth = 0.7) +
         ggplot2::geom_point(color = "#3B536D", size = 2.4) +
         ggplot2::scale_x_continuous(breaks = plot.dat$rank,
@@ -428,7 +429,7 @@ plot.Qval <-
         )
       }
       if (data.label) {
-        g <- g + ggplot2::geom_text(ggplot2::aes(label = round(ggplot2::.data$PVAF, 3)),
+        g <- g + ggplot2::geom_text(ggplot2::aes(label = round(.data$PVAF, 3)),
                                     vjust = -0.8, size = 3, color = "#3B536D")
       }
       if (!is.null(eps) && eps > 0 && eps < 1) {
